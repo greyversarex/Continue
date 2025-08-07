@@ -1,4 +1,4 @@
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "python-3.11"]
 [agent]
 expertMode = true
 
@@ -19,11 +19,15 @@ args = "Backend Server"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
+args = "Frontend Demo"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
 args = "Frontend React App"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Frontend Demo"
+args = "Demo Page"
 
 [[workflows.workflow]]
 name = "Backend Server"
@@ -35,15 +39,6 @@ args = "echo \"DATABASE_URL=file:./dev.db\" > .env && npx prisma generate && npx
 waitForPort = 5000
 
 [[workflows.workflow]]
-name = "Frontend React App"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd frontend && rm -rf node_modules package-lock.json && npm install && npm start"
-waitForPort = 3000
-
-[[workflows.workflow]]
 name = "Frontend Demo"
 author = "agent"
 
@@ -51,6 +46,30 @@ author = "agent"
 task = "shell.exec"
 args = "cd frontend && python3 -m http.server 5000"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Frontend React App"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend && npm start"
+waitForPort = 3000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow]]
+name = "Demo Page"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend && python3 -m http.server 8000"
+waitForPort = 8000
+
+[workflows.workflow.metadata]
+outputType = "webview"
 
 [[ports]]
 localPort = 3000
