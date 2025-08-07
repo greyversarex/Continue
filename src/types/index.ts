@@ -43,6 +43,51 @@ export interface ApiResponse<T = any> {
   error?: string;
 }
 
+// BookingRequest types
+export interface BookingRequestData {
+  id: number;
+  customerName: string;
+  customerEmail: string;
+  preferredDate: string;
+  numberOfPeople: number;
+  tourId: number;
+  tour?: TourData;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateBookingRequestData {
+  customerName: string;
+  customerEmail: string;
+  preferredDate: string;
+  numberOfPeople: number;
+  tourId: number;
+}
+
+// Review types
+export interface ReviewData {
+  id: number;
+  authorName: string;
+  rating: number;
+  text: string;
+  isModerated: boolean;
+  tourId: number;
+  tour?: TourData;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateReviewData {
+  authorName: string;
+  rating: number;
+  text: string;
+  tourId: number;
+}
+
+export interface UpdateReviewData {
+  isModerated?: boolean;
+}
+
 // Error types
 export interface ApiError extends Error {
   statusCode?: number;

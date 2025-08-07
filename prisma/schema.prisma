@@ -19,15 +19,45 @@ model Category {
 }
 
 model Tour {
+  id             Int              @id @default(autoincrement())
+  title          String           // JSON field for multilingual content
+  description    String           // JSON field for multilingual content
+  duration       String
+  price          String
+  categoryId     Int
+  category       Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  bookingRequests BookingRequest[]
+  reviews        Review[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@map("tours")
+}
+
+model BookingRequest {
+  id             Int      @id @default(autoincrement())
+  customerName   String   @map("customer_name")
+  customerEmail  String   @map("customer_email")
+  preferredDate  String   @map("preferred_date")
+  numberOfPeople Int      @map("number_of_people")
+  tourId         Int      @map("tour_id")
+  tour           Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("booking_requests")
+}
+
+model Review {
   id          Int      @id @default(autoincrement())
-  title       String   // JSON field for multilingual content
-  description String   // JSON field for multilingual content
-  duration    String
-  price       String
-  categoryId  Int
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  authorName  String   @map("author_name")
+  rating      Int
+  text        String
+  isModerated Boolean  @default(false) @map("is_moderated")
+  tourId      Int      @map("tour_id")
+  tour        Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@map("tours")
+  @@map("reviews")
 }

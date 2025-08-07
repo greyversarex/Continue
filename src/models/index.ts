@@ -1,5 +1,12 @@
 import prisma from '../config/database';
-import { MultilingualContent, CreateTourData, CreateCategoryData } from '../types';
+import { 
+  MultilingualContent, 
+  CreateTourData, 
+  CreateCategoryData, 
+  CreateBookingRequestData, 
+  CreateReviewData,
+  UpdateReviewData 
+} from '../types';
 
 export class TourModel {
   /**
@@ -156,6 +163,215 @@ export class CategoryModel {
    */
   static async delete(id: number) {
     return await prisma.category.delete({
+      where: { id }
+    });
+  }
+}
+
+export class BookingRequestModel {
+  /**
+   * Get all booking requests with tour information
+   */
+  static async findAll() {
+    return await prisma.bookingRequest.findMany({
+      include: {
+        tour: {
+          include: {
+            category: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
+
+  /**
+   * Get a booking request by ID
+   */
+  static async findById(id: number) {
+    return await prisma.bookingRequest.findUnique({
+      where: { id },
+      include: {
+        tour: {
+          include: {
+            category: true
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Create a new booking request
+   */
+  static async create(data: CreateBookingRequestData) {
+    // Validate that the tour exists
+    const tour = await prisma.tour.findUnique({
+      where: { id: data.tourId }
+    });
+
+    if (!tour) {
+      throw new Error('Tour not found');
+    }
+
+    return await prisma.bookingRequest.create({
+      data: {
+        customerName: data.customerName,
+        customerEmail: data.customerEmail,
+        preferredDate: data.preferredDate,
+        numberOfPeople: data.numberOfPeople,
+        tourId: data.tourId
+      },
+      include: {
+        tour: {
+          include: {
+            category: true
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Delete a booking request
+   */
+  static async delete(id: number) {
+    return await prisma.bookingRequest.delete({
+      where: { id }
+    });
+  }
+}
+
+export class ReviewModel {
+  /**
+   * Get all reviews with tour information
+   */
+  static async findAll() {
+    return await prisma.review.findMany({
+      include: {
+        tour: {
+          include: {
+            category: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
+
+  /**
+   * Get moderated reviews for public display
+   */
+  static async findModerated() {
+    return await prisma.review.findMany({
+      where: {
+        isModerated: true
+      },
+      include: {
+        tour: {
+          include: {
+            category: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
+
+  /**
+   * Get reviews for a specific tour
+   */
+  static async findByTourId(tourId: number) {
+    return await prisma.review.findMany({
+      where: {
+        tourId,
+        isModerated: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
+
+  /**
+   * Get a review by ID
+   */
+  static async findById(id: number) {
+    return await prisma.review.findUnique({
+      where: { id },
+      include: {
+        tour: {
+          include: {
+            category: true
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Create a new review
+   */
+  static async create(data: CreateReviewData) {
+    // Validate that the tour exists
+    const tour = await prisma.tour.findUnique({
+      where: { id: data.tourId }
+    });
+
+    if (!tour) {
+      throw new Error('Tour not found');
+    }
+
+    // Validate rating is between 1 and 5
+    if (data.rating < 1 || data.rating > 5) {
+      throw new Error('Rating must be between 1 and 5');
+    }
+
+    return await prisma.review.create({
+      data: {
+        authorName: data.authorName,
+        rating: data.rating,
+        text: data.text,
+        tourId: data.tourId
+      },
+      include: {
+        tour: {
+          include: {
+            category: true
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Update a review (mainly for moderation)
+   */
+  static async update(id: number, data: UpdateReviewData) {
+    return await prisma.review.update({
+      where: { id },
+      data,
+      include: {
+        tour: {
+          include: {
+            category: true
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Delete a review
+   */
+  static async delete(id: number) {
+    return await prisma.review.delete({
       where: { id }
     });
   }

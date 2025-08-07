@@ -141,3 +141,69 @@ Send JSON data with the following structure:
 }
 ```
 
+## Complete API Documentation
+
+### Tour Management
+- **GET** `/api/tours` - Get all tours with categories
+- **GET** `/api/tours/:id` - Get specific tour by ID
+- **POST** `/api/tours` - Create a new tour
+- **PUT** `/api/tours/:id` - Update tour details
+- **DELETE** `/api/tours/:id` - Delete a tour
+
+### Category Management  
+- **GET** `/api/categories` - Get all categories with tour count
+- **GET** `/api/categories/:id` - Get specific category with tours
+- **POST** `/api/categories` - Create a new category
+- **PUT** `/api/categories/:id` - Update category details
+- **DELETE** `/api/categories/:id` - Delete a category
+
+### Booking Requests
+- **POST** `/api/booking-requests` - Create booking request (Public)
+- **GET** `/api/booking-requests` - Get all booking requests (Admin)
+
+### Reviews
+- **POST** `/api/reviews` - Submit a review (Public)
+- **GET** `/api/reviews` - Get all reviews (Admin)
+- **PUT** `/api/reviews/:id` - Update review moderation status (Admin)
+
+### Sample POST Requests
+
+#### Create Booking Request
+```json
+{
+  "customerName": "John Doe",
+  "customerEmail": "john.doe@example.com",
+  "preferredDate": "2025-09-15",
+  "numberOfPeople": 2,
+  "tourId": 1
+}
+```
+
+#### Create Review
+```json
+{
+  "authorName": "Alice Smith",
+  "rating": 5,
+  "text": "Amazing experience!",
+  "tourId": 1
+}
+```
+
+#### Update Review Moderation
+```json
+{
+  "isModerated": true
+}
+```
+
+## Database Schema
+
+The application now includes four main models:
+
+1. **Category**: Multilingual tour categories
+2. **Tour**: Detailed tour information with category relations
+3. **BookingRequest**: Customer booking inquiries
+4. **Review**: Tour reviews with moderation system
+
+All models include proper relationships and validation for data integrity.
+

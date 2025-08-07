@@ -2,7 +2,17 @@
 
 ## Overview
 
-A TypeScript Express backend API for a tour agency specializing in Tajikistan tourism. The system provides multilingual tour and category management with support for English and Russian content. Built with modern web technologies including Express.js, Prisma ORM, and SQLite database, the API follows RESTful design principles and emphasizes type safety throughout the codebase.
+A complete TypeScript Express backend API for Tajik Trails tour agency specializing in Tajikistan tourism. The system provides multilingual tour and category management with support for English and Russian content, along with booking request handling and review management with moderation capabilities. Built with modern web technologies including Express.js, Prisma ORM, and SQLite database, the API follows RESTful design principles and emphasizes type safety throughout the codebase.
+
+## Recent Changes (August 2025)
+
+- **Complete CRUD Operations**: Added full Create, Read, Update, Delete functionality for tours and categories
+- **Booking Request System**: Implemented customer booking request handling with tour validation
+- **Review System**: Added review submission with rating validation and admin moderation capabilities  
+- **Database Schema Expansion**: Added BookingRequest and Review models with proper relationships
+- **Enhanced API Endpoints**: Expanded from 3 to 12 endpoints covering all business requirements
+- **Data Validation**: Comprehensive validation for all input fields including multilingual content
+- **Admin vs Public Endpoints**: Proper separation of admin management and public user functionality
 
 ## User Preferences
 
