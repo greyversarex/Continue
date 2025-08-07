@@ -17,6 +17,10 @@ author = "agent"
 task = "workflow.run"
 args = "Backend Server"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Frontend React App"
+
 [[workflows.workflow]]
 name = "Backend Server"
 author = "agent"
@@ -28,6 +32,22 @@ outputType = "webview"
 task = "shell.exec"
 args = "echo \"DATABASE_URL=file:./dev.db\" > .env && npx prisma generate && npx prisma migrate dev --name init && npx prisma db seed && npx ts-node src/server.ts"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Frontend React App"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend && npm install && npm start"
+waitForPort = 3000
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
 
 [[ports]]
 localPort = 5000
