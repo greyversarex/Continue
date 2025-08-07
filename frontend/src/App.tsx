@@ -5,6 +5,7 @@ import './App.css';
 const App: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
+  const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const categories = [
     { id: 'mountains', name: 'Горные туры', count: 15 },
@@ -78,30 +79,7 @@ const App: React.FC = () => {
             Погрузитесь в мир удивительных приключений
           </p>
           
-          {/* Форма поиска */}
-          <div className="bg-white rounded-full p-2 shadow-2xl max-w-2xl w-full flex">
-            <div className="flex-1 px-6 py-4">
-              <div className="text-gray-500 text-sm font-medium">Куда?</div>
-              <input 
-                type="text" 
-                placeholder="Поиск места или активности"
-                className="text-gray-900 w-full focus:outline-none text-lg"
-              />
-            </div>
-            <div className="border-l border-gray-200 flex-1 px-6 py-4">
-              <div className="text-gray-500 text-sm font-medium">Когда</div>
-              <input 
-                type="text" 
-                placeholder="Выбрать даты"
-                className="text-gray-900 w-full focus:outline-none text-lg"
-              />
-            </div>
-            <button className="bg-green-600 hover:bg-green-700 text-white rounded-full px-8 py-4 m-1 font-semibold flex items-center justify-center">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </div>
+
         </div>
         
         {/* Точки карусели */}
@@ -348,6 +326,71 @@ const App: React.FC = () => {
         </div>
       </section>
 
+      {/* Раскрывающиеся кнопки */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[
+              { id: 'special', title: 'Особые отметки' },
+              { id: 'payment', title: 'Правила оплаты и возврата средств' },
+              { id: 'privacy', title: 'Политика конфиденциальности' },
+              { id: 'button4', title: '' }
+            ].map((button, index) => (
+              <div key={button.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setActiveAccordion(activeAccordion === button.id ? null : button.id)}
+                  className={`w-full p-4 text-left bg-orange-400 hover:bg-orange-500 text-white font-semibold flex justify-between items-center ${
+                    activeAccordion === button.id ? 'bg-orange-500' : ''
+                  }`}
+                >
+                  <span>{button.title || `Кнопка ${index + 1}`}</span>
+                  <svg
+                    className={`w-5 h-5 transition-transform ${
+                      activeAccordion === button.id ? 'transform rotate-180' : ''
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {activeAccordion === button.id && (
+                  <div className="p-4 bg-white border-t">
+                    <div className="text-gray-600">
+                      {button.id === 'special' && (
+                        <div>
+                          <p className="mb-2">• Все туры проводятся с лицензированными гидами</p>
+                          <p className="mb-2">• Групповые туры до 15 человек для лучшего опыта</p>
+                          <p>• Включена страховка для всех участников</p>
+                        </div>
+                      )}
+                      {button.id === 'payment' && (
+                        <div>
+                          <p className="mb-2">• Полная оплата при бронировании</p>
+                          <p className="mb-2">• Возврат 100% за 24+ часа до тура</p>
+                          <p>• Частичный возврат за 12-24 часа до тура</p>
+                        </div>
+                      )}
+                      {button.id === 'privacy' && (
+                        <div>
+                          <p className="mb-2">• Мы защищаем ваши персональные данные</p>
+                          <p className="mb-2">• Информация используется только для бронирования</p>
+                          <p>• Данные не передаются третьим лицам</p>
+                        </div>
+                      )}
+                      {button.id === 'button4' && (
+                        <p>Содержимое будет добавлено позже.</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Отзывы клиентов */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
@@ -459,40 +502,7 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Логотипы */}
-            <div className="flex flex-col items-end space-y-4">
-              <div className="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold">
-                Браво!
-              </div>
-              <div className="bg-green-600 text-white px-3 py-1 rounded text-xs">
-                Bunyod Tour LLC 49
-              </div>
-              <div className="bg-green-600 text-white px-3 py-1 rounded text-xs">
-                cheт. бренд(10) за
-              </div>
-              <div className="bg-green-600 text-white px-3 py-1 rounded text-xs">
-                отличие"
-              </div>
-              
-              {/* TripAdvisor логотип */}
-              <div className="bg-white rounded px-2 py-1">
-                <svg className="w-16 h-6" viewBox="0 0 120 24" fill="none">
-                  <circle cx="6" cy="12" r="4" fill="#00AA6C"/>
-                  <circle cx="18" cy="12" r="4" fill="#00AA6C"/>
-                  <text x="30" y="16" fontSize="10" fill="#333">TripAdvisor</text>
-                </svg>
-              </div>
-              
-              {/* Платёжные системы */}
-              <div className="flex space-x-2">
-                <div className="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold">
-                  MasterCard
-                </div>
-                <div className="bg-yellow-500 text-black px-3 py-1 rounded text-xs font-bold">
-                  МИР
-                </div>
-              </div>
-            </div>
+
           </div>
           
           {/* Нижняя строка */}
