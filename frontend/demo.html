@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bunyod-Tour: Откройте для себя Таджикистан</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .bg-footer { background-color: #3E3E3E; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="min-h-screen bg-white">
+        <!-- Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Логотип -->
+                    <div class="flex items-center space-x-6">
+                        <div class="flex items-center">
+                            <img src="/logo-bunyod-tour.png" alt="Bunyod-Tour" class="w-12 h-12 rounded-full mr-3">
+                            <span class="text-xl font-bold text-gray-900">Bunyod-Tour</span>
+                        </div>
+                        <div class="flex items-center space-x-1 text-gray-700 hover:text-gray-900 cursor-pointer">
+                            <span class="font-medium">Открыть</span>
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Правая часть -->
+                    <div class="flex items-center space-x-4">
+                        <div class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Главный баннер (укороченный) -->
+        <section class="relative h-[70vh]">
+            <!-- Фоновое изображение -->
+            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 1200 800&quot;%3E%3Cdefs%3E%3ClinearGradient id=&quot;mountains&quot; x1=&quot;0%25&quot; y1=&quot;100%25&quot; x2=&quot;100%25&quot; y2=&quot;0%25&quot;%3E%3Cstop offset=&quot;0%25&quot; style=&quot;stop-color:%234A90E2&quot; /%3E%3Cstop offset=&quot;50%25&quot; style=&quot;stop-color:%237ED321&quot; /%3E%3Cstop offset=&quot;100%25&quot; style=&quot;stop-color:%23F5A623&quot; /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=&quot;100%25&quot; height=&quot;100%25&quot; fill=&quot;url(%23mountains)&quot; /%3E%3Cpath d=&quot;M0,400 Q200,300 400,350 Q600,400 800,320 Q1000,250 1200,300 L1200,800 L0,800 Z&quot; fill=&quot;%234A90E2&quot; opacity=&quot;0.7&quot; /%3E%3Cpath d=&quot;M0,500 Q300,450 600,480 Q900,510 1200,470 L1200,800 L0,800 Z&quot; fill=&quot;%237ED321&quot; opacity=&quot;0.6&quot; /%3E%3Cpath d=&quot;M200,200 Q250,150 300,180 Q350,210 400,170 Q450,130 500,160 L500,350 Q450,320 400,350 Q350,380 300,360 Q250,340 200,370 Z&quot; fill=&quot;%23F5A623&quot; opacity=&quot;0.8&quot; /%3E%3C/svg%3E');">
+                <div class="absolute inset-0 bg-black bg-opacity-10"></div>
+            </div>
+            
+            <!-- Содержимое баннера -->
+            <div class="relative h-full flex flex-col justify-center items-center text-center text-white px-4">
+                <h1 class="text-5xl font-bold mb-3 leading-tight">
+                    Bunyod-Tour: Откройте для себя Таджикистан
+                </h1>
+                <p class="text-lg mb-8 font-light">
+                    Погрузитесь в мир удивительных приключений
+                </p>
+            </div>
+            
+            <!-- Точки карусели -->
+            <div class="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+                <div class="w-2 h-2 bg-white bg-opacity-50 rounded-full"></div>
+                <div class="w-2 h-2 bg-white bg-opacity-50 rounded-full"></div>
+            </div>
+            
+            <!-- Брендинг -->
+            <div class="absolute bottom-8 right-8">
+                <div class="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg text-sm">
+                    Больше с Bunyod-Tour
+                </div>
+            </div>
+        </section>
+
+        <!-- Система фильтров туров с обновленным дизайном -->
+        <section class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+                    Найдите идеальный тур
+                </h2>
+                
+                <!-- Фильтры с цветом футера -->
+                <div class="rounded-lg p-6 mb-12 bg-footer">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <!-- Категория -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Категория тура</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                <option value="">Все категории</option>
+                                <option value="mountain">Горные туры</option>
+                                <option value="cultural">Культурные туры</option>
+                                <option value="adventure">Приключенческие туры</option>
+                                <option value="historical">Исторические туры</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Продолжительность -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Продолжительность</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                <option value="">Любая</option>
+                                <option value="1">1 день</option>
+                                <option value="2-3">2-3 дня</option>
+                                <option value="4-7">4-7 дней</option>
+                                <option value="8+">8+ дней</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Цена -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Цена (USD)</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                <option value="">Любая цена</option>
+                                <option value="0-100">$0 - $100</option>
+                                <option value="100-300">$100 - $300</option>
+                                <option value="300-500">$300 - $500</option>
+                                <option value="500+">$500+</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Уровень сложности -->
+                        <div>
+                            <label class="block text-sm font-medium text-white mb-2">Сложность</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                <option value="">Любая</option>
+                                <option value="easy">Легкая</option>
+                                <option value="medium">Средняя</option>
+                                <option value="hard">Сложная</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Светлая кнопка применения фильтров -->
+                    <div class="flex justify-center mt-6">
+                        <button class="bg-white hover:bg-gray-100 text-gray-800 px-8 py-3 rounded-lg font-semibold transition-colors">
+                            Применить фильтры
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Остальной контент страницы -->
+        <section class="py-16 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Популярные туры</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Пример тура -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-gradient-to-r from-blue-400 to-purple-500"></div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">Памирское шоссе</h3>
+                            <p class="text-gray-600 mb-4">Путешествие по одной из самых высоких дорог мира</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold text-green-600">$450</span>
+                                <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                                    Забронировать
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
