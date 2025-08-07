@@ -29,7 +29,7 @@ const Home: React.FC = () => {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
-            Why Choose Tajik Trails?
+            {t('home.whyChooseUs')}
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -39,9 +39,9 @@ const Home: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Expert Local Guides</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('home.expertGuides.title')}</h3>
               <p className="text-gray-600">
-                Our experienced guides know every trail and story of the magnificent Pamir Mountains.
+                {t('home.expertGuides.description')}
               </p>
             </div>
 
@@ -51,9 +51,9 @@ const Home: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Safety First</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('home.safetyFirst.title')}</h3>
               <p className="text-gray-600">
-                All our tours are carefully planned with safety equipment and emergency protocols.
+                {t('home.safetyFirst.description')}
               </p>
             </div>
 
@@ -63,9 +63,9 @@ const Home: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Authentic Experiences</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('home.authenticExperiences.title')}</h3>
               <p className="text-gray-600">
-                Experience genuine Tajik culture, cuisine, and traditions with local families.
+                {t('home.authenticExperiences.description')}
               </p>
             </div>
           </div>
@@ -76,16 +76,16 @@ const Home: React.FC = () => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6 text-gray-800">
-            Ready for Your Adventure?
+            {t('home.readyForAdventure')}
           </h2>
           <p className="text-lg text-gray-600 mb-8">
-            Browse our carefully curated tours and start planning your journey to Tajikistan today.
+            {t('home.readyDescription')}
           </p>
           <Link
             to="/tours"
             className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
           >
-            View All Tours
+            {t('home.viewAllTours')}
           </Link>
         </div>
       </section>

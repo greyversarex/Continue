@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { TourModel, CategoryModel, BookingRequestModel, ReviewModel } from '../models';
+import { sendAdminNotification, sendCustomerConfirmation } from '../config/email';
 import { 
   CreateTourData, 
   CreateCategoryData,
@@ -574,6 +575,33 @@ export class BookingRequestController {
           }
         }
       };
+
+      // Send email notifications
+      try {
+        const tourTitle = parsedBookingRequest.tour.title.en || parsedBookingRequest.tour.title.ru || 'Tour';
+        
+        const emailData = {
+          fullName: customerName,
+          email: customerEmail,
+          preferredDate,
+          numberOfPeople,
+          tourTitle
+        };
+
+        // Send notifications (don't wait for them to complete to avoid delaying the response)
+        sendAdminNotification(emailData).catch(emailError => {
+          console.error('Failed to send admin notification email:', emailError);
+        });
+
+        sendCustomerConfirmation(emailData).catch(emailError => {
+          console.error('Failed to send customer confirmation email:', emailError);
+        });
+        
+        console.log('Email notifications initiated for booking request:', bookingRequest.id);
+      } catch (emailError) {
+        // Log email errors but don't fail the booking creation
+        console.error('Error initiating email notifications:', emailError);
+      }
 
       const response: ApiResponse = {
         success: true,
