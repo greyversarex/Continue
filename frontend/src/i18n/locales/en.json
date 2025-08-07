@@ -1,0 +1,165 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "tryAgain": "Try Again",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "update": "Update",
+    "refresh": "Refresh",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "required": "Required",
+    "optional": "Optional"
+  },
+  "navigation": {
+    "home": "Home",
+    "tours": "Tours",
+    "admin": "Admin",
+    "dashboard": "Dashboard"
+  },
+  "header": {
+    "title": "Tajik Trails",
+    "subtitle": "Discover the Beauty of Tajikistan"
+  },
+  "home": {
+    "heroTitle": "Explore Magnificent Tajikistan",
+    "heroDescription": "Discover breathtaking mountains, ancient Silk Road cities, and warm hospitality in the heart of Central Asia. Join us for unforgettable adventures in Tajikistan.",
+    "exploreTours": "Explore Our Tours",
+    "whyChooseUs": "Why Choose Tajik Trails?",
+    "expertGuides": {
+      "title": "Expert Local Guides",
+      "description": "Our experienced guides know every trail and story of the magnificent Pamir Mountains."
+    },
+    "safetyFirst": {
+      "title": "Safety First",
+      "description": "All our tours are carefully planned with safety equipment and emergency protocols."
+    },
+    "authenticExperiences": {
+      "title": "Authentic Experiences",
+      "description": "Experience genuine Tajik culture, cuisine, and traditions with local families."
+    },
+    "readyForAdventure": "Ready for Your Adventure?",
+    "readyDescription": "Browse our carefully curated tours and start planning your journey to Tajikistan today.",
+    "viewAllTours": "View All Tours"
+  },
+  "tours": {
+    "title": "Our Tours",
+    "description": "Discover amazing adventures across Tajikistan. From mountain trekking to cultural experiences.",
+    "allTours": "All Tours",
+    "noToursInCategory": "No tours found in this category",
+    "noTours": "No tours available",
+    "viewDetails": "View Details",
+    "duration": "Duration",
+    "price": "Price",
+    "perPerson": "per person",
+    "category": "Category",
+    "backToTours": "Back to Tours"
+  },
+  "booking": {
+    "bookTour": "Book This Tour",
+    "bookingTitle": "Book: {{tourTitle}}",
+    "fullName": "Full Name",
+    "emailAddress": "Email Address",
+    "preferredDate": "Preferred Date",
+    "numberOfPeople": "Number of People",
+    "submitBooking": "Submit Booking Request",
+    "submitting": "Submitting...",
+    "successMessage": "Booking request submitted successfully! We will contact you soon.",
+    "errorMessage": "Failed to submit booking request. Please try again.",
+    "bookingNote": "This is a booking request. We will review your request and contact you within 24 hours to confirm availability and arrange payment.",
+    "enterFullName": "Enter your full name",
+    "enterEmail": "Enter your email",
+    "note": "Note"
+  },
+  "admin": {
+    "login": {
+      "title": "Admin Login",
+      "subtitle": "Enter the admin password to access the dashboard",
+      "password": "Admin password",
+      "signIn": "Sign in",
+      "invalidPassword": "Invalid password",
+      "demoPassword": "Demo password: {{password}}"
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "logout": "Logout",
+      "manageTours": "Manage Tours",
+      "bookingRequests": "Booking Requests",
+      "reviews": "Reviews"
+    },
+    "tours": {
+      "addNewTour": "Add New Tour",
+      "editTour": "Edit Tour",
+      "tourManagement": "Tour Management",
+      "managementDescription": "Manage your tour listings here.",
+      "comingSoon": "Tour management interface coming soon. Use the \"Add New Tour\" button to create tours.",
+      "createTour": "Create Tour",
+      "updateTour": "Update Tour",
+      "creating": "Creating...",
+      "updating": "Updating...",
+      "tourCreated": "Tour created successfully!",
+      "tourUpdated": "Tour updated successfully!",
+      "failedToSave": "Failed to save tour. Please try again."
+    },
+    "bookings": {
+      "title": "Booking Requests ({{count}})",
+      "noBookings": "No booking requests yet",
+      "customer": "Customer",
+      "tour": "Tour",
+      "details": "Details",
+      "submitted": "Submitted",
+      "actions": "Actions",
+      "email": "Email",
+      "copyDetails": "Copy Details",
+      "bookingDetailsCopied": "Booking details copied to clipboard!",
+      "date": "Date",
+      "people": "People"
+    },
+    "reviews": {
+      "pending": "Pending Reviews",
+      "approved": "Approved Reviews",
+      "noPending": "No pending reviews",
+      "noApproved": "No approved reviews yet",
+      "approve": "Approve",
+      "hide": "Hide",
+      "approving": "Approving...",
+      "hiding": "Hiding...",
+      "showingFirst": "Showing first {{count}} of {{total}} approved reviews"
+    }
+  },
+  "form": {
+    "englishContent": "English Content",
+    "russianContent": "Russian Content",
+    "tajikContent": "Tajik Content",
+    "titleEn": "Title (English)",
+    "titleRu": "Title (Russian)",
+    "titleTj": "Title (Tajik)",
+    "descriptionEn": "Description (English)",
+    "descriptionRu": "Description (Russian)",
+    "descriptionTj": "Description (Tajik)",
+    "enterTitleEn": "Enter tour title in English",
+    "enterTitleRu": "Введите название тура на русском",
+    "enterTitleTj": "Номи сафарро ба тоҷикӣ ворид кунед",
+    "enterDescriptionEn": "Enter detailed description in English",
+    "enterDescriptionRu": "Введите подробное описание на русском языке",
+    "enterDescriptionTj": "Тафсилоти муфассалро ба тоҷикӣ ворид кунед",
+    "duration": "Duration",
+    "price": "Price",
+    "category": "Category",
+    "selectCategory": "Select a category",
+    "durationPlaceholder": "e.g., 5 days, 1 week",
+    "pricePlaceholder": "e.g., $500, $1,200"
+  },
+  "languages": {
+    "english": "English",
+    "russian": "Русский",
+    "tajik": "Тоҷикӣ"
+  }
+}

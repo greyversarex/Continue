@@ -1,24 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Home: React.FC = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h1 className="text-5xl font-bold mb-6">
-            Explore Magnificent Tajikistan
+            {t('home.heroTitle')}
           </h1>
           <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Discover breathtaking mountains, ancient Silk Road cities, and warm hospitality 
-            in the heart of Central Asia. Join us for unforgettable adventures in Tajikistan.
+            {t('home.heroDescription')}
           </p>
           <Link
             to="/tours"
             className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors"
           >
-            Explore Our Tours
+            {t('home.exploreTours')}
           </Link>
         </div>
       </section>

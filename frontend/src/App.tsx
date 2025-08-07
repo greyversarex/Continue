@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
 
-// Simple test component first to isolate React issues
-const TestHome: React.FC = () => {
+// Simple component without hooks to test basic React functionality
+const SimpleComponent: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
@@ -22,11 +22,11 @@ const TestHome: React.FC = () => {
             Welcome to Tajik Trails
           </h2>
           <p className="text-gray-600 mb-6">
-            Testing React components - routing will be enabled next.
+            Testing basic React without hooks...
           </p>
           <div className="bg-white rounded-lg shadow p-6">
             <p className="text-gray-800">
-              If you can see this page, React is working correctly!
+              If you can see this page without errors, React is working!
             </p>
           </div>
         </div>
@@ -38,7 +38,7 @@ const TestHome: React.FC = () => {
 function App() {
   return (
     <div className="App">
-      <TestHome />
+      <SimpleComponent />
     </div>
   );
 }
