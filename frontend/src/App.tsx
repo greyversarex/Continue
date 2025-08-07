@@ -170,10 +170,7 @@ const App: React.FC = () => {
       {/* Категории туров */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Категории туров</h2>
-            <a href="#" className="text-blue-600 hover:underline font-medium">Смотреть все &gt;</a>
-          </div>
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Категории туров</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {categories.slice(0, 6).map((category, index) => (
@@ -274,7 +271,12 @@ const App: React.FC = () => {
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
                     {tour.title}
                   </h3>
-                  <div className="text-lg font-bold">от {tour.price}</div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-lg font-bold">от {tour.price}</div>
+                    <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                      Забронировать
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -339,9 +341,8 @@ const App: React.FC = () => {
               <div key={button.id} className="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
                 <button
                   onClick={() => setActiveAccordion(activeAccordion === button.id ? null : button.id)}
-                  className={`w-full p-6 text-left bg-gray-800 hover:bg-gray-700 text-white font-semibold flex justify-between items-center transition-colors duration-200 ${
-                    activeAccordion === button.id ? 'bg-gray-700' : ''
-                  }`}
+                  className={`w-full p-6 text-left hover:opacity-90 text-white font-semibold flex justify-between items-center transition-colors duration-200`}
+                  style={{ backgroundColor: '#3E3E3E' }}
                 >
                   <span className="text-lg">{button.title}</span>
                   <svg
@@ -463,54 +464,54 @@ const App: React.FC = () => {
       </section>
 
       {/* Футер */}
-      <footer className="bg-gray-800 text-white py-8">
+      <footer className="text-white py-12" style={{ backgroundColor: '#3E3E3E' }}>
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Компания */}
-            <div className="flex flex-col">
-              <h3 className="text-white font-semibold mb-4">Компания:</h3>
-              <ul className="space-y-2 text-sm text-gray-300 flex-1">
-                <li><a href="#" className="hover:text-white">О нас</a></li>
-                <li><a href="#" className="hover:text-white">Тур-агентам</a></li>
-                <li><a href="#" className="hover:text-white">Партнёры</a></li>
-                <li><a href="#" className="hover:text-white">Инвестиционные Проекты</a></li>
-                <li><a href="#" className="hover:text-white">Как бронировать туры?</a></li>
-                <li><a href="#" className="hover:text-white">Каталог туров</a></li>
-                <li><a href="#" className="hover:text-white">Календарь групповых туров</a></li>
+            <div className="space-y-4">
+              <h3 className="text-white font-semibold text-lg mb-6">Компания:</h3>
+              <ul className="space-y-3 text-sm text-gray-300">
+                <li><a href="#" className="hover:text-white transition-colors">О нас</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Тур-агентам</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Партнёры</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Инвестиционные Проекты</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Как бронировать туры?</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Каталог туров</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Календарь групповых туров</a></li>
               </ul>
             </div>
 
             {/* Социальные страницы */}
-            <div className="flex flex-col">
-              <h3 className="text-white font-semibold mb-4">Социальные страницы:</h3>
-              <div className="flex space-x-3 mb-4">
-                <a href="#" className="text-gray-300 hover:text-white">
+            <div className="space-y-4">
+              <h3 className="text-white font-semibold text-lg mb-6">Социальные страницы:</h3>
+              <div className="flex space-x-4 mb-6">
+                <a href="#" className="text-gray-300 hover:text-white transition-colors p-2 rounded-full hover:bg-gray-700">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
                   </svg>
                 </a>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href="#" className="text-gray-300 hover:text-white transition-colors p-2 rounded-full hover:bg-gray-700">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.40z"/>
                   </svg>
                 </a>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href="#" className="text-gray-300 hover:text-white transition-colors p-2 rounded-full hover:bg-gray-700">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
                   </svg>
                 </a>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href="#" className="text-gray-300 hover:text-white transition-colors p-2 rounded-full hover:bg-gray-700">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M13.6 21c-.1.1-.2.2-.3.2-.1.1-.3.1-.4.1s-.3 0-.4-.1c-.1-.1-.2-.1-.3-.2L1.2 9.9c-.2-.2-.2-.5 0-.7.2-.2.5-.2.7 0L12 19.5l10.1-10.3c.2-.2.5-.2.7 0 .2.2.2.5 0 .7L13.6 21z"/>
                   </svg>
                 </a>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href="#" className="text-gray-300 hover:text-white transition-colors p-2 rounded-full hover:bg-gray-700">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm5.568 8.16c-.169 1.858-.896 3.433-2.177 4.72-1.286 1.29-2.844 2.069-4.67 2.353-.436.068-.875.103-1.309.103-.295 0-.586-.014-.875-.042-.936-.091-1.85-.3-2.732-.627-.3-.111-.592-.238-.875-.38-.3-.152-.592-.32-.873-.506-.565-.374-1.098-.802-1.59-1.286-.246-.242-.48-.497-.702-.763-.11-.132-.217-.267-.318-.406-.202-.278-.39-.567-.562-.87-.172-.303-.33-.617-.473-.943-.286-.651-.49-1.336-.606-2.049-.058-.357-.088-.72-.088-1.087 0-.413.034-.822.103-1.226.137-1.821.867-3.415 2.177-4.746 1.31-1.33 2.89-2.069 4.746-2.177.404-.023.813-.035 1.226-.035.367 0 .73.012 1.087.035.713.046 1.398.177 2.049.39.326.107.64.232.943.377.303.145.594.307.87.495.139.094.274.194.406.301.266.215.521.446.763.692.484.492.912 1.025 1.286 1.59.187.281.355.573.506.873.142.283.269.575.38.875.222.6.375 1.229.453 1.883.039.327.058.659.058.994 0 .367-.012.73-.035 1.087-.046.713-.144 1.398-.32 2.049z"/>
                   </svg>
                 </a>
               </div>
-              <div className="text-sm text-gray-400 flex-1">
+              <div className="text-sm text-gray-400 leading-relaxed">
                 <p>Лицензия на туристической</p>
                 <p>деятельности ГД МТД РТ № 053, от</p>
                 <p>25.10.2022 г.</p>
@@ -518,16 +519,17 @@ const App: React.FC = () => {
             </div>
 
             {/* Контакты */}
-            <div className="flex flex-col">
-              <h3 className="text-white font-semibold mb-4">Контакты:</h3>
-              <div className="space-y-1 text-sm text-gray-300 flex-1">
+            <div className="space-y-4">
+              <h3 className="text-white font-semibold text-lg mb-6">Контакты:</h3>
+              <div className="space-y-2 text-sm text-gray-300 leading-relaxed">
                 <p>+992 44-625-7575; +992 93-126-1134</p>
                 <p>+992 00-110-0087; +992 88-235-3434</p>
-                <p>info@bunyodtourtj</p>
-                <p>Публичная Оферта-Договор</p>
-                <p>Правила оплаты и возврата</p>
-                <p>средств</p>
-                <p>Политика конфиденциальности</p>
+                <p className="text-blue-400">info@bunyodtourtj</p>
+                <div className="pt-2 space-y-1">
+                  <p><a href="#" className="hover:text-white transition-colors">Публичная Оферта-Договор</a></p>
+                  <p><a href="#" className="hover:text-white transition-colors">Правила оплаты и возврата средств</a></p>
+                  <p><a href="#" className="hover:text-white transition-colors">Политика конфиденциальности</a></p>
+                </div>
               </div>
             </div>
           </div>
