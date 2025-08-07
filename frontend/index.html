@@ -222,51 +222,418 @@
         </div>
     </section>
 
-    <!-- Интерактивные кнопки -->
+    <!-- Категории туров -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Категории туров</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Категория 1 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-400 to-blue-600"></div>
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-white font-bold text-xl">Приключения</h3>
+                            <p class="text-white text-sm opacity-90">12 туров</p>
+                        </div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-500">12 доступных туров</span>
+                            <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Категория 2 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-green-400 to-green-600"></div>
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-white font-bold text-xl">Культурные</h3>
+                            <p class="text-white text-sm opacity-90">8 туров</p>
+                        </div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-500">8 доступных туров</span>
+                            <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Категория 3 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-orange-400 to-orange-600"></div>
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-white font-bold text-xl">Природа</h3>
+                            <p class="text-white text-sm opacity-90">15 туров</p>
+                        </div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-500">15 доступных туров</span>
+                            <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Гибкость планирования -->
+    <section class="py-20 bg-green-50">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-6 text-gray-900">
+                Планируйте гибко
+            </h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Используйте функцию "Забронировать сейчас и оплатить позже", чтобы забронировать активности без предварительной оплаты.
+            </p>
+        </div>
+    </section>
+
+    <!-- Рекомендуемые туры с 4 турами -->
     <section class="py-16 bg-white">
-        <div class="max-w-4xl mx-auto px-6">
+        <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
-                Планируйте свое путешествие
+                Рекомендуемые туры по Таджикистану
             </h2>
             
-            <div class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Тур 1 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-400 to-cyan-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Памирские горы, Таджикистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.8</span>
+                            <span class="text-gray-500 ml-1">(234)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Полный день: Памирское шоссе, горы и озёра
+                        </h3>
+                        <div class="flex items-center justify-between">
+                            <div class="text-lg font-bold">от $120</div>
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 2 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-green-400 to-emerald-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Душанбе, Таджикистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.6</span>
+                            <span class="text-gray-500 ml-1">(187)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Культурный тур по Душанбе с посещением музеев
+                        </h3>
+                        <div class="flex items-center justify-between">
+                            <div class="text-lg font-bold">от $65</div>
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 3 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-purple-400 to-indigo-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Фанские горы, Таджикистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.9</span>
+                            <span class="text-gray-500 ml-1">(412)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Треккинг к озеру Искандеркуль
+                        </h3>
+                        <div class="flex items-center justify-between">
+                            <div class="text-lg font-bold">от $95</div>
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 4 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-orange-400 to-red-500"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Северный Таджикистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.7</span>
+                            <span class="text-gray-500 ml-1">(298)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Шёлковый путь: древние города и крепости
+                        </h3>
+                        <div class="flex items-center justify-between">
+                            <div class="text-lg font-bold">от $150</div>
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Популярные направления -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+                Популярные направления
+            </h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="relative group cursor-pointer">
+                    <div class="relative h-32 rounded-lg overflow-hidden">
+                        <div class="w-full h-full bg-gradient-to-br from-red-400 to-pink-600"></div>
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-white font-bold text-lg">Душанбе</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group cursor-pointer">
+                    <div class="relative h-32 rounded-lg overflow-hidden">
+                        <div class="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-600"></div>
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-white font-bold text-lg">Памир</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group cursor-pointer">
+                    <div class="relative h-32 rounded-lg overflow-hidden">
+                        <div class="w-full h-full bg-gradient-to-br from-green-400 to-emerald-600"></div>
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-white font-bold text-lg">Искандеркуль</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group cursor-pointer">
+                    <div class="relative h-32 rounded-lg overflow-hidden">
+                        <div class="w-full h-full bg-gradient-to-br from-yellow-400 to-orange-600"></div>
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-white font-bold text-lg">Худжанд</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group cursor-pointer">
+                    <div class="relative h-32 rounded-lg overflow-hidden">
+                        <div class="w-full h-full bg-gradient-to-br from-purple-400 to-violet-600"></div>
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-white font-bold text-lg">Хорог</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Бесплатная отмена -->
+    <section class="py-20 bg-green-50">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-6 text-gray-900">
+                Бесплатная отмена
+            </h2>
+            <p class="text-lg text-gray-600">
+                Получите полный возврат средств, если отмените бронирование за 24 часа до начала тура.
+            </p>
+        </div>
+    </section>
+
+    <!-- Интерактивные кнопки с функциональностью -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="space-y-4" id="accordion">
                 <!-- Кнопка 1 -->
-                <div class="expandable-button p-6 rounded-lg cursor-pointer" style="background-color: #3E3E3E;">
-                    <div class="flex items-center justify-between text-white">
-                        <h3 class="text-xl font-semibold">Когда лучше ехать в Таджикистан?</h3>
-                        <svg class="w-6 h-6 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                <div class="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                    <button class="w-full p-6 text-left hover:opacity-90 text-white font-semibold flex justify-between items-center transition-colors duration-200 accordion-button" style="background-color: #3E3E3E;" data-target="accordion1">
+                        <span class="text-lg">Особые отметки</span>
+                        <svg class="w-6 h-6 transition-transform duration-200 accordion-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
+                    </button>
+                    <div class="p-6 bg-white border-t border-gray-200 accordion-content" id="accordion1" style="display: none;">
+                        <div class="text-gray-700 leading-relaxed">
+                            <div class="space-y-3">
+                                <p class="flex items-start">
+                                    <span class="text-green-600 mr-2">•</span>
+                                    Все туры проводятся с лицензированными гидами
+                                </p>
+                                <p class="flex items-start">
+                                    <span class="text-green-600 mr-2">•</span>
+                                    Групповые туры до 15 человек для лучшего опыта
+                                </p>
+                                <p class="flex items-start">
+                                    <span class="text-green-600 mr-2">•</span>
+                                    Включена страховка для всех участников
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Кнопка 2 -->
-                <div class="expandable-button p-6 rounded-lg cursor-pointer" style="background-color: #3E3E3E;">
-                    <div class="flex items-center justify-between text-white">
-                        <h3 class="text-xl font-semibold">Какие документы нужны для поездки?</h3>
-                        <svg class="w-6 h-6 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                <div class="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                    <button class="w-full p-6 text-left hover:opacity-90 text-white font-semibold flex justify-between items-center transition-colors duration-200 accordion-button" style="background-color: #3E3E3E;" data-target="accordion2">
+                        <span class="text-lg">Правила оплаты и возврата средств</span>
+                        <svg class="w-6 h-6 transition-transform duration-200 accordion-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
+                    </button>
+                    <div class="p-6 bg-white border-t border-gray-200 accordion-content" id="accordion2" style="display: none;">
+                        <div class="text-gray-700 leading-relaxed">
+                            <div class="space-y-3">
+                                <p class="flex items-start">
+                                    <span class="text-blue-600 mr-2">•</span>
+                                    Полная оплата при бронировании
+                                </p>
+                                <p class="flex items-start">
+                                    <span class="text-blue-600 mr-2">•</span>
+                                    Возврат 100% за 24+ часа до тура
+                                </p>
+                                <p class="flex items-start">
+                                    <span class="text-blue-600 mr-2">•</span>
+                                    Частичный возврат за 12-24 часа до тура
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Кнопка 3 -->
-                <div class="expandable-button p-6 rounded-lg cursor-pointer" style="background-color: #3E3E3E;">
-                    <div class="flex items-center justify-between text-white">
-                        <h3 class="text-xl font-semibold">Что включено в стоимость тура?</h3>
-                        <svg class="w-6 h-6 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                <div class="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                    <button class="w-full p-6 text-left hover:opacity-90 text-white font-semibold flex justify-between items-center transition-colors duration-200 accordion-button" style="background-color: #3E3E3E;" data-target="accordion3">
+                        <span class="text-lg">Политика конфиденциальности</span>
+                        <svg class="w-6 h-6 transition-transform duration-200 accordion-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
+                    </button>
+                    <div class="p-6 bg-white border-t border-gray-200 accordion-content" id="accordion3" style="display: none;">
+                        <div class="text-gray-700 leading-relaxed">
+                            <div class="space-y-3">
+                                <p class="flex items-start">
+                                    <span class="text-purple-600 mr-2">•</span>
+                                    Мы защищаем ваши персональные данные
+                                </p>
+                                <p class="flex items-start">
+                                    <span class="text-purple-600 mr-2">•</span>
+                                    Информация используется только для бронирования
+                                </p>
+                                <p class="flex items-start">
+                                    <span class="text-purple-600 mr-2">•</span>
+                                    Данные не передаются третьим лицам
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Кнопка 4 -->
-                <div class="expandable-button p-6 rounded-lg cursor-pointer" style="background-color: #3E3E3E;">
-                    <div class="flex items-center justify-between text-white">
-                        <h3 class="text-xl font-semibold">Как забронировать тур?</h3>
-                        <svg class="w-6 h-6 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                <div class="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                    <button class="w-full p-6 text-left hover:opacity-90 text-white font-semibold flex justify-between items-center transition-colors duration-200 accordion-button" style="background-color: #3E3E3E;" data-target="accordion4">
+                        <span class="text-lg">Дополнительная информация</span>
+                        <svg class="w-6 h-6 transition-transform duration-200 accordion-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
+                    </button>
+                    <div class="p-6 bg-white border-t border-gray-200 accordion-content" id="accordion4" style="display: none;">
+                        <div class="text-center py-4">
+                            <p class="text-gray-500 italic">Содержимое будет добавлено позже.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -352,5 +719,42 @@
             </div>
         </div>
     </footer>
+
+    <!-- JavaScript для интерактивности -->
+    <script>
+        // Функциональность аккордеона
+        document.addEventListener('DOMContentLoaded', function() {
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+            
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const targetContent = document.getElementById(targetId);
+                    const arrow = this.querySelector('.accordion-arrow');
+                    
+                    // Закрыть все другие аккордеоны
+                    accordionButtons.forEach(otherButton => {
+                        if (otherButton !== this) {
+                            const otherId = otherButton.getAttribute('data-target');
+                            const otherContent = document.getElementById(otherId);
+                            const otherArrow = otherButton.querySelector('.accordion-arrow');
+                            
+                            otherContent.style.display = 'none';
+                            otherArrow.classList.remove('transform', 'rotate-180');
+                        }
+                    });
+                    
+                    // Переключить текущий аккордеон
+                    if (targetContent.style.display === 'none' || targetContent.style.display === '') {
+                        targetContent.style.display = 'block';
+                        arrow.classList.add('transform', 'rotate-180');
+                    } else {
+                        targetContent.style.display = 'none';
+                        arrow.classList.remove('transform', 'rotate-180');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
