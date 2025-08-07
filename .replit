@@ -38,9 +38,6 @@ waitForPort = 5000
 name = "Frontend React App"
 author = "agent"
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd frontend && rm -rf node_modules package-lock.json && npm install && npm start"
@@ -54,9 +51,6 @@ author = "agent"
 task = "shell.exec"
 args = "cd frontend && python3 -m http.server 5000"
 waitForPort = 5000
-
-[workflows.workflow.metadata]
-outputType = "webview"
 
 [[ports]]
 localPort = 3000

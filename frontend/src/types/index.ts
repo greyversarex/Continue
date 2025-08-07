@@ -8,6 +8,9 @@ export interface MultilingualContent {
 export interface Category {
   id: number;
   name: MultilingualContent;
+  _count?: {
+    tours: number;
+  };
 }
 
 // Tour interface matching the backend API response

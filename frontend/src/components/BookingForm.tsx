@@ -1,20 +1,38 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { ApiResponse } from '../types';
+import { ApiResponse, Tour } from '../types';
 
 interface BookingFormProps {
-  tourId: number;
-  tourTitle: string;
+  tour?: Tour;
+  tourId?: number;
+  tourTitle?: string;
+  selectedDate?: string;
+  travelers?: {
+    adults: number;
+    children: number;
+  };
   onSuccess?: () => void;
+  onClose?: () => void;
 }
 
-const BookingForm: React.FC<BookingFormProps> = ({ tourId, tourTitle, onSuccess }) => {
+const BookingForm: React.FC<BookingFormProps> = ({ 
+  tour, 
+  tourId, 
+  tourTitle, 
+  selectedDate = '', 
+  travelers = { adults: 2, children: 0 },
+  onSuccess,
+  onClose 
+}) => {
   const [formData, setFormData] = useState({
     customerName: '',
     customerEmail: '',
-    preferredDate: '',
-    numberOfPeople: 1
+    preferredDate: selectedDate,
+    numberOfPeople: travelers.adults + travelers.children
   });
+  
+  const currentTourId = tourId || tour?.id;
+  const currentTourTitle = tourTitle || (tour?.title.en) || 'Tour';
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
@@ -34,7 +52,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ tourId, tourTitle, onSuccess 
     try {
       const response = await axios.post<ApiResponse>('http://localhost:5000/api/booking-requests', {
         ...formData,
-        tourId
+        tourId: currentTourId
       });
 
       if (response.data.success) {
@@ -45,9 +63,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ tourId, tourTitle, onSuccess 
         setFormData({
           customerName: '',
           customerEmail: '',
-          preferredDate: '',
-          numberOfPeople: 1
+          preferredDate: selectedDate,
+          numberOfPeople: travelers.adults + travelers.children
         });
+        if (onClose) {
+          setTimeout(() => onClose(), 2000);
+        }
         
         // Call success callback after a short delay
         setTimeout(() => {
@@ -70,7 +91,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ tourId, tourTitle, onSuccess 
   return (
     <div className="bg-white rounded-lg p-6">
       <h3 className="text-xl font-bold text-gray-800 mb-4">
-        Book: {tourTitle}
+        Book: {currentTourTitle}
       </h3>
 
       {message && (

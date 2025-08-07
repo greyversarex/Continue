@@ -21,33 +21,88 @@
   "navigation": {
     "home": "Home",
     "tours": "Tours",
+    "about": "About",
+    "contact": "Contact",
     "admin": "Admin",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "book_now": "Book Now"
   },
   "header": {
     "title": "Tajik Trails",
     "subtitle": "Discover the Beauty of Tajikistan"
   },
   "home": {
-    "heroTitle": "Explore Magnificent Tajikistan",
-    "heroDescription": "Discover breathtaking mountains, ancient Silk Road cities, and warm hospitality in the heart of Central Asia. Join us for unforgettable adventures in Tajikistan.",
-    "exploreTours": "Explore Our Tours",
-    "whyChooseUs": "Why Choose Tajik Trails?",
-    "expertGuides": {
-      "title": "Expert Local Guides",
-      "description": "Our experienced guides know every trail and story of the magnificent Pamir Mountains."
+    "hero": {
+      "title": "Discover Tajikistan",
+      "subtitle": "Experience breathtaking mountains, ancient culture, and unforgettable adventures"
     },
-    "safetyFirst": {
-      "title": "Safety First",
-      "description": "All our tours are carefully planned with safety equipment and emergency protocols."
+    "search": {
+      "placeholder": "Where do you want to explore in Tajikistan?",
+      "button": "Search"
     },
-    "authenticExperiences": {
-      "title": "Authentic Experiences",
-      "description": "Experience genuine Tajik culture, cuisine, and traditions with local families."
+    "stats": {
+      "tours": "Unique Tours",
+      "support": "Customer Support",
+      "cancellation": "Free Cancellation",
+      "rating": "Average Rating"
     },
-    "readyForAdventure": "Ready for Your Adventure?",
-    "readyDescription": "Browse our carefully curated tours and start planning your journey to Tajikistan today.",
-    "viewAllTours": "View All Tours"
+    "featured": {
+      "title": "Featured Tours",
+      "badge": "Best Seller",
+      "per_person": "per person"
+    },
+    "categories": {
+      "title": "Explore by Category",
+      "tours": "tours available"
+    },
+    "cta": {
+      "title": "Ready for Your Tajikistan Adventure?",
+      "subtitle": "Book your dream tour today and discover the hidden gems of Central Asia",
+      "button": "View All Tours"
+    }
+  },
+  "catalog": {
+    "search": {
+      "placeholder": "Search tours in Tajikistan...",
+      "button": "Search"
+    },
+    "filters": {
+      "title": "Filters",
+      "clear": "Clear all",
+      "category": "Category",
+      "all_categories": "All Categories",
+      "price": "Price Range",
+      "popular": "Popular Filters",
+      "free_cancellation": "Free Cancellation",
+      "skip_line": "Skip the Line",
+      "private_tour": "Private Tours",
+      "small_group": "Small Group"
+    },
+    "results": {
+      "search_title": "Search Results for \"{{query}}\"",
+      "all_title": "All Tajikistan Tours",
+      "count": "tours found"
+    },
+    "sort": {
+      "label": "Sort by:",
+      "recommended": "Recommended",
+      "price_low": "Price: Low to High",
+      "price_high": "Price: High to Low",
+      "duration": "Duration"
+    },
+    "no_results": {
+      "title": "No tours found",
+      "subtitle": "Try adjusting your search or filter criteria",
+      "clear": "Clear Filters"
+    }
+  },
+  "tour": {
+    "features": {
+      "free_cancellation": "Free Cancellation",
+      "skip_line": "Skip the Line"
+    },
+    "per_person": "per person",
+    "book_now": "Book Now"
   },
   "tours": {
     "title": "Our Tours",
