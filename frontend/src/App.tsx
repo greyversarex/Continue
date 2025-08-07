@@ -58,7 +58,7 @@ const App: React.FC = () => {
       </header>
 
       {/* Главный баннер */}
-      <section className="relative h-screen">
+      <section className="relative h-[70vh]">
         {/* Фоновое изображение */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -72,10 +72,10 @@ const App: React.FC = () => {
         
         {/* Содержимое баннера */}
         <div className="relative h-full flex flex-col justify-center items-center text-center text-white px-4">
-          <h1 className="text-6xl font-bold mb-4 leading-tight">
+          <h1 className="text-5xl font-bold mb-3 leading-tight">
             Bunyod-Tour: Откройте для себя Таджикистан
           </h1>
-          <p className="text-xl mb-12 font-light">
+          <p className="text-lg mb-8 font-light">
             Погрузитесь в мир удивительных приключений
           </p>
           
