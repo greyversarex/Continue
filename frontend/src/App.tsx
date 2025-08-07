@@ -105,11 +105,11 @@ const App: React.FC = () => {
           </h2>
           
           {/* Фильтры */}
-          <div className="rounded-lg p-6 mb-12" style={{ backgroundColor: '#3E3E3E' }}>
+          <div className="bg-gray-50 rounded-lg p-6 mb-12">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Категория */}
               <div>
-                <label className="block text-sm font-medium text-white mb-2">Категория тура</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Категория тура</label>
                 <select 
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
@@ -124,7 +124,7 @@ const App: React.FC = () => {
               
               {/* Продолжительность */}
               <div>
-                <label className="block text-sm font-medium text-white mb-2">Продолжительность</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Продолжительность</label>
                 <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                   <option value="">Любая</option>
                   <option value="1">1 день</option>
@@ -136,7 +136,7 @@ const App: React.FC = () => {
               
               {/* Цена */}
               <div>
-                <label className="block text-sm font-medium text-white mb-2">Цена (USD)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Цена (USD)</label>
                 <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                   <option value="">Любая цена</option>
                   <option value="0-100">$0 - $100</option>
@@ -148,7 +148,7 @@ const App: React.FC = () => {
               
               {/* Уровень сложности */}
               <div>
-                <label className="block text-sm font-medium text-white mb-2">Сложность</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Сложность</label>
                 <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
                   <option value="">Любая</option>
                   <option value="easy">Легкая</option>
@@ -159,7 +159,7 @@ const App: React.FC = () => {
             </div>
             
             <div className="flex justify-center mt-6">
-              <button className="bg-white hover:bg-gray-100 text-gray-800 px-8 py-3 rounded-lg font-semibold transition-colors">
+              <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold">
                 Применить фильтры
               </button>
             </div>
