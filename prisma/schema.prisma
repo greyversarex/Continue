@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String // JSON field for multilingual content: {"en": "Trekking", "ru": "Треккинг"}
+  tours Tour[]
+
+  @@map("categories")
+}
+
+model Tour {
+  id          Int      @id @default(autoincrement())
+  title       String   // JSON field for multilingual content
+  description String   // JSON field for multilingual content
+  duration    String
+  price       String
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tours")
+}
