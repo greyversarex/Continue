@@ -14,6 +14,7 @@ A complete TypeScript Express backend API for Tajik Trails tour agency specializ
 - **Data Validation**: Comprehensive validation for all input fields including multilingual content
 - **Admin vs Public Endpoints**: Proper separation of admin management and public user functionality
 - **Email Notifications**: Integrated Nodemailer for automated booking confirmations and admin notifications
+- **Non-Critical Email Service**: Updated email system to handle authentication failures gracefully without breaking booking flow
 - **Internationalization (i18n)**: Added trilingual support (English/Russian/Tajik) using react-i18next with language switcher component
 
 ## User Preferences

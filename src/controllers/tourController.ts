@@ -588,14 +588,16 @@ export class BookingRequestController {
           tourTitle
         };
 
-        // Send notifications (don't wait for them to complete to avoid delaying the response)
-        sendAdminNotification(emailData).catch(emailError => {
-          console.error('Failed to send admin notification email:', emailError);
-        });
+        // Send notifications (non-critical - don't fail the booking if emails fail)
+        const adminEmailResult = await sendAdminNotification(emailData);
+        if (!adminEmailResult.success) {
+          console.log('📧 Admin notification skipped:', adminEmailResult.reason);
+        }
 
-        sendCustomerConfirmation(emailData).catch(emailError => {
-          console.error('Failed to send customer confirmation email:', emailError);
-        });
+        const customerEmailResult = await sendCustomerConfirmation(emailData);
+        if (!customerEmailResult.success) {
+          console.log('📧 Customer confirmation skipped:', customerEmailResult.reason);
+        }
         
         console.log('Email notifications initiated for booking request:', bookingRequest.id);
       } catch (emailError) {

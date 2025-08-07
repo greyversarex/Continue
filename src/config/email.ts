@@ -1,14 +1,24 @@
 import nodemailer from 'nodemailer';
 
-// Email configuration
+// Email configuration with error handling
 const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: 'gmail', // You can change this to other services like outlook, yahoo, etc.
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD // Use App Password for Gmail
+  try {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+      console.log('📧 Email credentials not configured - email notifications will be disabled');
+      return null;
     }
-  });
+
+    return nodemailer.createTransport({
+      service: 'gmail', // You can change this to other services like outlook, yahoo, etc.
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD // Use App Password for Gmail
+      }
+    });
+  } catch (error) {
+    console.log('📧 Failed to create email transporter:', error instanceof Error ? error.message : String(error));
+    return null;
+  }
 };
 
 export const sendAdminNotification = async (bookingData: {
@@ -19,6 +29,16 @@ export const sendAdminNotification = async (bookingData: {
   tourTitle: string;
 }) => {
   const transporter = createTransporter();
+  
+  if (!transporter) {
+    console.log('📧 Email service unavailable - skipping admin notification email');
+    return { success: false, reason: 'Email service not configured' };
+  }
+
+  if (!process.env.ADMIN_EMAIL && !process.env.EMAIL_USER) {
+    console.log('📧 Admin email not configured - skipping admin notification');
+    return { success: false, reason: 'Admin email not configured' };
+  }
   
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -58,10 +78,12 @@ export const sendAdminNotification = async (bookingData: {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Admin notification email sent successfully');
+    console.log('📧 Admin notification email sent successfully to:', process.env.ADMIN_EMAIL || process.env.EMAIL_USER);
+    return { success: true };
   } catch (error) {
-    console.error('Error sending admin notification:', error);
-    throw error;
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.log('📧 Failed to send admin notification email:', errorMessage);
+    return { success: false, reason: errorMessage };
   }
 };
 
@@ -73,6 +95,11 @@ export const sendCustomerConfirmation = async (bookingData: {
   tourTitle: string;
 }) => {
   const transporter = createTransporter();
+  
+  if (!transporter) {
+    console.log('📧 Email service unavailable - skipping customer confirmation email');
+    return { success: false, reason: 'Email service not configured' };
+  }
   
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -140,10 +167,12 @@ export const sendCustomerConfirmation = async (bookingData: {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Customer confirmation email sent successfully');
+    console.log('📧 Customer confirmation email sent successfully to:', bookingData.email);
+    return { success: true };
   } catch (error) {
-    console.error('Error sending customer confirmation:', error);
-    throw error;
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.log('📧 Failed to send customer confirmation email:', errorMessage);
+    return { success: false, reason: errorMessage };
   }
 };
 
