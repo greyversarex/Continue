@@ -24,10 +24,12 @@ const App: React.FC = () => {
             {/* Логотип */}
             <div className="flex items-center space-x-6">
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-green-500 rounded-lg flex items-center justify-center mr-3">
-                  <span className="text-white font-bold text-sm">ТТ</span>
-                </div>
-                <span className="text-xl font-bold text-gray-900">Tajik Trails</span>
+                <img 
+                  src="/logo-bunyod-tour.png" 
+                  alt="Bunyod-Tour" 
+                  className="w-12 h-12 rounded-full mr-3"
+                />
+                <span className="text-xl font-bold text-gray-900">Bunyod-Tour</span>
               </div>
               <div className="flex items-center space-x-1 text-gray-700 hover:text-gray-900 cursor-pointer">
                 <span className="font-medium">Открыть</span>
@@ -70,7 +72,7 @@ const App: React.FC = () => {
         {/* Содержимое баннера */}
         <div className="relative h-full flex flex-col justify-center items-center text-center text-white px-4">
           <h1 className="text-6xl font-bold mb-4 leading-tight">
-            Откройте для себя Таджикистан
+            Bunyod-Tour: Откройте для себя Таджикистан
           </h1>
           <p className="text-xl mb-12 font-light">
             Погрузитесь в мир удивительных приключений

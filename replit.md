@@ -1,8 +1,8 @@
-# Tajik Trails Backend API
+# Bunyod-Tour Backend API
 
 ## Overview
 
-A complete TypeScript Express backend API for Tajik Trails tour agency specializing in Tajikistan tourism. The system provides multilingual tour and category management with support for English and Russian content, along with booking request handling and review management with moderation capabilities. Built with modern web technologies including Express.js, Prisma ORM, and SQLite database, the API follows RESTful design principles and emphasizes type safety throughout the codebase.
+A complete TypeScript Express backend API for Bunyod-Tour tour agency specializing in Tajikistan tourism. The system provides multilingual tour and category management with support for English and Russian content, along with booking request handling and review management with moderation capabilities. Built with modern web technologies including Express.js, Prisma ORM, and SQLite database, the API follows RESTful design principles and emphasizes type safety throughout the codebase.
 
 ## Recent Changes (August 2025)
 
