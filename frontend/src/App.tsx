@@ -327,25 +327,25 @@ const App: React.FC = () => {
       </section>
 
       {/* Раскрывающиеся кнопки */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-100">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="space-y-4">
             {[
               { id: 'special', title: 'Особые отметки' },
               { id: 'payment', title: 'Правила оплаты и возврата средств' },
               { id: 'privacy', title: 'Политика конфиденциальности' },
-              { id: 'button4', title: '' }
+              { id: 'button4', title: 'Кнопка 4' }
             ].map((button, index) => (
-              <div key={button.id} className="border border-gray-200 rounded-lg overflow-hidden">
+              <div key={button.id} className="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
                 <button
                   onClick={() => setActiveAccordion(activeAccordion === button.id ? null : button.id)}
-                  className={`w-full p-4 text-left bg-orange-400 hover:bg-orange-500 text-white font-semibold flex justify-between items-center ${
-                    activeAccordion === button.id ? 'bg-orange-500' : ''
+                  className={`w-full p-6 text-left bg-gray-800 hover:bg-gray-700 text-white font-semibold flex justify-between items-center transition-colors duration-200 ${
+                    activeAccordion === button.id ? 'bg-gray-700' : ''
                   }`}
                 >
-                  <span>{button.title || `Кнопка ${index + 1}`}</span>
+                  <span className="text-lg">{button.title}</span>
                   <svg
-                    className={`w-5 h-5 transition-transform ${
+                    className={`w-6 h-6 transition-transform duration-200 ${
                       activeAccordion === button.id ? 'transform rotate-180' : ''
                     }`}
                     fill="none"
@@ -356,31 +356,60 @@ const App: React.FC = () => {
                   </svg>
                 </button>
                 {activeAccordion === button.id && (
-                  <div className="p-4 bg-white border-t">
-                    <div className="text-gray-600">
+                  <div className="p-6 bg-white border-t border-gray-200">
+                    <div className="text-gray-700 leading-relaxed">
                       {button.id === 'special' && (
-                        <div>
-                          <p className="mb-2">• Все туры проводятся с лицензированными гидами</p>
-                          <p className="mb-2">• Групповые туры до 15 человек для лучшего опыта</p>
-                          <p>• Включена страховка для всех участников</p>
+                        <div className="space-y-3">
+                          <p className="flex items-start">
+                            <span className="text-green-600 mr-2">•</span>
+                            Все туры проводятся с лицензированными гидами
+                          </p>
+                          <p className="flex items-start">
+                            <span className="text-green-600 mr-2">•</span>
+                            Групповые туры до 15 человек для лучшего опыта
+                          </p>
+                          <p className="flex items-start">
+                            <span className="text-green-600 mr-2">•</span>
+                            Включена страховка для всех участников
+                          </p>
                         </div>
                       )}
                       {button.id === 'payment' && (
-                        <div>
-                          <p className="mb-2">• Полная оплата при бронировании</p>
-                          <p className="mb-2">• Возврат 100% за 24+ часа до тура</p>
-                          <p>• Частичный возврат за 12-24 часа до тура</p>
+                        <div className="space-y-3">
+                          <p className="flex items-start">
+                            <span className="text-blue-600 mr-2">•</span>
+                            Полная оплата при бронировании
+                          </p>
+                          <p className="flex items-start">
+                            <span className="text-blue-600 mr-2">•</span>
+                            Возврат 100% за 24+ часа до тура
+                          </p>
+                          <p className="flex items-start">
+                            <span className="text-blue-600 mr-2">•</span>
+                            Частичный возврат за 12-24 часа до тура
+                          </p>
                         </div>
                       )}
                       {button.id === 'privacy' && (
-                        <div>
-                          <p className="mb-2">• Мы защищаем ваши персональные данные</p>
-                          <p className="mb-2">• Информация используется только для бронирования</p>
-                          <p>• Данные не передаются третьим лицам</p>
+                        <div className="space-y-3">
+                          <p className="flex items-start">
+                            <span className="text-purple-600 mr-2">•</span>
+                            Мы защищаем ваши персональные данные
+                          </p>
+                          <p className="flex items-start">
+                            <span className="text-purple-600 mr-2">•</span>
+                            Информация используется только для бронирования
+                          </p>
+                          <p className="flex items-start">
+                            <span className="text-purple-600 mr-2">•</span>
+                            Данные не передаются третьим лицам
+                          </p>
                         </div>
                       )}
                       {button.id === 'button4' && (
-                        <p>Содержимое будет добавлено позже.</p>
+                        <div className="text-center py-4">
+                          <p className="text-gray-500 italic">Содержимое будет добавлено позже.</p>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -436,11 +465,11 @@ const App: React.FC = () => {
       {/* Футер */}
       <footer className="bg-gray-800 text-white py-8">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Компания */}
-            <div>
+            <div className="flex flex-col">
               <h3 className="text-white font-semibold mb-4">Компания:</h3>
-              <ul className="space-y-2 text-sm text-gray-300">
+              <ul className="space-y-2 text-sm text-gray-300 flex-1">
                 <li><a href="#" className="hover:text-white">О нас</a></li>
                 <li><a href="#" className="hover:text-white">Тур-агентам</a></li>
                 <li><a href="#" className="hover:text-white">Партнёры</a></li>
@@ -452,7 +481,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Социальные страницы */}
-            <div>
+            <div className="flex flex-col">
               <h3 className="text-white font-semibold mb-4">Социальные страницы:</h3>
               <div className="flex space-x-3 mb-4">
                 <a href="#" className="text-gray-300 hover:text-white">
@@ -481,7 +510,7 @@ const App: React.FC = () => {
                   </svg>
                 </a>
               </div>
-              <div className="text-sm text-gray-400">
+              <div className="text-sm text-gray-400 flex-1">
                 <p>Лицензия на туристической</p>
                 <p>деятельности ГД МТД РТ № 053, от</p>
                 <p>25.10.2022 г.</p>
@@ -489,9 +518,9 @@ const App: React.FC = () => {
             </div>
 
             {/* Контакты */}
-            <div>
+            <div className="flex flex-col">
               <h3 className="text-white font-semibold mb-4">Контакты:</h3>
-              <div className="space-y-1 text-sm text-gray-300">
+              <div className="space-y-1 text-sm text-gray-300 flex-1">
                 <p>+992 44-625-7575; +992 93-126-1134</p>
                 <p>+992 00-110-0087; +992 88-235-3434</p>
                 <p>info@bunyodtourtj</p>
@@ -501,8 +530,6 @@ const App: React.FC = () => {
                 <p>Политика конфиденциальности</p>
               </div>
             </div>
-
-
           </div>
           
           {/* Нижняя строка */}
