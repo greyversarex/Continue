@@ -270,148 +270,160 @@
         </div>
     </section>
 
-    <!-- Туры по странам -->
+
+
+    <!-- Комбинированные туры по Центральной Азии -->
     <section class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
-                Туры по странам
+                Комбинированные туры по Центральной Азии
             </h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Комбинированный тур -->
-                <div class="group cursor-pointer bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                    <div class="relative h-48">
-                        <div class="absolute inset-0 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500"></div>
-                        <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <div class="text-3xl mb-2">🌍</div>
-                                <h3 class="text-xl font-bold">Комбинированный тур</h3>
-                                <p class="text-sm opacity-90 mt-1">Несколько стран в одном путешествии</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Откройте для себя богатство Центральной Азии в одном незабываемом путешествии</p>
-                        <button onclick="filterByCountry('комбинированный')" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105">
-                            Посмотреть туры
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Комбо тур 1 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-purple-500 to-pink-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
                         </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            🌍 Центральная Азия
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.8</span>
+                            <span class="text-gray-500 ml-1">(89)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Великий Шёлковый путь: 5 стран за 14 дней
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $2,450</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Таджикистан -->
-                <div class="group cursor-pointer bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                    <div class="relative h-48">
-                        <div class="absolute inset-0 bg-gradient-to-br from-green-500 to-teal-600"></div>
-                        <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <div class="text-3xl mb-2">🏔️</div>
-                                <h3 class="text-xl font-bold">По Таджикистану</h3>
-                                <p class="text-sm opacity-90 mt-1">Крыша мира и Памирские горы</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Исследуйте величественные Памирские горы, озёра и древние города</p>
-                        <button onclick="filterByCountry('Таджикистан')" class="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-green-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105">
-                            Посмотреть туры
+                <!-- Комбо тур 2 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
                         </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            🌍 Узбекистан-Таджикистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.7</span>
+                            <span class="text-gray-500 ml-1">(67)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            От Самарканда к Памирам: классика + горы
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $1,890</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Узбекистан -->
-                <div class="group cursor-pointer bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                    <div class="relative h-48">
-                        <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600"></div>
-                        <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <div class="text-3xl mb-2">🕌</div>
-                                <h3 class="text-xl font-bold">По Узбекистану</h3>
-                                <p class="text-sm opacity-90 mt-1">Жемчужина Шёлкового пути</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Погрузитесь в историю Самарканда, Бухары и других древних городов</p>
-                        <button onclick="filterByCountry('Узбекистан')" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105">
-                            Посмотреть туры
+                <!-- Комбо тур 3 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-green-500 to-cyan-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
                         </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            🌍 Киргизстан-Казахстан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.6</span>
+                            <span class="text-gray-500 ml-1">(45)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Номадские традиции и современность
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $1,650</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Киргизстан -->
-                <div class="group cursor-pointer bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                    <div class="relative h-48">
-                        <div class="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-600"></div>
-                        <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <div class="text-3xl mb-2">⛷️</div>
-                                <h3 class="text-xl font-bold">По Киргизстану</h3>
-                                <p class="text-sm opacity-90 mt-1">Альпийские луга и кочевая культура</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Откройте красоту Иссык-Куля, горных троп и традиций номадов</p>
-                        <button onclick="filterByCountry('Киргизстан')" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-cyan-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105">
-                            Посмотреть туры
+                <!-- Комбо тур 4 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-orange-500 to-red-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
                         </button>
                     </div>
-                </div>
-
-                <!-- Туркменистан -->
-                <div class="group cursor-pointer bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                    <div class="relative h-48">
-                        <div class="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600"></div>
-                        <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <div class="text-3xl mb-2">🔥</div>
-                                <h3 class="text-xl font-bold">По Туркменистану</h3>
-                                <p class="text-sm opacity-90 mt-1">Врата ада и Каракумы</p>
-                            </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            🌍 Туркменистан-Узбекистан
                         </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Познайте загадки пустыни Каракумы и знаменитых газовых кратеров</p>
-                        <button onclick="filterByCountry('Туркменистан')" class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105">
-                            Посмотреть туры
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Казахстан -->
-                <div class="group cursor-pointer bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                    <div class="relative h-48">
-                        <div class="absolute inset-0 bg-gradient-to-br from-yellow-500 to-amber-600"></div>
-                        <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <div class="text-3xl mb-2">🦅</div>
-                                <h3 class="text-xl font-bold">По Казахстану</h3>
-                                <p class="text-sm opacity-90 mt-1">Степи и современность</p>
-                            </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.5</span>
+                            <span class="text-gray-500 ml-1">(34)</span>
                         </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">Исследуйте бескрайние степи, каньоны и современные города</p>
-                        <button onclick="filterByCountry('Казахстан')" class="w-full bg-gradient-to-r from-yellow-600 to-amber-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-yellow-700 hover:to-amber-700 transition-all duration-300 transform hover:scale-105">
-                            Посмотреть туры
-                        </button>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            От "Врат ада" до древней Бухары
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $2,100</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Рекомендуемые туры с 4 турами -->
-    <section class="py-16 bg-white">
+    <!-- Туры по Таджикистану -->
+    <section class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
-                Рекомендуемые туры по Таджикистану
+                Туры по Таджикистану
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -554,8 +566,596 @@
         </div>
     </section>
 
-    <!-- Направления -->
+    <!-- Туры по Узбекистану -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+                Туры по Узбекистану
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Тур 1 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-500 to-indigo-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Самарканд, Узбекистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.9</span>
+                            <span class="text-gray-500 ml-1">(312)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Древний Самарканд и мавзолей Гур-Эмир
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $150</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 2 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-amber-400 to-orange-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Бухара, Узбекистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.8</span>
+                            <span class="text-gray-500 ml-1">(287)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Священная Бухара: мечети и медресе
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $135</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 3 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-cyan-400 to-blue-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Хива, Узбекистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.7</span>
+                            <span class="text-gray-500 ml-1">(198)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Хива: музей под открытым небом
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $125</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 4 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-emerald-400 to-green-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Ташкент, Узбекистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.6</span>
+                            <span class="text-gray-500 ml-1">(167)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Современный Ташкент и восточные базары
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $110</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Туры по Киргизстану -->
     <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+                Туры по Киргизстану
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Тур 1 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-cyan-500 to-blue-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Каракол, Киргизстан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.7</span>
+                            <span class="text-gray-500 ml-1">(145)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Иссык-Куль и ущелье Джеты-Огуз
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $140</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 2 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-purple-500 to-pink-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Бишкек, Киргизстан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.6</span>
+                            <span class="text-gray-500 ml-1">(112)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Столица Киргизстана и Ала-Арча
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $95</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 3 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-emerald-500 to-teal-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Нарын, Киргизстан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.8</span>
+                            <span class="text-gray-500 ml-1">(87)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Высокогорные пастбища и юрты
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $165</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 4 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-indigo-500 to-purple-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Ош, Киргизстан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.5</span>
+                            <span class="text-gray-500 ml-1">(76)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Южная столица и священная гора Сулейман-Тоо
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $120</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Туры по Туркменистану -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+                Туры по Туркменистану
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Тур 1 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-orange-500 to-red-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Дашогуз, Туркменистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.6</span>
+                            <span class="text-gray-500 ml-1">(89)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Врата ада: газовый кратер Дарваза
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $320</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 2 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-yellow-500 to-orange-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Ашхабад, Туркменистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.4</span>
+                            <span class="text-gray-500 ml-1">(67)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Мраморная столица пустыни Каракумы
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $280</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 3 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-red-500 to-pink-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Мары, Туркменистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.3</span>
+                            <span class="text-gray-500 ml-1">(54)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Древний Мерв и археологические памятники
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $250</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 4 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-amber-500 to-yellow-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Туркменабад, Туркменистан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.2</span>
+                            <span class="text-gray-500 ml-1">(43)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Река Амударья и культурные традиции
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $190</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Туры по Казахстану -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+                Туры по Казахстану
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Тур 1 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-500 to-teal-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Алматы, Казахстан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.7</span>
+                            <span class="text-gray-500 ml-1">(198)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Алматы и величественные горы Заилийский Алатау
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $180</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 2 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-purple-500 to-indigo-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Нур-Султан, Казахстан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.5</span>
+                            <span class="text-gray-500 ml-1">(134)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Футуристическая столица степей
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $160</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 3 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-green-500 to-emerald-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Шымкент, Казахстан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.4</span>
+                            <span class="text-gray-500 ml-1">(89)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Южный Казахстан и каньоны Актау
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $220</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Тур 4 -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-yellow-500 to-orange-600"></div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            Караганда, Казахстан
+                        </div>
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">4.3</span>
+                            <span class="text-gray-500 ml-1">(76)</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            Индустриальное наследие и степные просторы
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">от $150</div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
+                                Забронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Направления -->
+    <section class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
                 Популярные направления
