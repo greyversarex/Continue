@@ -20,37 +20,13 @@
 </head>
 <body>
     <!-- Хедер -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
+    <header class="shadow-md sticky top-0 z-50" style="background-color: #3E3E3E;">
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center justify-between h-16 px-6">
                 <!-- Логотип -->
-                <div class="flex items-center space-x-6">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 rounded-full mr-3 bg-gradient-to-r from-blue-500 to-green-500 flex items-center justify-center">
-                            <span class="text-white font-bold text-lg">BT</span>
-                        </div>
-                        <span class="text-xl font-bold text-gray-900">Bunyod-Tour</span>
-                    </div>
-                    <div class="flex items-center space-x-1 text-gray-700 hover:text-gray-900 cursor-pointer">
-                        <span class="font-medium">Открыть</span>
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                </div>
-                
-                <!-- Правая часть -->
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                <div class="flex items-center">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2323a6d5'/%3E%3Cpath d='M25 40 Q35 30 50 40 Q65 50 75 40 L75 70 Q65 60 50 70 Q35 80 25 70 Z' fill='%23e7f3ff'/%3E%3C/svg%3E" alt="Bunyod-Tour Logo" class="w-12 h-12 mr-3">
+                    <span class="text-xl font-bold text-white">Bunyod-Tour</span>
                 </div>
             </div>
         </div>
@@ -99,11 +75,11 @@
             </h2>
             
             <!-- Фильтры -->
-            <div class="bg-gray-50 rounded-lg p-6 mb-12">
+            <div class="rounded-lg p-6 mb-12" style="background-color: #3E3E3E;">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <!-- Категория -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Категория тура</label>
+                        <label class="block text-sm font-medium text-white mb-2">Категория тура</label>
                         <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Все категории</option>
                             <option value="adventure">Приключения</option>
@@ -114,7 +90,7 @@
                     
                     <!-- Длительность -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Длительность</label>
+                        <label class="block text-sm font-medium text-white mb-2">Длительность</label>
                         <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Любая</option>
                             <option value="1-3">1-3 дня</option>
@@ -125,7 +101,7 @@
                     
                     <!-- Цена -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Цена (USD)</label>
+                        <label class="block text-sm font-medium text-white mb-2">Цена (USD)</label>
                         <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Любая цена</option>
                             <option value="0-100">До $100</option>
@@ -136,7 +112,7 @@
                     
                     <!-- Кнопка поиска -->
                     <div class="flex items-end">
-                        <button class="w-full bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors font-medium">
+                        <button class="w-full bg-gray-200 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-100 transition-colors font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" style="box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);">
                             Найти туры
                         </button>
                     </div>
@@ -351,7 +327,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
                             Полный день: Памирское шоссе, горы и озёра
                         </h3>
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-end justify-between">
                             <div class="text-lg font-bold">от $120</div>
                             <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
                                 Забронировать
@@ -385,7 +361,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
                             Культурный тур по Душанбе с посещением музеев
                         </h3>
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-end justify-between">
                             <div class="text-lg font-bold">от $65</div>
                             <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
                                 Забронировать
@@ -419,7 +395,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
                             Треккинг к озеру Искандеркуль
                         </h3>
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-end justify-between">
                             <div class="text-lg font-bold">от $95</div>
                             <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
                                 Забронировать
@@ -453,7 +429,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
                             Шёлковый путь: древние города и крепости
                         </h3>
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-end justify-between">
                             <div class="text-lg font-bold">от $150</div>
                             <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
                                 Забронировать
