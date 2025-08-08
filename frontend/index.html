@@ -1530,6 +1530,50 @@
         // Загрузка всех туров при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Страница загружена');
+            
+            // Карта туров с их именами и ключами
+            const tourMap = {
+                'Полный день: Памирское шоссе, горы и озёра': 'pamir_highway',
+                'Треккинг к озёрам семи цветов': 'pamir_highway',
+                'Культурный тур по столице Таджикистана': 'pamir_highway',
+                'Приключение в Бадахшане и горячие источники': 'pamir_highway',
+                'Древний Самарканд и мавзолей Гур-Эмир': 'samarkand',
+                'Священная Бухара: мечети и медресе': 'samarkand',
+                'Хива: музей под открытым небом': 'samarkand',
+                'Ташкент: современность и традиции': 'samarkand',
+                'Иссык-Куль и ущелье Джеты-Огуз': 'issyk_kul',
+                'Столица Киргизстана и Ала-Арча': 'issyk_kul',
+                'Высокогорные пастбища и юрты': 'issyk_kul',
+                'Озеро Сон-Куль и кочевые традиции': 'issyk_kul',
+                'Врата ада: газовый кратер Дарваза': 'darvaza',
+                'Мраморная столица пустыни Каракумы': 'darvaza',
+                'Древний Мерв и археологические памятники': 'darvaza',
+                'Конные прогулки по пустыне': 'darvaza'
+            };
+
+            // Находим все карточки туров
+            const tourCards = document.querySelectorAll('.group.cursor-pointer');
+            
+            tourCards.forEach(card => {
+                const titleElement = card.querySelector('h3');
+                const button = card.querySelector('button[style*="background-color: #3E3E3E"]');
+                
+                if (titleElement && button) {
+                    const tourTitle = titleElement.textContent.trim();
+                    const tourKey = tourMap[tourTitle] || 'pamir_highway';
+                    
+                    // Добавляем клик на кнопку "Забронировать"
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        window.open(`tour-template.html?tour=${tourKey}`, '_blank');
+                    });
+                    
+                    // Добавляем клик на всю карточку
+                    card.addEventListener('click', function() {
+                        window.open(`tour-template.html?tour=${tourKey}`, '_blank');
+                    });
+                }
+            });
         });
     </script>
 </body>
