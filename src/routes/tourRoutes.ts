@@ -10,6 +10,7 @@ const router = Router();
 
 // Tour routes
 router.get('/tours', TourController.getAllTours);
+router.get('/tours/search', TourController.searchTours);
 router.get('/tours/:id', TourController.getTourById);
 router.post('/tours', TourController.createTour);
 router.put('/tours/:id', TourController.updateTour);

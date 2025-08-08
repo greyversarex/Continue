@@ -100,6 +100,21 @@ export class TourModel {
       where: { id }
     });
   }
+
+  /**
+   * Search tours with filters
+   */
+  static async search(filters: any = {}) {
+    return await prisma.tour.findMany({
+      where: filters,
+      include: {
+        category: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
 }
 
 export class CategoryModel {

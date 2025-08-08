@@ -24,6 +24,13 @@ model Tour {
   description    String           // JSON field for multilingual content
   duration       String
   price          String
+  country        String?          // Страна
+  city           String?          // Город
+  format         String?          // Формат: Групповой, Индивидуальный, VIP
+  durationDays   Int?             // Количество дней
+  theme          String?          // Тематика тура
+  startDate      String?          // Дата начала
+  endDate        String?          // Дата окончания
   categoryId     Int
   category       Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   bookingRequests BookingRequest[]

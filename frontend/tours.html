@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск туров - Bunyod-Tour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .filter-section {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .filter-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #374151;
+        }
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tour-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        .tour-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .tour-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .price-tag {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .filter-button {
+            background-color: #3E3E3E;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+        }
+        .filter-button:hover {
+            opacity: 0.9;
+        }
+        .reset-button {
+            background: transparent;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .reset-button:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Заголовок -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour" class="w-10 h-10 rounded-full mr-3">
+                    <h1 class="text-2xl font-bold text-gray-900">Поиск туров</h1>
+                </div>
+                <a href="index.html" class="text-gray-600 hover:text-gray-900 font-medium">← Назад на главную</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Левая панель - Фильтры -->
+            <div class="lg:col-span-1">
+                <div class="sticky top-8">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Фильтры поиска</h2>
+                    
+                    <!-- Направление -->
+                    <div class="filter-section">
+                        <div class="filter-title">Направление</div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Страна</label>
+                            <select id="countrySelect" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Выберите страну</option>
+                                <option value="Таджикистан">Таджикистан</option>
+                                <option value="Узбекистан">Узбекистан</option>
+                                <option value="Киргизстан">Киргизстан</option>
+                                <option value="Туркменистан">Туркменистан</option>
+                                <option value="Казахстан">Казахстан</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Город</label>
+                            <select id="citySelect" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+                                <option value="">Сначала выберите страну</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Формат тура -->
+                    <div class="filter-section">
+                        <div class="filter-title">Формат тура</div>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="format-group" name="format" value="Групповой">
+                                <label for="format-group">Групповой</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="format-individual" name="format" value="Индивидуальный">
+                                <label for="format-individual">Индивидуальный</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="format-vip" name="format" value="VIP">
+                                <label for="format-vip">VIP</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Длительность тура -->
+                    <div class="filter-section">
+                        <div class="filter-title">Длительность тура</div>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="duration-1" name="duration" value="1">
+                                <label for="duration-1">Однодневный</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="duration-2-5" name="duration" value="2-5">
+                                <label for="duration-2-5">Многодневный (2-5 дней)</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="duration-6+" name="duration" value="6+">
+                                <label for="duration-6+">Длительный (6+ дней)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Тематика тура -->
+                    <div class="filter-section">
+                        <div class="filter-title">Тематика тура</div>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theme-overview" name="theme" value="Обзорная экскурсия">
+                                <label for="theme-overview">Обзорная экскурсия</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theme-trekking" name="theme" value="Походы / треккинг">
+                                <label for="theme-trekking">Походы / треккинг</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theme-mountain" name="theme" value="Горные маршруты">
+                                <label for="theme-mountain">Горные маршруты</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theme-lake" name="theme" value="Озёрные маршруты">
+                                <label for="theme-lake">Озёрные маршруты</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theme-historical" name="theme" value="Исторический тур">
+                                <label for="theme-historical">Исторический тур</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theme-recreational" name="theme" value="Рекреационный тур">
+                                <label for="theme-recreational">Рекреационный тур</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theme-agro" name="theme" value="Агро-туризм">
+                                <label for="theme-agro">Агро-туризм</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theme-health" name="theme" value="Санаторно-оздоровительный тур">
+                                <label for="theme-health">Санаторно-оздоровительный тур</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="theme-combined" name="theme" value="Комбинированный тур по Центральной Азии">
+                                <label for="theme-combined">Комбинированный тур по Центральной Азии</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Дата проведения -->
+                    <div class="filter-section">
+                        <div class="filter-title">Дата проведения</div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">От</label>
+                            <input type="date" id="dateFrom" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">До</label>
+                            <input type="date" id="dateTo" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Кнопки -->
+                    <div class="space-y-3">
+                        <button onclick="applyFilters()" class="filter-button w-full">Применить фильтры</button>
+                        <button onclick="resetFilters()" class="reset-button w-full">Сбросить все фильтры</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Правая панель - Результаты -->
+            <div class="lg:col-span-3">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900">Результаты поиска</h3>
+                    <p id="resultsCount" class="text-gray-600">Показано туров: <span id="tourCount">0</span></p>
+                </div>
+
+                <div id="tourResults" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <!-- Туры будут загружены здесь -->
+                </div>
+
+                <div id="noResults" class="text-center py-12 hidden">
+                    <div class="text-gray-400 text-6xl mb-4">🔍</div>
+                    <h3 class="text-xl font-medium text-gray-900 mb-2">Туры не найдены</h3>
+                    <p class="text-gray-600">Попробуйте изменить параметры поиска</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные городов по странам
+        const citiesByCountry = {
+            "Таджикистан": ["Душанбе", "Хорог", "Худжанд"],
+            "Узбекистан": ["Ташкент", "Самарканд", "Бухара"],
+            "Киргизстан": ["Бишкек"],
+            "Казахстан": ["Астана", "Алматы"],
+            "Туркменистан": ["Ашхабад"]
+        };
+
+        // Обработчик изменения страны
+        document.getElementById('countrySelect').addEventListener('change', function() {
+            const countrySelect = this;
+            const citySelect = document.getElementById('citySelect');
+            const selectedCountry = countrySelect.value;
+            
+            if (selectedCountry) {
+                citySelect.disabled = false;
+                citySelect.innerHTML = '<option value="">Выберите город</option>';
+                
+                const cities = citiesByCountry[selectedCountry] || [];
+                cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            } else {
+                citySelect.disabled = true;
+                citySelect.innerHTML = '<option value="">Сначала выберите страну</option>';
+            }
+        });
+
+        // Загрузка туров при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTours();
+        });
+
+        // Функция загрузки туров
+        async function loadTours(filters = {}) {
+            try {
+                const queryParams = new URLSearchParams();
+                
+                // Добавление фильтров в параметры запроса
+                Object.entries(filters).forEach(([key, value]) => {
+                    if (Array.isArray(value) && value.length > 0) {
+                        queryParams.append(key, value.join(','));
+                    } else if (value && !Array.isArray(value)) {
+                        queryParams.append(key, value);
+                    }
+                });
+
+                const response = await fetch(`http://0.0.0.0:5000/api/tours/search?${queryParams}`);
+                const tours = await response.json();
+                
+                displayTours(tours);
+            } catch (error) {
+                console.error('Ошибка загрузки туров:', error);
+                showNoResults();
+            }
+        }
+
+        // Функция отображения туров
+        function displayTours(tours) {
+            const tourResults = document.getElementById('tourResults');
+            const noResults = document.getElementById('noResults');
+            const tourCount = document.getElementById('tourCount');
+            
+            if (tours.length === 0) {
+                showNoResults();
+                return;
+            }
+            
+            noResults.classList.add('hidden');
+            tourResults.classList.remove('hidden');
+            tourCount.textContent = tours.length;
+            
+            tourResults.innerHTML = tours.map(tour => `
+                <div class="tour-card">
+                    <div class="relative">
+                        <img src="https://via.placeholder.com/300x200/4F46E5/ffffff?text=${encodeURIComponent(tour.title)}" 
+                             alt="${tour.title}" class="tour-image">
+                        <div class="absolute top-3 right-3">
+                            <span class="price-tag">от $${tour.price}</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">${tour.title}</h3>
+                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">${tour.description}</p>
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center text-sm text-gray-500">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                                </svg>
+                                ${tour.city}, ${tour.country}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                </svg>
+                                ${tour.durationDays} ${getDayWord(tour.durationDays)}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clip-rule="evenodd"/>
+                                </svg>
+                                ${tour.format}
+                            </div>
+                        </div>
+                        <button class="w-full text-white font-medium py-2 px-4 rounded-md transition-opacity hover:opacity-90" 
+                                style="background-color: #3E3E3E;">
+                            Подробнее
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Функция показа сообщения об отсутствии результатов
+        function showNoResults() {
+            const tourResults = document.getElementById('tourResults');
+            const noResults = document.getElementById('noResults');
+            const tourCount = document.getElementById('tourCount');
+            
+            tourResults.classList.add('hidden');
+            noResults.classList.remove('hidden');
+            tourCount.textContent = '0';
+        }
+
+        // Вспомогательная функция для склонения слова "день"
+        function getDayWord(count) {
+            if (count === 1) return 'день';
+            if (count >= 2 && count <= 4) return 'дня';
+            return 'дней';
+        }
+
+        // Применение фильтров
+        function applyFilters() {
+            const filters = {};
+            
+            // Направление
+            const country = document.getElementById('countrySelect').value;
+            const city = document.getElementById('citySelect').value;
+            if (country) filters.country = country;
+            if (city) filters.city = city;
+            
+            // Формат тура
+            const formats = Array.from(document.querySelectorAll('input[name="format"]:checked'))
+                .map(cb => cb.value);
+            if (formats.length > 0) filters.format = formats;
+            
+            // Длительность
+            const duration = document.querySelector('input[name="duration"]:checked');
+            if (duration) filters.duration = duration.value;
+            
+            // Тематика
+            const themes = Array.from(document.querySelectorAll('input[name="theme"]:checked'))
+                .map(cb => cb.value);
+            if (themes.length > 0) filters.theme = themes;
+            
+            // Даты
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            if (dateFrom) filters.dateFrom = dateFrom;
+            if (dateTo) filters.dateTo = dateTo;
+            
+            loadTours(filters);
+        }
+
+        // Сброс фильтров
+        function resetFilters() {
+            // Сброс select'ов
+            document.getElementById('countrySelect').value = '';
+            document.getElementById('citySelect').value = '';
+            document.getElementById('citySelect').disabled = true;
+            document.getElementById('citySelect').innerHTML = '<option value="">Сначала выберите страну</option>';
+            
+            // Сброс чекбоксов
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            
+            // Сброс радио кнопок
+            document.querySelectorAll('input[type="radio"]').forEach(rb => rb.checked = false);
+            
+            // Сброс дат
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            
+            // Загрузка всех туров
+            loadTours();
+        }
+    </script>
+</body>
+</html>

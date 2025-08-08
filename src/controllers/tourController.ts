@@ -277,6 +277,102 @@ export class TourController {
       return next(error);
     }
   }
+
+  /**
+   * Search tours with advanced filtering
+   * GET /api/tours/search
+   */
+  static async searchTours(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { 
+        country, 
+        city, 
+        format, 
+        duration, 
+        theme, 
+        dateFrom, 
+        dateTo 
+      } = req.query;
+
+      // Build filter conditions
+      const filters: any[] = [];
+
+      if (country) {
+        filters.push({ country: country as string });
+      }
+
+      if (city) {
+        filters.push({ city: city as string });
+      }
+
+      if (format) {
+        const formats = (format as string).split(',');
+        filters.push({ format: { in: formats } });
+      }
+
+      if (duration) {
+        const durationValue = duration as string;
+        if (durationValue === '1') {
+          filters.push({ durationDays: 1 });
+        } else if (durationValue === '2-5') {
+          filters.push({ 
+            durationDays: {
+              gte: 2,
+              lte: 5
+            }
+          });
+        } else if (durationValue === '6+') {
+          filters.push({ 
+            durationDays: {
+              gte: 6
+            }
+          });
+        }
+      }
+
+      if (theme) {
+        const themes = (theme as string).split(',');
+        filters.push({ theme: { in: themes } });
+      }
+
+      if (dateFrom || dateTo) {
+        const dateConditions: any[] = [];
+        if (dateFrom) {
+          dateConditions.push({ startDate: { gte: dateFrom as string } });
+        }
+        if (dateTo) {
+          dateConditions.push({ endDate: { lte: dateTo as string } });
+        }
+        if (dateConditions.length > 0) {
+          filters.push(...dateConditions);
+        }
+      }
+
+      // Use TourModel to search with filters or get all tours if no filters
+      const tours = await TourModel.search(filters.length > 0 ? { AND: filters } : {});
+      
+      // Parse JSON fields for response
+      const parsedTours = tours.map((tour: any) => ({
+        ...tour,
+        title: JSON.parse(tour.title) as MultilingualContent,
+        description: JSON.parse(tour.description) as MultilingualContent,
+        category: tour.category ? {
+          ...tour.category,
+          name: JSON.parse(tour.category.name) as MultilingualContent
+        } : null
+      }));
+
+      const response: ApiResponse = {
+        success: true,
+        data: parsedTours,
+        message: 'Tours searched successfully'
+      };
+
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export class CategoryController {
