@@ -60,9 +60,6 @@ waitForPort = 8000
 name = "Frontend Demo"
 author = "agent"
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd frontend && python3 -m http.server 3000"
