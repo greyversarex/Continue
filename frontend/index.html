@@ -74,17 +74,25 @@
             
             <!-- Фильтры -->
             <div class="rounded-lg p-6 mb-12" style="background-color: #3E3E3E;">
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
                     <!-- Страна -->
                     <div>
                         <label class="block text-sm font-medium text-white mb-2">Страна</label>
-                        <select id="countryFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select id="countryFilter" onchange="updateCities()" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Все страны</option>
                             <option value="Таджикистан">Таджикистан</option>
                             <option value="Узбекистан">Узбекистан</option>
                             <option value="Киргизстан">Киргизстан</option>
                             <option value="Казахстан">Казахстан</option>
                             <option value="Туркменистан">Туркменистан</option>
+                        </select>
+                    </div>
+
+                    <!-- Город -->
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Город</label>
+                        <select id="cityFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Все города</option>
                         </select>
                     </div>
                     
@@ -116,9 +124,16 @@
                         <select id="themeFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Любая тематика</option>
                             <option value="Горные маршруты">Горные маршруты</option>
-                            <option value="Исторический тур">Исторические</option>
-                            <option value="Обзорная экскурсия">Обзорные</option>
-                            <option value="Походы / треккинг">Треккинг</option>
+                            <option value="Озёрные маршруты">Озёрные маршруты</option>
+                            <option value="Исторический тур">Исторический тур</option>
+                            <option value="Обзорная экскурсия">Обзорная экскурсия</option>
+                            <option value="Походы / треккинг">Походы / треккинг</option>
+                            <option value="Комбинированный тур по Центральной Азии">Комбинированный тур</option>
+                            <option value="Санаторно-оздоровительный тур">Санаторно-оздоровительный</option>
+                            <option value="Культурно-исторический тур">Культурно-исторический</option>
+                            <option value="Гастрономический тур">Гастрономический</option>
+                            <option value="Фототур">Фототур</option>
+                            <option value="Экстремальный туризм">Экстремальный туризм</option>
                         </select>
                     </div>
                     
@@ -126,6 +141,28 @@
                     <div class="flex items-end">
                         <button id="searchButton" onclick="searchTours()" class="w-full bg-gray-200 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-100 transition-colors font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" style="box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);">
                             Найти туры
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Дополнительные фильтры даты -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <!-- Дата начала -->
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Дата начала</label>
+                        <input type="date" id="dateFromFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <!-- Дата окончания -->
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-2">Дата окончания</label>
+                        <input type="date" id="dateToFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <!-- Сброс фильтров -->
+                    <div class="flex items-end">
+                        <button onclick="clearSearch()" class="w-full bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors font-medium">
+                            Сбросить фильтры
                         </button>
                     </div>
                 </div>
@@ -592,14 +629,45 @@
     </footer>
 
     <script>
+        // Данные о городах по странам
+        const citiesByCountry = {
+            'Таджикистан': ['Душанбе', 'Худжанд', 'Хорог', 'Куляб', 'Курган-Тюбе', 'Истаравшан'],
+            'Узбекистан': ['Самарканд', 'Ташкент', 'Бухара', 'Хива', 'Фергана', 'Андижан'],
+            'Киргизстан': ['Бишкек', 'Ош', 'Каракол', 'Нарын', 'Джалал-Абад'],
+            'Казахстан': ['Алматы', 'Нур-Султан', 'Шымкент', 'Караганда', 'Актобе'],
+            'Туркменистан': ['Ашхабад', 'Туркменабад', 'Дашогуз', 'Мары', 'Балканабад']
+        };
+
+        // Функция для обновления списка городов
+        function updateCities() {
+            const countrySelect = document.getElementById('countryFilter');
+            const citySelect = document.getElementById('cityFilter');
+            
+            // Очищаем список городов
+            citySelect.innerHTML = '<option value="">Все города</option>';
+            
+            const selectedCountry = countrySelect.value;
+            if (selectedCountry && citiesByCountry[selectedCountry]) {
+                citiesByCountry[selectedCountry].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        }
+
         // Функция для поиска туров
         async function searchTours() {
             try {
                 const filters = {
                     country: document.getElementById('countryFilter').value,
+                    city: document.getElementById('cityFilter').value,
                     format: document.getElementById('formatFilter').value,
                     duration: document.getElementById('durationFilter').value,
-                    theme: document.getElementById('themeFilter').value
+                    theme: document.getElementById('themeFilter').value,
+                    dateFrom: document.getElementById('dateFromFilter').value,
+                    dateTo: document.getElementById('dateToFilter').value
                 };
 
                 // Убираем пустые фильтры
@@ -684,9 +752,15 @@
             
             // Сброс всех фильтров
             document.getElementById('countryFilter').value = '';
+            document.getElementById('cityFilter').value = '';
             document.getElementById('formatFilter').value = '';
             document.getElementById('durationFilter').value = '';
             document.getElementById('themeFilter').value = '';
+            document.getElementById('dateFromFilter').value = '';
+            document.getElementById('dateToFilter').value = '';
+            
+            // Обновляем список городов
+            updateCities();
         }
 
         // Загрузка всех туров при загрузке страницы
