@@ -56,9 +56,6 @@ task = "shell.exec"
 args = "cd frontend && npm start"
 waitForPort = 3000
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
 [[workflows.workflow]]
 name = "Demo Page"
 author = "agent"
@@ -67,9 +64,6 @@ author = "agent"
 task = "shell.exec"
 args = "cd frontend && python3 -m http.server 8000"
 waitForPort = 8000
-
-[workflows.workflow.metadata]
-outputType = "webview"
 
 [[ports]]
 localPort = 3000
