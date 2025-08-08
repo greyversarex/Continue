@@ -16,6 +16,7 @@ A complete TypeScript Express backend API for Bunyod-Tour tour agency specializi
 - **Email Notifications**: Integrated Nodemailer for automated booking confirmations and admin notifications
 - **Non-Critical Email Service**: Updated email system to handle authentication failures gracefully without breaking booking flow
 - **Internationalization (i18n)**: Added trilingual support (English/Russian/Tajik) using react-i18next with language switcher component
+- **Universal Tour Template System**: Created comprehensive tour page template (tour-template.html) with dynamic JSON data loading, URL parameter support, and advanced interactive features including image galleries, social sharing, wishlist functionality, and booking system simulation
 
 ## User Preferences
 
@@ -76,3 +77,23 @@ Preferred communication style: Simple, everyday language.
 - **@types/express**: TypeScript definitions for Express.js
 - **@types/cors**: TypeScript definitions for CORS middleware
 - **@types/node**: TypeScript definitions for Node.js runtime
+
+## Frontend Tour Template System
+
+### Universal Tour Template Architecture
+- **Single Template, Multiple Tours**: Created tour-template.html as a universal template that can display any tour using JSON data
+- **Dynamic Data Loading**: Supports URL parameters (?tour=tourkey) to load different tour datasets
+- **Sample Data Management**: Comprehensive sample-tour-data.js with multiple tour examples across Central Asian countries
+
+### Advanced Interactive Features
+- **Image Gallery with Lightbox**: Full-screen image modal with keyboard navigation (arrows, escape) and click-through functionality
+- **Booking Simulation**: Interactive booking panel with date selection, participant counting, price calculation, and availability checking
+- **Social Features**: Share functionality (Web Share API with clipboard fallback) and wishlist toggle with visual feedback
+- **Responsive Design**: Mobile-first approach with sticky sidebar booking panel and adaptive image gallery
+- **Review System**: Expandable reviews with avatar generation and load-more functionality
+
+### Production-Ready Scalability
+- **URL-Based Tour Loading**: Each tour can have its own URL (tour-template.html?tour=pamir_highway)
+- **JSON Data Structure**: Standardized tour data format supporting images, pricing, reviews, highlights, and related tours
+- **Cross-Device Compatibility**: Fully responsive design tested across different screen sizes
+- **SEO-Friendly**: Dynamic title updates and semantic HTML structure
