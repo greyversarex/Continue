@@ -338,6 +338,37 @@
     <script>
         let currentImageIndex = 0;
         let tourData = {};
+        
+        // Embedded tour data for reliability
+        const embeddedTourData = {
+            pamir_highway: {
+                "title": "Полный день: Памирское шоссе, горы и озёра",
+                "location": "Памирские горы, Таджикистан",
+                "rating": 4.8,
+                "reviews_count": 234,
+                "duration": "6-7 часов",
+                "images": [
+                    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+                    "https://images.unsplash.com/photo-1464822759844-d150b377fc24?w=400&h=300&fit=crop", 
+                    "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1454391304352-2bf4678b1a7a?w=400&h=300&fit=crop"
+                ]
+            },
+            samarkand: {
+                "title": "Древний Самарканд и мавзолей Гур-Эмир",
+                "location": "Самарканд, Узбекистан", 
+                "rating": 4.9,
+                "reviews_count": 189,
+                "duration": "8 часов",
+                "images": [
+                    "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&h=600&fit=crop",
+                    "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+                ]
+            }
+        };
 
         // Load tour data after script loads
         function initializePage() {
@@ -349,30 +380,19 @@
             const tourKey = urlParams.get('tour') || 'pamir_highway';
             console.log('Looking for tour key:', tourKey);
             
-            // Load tour data
+            // Load tour data - prefer external data, fallback to embedded
             if (window.sampleTourData && window.sampleTourData[tourKey]) {
                 tourData = window.sampleTourData[tourKey];
-                console.log('Loaded tour:', tourKey, tourData);
+                console.log('Loaded external tour data:', tourKey);
+            } else if (embeddedTourData[tourKey]) {
+                tourData = embeddedTourData[tourKey];
+                console.log('Using embedded tour data:', tourKey);
             } else if (window.sampleTourData && window.sampleTourData['pamir_highway']) {
                 tourData = window.sampleTourData['pamir_highway'];
-                console.log('Using default tour data:', tourData);
+                console.log('Using default external data');
             } else {
-                console.error('No tour data found, window.sampleTourData:', window.sampleTourData);
-                // Fallback tour data
-                tourData = {
-                    title: 'Памирское шоссе приключение',
-                    location: 'Памирские горы, Таджикистан',
-                    rating: 4.8,
-                    reviews_count: 52,
-                    duration: '6-7 часов',
-                    images: [
-                        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
-                        'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=400',
-                        'https://images.unsplash.com/photo-1454391304352-2bf4678b1a7a?w=400',
-                        'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400'
-                    ]
-                };
-                console.log('Using fallback data:', tourData);
+                tourData = embeddedTourData['pamir_highway'];
+                console.log('Using default embedded data');
             }
             
             loadTourData();
