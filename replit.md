@@ -20,6 +20,8 @@ A complete TypeScript Express backend API for Bunyod-Tour tour agency specializi
 - **Footer Integration**: Added complete footer from main page to tour pages with updated social media links (Facebook, Instagram, YouTube, WhatsApp, Telegram)
 - **Accordion Layout Update**: Changed accordion buttons from vertical stacking to horizontal grid layout (4 columns) for better visual hierarchy
 - **Services Section**: Added new services block with 4 service cards featuring icon-based design: Transfer, Guide, Agency Service, and Master Class
+- **Tour Page Layout Fixes**: Restructured tour template with proper Viator-style layout, sticky booking sidebar, and compact horizontal info strip
+- **Single Date Picker**: Replaced date range selection with single HTML5 date picker with calendar interface for improved user experience
 
 ## User Preferences
 
