@@ -1745,12 +1745,12 @@
                     // Добавляем клик на кнопку "Забронировать"
                     button.addEventListener('click', function(e) {
                         e.stopPropagation();
-                        window.open(`tour-template.html?tour=${tourKey}`, '_blank');
+                        window.open(`tour-template-viator.html?tour=${tourKey}`, '_blank');
                     });
                     
                     // Добавляем клик на всю карточку
                     card.addEventListener('click', function() {
-                        window.open(`tour-template.html?tour=${tourKey}`, '_blank');
+                        window.open(`tour-template-viator.html?tour=${tourKey}`, '_blank');
                     });
                 }
             });

@@ -263,3 +263,6 @@ function loadSpecificTour(tourKey) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = sampleTours;
 }
+
+// Глобальная переменная для совместимости
+window.sampleTourData = sampleTours;

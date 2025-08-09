@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Тур - Bunyod-Tour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .thumbnail-active {
+            border: 2px solid #3b82f6;
+            opacity: 1;
+        }
+        .thumbnail-inactive {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="bg-white font-sans">
+    <!-- Header -->
+    <header class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour" class="h-10">
+                    <h1 class="text-2xl font-bold text-gray-900">Bunyod-Tour</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-600 hover:text-gray-900">🌐</button>
+                    <div class="flex items-center space-x-2">
+                        <button class="bg-gray-100 p-2 rounded-full">
+                            <span class="text-sm">👤</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Bar -->
+    <div class="bg-gray-50 border-b">
+        <div class="max-w-7xl mx-auto px-6 py-3">
+            <div class="flex items-center">
+                <span class="text-sm font-medium mr-4">Discover</span>
+                <div class="flex-1 max-w-md">
+                    <div class="relative">
+                        <input type="text" placeholder="Rio de Janeiro" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="max-w-7xl mx-auto px-6 py-3">
+        <nav class="flex items-center text-sm text-gray-600 space-x-1">
+            <a href="index.html" class="hover:text-gray-900">Home</a>
+            <span>/</span>
+            <a href="#" class="hover:text-gray-900">Things to do in Brazil</a>
+            <span>/</span>
+            <a href="#" class="hover:text-gray-900">Things to do in Southeast Brazil</a>
+            <span>/</span>
+            <a href="#" class="hover:text-gray-900">Things to do in Rio de Janeiro</a>
+            <span>/</span>
+            <a href="#" class="hover:text-gray-900">Rio de Janeiro Tours</a>
+            <span>/</span>
+            <span class="text-gray-400" id="breadcrumb-final">Sao Conrado Beach (Praia de Sao Conrado)</span>
+        </nav>
+        
+        <!-- Book online notice -->
+        <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center text-sm text-gray-600">
+                <span class="mr-4">📞 Book online or call +7 (099) 649-5873</span>
+                <a href="#" class="text-blue-600 hover:underline">Chat now</a>
+            </div>
+            <div class="flex items-center text-sm">
+                <span class="text-green-600 mr-2">✓ Lowest Price Guarantee</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-6">
+        <!-- Tour Title -->
+        <div class="mb-6">
+            <h1 id="tour-title" class="text-3xl font-bold text-gray-900 mb-3">
+                Telegraph Stone Adventure
+            </h1>
+            
+            <div class="flex items-center space-x-4 mb-2">
+                <div class="flex items-center">
+                    <div class="flex text-yellow-400" id="tour-rating">
+                        ★★★★★
+                    </div>
+                    <span id="review-count" class="ml-2 text-sm text-gray-600">(52 Reviews)</span>
+                </div>
+                <span class="text-gray-400">|</span>
+                <span id="tour-location" class="text-sm text-gray-600">Rio de Janeiro, Brazil</span>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Image Gallery Section (spans 3 columns) -->
+            <div class="lg:col-span-3">
+                <div class="flex gap-4">
+                    <!-- Left Thumbnail Column -->
+                    <div class="flex flex-col space-y-2 w-32">
+                        <div id="thumbnail-column" class="space-y-2">
+                            <!-- Thumbnails will be generated by JS -->
+                        </div>
+                        <button id="see-more-btn" class="w-full h-20 bg-gray-100 rounded-lg flex items-center justify-center text-sm font-medium text-gray-600 hover:bg-gray-200 transition-colors">
+                            See More
+                        </button>
+                    </div>
+                    
+                    <!-- Main Image -->
+                    <div class="flex-1 relative">
+                        <div class="relative overflow-hidden rounded-lg cursor-pointer" id="main-image-container">
+                            <img id="main-image" src="" alt="Main tour image" class="w-full h-96 object-cover">
+                            
+                            <!-- Navigation arrows -->
+                            <button id="prev-btn" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white bg-opacity-80 rounded-full flex items-center justify-center hover:bg-opacity-100 transition-all">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                            </button>
+                            <button id="next-btn" class="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white bg-opacity-80 rounded-full flex items-center justify-center hover:bg-opacity-100 transition-all">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                            
+                            <!-- Share and Wishlist buttons -->
+                            <div class="absolute top-4 right-4 flex space-x-2">
+                                <button class="bg-white bg-opacity-90 hover:bg-opacity-100 px-4 py-2 rounded-lg flex items-center space-x-1 text-sm transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+                                    </svg>
+                                    <span>Share</span>
+                                </button>
+                                <button id="wishlist-btn" class="bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-lg transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Tour info badges -->
+                        <div class="flex items-center space-x-6 mt-4 text-sm text-gray-600">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span id="tour-duration">6 to 7 hours (approx.)</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                </svg>
+                                <span>Pickup offered</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                </svg>
+                                <span>Mobile ticket</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                                </svg>
+                                <span>Offered in: Russian and 2 more</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white border border-gray-200 rounded-lg p-6 sticky top-6">
+                    <div class="mb-4">
+                        <span class="text-2xl font-bold text-gray-900">From $43.45</span>
+                        <span class="text-sm text-gray-600 ml-1">per person</span>
+                    </div>
+                    
+                    <!-- Date Selector -->
+                    <div class="mb-4">
+                        <div class="border border-gray-300 rounded-lg p-3 flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="text-gray-900 font-medium">Sunday, Aug 10, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Travelers Selector -->
+                    <div class="mb-4">
+                        <div class="border border-gray-300 rounded-lg p-3 flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                                </svg>
+                                <span class="text-gray-900 font-medium">2</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Time Selector -->
+                    <div class="mb-6">
+                        <div class="border border-gray-300 rounded-lg p-3">
+                            <span class="text-gray-500">Select time</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Check Availability Button -->
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium mb-4 transition-colors">
+                        Check Availability
+                    </button>
+                    
+                    <!-- Features -->
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start space-x-2">
+                            <svg class="w-4 h-4 text-green-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <div>
+                                <span class="font-medium">Free cancellation</span>
+                                <p class="text-gray-600">up to 24 hours before the experience starts (local time)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-2">
+                            <svg class="w-4 h-4 text-green-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <div>
+                                <span class="font-medium">Reserve Now and Pay Later</span>
+                                <p class="text-gray-600">- Secure your spot while staying flexible</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Book ahead notice -->
+                    <div class="mt-6 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div>
+                                <p class="text-sm font-medium text-yellow-800">Book ahead!</p>
+                                <p class="text-xs text-yellow-700">On average, this is booked 20 days in advance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Tabs -->
+        <div class="mt-8 lg:pr-80">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8">
+                    <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                        Overview
+                    </button>
+                    <button class="border-blue-500 text-blue-600 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                        Reviews
+                    </button>
+                    <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                        Policies
+                    </button>
+                </nav>
+            </div>
+            
+            <!-- Tab Content -->
+            <div class="mt-6">
+                <div id="overview-content">
+                    <h3 class="text-lg font-semibold mb-4">About this experience</h3>
+                    <div id="tour-description" class="text-gray-700 space-y-4">
+                        <p>Discover the breathtaking beauty of the Pamir Mountains on this full-day adventure through one of the world's most spectacular mountain highways.</p>
+                        
+                        <h4 class="font-semibold mt-6 mb-3">What's included</h4>
+                        <ul id="tour-includes" class="space-y-2">
+                            <li class="flex items-start">
+                                <svg class="w-4 h-4 text-green-600 mt-1 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                Professional guide
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-4 h-4 text-green-600 mt-1 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                Transportation
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-4 h-4 text-green-600 mt-1 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                Lunch
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden flex items-center justify-center p-4">
+        <div class="relative max-w-4xl max-h-full">
+            <img id="modalImage" src="" alt="Tour image" class="max-w-full max-h-full object-contain">
+            <button id="closeModal" class="absolute top-4 right-4 text-white hover:text-gray-300">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <button id="modalPrev" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <button id="modalNext" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentImageIndex = 0;
+        let tourData = {};
+
+        // Load tour data after script loads
+        function initializePage() {
+            console.log('Viator-style tour page loaded');
+            console.log('Available data:', window.sampleTourData);
+            
+            // Get tour parameter from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const tourKey = urlParams.get('tour') || 'pamir_highway';
+            console.log('Looking for tour key:', tourKey);
+            
+            // Load tour data
+            if (window.sampleTourData && window.sampleTourData[tourKey]) {
+                tourData = window.sampleTourData[tourKey];
+                console.log('Loaded tour:', tourKey, tourData);
+            } else if (window.sampleTourData && window.sampleTourData['pamir_highway']) {
+                tourData = window.sampleTourData['pamir_highway'];
+                console.log('Using default tour data:', tourData);
+            } else {
+                console.error('No tour data found, window.sampleTourData:', window.sampleTourData);
+                // Fallback tour data
+                tourData = {
+                    title: 'Памирское шоссе приключение',
+                    location: 'Памирские горы, Таджикистан',
+                    rating: 4.8,
+                    reviews_count: 52,
+                    duration: '6-7 часов',
+                    images: [
+                        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+                        'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=400',
+                        'https://images.unsplash.com/photo-1454391304352-2bf4678b1a7a?w=400',
+                        'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400'
+                    ]
+                };
+                console.log('Using fallback data:', tourData);
+            }
+            
+            loadTourData();
+            setupGallery();
+            setupEventListeners();
+        }
+
+        // Initialize after DOM and data loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if data is already loaded
+            if (window.sampleTourData) {
+                initializePage();
+            } else {
+                // Wait for data to load
+                setTimeout(() => {
+                    if (window.sampleTourData) {
+                        initializePage();
+                    } else {
+                        console.warn('Tour data not loaded, using fallback');
+                        initializePage();
+                    }
+                }, 100);
+            }
+        });
+
+        function loadTourData() {
+            // Update page title
+            const title = tourData.title || 'Памирское шоссе приключение';
+            document.title = title + ' - Bunyod-Tour';
+            document.getElementById('page-title').textContent = title + ' - Bunyod-Tour';
+            
+            // Update tour title
+            document.getElementById('tour-title').textContent = title;
+            
+            // Update location
+            const location = tourData.location || 'Душанбе, Таджикистан';
+            document.getElementById('tour-location').textContent = location;
+            
+            // Update breadcrumb
+            document.getElementById('breadcrumb-final').textContent = title;
+            
+            // Update rating
+            const rating = tourData.rating || 4.8;
+            const reviewCount = tourData.reviews_count || 52;
+            document.getElementById('review-count').textContent = `(${reviewCount} Reviews)`;
+            
+            // Update duration
+            document.getElementById('tour-duration').textContent = tourData.duration || '6 to 7 hours (approx.)';
+        }
+
+        function setupGallery() {
+            if (!tourData.images || tourData.images.length === 0) return;
+            
+            // Set main image
+            const mainImage = document.getElementById('main-image');
+            mainImage.src = tourData.images[0];
+            
+            // Create thumbnails
+            const thumbnailColumn = document.getElementById('thumbnail-column');
+            const maxThumbnails = 4;
+            
+            thumbnailColumn.innerHTML = tourData.images.slice(0, maxThumbnails).map((img, index) => 
+                `<div class="w-full h-20 cursor-pointer thumbnail ${index === 0 ? 'thumbnail-active' : 'thumbnail-inactive'}" data-index="${index}" onclick="switchMainImage(${index})">
+                    <img src="${img}" alt="Tour image ${index + 1}" class="w-full h-full object-cover rounded-lg">
+                </div>`
+            ).join('');
+        }
+
+        function switchMainImage(index) {
+            if (!tourData.images || index >= tourData.images.length) return;
+            
+            currentImageIndex = index;
+            const mainImage = document.getElementById('main-image');
+            mainImage.src = tourData.images[index];
+            
+            // Update thumbnail states
+            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+                thumb.classList.remove('thumbnail-active', 'thumbnail-inactive');
+                if (i === index) {
+                    thumb.classList.add('thumbnail-active');
+                } else {
+                    thumb.classList.add('thumbnail-inactive');
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            // Navigation arrows
+            document.getElementById('prev-btn').addEventListener('click', () => {
+                const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : tourData.images.length - 1;
+                switchMainImage(newIndex);
+            });
+            
+            document.getElementById('next-btn').addEventListener('click', () => {
+                const newIndex = currentImageIndex < tourData.images.length - 1 ? currentImageIndex + 1 : 0;
+                switchMainImage(newIndex);
+            });
+            
+            // Main image click for modal
+            document.getElementById('main-image-container').addEventListener('click', () => {
+                openImageModal(currentImageIndex);
+            });
+            
+            // See more button
+            document.getElementById('see-more-btn').addEventListener('click', () => {
+                openImageModal(0);
+            });
+            
+            // Wishlist button
+            document.getElementById('wishlist-btn').addEventListener('click', () => {
+                const icon = document.querySelector('#wishlist-btn svg');
+                icon.classList.toggle('text-red-500');
+                icon.classList.toggle('fill-current');
+            });
+        }
+
+        function openImageModal(startIndex) {
+            currentImageIndex = startIndex;
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            
+            modalImage.src = tourData.images[currentImageIndex];
+            modal.classList.remove('hidden');
+            
+            // Modal event listeners
+            document.getElementById('closeModal').onclick = () => modal.classList.add('hidden');
+            document.getElementById('modalPrev').onclick = () => {
+                currentImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : tourData.images.length - 1;
+                modalImage.src = tourData.images[currentImageIndex];
+            };
+            document.getElementById('modalNext').onclick = () => {
+                currentImageIndex = currentImageIndex < tourData.images.length - 1 ? currentImageIndex + 1 : 0;
+                modalImage.src = tourData.images[currentImageIndex];
+            };
+            
+            // Close on background click
+            modal.onclick = (e) => {
+                if (e.target === modal) modal.classList.add('hidden');
+            };
+            
+            // Keyboard navigation
+            document.onkeydown = (e) => {
+                if (modal.classList.contains('hidden')) return;
+                if (e.key === 'Escape') modal.classList.add('hidden');
+                if (e.key === 'ArrowLeft') document.getElementById('modalPrev').click();
+                if (e.key === 'ArrowRight') document.getElementById('modalNext').click();
+            };
+        }
+    </script>
+    
+    <script src="sample-tour-data.js"></script>
+</body>
+</html>
