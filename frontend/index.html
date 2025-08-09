@@ -221,111 +221,14 @@
 
                     <!-- Сброс фильтров -->
                     <div class="flex items-end">
-                        <button onclick="clearSearch()" class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-lg font-bold tracking-wide transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                        <button onclick="clearSearch()" class="w-full text-white px-6 py-3 rounded-lg font-bold tracking-wide transition-all duration-300 hover:scale-105 hover:shadow-lg" style="background-color: #3E3E3E; box-shadow: 0 8px 25px rgba(62, 62, 62, 0.4);">
                             🗑️ Сбросить фильтры
                         </button>
                     </div>
                 </div>
             </div>
 
-    <!-- Блок Услуги -->
-    <section class="py-16 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
-                Наши услуги
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Трансфер -->
-                <div class="service-card rounded-xl p-8" style="--icon-color-1: #3B82F6; --icon-color-2: #1D4ED8; --icon-shadow: rgba(59, 130, 246, 0.3);">
-                    <div class="flex flex-col items-center text-center mb-6">
-                        <div class="service-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17l4 4 4-4m-4-5v9m0-13a4 4 0 00-4 4v1a4 4 0 004 4 4 4 0 004-4v-1a4 4 0 00-4-4z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">🚗 Трансфер</h3>
-                        <p class="text-sm text-gray-600 mb-4">Комфортные поездки по всему Таджикистану</p>
-                    </div>
-                    <ul class="text-sm text-gray-700 mb-6 space-y-2">
-                        <li class="flex items-center"><span class="text-blue-500 mr-2">✈️</span> Встреча в аэропорту</li>
-                        <li class="flex items-center"><span class="text-blue-500 mr-2">🚙</span> Комфортные автомобили</li>
-                        <li class="flex items-center"><span class="text-blue-500 mr-2">🏨</span> Трансфер до отеля</li>
-                        <li class="flex items-center"><span class="text-blue-500 mr-2">🛣️</span> Межгородские поездки</li>
-                    </ul>
-                    <button class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                        Заказать трансфер
-                    </button>
-                </div>
 
-                <!-- Проводник -->
-                <div class="service-card rounded-xl p-8" style="--icon-color-1: #10B981; --icon-color-2: #059669; --icon-shadow: rgba(16, 185, 129, 0.3);">
-                    <div class="flex flex-col items-center text-center mb-6">
-                        <div class="service-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">🧭 Проводник</h3>
-                        <p class="text-sm text-gray-600 mb-4">Профессиональные гиды с глубокими знаниями</p>
-                    </div>
-                    <ul class="text-sm text-gray-700 mb-6 space-y-2">
-                        <li class="flex items-center"><span class="text-green-500 mr-2">👨‍🏫</span> Опытные гиды</li>
-                        <li class="flex items-center"><span class="text-green-500 mr-2">🗺️</span> Знание местности</li>
-                        <li class="flex items-center"><span class="text-green-500 mr-2">📚</span> Исторические рассказы</li>
-                        <li class="flex items-center"><span class="text-green-500 mr-2">⛰️</span> Безопасность в горах</li>
-                    </ul>
-                    <button class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                        Нанять гида
-                    </button>
-                </div>
-
-                <!-- Агентский сервис -->
-                <div class="service-card rounded-xl p-8" style="--icon-color-1: #8B5CF6; --icon-color-2: #7C3AED; --icon-shadow: rgba(139, 92, 246, 0.3);">
-                    <div class="flex flex-col items-center text-center mb-6">
-                        <div class="service-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">🏢 Агентский сервис</h3>
-                        <p class="text-sm text-gray-600 mb-4">Полный спектр туристических услуг</p>
-                    </div>
-                    <ul class="text-sm text-gray-700 mb-6 space-y-2">
-                        <li class="flex items-center"><span class="text-purple-500 mr-2">🏨</span> Бронирование отелей</li>
-                        <li class="flex items-center"><span class="text-purple-500 mr-2">📋</span> Оформление виз</li>
-                        <li class="flex items-center"><span class="text-purple-500 mr-2">🛡️</span> Страхование</li>
-                        <li class="flex items-center"><span class="text-purple-500 mr-2">🎫</span> Билеты на транспорт</li>
-                    </ul>
-                    <button class="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                        Воспользоваться
-                    </button>
-                </div>
-
-                <!-- Мастер класс -->
-                <div class="service-card rounded-xl p-8" style="--icon-color-1: #F59E0B; --icon-color-2: #D97706; --icon-shadow: rgba(245, 158, 11, 0.3);">
-                    <div class="flex flex-col items-center text-center mb-6">
-                        <div class="service-icon w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">🎨 Мастер-класс</h3>
-                        <p class="text-sm text-gray-600 mb-4">Погружение в таджикскую культуру</p>
-                    </div>
-                    <ul class="text-sm text-gray-700 mb-6 space-y-2">
-                        <li class="flex items-center"><span class="text-orange-500 mr-2">🏺</span> Традиционные ремёсла</li>
-                        <li class="flex items-center"><span class="text-orange-500 mr-2">🍽️</span> Кулинарные уроки</li>
-                        <li class="flex items-center"><span class="text-orange-500 mr-2">💃</span> Национальные танцы</li>
-                        <li class="flex items-center"><span class="text-orange-500 mr-2">🎁</span> Изготовление сувениров</li>
-                    </ul>
-                    <button class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                        Записаться
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
 
             <!-- Результаты поиска -->
             <div id="searchResults" class="hidden">
@@ -1313,6 +1216,96 @@
         </div>
     </section>
 
+    <!-- Блок Услуги -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+                Наши услуги
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Трансфер -->
+                <div class="service-card rounded-xl p-8" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <div class="text-4xl mb-4" style="color: #3E3E3E;">
+                            🚗
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Трансфер</h3>
+                        <p class="text-sm text-gray-600 mb-4">Комфортные поездки по всему Таджикистану</p>
+                    </div>
+                    <ul class="text-sm text-gray-700 mb-6 space-y-2">
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">✈️</span> Встреча в аэропорту</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🚙</span> Комфортные автомобили</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🏨</span> Трансфер до отеля</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🛣️</span> Межгородские поездки</li>
+                    </ul>
+                    <button class="w-full text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg" style="background-color: #3E3E3E;">
+                        Заказать трансфер
+                    </button>
+                </div>
+
+                <!-- Проводник -->
+                <div class="service-card rounded-xl p-8" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <div class="text-4xl mb-4" style="color: #3E3E3E;">
+                            🧭
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Проводник</h3>
+                        <p class="text-sm text-gray-600 mb-4">Профессиональные гиды с глубокими знаниями</p>
+                    </div>
+                    <ul class="text-sm text-gray-700 mb-6 space-y-2">
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">👨‍🏫</span> Опытные гиды</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🗺️</span> Знание местности</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">📚</span> Исторические рассказы</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">⛰️</span> Безопасность в горах</li>
+                    </ul>
+                    <button class="w-full text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg" style="background-color: #3E3E3E;">
+                        Нанять гида
+                    </button>
+                </div>
+
+                <!-- Агентский сервис -->
+                <div class="service-card rounded-xl p-8" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <div class="text-4xl mb-4" style="color: #3E3E3E;">
+                            🏢
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Агентский сервис</h3>
+                        <p class="text-sm text-gray-600 mb-4">Полный спектр туристических услуг</p>
+                    </div>
+                    <ul class="text-sm text-gray-700 mb-6 space-y-2">
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🏨</span> Бронирование отелей</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">📋</span> Оформление виз</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🛡️</span> Страхование</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🎫</span> Билеты на транспорт</li>
+                    </ul>
+                    <button class="w-full text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg" style="background-color: #3E3E3E;">
+                        Воспользоваться
+                    </button>
+                </div>
+
+                <!-- Мастер класс -->
+                <div class="service-card rounded-xl p-8" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <div class="text-4xl mb-4" style="color: #3E3E3E;">
+                            🎨
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Мастер-класс</h3>
+                        <p class="text-sm text-gray-600 mb-4">Погружение в таджикскую культуру</p>
+                    </div>
+                    <ul class="text-sm text-gray-700 mb-6 space-y-2">
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🏺</span> Традиционные ремёсла</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🍽️</span> Кулинарные уроки</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">💃</span> Национальные танцы</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🎁</span> Изготовление сувениров</li>
+                    </ul>
+                    <button class="w-full text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg" style="background-color: #3E3E3E;">
+                        Записаться
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Направления -->
     <section class="py-16 bg-gray-50">
