@@ -9,16 +9,22 @@
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Header -->
-    <header class="bg-white border-b shadow-sm">
-        <div class="max-w-7xl mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <h1 class="text-2xl font-bold text-gray-900">Bunyod-Tour</h1>
+    <header class="shadow-md sticky top-0 z-50" style="background-color: #3E3E3E;">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between h-16 px-6">
+                <!-- Логотип -->
+                <div class="flex items-center">
+                    <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour Logo" class="w-12 h-12 mr-3 rounded-full">
+                    <span class="text-xl font-bold text-white">Bunyod-Tour</span>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <button class="text-gray-600 hover:text-gray-900">🌐</button>
-                    <button class="bg-gray-100 p-2 rounded-full">👤</button>
-                </div>
+                
+                <!-- Навигационное меню -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Турагентам</a>
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Горящие туры</a>
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Новости</a>
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Пользователям</a>
+                </nav>
             </div>
         </div>
     </header>
@@ -282,7 +288,7 @@
                     </div>
                     
                     <!-- Check Availability Button -->
-                    <button class="w-full bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-lg font-semibold text-lg mb-6 transition-colors">
+                    <button class="w-full hover:opacity-90 text-white py-4 px-6 rounded-lg font-semibold text-lg mb-6 transition-colors" style="background-color: #3E3E3E;">
                         Проверить наличие
                     </button>
                     
