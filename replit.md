@@ -17,6 +17,9 @@ A complete TypeScript Express backend API for Bunyod-Tour tour agency specializi
 - **Non-Critical Email Service**: Updated email system to handle authentication failures gracefully without breaking booking flow
 - **Internationalization (i18n)**: Added trilingual support (English/Russian/Tajik) using react-i18next with language switcher component
 - **Universal Tour Template System**: Created comprehensive tour page template (tour-template.html) with dynamic JSON data loading, URL parameter support, and advanced interactive features including image galleries, social sharing, wishlist functionality, and booking system simulation
+- **Footer Integration**: Added complete footer from main page to tour pages with updated social media links (Facebook, Instagram, YouTube, WhatsApp, Telegram)
+- **Accordion Layout Update**: Changed accordion buttons from vertical stacking to horizontal grid layout (4 columns) for better visual hierarchy
+- **Services Section**: Added new services block with 4 service cards featuring icon-based design: Transfer, Guide, Agency Service, and Master Class
 
 ## User Preferences
 
