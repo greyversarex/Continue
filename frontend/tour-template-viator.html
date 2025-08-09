@@ -83,7 +83,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-6 py-6">
+    <main class="max-w-7xl mx-auto px-6" style="padding-top: 24px; padding-bottom: 0;">
         <!-- Tour Title -->
         <div class="mb-6">
             <h1 id="tour-title" class="text-3xl font-bold text-gray-900 mb-3">
@@ -150,8 +150,8 @@
                             </div>
                         </div>
                         
-                        <!-- View all photos link -->
-                        <div class="text-center mt-2">
+                        <!-- View all photos link - no margin -->
+                        <div class="text-center" style="margin-top: 4px;">
                             <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
                                 Посмотреть все фотографии
                             </a>
@@ -244,7 +244,7 @@
         </div>
         
         <!-- Tour Information Section - Compact horizontal layout like Viator -->
-        <section class="lg:pr-80" style="margin-top: -24px !important;">
+        <section class="lg:pr-80" style="margin-top: -16px !important; padding-top: 0 !important;">
             <!-- Compact horizontal info strip like Viator -->
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <div class="flex flex-wrap items-center justify-start gap-6 text-sm">
@@ -521,7 +521,7 @@
 
         // Load tour data after script loads
         function initializePage() {
-            console.log('Viator-style tour page loaded - v4.1 - NO GAPS BETWEEN GALLERY AND INFO');
+            console.log('Viator-style tour page loaded - v4.2 - ZERO MARGIN CONTAINER FIX');
             console.log('Available data:', window.sampleTourData);
             
             // Get tour parameter from URL
