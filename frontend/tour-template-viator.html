@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">Тур - Bunyod-Tour</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title id="page-title">Тур - Bunyod-Tour v3.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .thumbnail-active {
@@ -240,8 +243,8 @@
             </div>
         </div>
         
-        <!-- Tour Information Section - Updated spacing v2 -->
-        <section class="lg:pr-80">
+        <!-- Tour Information Section - NO SPACING -->
+        <section class="lg:pr-80" style="margin-top: 0px !important; padding-top: 0px !important;">
             <div class="bg-white border border-gray-200 rounded-lg p-6">
                 <h2 class="text-xl font-semibold text-gray-900 mb-6">Информация о туре</h2>
                 
@@ -531,7 +534,7 @@
 
         // Load tour data after script loads
         function initializePage() {
-            console.log('Viator-style tour page loaded - v2');
+            console.log('Viator-style tour page loaded - v3.1 - SPACING FIXED');
             console.log('Available data:', window.sampleTourData);
             
             // Get tour parameter from URL
