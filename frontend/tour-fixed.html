@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Тур - Bunyod-Tour FIXED</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white font-sans">
+    <!-- Header -->
+    <header class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-2xl font-bold text-gray-900">Bunyod-Tour</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 pt-6">
+        <!-- Tour Title -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-900 mb-3">
+                Полный день: Памирское шоссе, горы и озёра
+            </h1>
+            
+            <div class="flex items-center space-x-4 mb-2">
+                <div class="flex items-center">
+                    <div class="flex text-yellow-400">★★★★★</div>
+                    <span class="ml-2 text-sm text-gray-600">(234 отзыва)</span>
+                </div>
+                <span class="text-gray-400">|</span>
+                <span class="text-sm text-gray-600">Памирские горы, Таджикистан</span>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Image Gallery Section -->
+            <div class="lg:col-span-3">
+                <div class="flex gap-4">
+                    <!-- Left Thumbnail Column -->
+                    <div class="flex flex-col space-y-2 w-32">
+                        <div class="space-y-2">
+                            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop" alt="Tour image" class="w-full h-20 object-cover rounded-lg">
+                            <img src="https://images.unsplash.com/photo-1464822759844-d150b377fc24?w=600&h=400&fit=crop" alt="Tour image" class="w-full h-20 object-cover rounded-lg">
+                            <img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=600&h=400&fit=crop" alt="Tour image" class="w-full h-20 object-cover rounded-lg">
+                        </div>
+                        <button class="w-full h-20 bg-gray-100 rounded-lg flex items-center justify-center text-sm font-medium text-gray-600 hover:bg-gray-200 transition-colors">
+                            Ещё фото
+                        </button>
+                    </div>
+                    
+                    <!-- Main Image -->
+                    <div class="flex-1 relative">
+                        <div class="relative overflow-hidden rounded-lg cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop" alt="Main tour image" class="w-full h-96 object-cover">
+                            
+                            <!-- Share and Wishlist buttons -->
+                            <div class="absolute top-4 right-4 flex space-x-2">
+                                <button class="bg-white bg-opacity-90 hover:bg-opacity-100 px-4 py-2 rounded-lg flex items-center space-x-1 text-sm transition-all">
+                                    <span>Поделиться</span>
+                                </button>
+                                <button class="bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-lg transition-all">
+                                    ♡
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- View all photos link -->
+                        <div class="text-center mt-2">
+                            <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                Посмотреть все фотографии
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-xl sticky top-6">
+                    <div class="mb-4">
+                        <span class="text-2xl font-bold text-gray-900">От 3 500₽</span>
+                        <span class="text-sm text-gray-600 ml-1">за человека</span>
+                    </div>
+                    
+                    <!-- Date Selector -->
+                    <div class="mb-4">
+                        <div class="border border-gray-300 rounded-lg p-3 flex items-center justify-between cursor-pointer">
+                            <span class="text-gray-900 font-medium">Воскресенье, 10 августа 2025</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Travelers Selector -->
+                    <div class="mb-4">
+                        <div class="border border-gray-300 rounded-lg p-3 flex items-center justify-between cursor-pointer">
+                            <span class="text-gray-900 font-medium">2 человека</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Time Selector -->
+                    <div class="mb-6">
+                        <div class="border border-gray-300 rounded-lg p-3">
+                            <span class="text-gray-500">Выберите время</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Check Availability Button -->
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium mb-4 transition-colors">
+                        Проверить наличие
+                    </button>
+                    
+                    <!-- Additional Info -->
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start space-x-2">
+                            <span class="text-green-600">✓</span>
+                            <div>
+                                <span class="font-medium">Бесплатная отмена</span>
+                                <p class="text-gray-600">до 24 часов до начала тура</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-2">
+                            <span class="text-green-600">✓</span>
+                            <div>
+                                <span class="font-medium">Забронировать сейчас, оплатить позже</span>
+                                <p class="text-gray-600">Забронируйте место и сохраните гибкость</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Book ahead notice -->
+                    <div class="mt-6 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div class="flex items-center">
+                            <div>
+                                <p class="text-sm font-medium text-yellow-800">Бронируйте заранее!</p>
+                                <p class="text-xs text-yellow-700">В среднем этот тур бронируют за 20 дней.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tour Information Section - NO GAP -->
+        <section class="lg:pr-80 -mt-2">
+            <!-- Compact horizontal info strip like Viator -->
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4">
+                <div class="flex flex-wrap items-center justify-start gap-6 text-sm">
+                    <!-- Duration -->
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="text-gray-900 font-medium">6-7 часов (прибл.)</span>
+                    </div>
+
+                    <!-- Pickup -->
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
+                        </svg>
+                        <span class="text-gray-900 font-medium">Забор из отеля предлагается</span>
+                    </div>
+
+                    <!-- Mobile Ticket -->
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                        <span class="text-gray-900 font-medium">Мобильный билет</span>
+                    </div>
+
+                    <!-- Languages -->
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                        </svg>
+                        <span class="text-gray-900 font-medium">Предлагается на: Английский <span class="text-gray-600">и ещё 2</span></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tour Description Section -->
+        <section class="mt-4 lg:pr-80">
+            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">Описание тура</h2>
+                
+                <div class="text-gray-700 space-y-4">
+                    <p>Откройте для себя величественную красоту Памирских гор в этом незабываемом однодневном туре. Путешествуйте по знаменитому Памирскому шоссе, одной из самых высоких автомобильных дорог в мире, и наслаждайтесь потрясающими видами высокогорных озёр, ледников и традиционных памирских деревень.</p>
+                </div>
+
+                <h3 class="text-lg font-semibold text-gray-900 mt-8 mb-4">Особенности тура:</h3>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-3">✓</span>
+                        <span class="text-gray-700">Проезд по легендарному Памирскому шоссе</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-3">✓</span>
+                        <span class="text-gray-700">Посещение высокогорных озёр с кристально чистой водой</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-3">✓</span>
+                        <span class="text-gray-700">Знакомство с культурой и традициями памирских народов</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section class="mt-4 lg:pr-80">
+            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">Отзывы</h2>
+                
+                <div class="space-y-4">
+                    <div class="border-b pb-4">
+                        <div class="flex items-center mb-2">
+                            <div class="flex text-yellow-400 text-sm">★★★★★</div>
+                            <span class="ml-2 font-medium">Анна С.</span>
+                            <span class="ml-2 text-sm text-gray-600">• 2 недели назад</span>
+                        </div>
+                        <p class="text-gray-700">Потрясающий тур! Виды просто невероятные, гид очень знающий. Рекомендую всем!</p>
+                    </div>
+                    
+                    <div class="border-b pb-4">
+                        <div class="flex items-center mb-2">
+                            <div class="flex text-yellow-400 text-sm">★★★★★</div>
+                            <span class="ml-2 font-medium">Дмитрий К.</span>
+                            <span class="ml-2 text-sm text-gray-600">• 1 месяц назад</span>
+                        </div>
+                        <p class="text-gray-700">Организация на высшем уровне. Памирское шоссе - это что-то невероятное!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Similar Tours Section -->
+        <section class="mt-4 lg:pr-80 mb-8">
+            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">Похожие туры</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="border rounded-lg p-4">
+                        <img src="https://images.unsplash.com/photo-1464822759844-d150b377fc24?w=300&h=200&fit=crop" alt="Similar tour" class="w-full h-32 object-cover rounded mb-3">
+                        <h3 class="font-medium text-gray-900 mb-1">Фанские горы: треккинг и озёра</h3>
+                        <p class="text-sm text-gray-600 mb-2">От 2 800₽</p>
+                        <div class="flex text-yellow-400 text-xs">★★★★☆</div>
+                    </div>
+                    
+                    <div class="border rounded-lg p-4">
+                        <img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=300&h=200&fit=crop" alt="Similar tour" class="w-full h-32 object-cover rounded mb-3">
+                        <h3 class="font-medium text-gray-900 mb-1">Исканедркуль: жемчужина Памира</h3>
+                        <p class="text-sm text-gray-600 mb-2">От 4 200₽</p>
+                        <div class="flex text-yellow-400 text-xs">★★★★★</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        console.log('FIXED TOUR PAGE LOADED - NO GAPS');
+    </script>
+</body>
+</html>
