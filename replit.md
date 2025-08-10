@@ -22,6 +22,7 @@ A complete TypeScript Express backend API for Bunyod-Tour tour agency specializi
 - **Services Section**: Added new services block with 4 service cards featuring icon-based design: Transfer, Guide, Agency Service, and Master Class
 - **Tour Page Layout Fixes**: Restructured tour template with proper Viator-style layout, sticky booking sidebar, and compact horizontal info strip
 - **Single Date Picker**: Replaced date range selection with single HTML5 date picker with calendar interface for improved user experience
+- **Fundamental Tab System Implementation**: Made tabbed tour information format mandatory and universal across ALL tour-related files, establishing it as the core architectural pattern for tour content presentation
 
 ## User Preferences
 
@@ -102,3 +103,15 @@ Preferred communication style: Simple, everyday language.
 - **JSON Data Structure**: Standardized tour data format supporting images, pricing, reviews, highlights, and related tours
 - **Cross-Device Compatibility**: Fully responsive design tested across different screen sizes
 - **SEO-Friendly**: Dynamic title updates and semantic HTML structure
+
+### Universal Tab System Architecture (August 2025)
+- **Mandatory Three-Tab Structure**: All tour pages now implement standardized tabbed information display
+  - "Описание тура" (Tour Description): Overview, highlights, and key features
+  - "Программа тура" (Tour Program): Time-based schedule with activity details
+  - "Отели" (Hotels): Accommodation information with amenities
+- **Implementation Coverage**: 100% of tour files include tab system
+  - Static pages: tour-fixed.html, tour-page-correct.html, tour-template.html, tour-template-viator.html
+  - Demo page: tour-examples.html (with demonstration tabs)
+  - Search interface: tours.html (modal-based detailed view with tabs)
+- **Consistent JavaScript Functionality**: Uniform switchTab() functions across all implementations
+- **User Experience**: Intuitive navigation with visual active state indicators and hover effects

@@ -245,6 +245,130 @@
         </div>
     </div>
 
+    <!-- Tour Detail Modal with Tabs -->
+    <div id="tourDetailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen px-4 py-8">
+            <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-screen overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center">
+                    <h2 id="modalTitle" class="text-2xl font-bold text-gray-900">Детали тура</h2>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Tabs Navigation -->
+                <div class="border-b border-gray-200">
+                    <nav class="flex space-x-8 px-6 pt-4" aria-label="Tabs">
+                        <button id="modal-tab-description" class="whitespace-nowrap py-2 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600" onclick="switchModalTab('description')">
+                            Описание тура
+                        </button>
+                        <button id="modal-tab-program" class="whitespace-nowrap py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" onclick="switchModalTab('program')">
+                            Программа тура
+                        </button>
+                        <button id="modal-tab-hotels" class="whitespace-nowrap py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" onclick="switchModalTab('hotels')">
+                            Отели
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Tabs Content -->
+                <div class="p-6">
+                    <!-- Description Tab -->
+                    <div id="modal-content-description" class="modal-tab-content">
+                        <div id="modalDescription" class="text-gray-700 space-y-4 mb-6">
+                            <p>Описание тура будет загружено...</p>
+                        </div>
+                        
+                        <h4 class="text-lg font-semibold mb-3 text-gray-900">Особенности тура:</h4>
+                        <ul id="modalHighlights" class="space-y-2">
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-3">✓</span>
+                                <span class="text-gray-700">Особенность будет загружена</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Program Tab -->
+                    <div id="modal-content-program" class="modal-tab-content hidden">
+                        <div id="modalProgram" class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">08:00</div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">Встреча с гидом</h4>
+                                    <p class="text-gray-600 mt-1">Сбор группы и начало тура.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">10:00</div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">Основная программа</h4>
+                                    <p class="text-gray-600 mt-1">Посещение достопримечательностей.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">17:00</div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">Завершение</h4>
+                                    <p class="text-gray-600 mt-1">Возвращение в отель.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hotels Tab -->
+                    <div id="modal-content-hotels" class="modal-tab-content hidden">
+                        <div class="space-y-6">
+                            <p class="text-gray-600 mb-6">Отели включенные в стоимость тура:</p>
+                            
+                            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                                <div class="flex">
+                                    <div class="w-48 h-32 bg-gray-200 flex-shrink-0 flex items-center justify-center">
+                                        <span class="text-gray-500">Отель</span>
+                                    </div>
+                                    <div class="p-4 flex-1">
+                                        <h4 class="font-semibold text-gray-900">Стандартный отель</h4>
+                                        <div class="flex items-center mt-1">
+                                            <div class="flex text-yellow-400">★★★★</div>
+                                            <span class="ml-2 text-sm text-gray-600">4.2/5</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1">Комфортабельное размещение</p>
+                                        <div class="mt-4 space-y-1 text-sm text-gray-600">
+                                            <div class="flex items-center">
+                                                <span class="w-4 h-4 mr-2 text-green-600">✓</span>
+                                                Завтрак включен
+                                            </div>
+                                            <div class="flex items-center">
+                                                <span class="w-4 h-4 mr-2 text-green-600">✓</span>
+                                                Wi-Fi
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="sticky bottom-0 bg-gray-50 px-6 py-4 border-t border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <div class="text-2xl font-bold text-gray-900">
+                            от <span id="modalPrice">$0</span>
+                        </div>
+                        <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Забронировать
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Данные городов по странам
         const citiesByCountry = {
@@ -354,7 +478,7 @@
                                 ${tour.format}
                             </div>
                         </div>
-                        <button class="w-full text-white font-medium py-2 px-4 rounded-md transition-opacity hover:opacity-90" 
+                        <button onclick="openTourDetail('${tour.id}')" class="w-full text-white font-medium py-2 px-4 rounded-md transition-opacity hover:opacity-90" 
                                 style="background-color: #3E3E3E;">
                             Подробнее
                         </button>
@@ -435,6 +559,72 @@
             // Загрузка всех туров
             loadTours();
         }
+
+        // Функция открытия детального просмотра тура с табами
+        function openTourDetail(tourId) {
+            const modal = document.getElementById('tourDetailModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalPrice = document.getElementById('modalPrice');
+            
+            // Демонстрационные данные тура
+            const tourData = {
+                title: `Тур #${tourId}`,
+                description: 'Подробное описание этого удивительного тура с посещением уникальных мест и знакомством с местной культурой.',
+                price: Math.floor(Math.random() * 500) + 100
+            };
+            
+            // Заполнение данных модального окна
+            modalTitle.textContent = tourData.title;
+            modalDescription.innerHTML = `<p>${tourData.description}</p>`;
+            modalPrice.textContent = `$${tourData.price}`;
+            
+            // Показать модальное окно
+            modal.classList.remove('hidden');
+            
+            // Сбросить вкладки к первой
+            switchModalTab('description');
+        }
+
+        // Функция закрытия модального окна
+        function closeModal() {
+            const modal = document.getElementById('tourDetailModal');
+            modal.classList.add('hidden');
+        }
+
+        // Функция переключения вкладок в модальном окне
+        function switchModalTab(tabName) {
+            // Скрыть все содержимое вкладок
+            document.querySelectorAll('.modal-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Удалить активные стили со всех вкладок
+            document.querySelectorAll('[id^="modal-tab-"]').forEach(tab => {
+                tab.classList.remove('border-blue-500', 'text-blue-600');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            // Показать выбранную вкладку
+            const contentElement = document.getElementById(`modal-content-${tabName}`);
+            if (contentElement) {
+                contentElement.classList.remove('hidden');
+            }
+            
+            // Добавить активные стили к выбранной вкладке
+            const tabElement = document.getElementById(`modal-tab-${tabName}`);
+            if (tabElement) {
+                tabElement.classList.remove('border-transparent', 'text-gray-500');
+                tabElement.classList.add('border-blue-500', 'text-blue-600');
+            }
+        }
+
+        // Закрытие модального окна по клику вне его
+        document.getElementById('tourDetailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>

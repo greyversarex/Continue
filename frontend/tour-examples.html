@@ -121,6 +121,125 @@
             </div>
         </div>
 
+        <!-- Demo Tour Information Tabs -->
+        <div class="bg-white rounded-lg shadow-sm border mb-8">
+            <div class="border-b border-gray-200 p-6 pb-0">
+                <h3 class="text-xl font-semibold mb-4 text-gray-900">Демо: Универсальная система табов тура</h3>
+                <p class="text-gray-600 mb-4">Пример фундаментального формата информации о туре с тремя обязательными вкладками:</p>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="border-b border-gray-200">
+                <nav class="flex space-x-8 px-6 pt-4" aria-label="Tabs">
+                    <button id="demo-tab-description" class="whitespace-nowrap py-2 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600" onclick="switchDemoTab('description')">
+                        Описание тура
+                    </button>
+                    <button id="demo-tab-program" class="whitespace-nowrap py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" onclick="switchDemoTab('program')">
+                        Программа тура
+                    </button>
+                    <button id="demo-tab-hotels" class="whitespace-nowrap py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" onclick="switchDemoTab('hotels')">
+                        Отели
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6">
+                <!-- Description Tab -->
+                <div id="demo-content-description" class="demo-tab-content">
+                    <div class="text-gray-700 space-y-4">
+                        <p>Это демонстрационный пример универсальной системы табов, которая используется на всех страницах туров. Каждый тур имеет три обязательные вкладки с подробной информацией.</p>
+                    </div>
+                    
+                    <h4 class="text-md font-semibold mb-3 text-gray-900 mt-6">Особенности универсального формата:</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-green-600 mr-3">✓</span>
+                            <span class="text-gray-700">Единообразный дизайн на всех страницах</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-600 mr-3">✓</span>
+                            <span class="text-gray-700">Интуитивная навигация по вкладкам</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-600 mr-3">✓</span>
+                            <span class="text-gray-700">Структурированная подача информации</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Program Tab -->
+                <div id="demo-content-program" class="demo-tab-content hidden">
+                    <div class="space-y-6">
+                        <p class="text-gray-600 mb-4">Пример структуры программы тура по времени:</p>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">08:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Начало тура</h4>
+                                <p class="text-gray-600 mt-1">Встреча с гидом и краткий инструктаж.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">10:30</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Основная программа</h4>
+                                <p class="text-gray-600 mt-1">Посещение главных достопримечательностей.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">18:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Окончание тура</h4>
+                                <p class="text-gray-600 mt-1">Возвращение в отель.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hotels Tab -->
+                <div id="demo-content-hotels" class="demo-tab-content hidden">
+                    <div class="space-y-6">
+                        <p class="text-gray-600 mb-6">Пример информации об отелях в туре:</p>
+                        
+                        <div class="border border-gray-200 rounded-lg overflow-hidden">
+                            <div class="flex">
+                                <div class="w-48 h-32 bg-gradient-to-br from-blue-400 to-cyan-600 flex-shrink-0 flex items-center justify-center">
+                                    <span class="text-white font-medium">DEMO</span>
+                                </div>
+                                <div class="p-4 flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">Отель Демо</h4>
+                                            <div class="flex items-center mt-1">
+                                                <div class="flex text-yellow-400">
+                                                    <span>★★★★</span>
+                                                </div>
+                                                <span class="ml-2 text-sm text-gray-600">4.5/5</span>
+                                            </div>
+                                            <p class="text-sm text-gray-600 mt-1">Пример описания отеля для демонстрации</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 space-y-1 text-sm text-gray-600">
+                                        <div class="flex items-center">
+                                            <span class="w-4 h-4 mr-2 text-green-600">✓</span>
+                                            Завтрак включен
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="w-4 h-4 mr-2 text-green-600">✓</span>
+                                            Wi-Fi бесплатно
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- JSON Structure Example -->
         <div class="bg-white rounded-lg shadow-sm border p-6">
             <h3 class="text-xl font-semibold mb-4 text-gray-900">Пример структуры JSON-данных</h3>
@@ -209,6 +328,33 @@
             // Открываем страницу шаблона тура с параметром
             const url = `tour-template.html?tour=${tourKey}`;
             window.open(url, '_blank');
+        }
+        
+        // Demo tab switching functionality
+        function switchDemoTab(tabName) {
+            // Hide all demo tab contents
+            document.querySelectorAll('.demo-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active styles from all demo tabs
+            document.querySelectorAll('[id^="demo-tab-"]').forEach(tab => {
+                tab.classList.remove('border-blue-500', 'text-blue-600');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            // Show selected demo tab content
+            const contentElement = document.getElementById(`demo-content-${tabName}`);
+            if (contentElement) {
+                contentElement.classList.remove('hidden');
+            }
+            
+            // Add active styles to selected demo tab
+            const tabElement = document.getElementById(`demo-tab-${tabName}`);
+            if (tabElement) {
+                tabElement.classList.remove('border-transparent', 'text-gray-500');
+                tabElement.classList.add('border-blue-500', 'text-blue-600');
+            }
         }
     </script>
 </body>
