@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bunyod-Tour - Туры по Таджикистану</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <style>
         .banner-height {
             height: 70vh;
@@ -23,8 +26,8 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         .filter-gradient {
-            background: linear-gradient(135deg, #4A90E2 0%, #5BA0F2 50%, #6BB6FF 100%);
-            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.4);
+            background: linear-gradient(135deg, #F1F3F4 0%, #E8EAED 50%, #DADCE0 100%);
+            box-shadow: 0 10px 30px rgba(218, 220, 224, 0.3);
         }
         .modern-select {
             background: rgba(255,255,255,0.95);
@@ -1814,7 +1817,7 @@
 
         // Загрузка всех туров при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Страница загружена');
+            console.log('Страница загружена - СЕРЫЙ ФИЛЬТР АКТИВЕН');
             
             // Настройка календаря с минимальной датой
             const dateFilter = document.getElementById('dateFilter');
