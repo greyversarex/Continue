@@ -23,11 +23,11 @@ args = "Frontend React App"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Demo Page"
+args = "Frontend Demo"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Frontend Demo"
+args = "Demo Page"
 
 [[workflows.workflow]]
 name = "Backend Server"
@@ -48,6 +48,15 @@ args = "cd frontend && npm start"
 waitForPort = 3000
 
 [[workflows.workflow]]
+name = "Frontend Demo"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend && python3 -m http.server 3000"
+waitForPort = 3000
+
+[[workflows.workflow]]
 name = "Demo Page"
 author = "agent"
 
@@ -56,14 +65,8 @@ task = "shell.exec"
 args = "cd frontend && python3 -m http.server 8000"
 waitForPort = 8000
 
-[[workflows.workflow]]
-name = "Frontend Demo"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd frontend && python3 -m http.server 3000"
-waitForPort = 3000
+[workflows.workflow.metadata]
+outputType = "webview"
 
 [[ports]]
 localPort = 3000
@@ -80,3 +83,7 @@ externalPort = 5000
 [[ports]]
 localPort = 8000
 externalPort = 80
+
+[[ports]]
+localPort = 8001
+externalPort = 3002
