@@ -8,6 +8,17 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta name="cache-buster" content="1754861300">
+    <script>
+        // Принудительное обновление кеша
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+    </script>
     <style>
         .banner-height {
             height: 70vh;
@@ -26,8 +37,8 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         .filter-gradient {
-            background: linear-gradient(135deg, #F1F3F4 0%, #E8EAED 50%, #DADCE0 100%);
-            box-shadow: 0 10px 30px rgba(218, 220, 224, 0.3);
+            background: linear-gradient(135deg, #4A4A4A 0%, #3E3E3E 50%, #2F2F2F 100%);
+            box-shadow: 0 10px 30px rgba(47, 47, 47, 0.4);
         }
         .modern-select {
             background: rgba(255,255,255,0.95);
@@ -1817,7 +1828,7 @@
 
         // Загрузка всех туров при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Страница загружена - СЕРЫЙ ФИЛЬТР АКТИВЕН');
+            console.log('🔥 НОВАЯ ВЕРСИЯ ЗАГРУЖЕНА - ТЁМНО-СЕРЫЙ ФИЛЬТР! Время: ' + new Date().toLocaleTimeString());
             
             // Настройка календаря с минимальной датой
             const dateFilter = document.getElementById('dateFilter');
