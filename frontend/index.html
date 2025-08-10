@@ -8,9 +8,10 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="cache-buster" content="1754861500-DARK-GRAY-FILTER">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="replit-cache-buster" content="DARK-FILTER-1754862000">
     <script>
-        // СУПЕР АГРЕССИВНАЯ ОЧИСТКА КЕША
+        // Очистка кеша для Replit Preview
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function(registrations) {
                 for(let registration of registrations) {
@@ -19,12 +20,14 @@
             });
         }
         
-        // Принудительное обновление если кеш не очистился
-        const checkVersion = localStorage.getItem('darkFilterVersion');
-        if (checkVersion !== 'v2-dark-gray-filter') {
-            localStorage.setItem('darkFilterVersion', 'v2-dark-gray-filter');
-            if (window.location.search !== '?nocache=' + Date.now()) {
-                window.location.href = window.location.pathname + '?nocache=' + Date.now();
+        // Принудительное обновление для встроенного preview Replit
+        const replitVersion = 'DARK-FILTER-v3-' + Date.now();
+        if (localStorage.getItem('replitPreviewVersion') !== replitVersion) {
+            localStorage.setItem('replitPreviewVersion', replitVersion);
+            // Добавляем уникальный параметр для Replit preview
+            if (!window.location.search.includes('repl_preview=')) {
+                const separator = window.location.search ? '&' : '?';
+                window.location.href = window.location.pathname + window.location.search + separator + 'repl_preview=' + Date.now();
             }
         }
     </script>
