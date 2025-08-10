@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 ТЕСТ - ТЕМНО-СЕРЫЙ ФИЛЬТР РАБОТАЕТ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .filter-gradient {
+            background: linear-gradient(135deg, #4A4A4A 0%, #3E3E3E 50%, #2F2F2F 100%);
+            box-shadow: 0 10px 30px rgba(47, 47, 47, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen bg-gray-50">
+        <div class="container mx-auto py-20">
+            <h1 class="text-4xl font-bold text-center mb-10">ТЕСТ КЕША REPLIT</h1>
+            
+            <div class="max-w-2xl mx-auto">
+                <div class="filter-gradient text-white p-8 rounded-lg text-center">
+                    <h2 class="text-2xl font-bold mb-4">ТЁМНО-СЕРЫЙ ФИЛЬТР</h2>
+                    <p class="text-lg">Если вы видите этот блок ТЁМНО-СЕРЫМ цветом, то обновление работает!</p>
+                    <p class="text-sm mt-4 opacity-80">Градиент: #4A4A4A → #3E3E3E → #2F2F2F</p>
+                </div>
+                
+                <div class="mt-8 bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-4">Проверьте консоль браузера:</h3>
+                    <p>Должно появиться сообщение с 🔥🔥🔥</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🔥🔥🔥 ТЕСТОВАЯ СТРАНИЦА ЗАГРУЖЕНА - ПРОВЕРКА КЕША REPLIT');
+        console.log('⚡ Время загрузки:', new Date().toLocaleTimeString());
+        console.log('🎨 Цвет фильтра: Тёмно-серый градиент');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            alert('🎉 НОВАЯ СТРАНИЦА ЗАГРУЖЕНА! Проверьте цвет фильтра выше.');
+        });
+    </script>
+</body>
+</html>
