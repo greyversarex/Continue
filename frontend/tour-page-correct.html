@@ -137,35 +137,168 @@
                     </div>
                 </div>
 
-                <!-- Tour Description -->
-                <div class="bg-white border border-gray-200 rounded-lg p-6 mt-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Описание тура</h2>
-                    
-                    <div class="text-gray-700 space-y-4">
-                        <p>Откройте для себя величественную красоту Памирских гор в этом незабываемом однодневном туре. Путешествуйте по знаменитому Памирскому шоссе, одной из самых высоких автомобильных дорог в мире, и наслаждайтесь потрясающими видами высокогорных озёр, ледников и традиционных памирских деревень.</p>
-                        
-                        <p>Этот тур предлагает уникальную возможность испытать дух приключений и насладиться одними из самых впечатляющих пейзажей в мире.</p>
+                <!-- Tour Details Tabs -->
+                <div class="bg-white border border-gray-200 rounded-lg mt-6" id="tour-details">
+                    <!-- Tab Navigation -->
+                    <div class="border-b border-gray-200">
+                        <nav class="flex space-x-8 px-6 pt-4" aria-label="Tabs">
+                            <button id="tab-description" class="whitespace-nowrap py-2 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600" onclick="switchTab('description')">
+                                Описание тура
+                            </button>
+                            <button id="tab-program" class="whitespace-nowrap py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" onclick="switchTab('program')">
+                                Программа тура
+                            </button>
+                            <button id="tab-hotels" class="whitespace-nowrap py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" onclick="switchTab('hotels')">
+                                Отели
+                            </button>
+                        </nav>
                     </div>
 
-                    <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-4">Что включено:</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-3 mt-1">✓</span>
-                            <span class="text-gray-700">Проезд по легендарному Памирскому шоссе</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-3 mt-1">✓</span>
-                            <span class="text-gray-700">Посещение высокогорных озёр с кристально чистой водой</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-3 mt-1">✓</span>
-                            <span class="text-gray-700">Знакомство с культурой и традициями памирских народов</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-3 mt-1">✓</span>
-                            <span class="text-gray-700">Профессиональный гид-переводчик</span>
-                        </li>
-                    </ul>
+                    <!-- Tab Content -->
+                    <div class="p-6">
+                        <!-- Description Tab -->
+                        <div id="content-description" class="tab-content">
+                            <div class="text-gray-700 space-y-4">
+                                <p>Откройте для себя величественную красоту Памирских гор в этом незабываемом однодневном туре. Путешествуйте по знаменитому Памирскому шоссе, одной из самых высоких автомобильных дорог в мире, и наслаждайтесь потрясающими видами высокогорных озёр, ледников и традиционных памирских деревень.</p>
+                                
+                                <p>Этот тур предлагает уникальную возможность испытать дух приключений и насладиться одними из самых впечатляющих пейзажей в мире.</p>
+                            </div>
+
+                            <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-4">Что включено:</h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <span class="text-green-600 mr-3 mt-1">✓</span>
+                                    <span class="text-gray-700">Проезд по легендарному Памирскому шоссе</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-600 mr-3 mt-1">✓</span>
+                                    <span class="text-gray-700">Посещение высокогорных озёр с кристально чистой водой</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-600 mr-3 mt-1">✓</span>
+                                    <span class="text-gray-700">Знакомство с культурой и традициями памирских народов</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-600 mr-3 mt-1">✓</span>
+                                    <span class="text-gray-700">Профессиональный гид-переводчик</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Program Tab -->
+                        <div id="content-program" class="tab-content hidden">
+                            <div class="space-y-6">
+                                <div class="flex items-start space-x-4">
+                                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">08:00</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Встреча с гидом и отправление</h4>
+                                        <p class="text-gray-600 mt-1">Сбор группы у отеля. Краткий инструктаж и начало путешествия по Памирскому шоссе.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">09:30</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Первая смотровая площадка</h4>
+                                        <p class="text-gray-600 mt-1">Остановка на высоте 3500 метров с потрясающим видом на долину и горные пики.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">11:00</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Озеро Каракуль</h4>
+                                        <p class="text-gray-600 mt-1">Посещение знаменитого высокогорного озера. Время для фотосессии и знакомства с местной культурой.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">13:00</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Обед в местном ресторане</h4>
+                                        <p class="text-gray-600 mt-1">Традиционный таджикский обед с национальными блюдами и чаем.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">15:00</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">Возвращение в Душанбе</h4>
+                                        <p class="text-gray-600 mt-1">Обратное путешествие с остановками для фото и покупки сувениров.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hotels Tab -->
+                        <div id="content-hotels" class="tab-content hidden">
+                            <div class="space-y-6">
+                                <p class="text-gray-600 mb-6">Отели включенные в стоимость тура</p>
+                                
+                                <!-- Hotel Card 1 -->
+                                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                                    <div class="flex">
+                                        <div class="w-48 h-32 bg-gray-200 flex-shrink-0"></div>
+                                        <div class="p-4 flex-1">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-semibold text-gray-900">Pamir Lodge</h4>
+                                                    <div class="flex items-center mt-1">
+                                                        <div class="flex text-yellow-400">
+                                                            <span>★★★★</span>
+                                                        </div>
+                                                        <span class="ml-2 text-sm text-gray-600">4.5/5</span>
+                                                    </div>
+                                                    <p class="text-sm text-gray-600 mt-1">Комфортабельная гостиница в горах Памира</p>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 space-y-1 text-sm text-gray-600">
+                                                <div class="flex items-center">
+                                                    <span class="w-4 h-4 mr-2 text-green-600">✓</span>
+                                                    Завтрак включен
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <span class="w-4 h-4 mr-2 text-green-600">✓</span>
+                                                    Wi-Fi
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hotel Card 2 -->
+                                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                                    <div class="flex">
+                                        <div class="w-48 h-32 bg-gray-200 flex-shrink-0"></div>
+                                        <div class="p-4 flex-1">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-semibold text-gray-900">Dushanbe Serena Hotel</h4>
+                                                    <div class="flex items-center mt-1">
+                                                        <div class="flex text-yellow-400">
+                                                            <span>★★★★★</span>
+                                                        </div>
+                                                        <span class="ml-2 text-sm text-gray-600">4.8/5</span>
+                                                    </div>
+                                                    <p class="text-sm text-gray-600 mt-1">Роскошный отель в центре Душанбе</p>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 space-y-1 text-sm text-gray-600">
+                                                <div class="flex items-center">
+                                                    <span class="w-4 h-4 mr-2 text-green-600">✓</span>
+                                                    Завтрак и ужин
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <span class="w-4 h-4 mr-2 text-green-600">✓</span>
+                                                    Спа-центр и фитнес
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Reviews -->
@@ -412,6 +545,33 @@
 
     <script>
         console.log('CORRECT TOUR PAGE LOADED - PROPER LAYOUT');
+        
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active styles from all tabs
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+                tab.classList.remove('border-blue-500', 'text-blue-600');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            // Show selected tab content
+            const contentElement = document.getElementById(`content-${tabName}`);
+            if (contentElement) {
+                contentElement.classList.remove('hidden');
+            }
+            
+            // Add active styles to selected tab
+            const tabElement = document.getElementById(`tab-${tabName}`);
+            if (tabElement) {
+                tabElement.classList.remove('border-transparent', 'text-gray-500');
+                tabElement.classList.add('border-blue-500', 'text-blue-600');
+            }
+        }
     </script>
 </body>
 </html>
