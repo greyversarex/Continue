@@ -65,9 +65,6 @@ task = "shell.exec"
 args = "cd frontend && python3 -m http.server 8000"
 waitForPort = 8000
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
 [[ports]]
 localPort = 3000
 externalPort = 3000
