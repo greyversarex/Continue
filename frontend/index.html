@@ -82,52 +82,44 @@
         }
         
         /* Анимированные иконки услуг */
-        .car-icon {
+        .car-icon, .guide-icon, .agency-icon, .class-icon {
             font-size: 3rem;
-            transition: transform 0.4s ease;
+            transition: all 0.4s ease;
+            display: inline-block;
         }
+        
         .service-card:hover .car-icon {
-            animation: drive 1s ease-in-out infinite alternate;
+            animation: drive 1.5s ease-in-out infinite alternate;
         }
         @keyframes drive {
             0% { transform: translateX(0); }
-            100% { transform: translateX(10px); }
+            100% { transform: translateX(15px); }
         }
         
-        .guide-icon {
-            font-size: 3rem;
-            transition: transform 0.4s ease;
-        }
         .service-card:hover .guide-icon {
-            animation: wave 1s ease-in-out infinite;
+            animation: wave 1.2s ease-in-out infinite;
         }
         @keyframes wave {
             0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(15deg); }
+            25% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
         }
         
-        .agency-icon {
-            font-size: 3rem;
-            transition: transform 0.4s ease;
-        }
         .service-card:hover .agency-icon {
             animation: bounce 1s ease-in-out infinite;
         }
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.1); }
         }
         
-        .class-icon {
-            font-size: 3rem;
-            transition: transform 0.4s ease;
-        }
         .service-card:hover .class-icon {
             animation: rotate 2s linear infinite;
         }
         @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
         }
     </style>
 </head>
@@ -253,20 +245,20 @@
                         </select>
                     </div>
                     
-                    <!-- Кнопка поиска с датой -->
-                    <div class="flex items-end">
-                        <button id="searchButton" onclick="searchTours()" class="modern-button w-full text-white px-6 py-3 rounded-lg font-bold tracking-wide">
-                            🗓️ Дата тура
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Дополнительные фильтры даты -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <!-- Дата тура -->
                     <div>
                         <label class="block text-sm font-bold text-white mb-3 tracking-wide">Дата тура</label>
                         <input type="date" id="dateFilter" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium" placeholder="Выберите дату">
+                    </div>
+                </div>
+
+                <!-- Кнопки -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <!-- Кнопка поиска -->
+                    <div class="flex items-end">
+                        <button id="searchButton" onclick="searchTours()" class="modern-button w-full text-white px-6 py-3 rounded-lg font-bold tracking-wide">
+                            🔍 Найти туры
+                        </button>
                     </div>
 
                     <!-- Сброс фильтров -->
