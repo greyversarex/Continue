@@ -247,17 +247,17 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
         
-        /* Дополнительные стили для языковых кнопок */
-        .language-flags {
-            display: flex;
-            gap: 0.5rem;
+        /* Стили для языкового селектора с флагами */
+        .language-dropdown {
+            position: relative;
+            display: inline-block;
         }
         
-        .lang-btn {
+        .lang-selector-btn {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
-            padding: 0.5rem 0.75rem;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 0.5rem;
             background: rgba(255, 255, 255, 0.1);
@@ -266,19 +266,95 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-decoration: none;
+            backdrop-filter: blur(10px);
+            min-width: 80px;
         }
         
-        .lang-btn:hover {
+        .lang-selector-btn:hover {
             background: rgba(255, 255, 255, 0.2);
             border-color: rgba(255, 255, 255, 0.5);
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
-        .lang-btn.active {
-            background: rgba(255, 255, 255, 0.95);
-            color: #374151;
-            border-color: rgba(255, 255, 255, 0.8);
+        .selected-flag {
+            font-size: 1.125rem;
+        }
+        
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+            margin-left: auto;
+        }
+        
+        .dropdown-arrow.open {
+            transform: rotate(180deg);
+        }
+        
+        .lang-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(47, 47, 47, 0.95);
+            backdrop-filter: blur(10px);
+            min-width: 160px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            z-index: 1000;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .lang-dropdown-content.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .lang-option:last-child {
+            border-bottom: none;
+        }
+        
+        .lang-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+        
+        .lang-option.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+        }
+        
+        .lang-option .flag {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .lang-option .lang-name {
+            font-weight: 500;
+            flex: 1;
         }
         
         /* Стили для кнопки поиска без цвета */
@@ -358,19 +434,32 @@
                 </nav>
                 
                 <!-- Языковой селектор -->
-                <div class="language-flags flex space-x-2">
-                    <button class="lang-btn active" data-lang="ru" title="Русский">
-                        🇷🇺 RU
+                <div class="language-dropdown">
+                    <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
+                        <span class="selected-flag">🇷🇺</span>
+                        <span class="selected-lang">RU</span>
+                        <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
                     </button>
-                    <button class="lang-btn" data-lang="en" title="English">
-                        🇺🇸 EN
-                    </button>
-                    <button class="lang-btn" data-lang="tj" title="Таджикский">
-                        🇹🇯 TJ
-                    </button>
-                    <button class="lang-btn" data-lang="fa" title="Фарси">
-                        🇮🇷 FA
-                    </button>
+                    <div class="lang-dropdown-content" id="langDropdown">
+                        <a href="#" class="lang-option active" data-lang="ru" data-flag="🇷🇺" onclick="selectLanguage('ru', '🇷🇺', 'RU')">
+                            <span class="flag">🇷🇺</span>
+                            <span class="lang-name">Русский</span>
+                        </a>
+                        <a href="#" class="lang-option" data-lang="en" data-flag="🇺🇸" onclick="selectLanguage('en', '🇺🇸', 'EN')">
+                            <span class="flag">🇺🇸</span>
+                            <span class="lang-name">English</span>
+                        </a>
+                        <a href="#" class="lang-option" data-lang="tj" data-flag="🇹🇯" onclick="selectLanguage('tj', '🇹🇯', 'TJ')">
+                            <span class="flag">🇹🇯</span>
+                            <span class="lang-name">Таджикский</span>
+                        </a>
+                        <a href="#" class="lang-option" data-lang="fa" data-flag="🇮🇷" onclick="selectLanguage('fa', '🇮🇷', 'FA')">
+                            <span class="flag">🇮🇷</span>
+                            <span class="lang-name">Фарси</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2191,21 +2280,46 @@
                 }
             });
             
-            // Обработчики событий для языковых кнопок
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const lang = this.getAttribute('data-lang');
-                    
-                    // Убираем активный класс со всех кнопок
-                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                    
-                    // Добавляем активный класс к выбранной кнопке
-                    this.classList.add('active');
-                    
-                    console.log(`Переключен язык: ${lang}`);
-                });
+            // Закрытие выпадающего списка при клике вне его
+            document.addEventListener('click', function(event) {
+                const dropdown = document.getElementById('langDropdown');
+                const button = document.querySelector('.lang-selector-btn');
+                if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.remove('show');
+                    document.querySelector('.dropdown-arrow').classList.remove('open');
+                }
             });
         });
+        
+        // Функции для языкового селектора
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('langDropdown');
+            const arrow = document.querySelector('.dropdown-arrow');
+            dropdown.classList.toggle('show');
+            arrow.classList.toggle('open');
+        }
+        
+        function selectLanguage(lang, flag, code) {
+            // Обновляем кнопку селектора
+            document.querySelector('.selected-flag').textContent = flag;
+            document.querySelector('.selected-lang').textContent = code;
+            
+            // Убираем активный класс со всех опций
+            document.querySelectorAll('.lang-option').forEach(opt => opt.classList.remove('active'));
+            
+            // Добавляем активный класс к выбранной опции
+            document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+            
+            // Закрываем выпадающий список
+            document.getElementById('langDropdown').classList.remove('show');
+            document.querySelector('.dropdown-arrow').classList.remove('open');
+            
+            console.log(`Переключен язык: ${lang}`);
+            
+            // Предотвращаем переход по ссылке
+            event.preventDefault();
+            return false;
+        }
     </script>
 </body>
 </html>
