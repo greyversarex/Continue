@@ -436,27 +436,73 @@
                 <!-- Языковой селектор -->
                 <div class="language-dropdown">
                     <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
-                        <span class="selected-flag">🇷🇺</span>
+                        <span class="selected-flag">
+                            <svg width="20" height="15" viewBox="0 0 640 480">
+                                <rect width="640" height="160" fill="#006600"/>
+                                <rect y="160" width="640" height="160" fill="#fff"/>
+                                <rect y="320" width="640" height="160" fill="#cc0000"/>
+                            </svg>
+                        </span>
                         <span class="selected-lang">RU</span>
                         <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
                     <div class="lang-dropdown-content" id="langDropdown">
-                        <a href="#" class="lang-option active" data-lang="ru" data-flag="🇷🇺" onclick="selectLanguage('ru', '🇷🇺', 'RU')">
-                            <span class="flag">🇷🇺</span>
+                        <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'russia', 'RU')">
+                            <span class="flag">
+                                <svg width="20" height="15" viewBox="0 0 640 480">
+                                    <rect width="640" height="160" fill="#fff"/>
+                                    <rect y="160" width="640" height="160" fill="#0052cc"/>
+                                    <rect y="320" width="640" height="160" fill="#cc0000"/>
+                                </svg>
+                            </span>
                             <span class="lang-name">Русский</span>
                         </a>
-                        <a href="#" class="lang-option" data-lang="en" data-flag="🇺🇸" onclick="selectLanguage('en', '🇺🇸', 'EN')">
-                            <span class="flag">🇺🇸</span>
+                        <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'usa', 'EN')">
+                            <span class="flag">
+                                <svg width="20" height="15" viewBox="0 0 640 480">
+                                    <defs>
+                                        <pattern id="stars" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
+                                            <polygon points="25,5 30,20 45,20 33,30 38,45 25,35 12,45 17,30 5,20 20,20" fill="white"/>
+                                        </pattern>
+                                    </defs>
+                                    <rect width="640" height="480" fill="#b22234"/>
+                                    <g fill="#fff">
+                                        <rect y="37" width="640" height="37"/>
+                                        <rect y="111" width="640" height="37"/>
+                                        <rect y="185" width="640" height="37"/>
+                                        <rect y="259" width="640" height="37"/>
+                                        <rect y="333" width="640" height="37"/>
+                                        <rect y="407" width="640" height="37"/>
+                                    </g>
+                                    <rect width="256" height="185" fill="#3c3b6e"/>
+                                </svg>
+                            </span>
                             <span class="lang-name">English</span>
                         </a>
-                        <a href="#" class="lang-option" data-lang="tj" data-flag="🇹🇯" onclick="selectLanguage('tj', '🇹🇯', 'TJ')">
-                            <span class="flag">🇹🇯</span>
+                        <a href="#" class="lang-option" data-lang="tj" onclick="selectLanguage('tj', 'tajikistan', 'TJ')">
+                            <span class="flag">
+                                <svg width="20" height="15" viewBox="0 0 640 480">
+                                    <rect width="640" height="160" fill="#006600"/>
+                                    <rect y="160" width="640" height="160" fill="#fff"/>
+                                    <rect y="320" width="640" height="160" fill="#cc0000"/>
+                                    <g transform="translate(320,240)">
+                                        <circle r="60" fill="#ffcc00"/>
+                                        <circle r="40" fill="#fff"/>
+                                    </g>
+                                </svg>
+                            </span>
                             <span class="lang-name">Таджикский</span>
                         </a>
-                        <a href="#" class="lang-option" data-lang="fa" data-flag="🇮🇷" onclick="selectLanguage('fa', '🇮🇷', 'FA')">
-                            <span class="flag">🇮🇷</span>
+                        <a href="#" class="lang-option" data-lang="fa" onclick="selectLanguage('fa', 'iran', 'FA')">
+                            <span class="flag">
+                                <svg width="20" height="15" viewBox="0 0 640 480">
+                                    <rect width="640" height="160" fill="#239f40"/>
+                                    <rect y="160" width="640" height="160" fill="#fff"/>
+                                    <rect y="320" width="640" height="160" fill="#da0000"/>
+                                </svg>
+                            </span>
                             <span class="lang-name">Фарси</span>
                         </a>
                     </div>
@@ -1848,52 +1894,7 @@
         </div>
     </section>
 
-    <!-- Аккордеон блоки -->
-    <section class="py-16 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <!-- Особые отметки -->
-                <div class="border border-gray-200 rounded-lg">
-                    <button class="w-full px-6 py-4 text-left text-white font-medium rounded-lg flex justify-between items-center" style="background-color: #3E3E3E;">
-                        <span>ОСОБЫЕ ОТМЕТКИ</span>
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
 
-                <!-- Правила оплаты и возврата средств -->
-                <div class="border border-gray-200 rounded-lg">
-                    <button class="w-full px-6 py-4 text-left text-white font-medium rounded-lg flex justify-between items-center" style="background-color: #3E3E3E;">
-                        <span>ПРАВИЛА ОПЛАТЫ И ВОЗВРАТА СРЕДСТВ</span>
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Политика конфиденциальности -->
-                <div class="border border-gray-200 rounded-lg">
-                    <button class="w-full px-6 py-4 text-left text-white font-medium rounded-lg flex justify-between items-center" style="background-color: #3E3E3E;">
-                        <span>ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</span>
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Дополнительно -->
-                <div class="border border-gray-200 rounded-lg">
-                    <button class="w-full px-6 py-4 text-left text-white font-medium rounded-lg flex justify-between items-center" style="background-color: #3E3E3E;">
-                        <span>ДОПОЛНИТЕЛЬНО</span>
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Футер -->
     <footer class="py-12 text-white" style="background-color: #3E3E3E;">
@@ -2299,9 +2300,17 @@
             arrow.classList.toggle('open');
         }
         
-        function selectLanguage(lang, flag, code) {
+        function selectLanguage(lang, country, code) {
+            // Карта флагов SVG
+            const flags = {
+                'russia': '<svg width="20" height="15" viewBox="0 0 640 480"><rect width="640" height="160" fill="#fff"/><rect y="160" width="640" height="160" fill="#0052cc"/><rect y="320" width="640" height="160" fill="#cc0000"/></svg>',
+                'usa': '<svg width="20" height="15" viewBox="0 0 640 480"><rect width="640" height="480" fill="#b22234"/><g fill="#fff"><rect y="37" width="640" height="37"/><rect y="111" width="640" height="37"/><rect y="185" width="640" height="37"/><rect y="259" width="640" height="37"/><rect y="333" width="640" height="37"/><rect y="407" width="640" height="37"/></g><rect width="256" height="185" fill="#3c3b6e"/></svg>',
+                'tajikistan': '<svg width="20" height="15" viewBox="0 0 640 480"><rect width="640" height="160" fill="#006600"/><rect y="160" width="640" height="160" fill="#fff"/><rect y="320" width="640" height="160" fill="#cc0000"/><g transform="translate(320,240)"><circle r="60" fill="#ffcc00"/><circle r="40" fill="#fff"/></g></svg>',
+                'iran': '<svg width="20" height="15" viewBox="0 0 640 480"><rect width="640" height="160" fill="#239f40"/><rect y="160" width="640" height="160" fill="#fff"/><rect y="320" width="640" height="160" fill="#da0000"/></svg>'
+            };
+            
             // Обновляем кнопку селектора
-            document.querySelector('.selected-flag').textContent = flag;
+            document.querySelector('.selected-flag').innerHTML = flags[country];
             document.querySelector('.selected-lang').textContent = code;
             
             // Убираем активный класс со всех опций
