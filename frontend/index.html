@@ -147,6 +147,105 @@
             50% { transform: rotate(180deg) scale(1.2); }
             100% { transform: rotate(360deg) scale(1); }
         }
+        
+        /* Стили для выпадающих меню навигации */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #2F2F2F;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+            z-index: 1000;
+            border-radius: 8px;
+            top: 100%;
+            left: 0;
+            padding: 8px 0;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: #4A4A4A;
+        }
+        .dropdown-content .dropdown-submenu {
+            position: relative;
+        }
+        .dropdown-content .dropdown-submenu .dropdown-subcontent {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: #2F2F2F;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 8px 0;
+        }
+        .dropdown-content .dropdown-submenu:hover .dropdown-subcontent {
+            display: block;
+        }
+        
+        /* Стили для языкового селектора */
+        .language-selector {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            color: white;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+        }
+        .language-selector:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* Стили для поисковика */
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 16px 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+            outline: none;
+        }
+        .filter-icon-btn {
+            background: rgba(255,255,255,0.9);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-icon-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body>
@@ -162,11 +261,64 @@
                 
                 <!-- Навигационное меню -->
                 <nav class="hidden md:flex space-x-6">
-                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Турагентам</a>
-                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Горящие туры</a>
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors">О нас</a>
+                    
+                    <!-- Услуги (с выпадающим меню) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
+                        <div class="dropdown-content">
+                            <div class="dropdown-submenu">
+                                <a href="#">Тургиды</a>
+                                <div class="dropdown-subcontent">
+                                    <a href="#">Найм тургида</a>
+                                    <a href="#">Наши тургиды</a>
+                                    <a href="#">Тургидам</a>
+                                </div>
+                            </div>
+                            <div class="dropdown-submenu">
+                                <a href="#">Трансфер</a>
+                                <div class="dropdown-subcontent">
+                                    <a href="#">Заказ трансфера</a>
+                                    <a href="#">Каталог транспорта</a>
+                                    <a href="#">Тур-водителям</a>
+                                </div>
+                            </div>
+                            <a href="#">Пожелания</a>
+                            <a href="#">Визовая поддержка</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Туристам (с выпадающим меню) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туристам</a>
+                        <div class="dropdown-content">
+                            <a href="#">Инструкция сайта</a>
+                            <a href="#">Специальные заметки</a>
+                            <a href="#">Договор оферта</a>
+                            <a href="#">Правила оплаты и возврата средств</a>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Акции</a>
                     <a href="#" class="text-white hover:text-gray-300 transition-colors">Новости</a>
-                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Пользователям</a>
+                    
+                    <!-- Турагентам (с выпадающим меню) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Турагентам</a>
+                        <div class="dropdown-content">
+                            <a href="#">Наши турагенты</a>
+                            <a href="#">Для турагентов</a>
+                        </div>
+                    </div>
                 </nav>
+                
+                <!-- Языковой селектор -->
+                <select class="language-selector focus:outline-none">
+                    <option value="ru">Русский</option>
+                    <option value="en">English</option>
+                    <option value="tj">Таджикский</option>
+                    <option value="fa">Фарси</option>
+                </select>
             </div>
         </div>
     </header>
@@ -205,91 +357,92 @@
                 Найдите идеальный тур
             </h2>
             
-            <!-- Фильтры -->
+            <!-- Поисковик с фильтром -->
             <div class="filter-gradient rounded-xl p-8 mb-12">
-                <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
-                    <!-- Страна -->
-                    <div>
-                        <label class="block text-sm font-bold text-white mb-3 tracking-wide">Страна</label>
-                        <select id="countryFilter" onchange="updateCities()" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium">
-                            <option value="">Все страны</option>
-                            <option value="Таджикистан">Таджикистан</option>
-                            <option value="Узбекистан">Узбекистан</option>
-                            <option value="Киргизстан">Киргизстан</option>
-                            <option value="Казахстан">Казахстан</option>
-                            <option value="Туркменистан">Туркменистан</option>
-                        </select>
-                    </div>
-
-                    <!-- Город -->
-                    <div>
-                        <label class="block text-sm font-bold text-white mb-3 tracking-wide">Город</label>
-                        <select id="cityFilter" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium">
-                            <option value="">Все города</option>
-                        </select>
-                    </div>
+                <div class="search-container">
+                    <!-- Основной поисковик -->
+                    <input type="text" id="searchInput" class="search-input" placeholder="Найдите идеальный тур: Памир, Искандеркуль, треккинг..." onkeypress="if(event.key==='Enter') performSearch()" />
                     
-                    <!-- Формат -->
-                    <div>
-                        <label class="block text-sm font-bold text-white mb-3 tracking-wide">Формат тура</label>
-                        <select id="formatFilter" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium">
-                            <option value="">Любой формат</option>
-                            <option value="Групповой общий">Групповой общий</option>
-                            <option value="Групповой персональный">Групповой персональный</option>
-                            <option value="Персональный">Персональный</option>
-                            <option value="VIP">VIP</option>
-                        </select>
-                    </div>
+                    <!-- Кнопка фильтра -->
+                    <button onclick="toggleAdvancedFilter()" class="filter-icon-btn" title="Расширенный поиск">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                    </button>
                     
-                    <!-- Длительность -->
-                    <div>
-                        <label class="block text-sm font-bold text-white mb-3 tracking-wide">Длительность</label>
-                        <select id="durationFilter" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium">
-                            <option value="">Любая</option>
-                            <option value="1">1 день</option>
-                            <option value="2-5">2-5 дней</option>
-                            <option value="6+">6+ дней</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Тематика -->
-                    <div>
-                        <label class="block text-sm font-bold text-white mb-3 tracking-wide">Тематика</label>
-                        <select id="themeFilter" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium">
-                            <option value="">Любая тематика</option>
-                            <option value="Горные маршруты">Горные маршруты</option>
-                            <option value="Озёрные маршруты">Озёрные маршруты</option>
-                            <option value="Исторический тур">Исторический тур</option>
-                            <option value="Обзорная экскурсия">Обзорная экскурсия</option>
-                            <option value="Походы / треккинг">Походы / треккинг</option>
-                            <option value="Комбинированный тур по Центральной Азии">Комбинированный тур</option>
-                            <option value="Санаторно-оздоровительный тур">Санаторно-оздоровительный</option>
-                            <option value="Культурно-исторический тур">Культурно-исторический</option>
-                            <option value="Гастрономический тур">Гастрономический</option>
-                            <option value="Фототур">Фототур</option>
-                            <option value="Экстремальный туризм">Экстремальный туризм</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Дата тура -->
-                    <div>
-                        <label class="block text-sm font-bold text-white mb-3 tracking-wide">Дата тура</label>
-                        <input type="date" id="dateFilter" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium" placeholder="Выберите дату">
-                    </div>
-                </div>
-
-                <!-- Кнопки -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <!-- Кнопка поиска -->
-                    <div class="flex items-end">
-                        <button id="searchButton" onclick="searchTours()" class="modern-button w-full text-white px-6 py-3 rounded-lg font-bold tracking-wide">
-                            🔍 Найти туры
-                        </button>
+                    <button onclick="performSearch()" class="modern-button text-white px-8 py-4 rounded-lg font-bold tracking-wide">
+                        🔍 Найти
+                    </button>
+                </div>
+                
+                <!-- Расширенные фильтры (скрытые по умолчанию) -->
+                <div id="advancedFilters" class="hidden mt-8 pt-8 border-t border-white border-opacity-20">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                        <!-- Страна -->
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-3 tracking-wide">Страна</label>
+                            <select id="countryFilter" onchange="updateCities()" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium">
+                                <option value="">Все страны</option>
+                                <option value="Таджикистан">Таджикистан</option>
+                                <option value="Узбекистан">Узбекистан</option>
+                                <option value="Киргизстан">Киргизстан</option>
+                                <option value="Казахстан">Казахстан</option>
+                                <option value="Туркменистан">Туркменистан</option>
+                            </select>
+                        </div>
+
+                        <!-- Город -->
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-3 tracking-wide">Город</label>
+                            <select id="cityFilter" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium">
+                                <option value="">Все города</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Вид тура -->
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-3 tracking-wide">Вид тура</label>
+                            <select id="formatFilter" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium">
+                                <option value="">Любой вид</option>
+                                <option value="Персональный">Персональный</option>
+                                <option value="Групповой персональный">Групповой персональный</option>
+                                <option value="Групповой общий">Групповой общий</option>
+                                <option value="VIP">VIP</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Категории -->
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-3 tracking-wide">Категории</label>
+                            <select id="themeFilter" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium">
+                                <option value="">Все категории</option>
+                                <option value="Городские туры">Городские туры</option>
+                                <option value="Природа, экологические туры">Природа, экологические туры</option>
+                                <option value="Культурно познавательные туры">Культурно познавательные туры</option>
+                                <option value="Исторические туры">Исторические туры</option>
+                                <option value="Походы, трекинги">Походы, трекинги</option>
+                                <option value="Горные ландшафты">Горные ландшафты</option>
+                                <option value="Озерные ландшафты">Озерные ландшафты</option>
+                                <option value="Приключенческие туры">Приключенческие туры</option>
+                                <option value="Гастрономические туры">Гастрономические туры</option>
+                                <option value="Автотуры, сафари, джип-туры">Автотуры, сафари, джип-туры</option>
+                                <option value="Агро туры">Агро туры</option>
+                                <option value="VIP туры">VIP туры</option>
+                                <option value="MICE, корпоративные туры">MICE, корпоративные туры</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Дата тура -->
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-3 tracking-wide">Дата тура</label>
+                            <input type="date" id="dateFilter" class="modern-select w-full px-4 py-3 rounded-lg focus:outline-none font-medium" placeholder="Выберите дату">
+                        </div>
                     </div>
 
-                    <!-- Сброс фильтров -->
-                    <div class="flex items-end">
-                        <button onclick="clearSearch()" class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-lg font-bold tracking-wide transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                    <!-- Кнопка сброса фильтров -->
+                    <div class="mt-6 text-center">
+                        <button onclick="clearSearch()" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-lg font-bold tracking-wide transition-all duration-300 hover:scale-105 hover:shadow-lg">
                             🗑️ Сбросить фильтры
                         </button>
                     </div>
@@ -1707,14 +1860,57 @@
             }
         }
 
-        // Функция для поиска туров
+        // Функция для переключения расширенных фильтров
+        function toggleAdvancedFilter() {
+            const advancedFilters = document.getElementById('advancedFilters');
+            if (advancedFilters.classList.contains('hidden')) {
+                advancedFilters.classList.remove('hidden');
+            } else {
+                advancedFilters.classList.add('hidden');
+            }
+        }
+
+        // Функция для основного поиска
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchQuery = searchInput.value.trim();
+            
+            if (searchQuery) {
+                // Поиск по тексту
+                searchToursByText(searchQuery);
+            } else {
+                // Поиск по фильтрам
+                searchTours();
+            }
+        }
+
+        // Функция для поиска по тексту
+        async function searchToursByText(query) {
+            try {
+                const response = await fetch(`http://0.0.0.0:5000/api/tours/search?query=${encodeURIComponent(query)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displaySearchResults(result.data);
+                } else {
+                    console.error('Ошибка поиска:', result.error);
+                    // Показываем заглушку если API недоступен
+                    displayMockSearchResults(query);
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки туров:', error);
+                // Показываем заглушку если API недоступен
+                displayMockSearchResults(query);
+            }
+        }
+
+        // Функция для поиска туров по фильтрам
         async function searchTours() {
             try {
                 const filters = {
                     country: document.getElementById('countryFilter').value,
                     city: document.getElementById('cityFilter').value,
                     format: document.getElementById('formatFilter').value,
-                    duration: document.getElementById('durationFilter').value,
                     theme: document.getElementById('themeFilter').value,
                     date: document.getElementById('dateFilter').value
                 };
@@ -1734,10 +1930,50 @@
                     displaySearchResults(result.data);
                 } else {
                     console.error('Ошибка поиска:', result.error);
+                    displayMockSearchResults('');
                 }
             } catch (error) {
                 console.error('Ошибка загрузки туров:', error);
+                displayMockSearchResults('');
             }
+        }
+
+        // Функция для отображения демо результатов
+        function displayMockSearchResults(query) {
+            const mockTours = [
+                {
+                    title: { ru: 'Памирское шоссе' },
+                    description: { ru: 'Захватывающее путешествие по одной из самых высокогорных дорог мира' },
+                    country: 'Таджикистан',
+                    city: 'Хорог',
+                    format: 'Групповой',
+                    duration: '7 дней',
+                    theme: 'Горные ландшафты',
+                    price: 299
+                },
+                {
+                    title: { ru: 'Озеро Искандеркуль' },
+                    description: { ru: 'Живописное горное озеро в окружении заснеженных пиков' },
+                    country: 'Таджикистан',
+                    city: 'Пенджикент',
+                    format: 'Персональный',
+                    duration: '2 дня',
+                    theme: 'Озерные ландшафты',
+                    price: 149
+                },
+                {
+                    title: { ru: 'Древний Пенджикент' },
+                    description: { ru: 'Исследуйте руины древнего согдийского города' },
+                    country: 'Таджикистан',
+                    city: 'Пенджикент',
+                    format: 'Групповой',
+                    duration: '1 день',
+                    theme: 'Исторические туры',
+                    price: 89
+                }
+            ];
+
+            displaySearchResults(mockTours);
         }
 
         // Функция для отображения результатов поиска
@@ -1799,13 +2035,18 @@
             document.getElementById('searchResults').classList.add('hidden');
             document.querySelector('section.bg-gray-50').style.display = 'block';
             
+            // Сброс поискового запроса
+            document.getElementById('searchInput').value = '';
+            
             // Сброс всех фильтров
             document.getElementById('countryFilter').value = '';
             document.getElementById('cityFilter').value = '';
             document.getElementById('formatFilter').value = '';
-            document.getElementById('durationFilter').value = '';
             document.getElementById('themeFilter').value = '';
             document.getElementById('dateFilter').value = '';
+            
+            // Скрываем расширенные фильтры
+            document.getElementById('advancedFilters').classList.add('hidden');
             
             // Обновляем список городов
             updateCities();
@@ -1841,7 +2082,6 @@
         // Загрузка всех туров при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Страница загружена с тёмно-серым фильтром');
-            console.log('Минимальная дата установлена:', minDate);
             
             // Настройка календаря с минимальной датой
             const dateFilter = document.getElementById('dateFilter');
