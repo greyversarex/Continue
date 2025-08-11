@@ -246,6 +246,51 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
+        
+        /* Дополнительные стили для языковых кнопок */
+        .language-flags {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+        
+        .lang-btn.active {
+            background: rgba(255, 255, 255, 0.95);
+            color: #374151;
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Стили для кнопки поиска без цвета */
+        .search-button {
+            background: rgba(255, 255, 255, 0.95) !important;
+            transition: all 0.3s ease;
+        }
+        
+        .search-button:hover {
+            background: white !important;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -313,12 +358,20 @@
                 </nav>
                 
                 <!-- Языковой селектор -->
-                <select class="language-selector focus:outline-none">
-                    <option value="ru">Русский</option>
-                    <option value="en">English</option>
-                    <option value="tj">Таджикский</option>
-                    <option value="fa">Фарси</option>
-                </select>
+                <div class="language-flags flex space-x-2">
+                    <button class="lang-btn active" data-lang="ru" title="Русский">
+                        🇷🇺 RU
+                    </button>
+                    <button class="lang-btn" data-lang="en" title="English">
+                        🇺🇸 EN
+                    </button>
+                    <button class="lang-btn" data-lang="tj" title="Таджикский">
+                        🇹🇯 TJ
+                    </button>
+                    <button class="lang-btn" data-lang="fa" title="Фарси">
+                        🇮🇷 FA
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -371,7 +424,7 @@
                     </button>
                     
                     <!-- Кнопка поиска -->
-                    <button onclick="performSearch()" class="modern-button text-white px-8 py-4 rounded-lg font-bold tracking-wide">
+                    <button onclick="performSearch()" class="search-button text-gray-800 px-8 py-4 rounded-lg font-bold tracking-wide border border-gray-300 hover:border-gray-500 transition-colors">
                         🔍 Найти
                     </button>
                 </div>
@@ -1505,23 +1558,23 @@
                     </button>
                 </div>
 
-                <!-- Мастер класс -->
+                <!-- Специальный тур -->
                 <div class="service-card rounded-xl p-8" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="class-icon mb-4" style="color: #3E3E3E;">
-                            🎨
+                            🏗️
                         </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">Мастер-класс</h3>
-                        <p class="text-sm text-gray-600 mb-4">Погружение в таджикскую культуру</p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Специальный тур</h3>
+                        <p class="text-sm text-gray-600 mb-4">Создайте тур по вашим пожеланиям</p>
                     </div>
                     <ul class="text-sm text-gray-700 mb-6 space-y-2">
-                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🏺</span> Традиционные ремёсла</li>
-                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🍽️</span> Кулинарные уроки</li>
-                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">💃</span> Национальные танцы</li>
-                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🎁</span> Изготовление сувениров</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🗺️</span> Выбор маршрута</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🏨</span> Подбор отелей</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">🎯</span> Персональные активности</li>
+                        <li class="flex items-center"><span class="mr-2" style="color: #3E3E3E;">⚙️</span> Гибкая настройка</li>
                     </ul>
                     <button class="w-full text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg" style="background-color: #3E3E3E;">
-                        Записаться
+                        Создать тур
                     </button>
                 </div>
             </div>
@@ -2136,6 +2189,21 @@
                         window.open(`tour-template-viator.html?tour=${tourKey}`, '_blank');
                     });
                 }
+            });
+            
+            // Обработчики событий для языковых кнопок
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    
+                    // Убираем активный класс со всех кнопок
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                    
+                    // Добавляем активный класс к выбранной кнопке
+                    this.classList.add('active');
+                    
+                    console.log(`Переключен язык: ${lang}`);
+                });
             });
         });
     </script>
