@@ -30,6 +30,8 @@ A complete TypeScript Express backend API for Bunyod-Tour tour agency specializi
 - **Complete Category Overhaul (August 2025)**: Replaced tour categories with comprehensive 13-category system: Городские туры, Природа/экологические туры, Культурно познавательные туры, Исторические туры, Походы/трекинги, Горные ландшафты, Озерные ландшафты, Приключенческие туры, Гастрономические туры, Автотуры/сафари/джип-туры, Агротуры, VIP туры, MICE/корпоративные туры
 - **Simplified Category Display**: Updated category cards to show only tour name and description (removed ratings, prices, locations for cleaner presentation)
 - **Horizontal Scrolling with Standard Cards**: Implemented horizontal scrolling layout for category cards with standard card proportions (288px width) maintaining proper aspect ratios without stretching
+- **Banner-Style Tour Types Section**: Redesigned "Виды туров" from card-based layout to elegant banner-style presentation with inline sections (Персональный, Групповой персональный, Групповой общий, VIP) removing icons for cleaner appearance
+- **Tour Information Simplification**: Removed hotel information content blocks from all tour page templates, streamlining information display to focus on tour description and program only
 - **Multilingual Header Integration**: Added 4-language selector (English, Русский, Таджикский, Фарси) to header navigation for international accessibility
 
 ## User Preferences
@@ -113,10 +115,10 @@ Preferred communication style: Simple, everyday language.
 - **SEO-Friendly**: Dynamic title updates and semantic HTML structure
 
 ### Universal Tab System Architecture (August 2025)
-- **Mandatory Three-Tab Structure**: All tour pages now implement standardized tabbed information display
+- **Streamlined Two-Tab Structure**: All tour pages now implement standardized tabbed information display
   - "Описание тура" (Tour Description): Overview, highlights, and key features
   - "Программа тура" (Tour Program): Time-based schedule with activity details
-  - "Отели" (Hotels): Accommodation information with amenities
+- **Simplified Tour Information**: Removed "Отели" tab from all tour pages to streamline information display
 - **Implementation Coverage**: 100% of tour files include tab system
   - Static pages: tour-fixed.html, tour-page-correct.html, tour-template.html, tour-template-viator.html
   - Demo page: tour-examples.html (with demonstration tabs)
