@@ -461,11 +461,18 @@
             .compact-filters {
                 width: 100%;
                 justify-content: center;
+                grid-template-columns: repeat(2, 1fr);
+                display: grid;
+                gap: 0.5rem;
             }
             
             .compact-filter-select, .compact-filter-date {
                 min-width: auto;
-                flex: 1;
+            }
+            
+            .search-btn-compact, .clear-btn-compact {
+                grid-column: span 2;
+                justify-self: center;
             }
         }
     </style>
@@ -661,6 +668,18 @@
                             <option value="Киргизстан">Киргизстан</option>
                             <option value="Казахстан">Казахстан</option>
                             <option value="Туркменистан">Туркменистан</option>
+                        </select>
+                        
+                        <select id="cityFilter" class="compact-filter-select">
+                            <option value="">Любой город</option>
+                        </select>
+                        
+                        <select id="formatFilter" class="compact-filter-select">
+                            <option value="">Любой вид</option>
+                            <option value="Персональный">Персональный</option>
+                            <option value="Групповой персональный">Групповой персональный</option>
+                            <option value="Групповой общий">Групповой общий</option>
+                            <option value="VIP">VIP</option>
                         </select>
                         
                         <select id="categoryFilter" class="compact-filter-select">
@@ -2036,10 +2055,23 @@
             'Туркменистан': ['Ашхабад', 'Туркменабад', 'Дашогуз', 'Мары', 'Балканабад']
         };
 
-        // Функция для обновления списка городов (убрано, так как cityFilter больше нет)
+        // Функция для обновления списка городов
         function updateCities() {
-            // В компактной версии нет выбора городов, функция оставлена для совместимости
-            console.log('updateCities called - no cities selector in compact version');
+            const countrySelect = document.getElementById('countryFilter');
+            const citySelect = document.getElementById('cityFilter');
+            
+            // Очищаем список городов
+            citySelect.innerHTML = '<option value="">Любой город</option>';
+            
+            const selectedCountry = countrySelect.value;
+            if (selectedCountry && citiesByCountry[selectedCountry]) {
+                citiesByCountry[selectedCountry].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            }
         }
 
         // Функция toggleAdvancedFilter удалена - больше не используется в компактной версии
@@ -2083,6 +2115,8 @@
             try {
                 const filters = {
                     country: document.getElementById('countryFilter').value,
+                    city: document.getElementById('cityFilter').value,
+                    format: document.getElementById('formatFilter').value,
                     category: document.getElementById('categoryFilter').value,
                     date: document.getElementById('dateFilter').value
                 };
@@ -2210,8 +2244,10 @@
             // Сброс поискового запроса
             document.getElementById('searchInput').value = '';
             
-            // Сброс компактных фильтров
+            // Сброс всех компактных фильтров
             document.getElementById('countryFilter').value = '';
+            document.getElementById('cityFilter').value = '';
+            document.getElementById('formatFilter').value = '';
             document.getElementById('categoryFilter').value = '';
             document.getElementById('dateFilter').value = '';
             
