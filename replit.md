@@ -27,6 +27,8 @@ A complete TypeScript Express backend API for Bunyod-Tour tour agency specializi
 - **Navigation System Overhaul**: Implemented comprehensive dropdown navigation with 6 main sections (О нас, Услуги, Туристам, Акции, Новости, Турагентам) featuring nested sub-menus for Услуги (Тургиды/Трансфер with 3 sub-items each) and multi-level structure
 - **Modern Toggle Filter System**: Replaced compact horizontal layout with elegant toggle-based filter system featuring white buttons with shadow effects, clean filter panel without background container, and professional color scheme maintaining all filter functionality (country, city, tour type, category, date)
 - **Updated Category System**: Renamed "Тематика" to "Категории" with 13 specific tourism categories, changed "Формат тура" to "Вид тура" with 4 tour types (Персональный, Групповой персональный, Групповой общий, VIP), removed duration filter
+- **Complete Category Overhaul (August 2025)**: Replaced tour categories with comprehensive 13-category system: Городские туры, Природа/экологические туры, Культурно познавательные туры, Исторические туры, Походы/трекинги, Горные ландшафты, Озерные ландшафты, Приключенческие туры, Гастрономические туры, Автотуры/сафари/джип-туры, Агротуры, VIP туры, MICE/корпоративные туры
+- **Simplified Category Display**: Updated category cards to show only tour name and description (removed ratings, prices, locations for cleaner presentation)
 - **Multilingual Header Integration**: Added 4-language selector (English, Русский, Таджикский, Фарси) to header navigation for international accessibility
 
 ## User Preferences

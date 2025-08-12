@@ -760,12 +760,19 @@
                             
                             <select id="categoryFilter" class="filter-select">
                                 <option value="">Категория</option>
-                                <option value="Горный туризм">Горный туризм</option>
-                                <option value="Культурный туризм">Культурный туризм</option>
-                                <option value="Приключенческий туризм">Приключенческий туризм</option>
-                                <option value="Экологический туризм">Экологический туризм</option>
-                                <option value="Исторический туризм">Исторический туризм</option>
-                                <option value="Фототуризм">Фототуризм</option>
+                                <option value="Городские туры">Городские туры</option>
+                                <option value="Природа, экологические туры">Природа, экологические туры</option>
+                                <option value="Культурно познавательные туры">Культурно познавательные туры</option>
+                                <option value="Исторические туры">Исторические туры</option>
+                                <option value="Походы, трекинги">Походы, трекинги</option>
+                                <option value="Горные ландшафты">Горные ландшафты</option>
+                                <option value="Озерные ландшафты">Озерные ландшафты</option>
+                                <option value="Приключенческие туры">Приключенческие туры</option>
+                                <option value="Гастрономические туры">Гастрономические туры</option>
+                                <option value="Автотуры, сафари, джип-туры">Автотуры, сафари, джип-туры</option>
+                                <option value="Агротуры">Агротуры</option>
+                                <option value="VIP туры">VIP туры</option>
+                                <option value="MICE, корпоративные туры">MICE, корпоративные туры</option>
                             </select>
                             
                             <input type="date" id="dateFilter" class="filter-date" min="" placeholder="Дата">
@@ -1077,119 +1084,172 @@
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                <!-- Памирские горы -->
+                <!-- Городские туры -->
                 <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
                     <div class="relative overflow-hidden rounded-t-lg">
                         <div class="w-full h-48 bg-gray-200"></div>
-                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                        </button>
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
-                        <div class="text-xs text-gray-500 mb-1 flex items-center">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                            </svg>
-                            Памирские горы, Таджикистан
-                        </div>
-                        <div class="flex items-center text-green-600 text-xs mb-2">
-                            <span class="mr-1">★</span>
-                            <span class="font-semibold">4.8</span>
-                            <span class="text-gray-500 ml-1">(234)</span>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
-                            Памирская экспедиция: Памирское шоссе, горы и озёра
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Городские туры
                         </h3>
-                        <div class="text-lg font-bold text-gray-900">от $120</div>
+                        <p class="text-sm text-gray-600">Экскурсии по историческим центрам, архитектурным памятникам и современным районам</p>
                     </div>
                 </div>
 
-                <!-- Фанские горы -->
+                <!-- Природа, экологические туры -->
                 <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
                     <div class="relative overflow-hidden rounded-t-lg">
                         <div class="w-full h-48 bg-gray-200"></div>
-                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                        </button>
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
-                        <div class="text-xs text-gray-500 mb-1 flex items-center">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                            </svg>
-                            Фанские горы, Таджикистан
-                        </div>
-                        <div class="flex items-center text-green-600 text-xs mb-2">
-                            <span class="mr-1">★</span>
-                            <span class="font-semibold">4.9</span>
-                            <span class="text-gray-500 ml-1">(187)</span>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
-                            Треккинг по озёрам семи цветов
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Природа, экологические туры
                         </h3>
-                        <div class="text-lg font-bold text-gray-900">от $95</div>
+                        <p class="text-sm text-gray-600">Знакомство с уникальной флорой и фауной заповедников и национальных парков</p>
                     </div>
                 </div>
 
-                <!-- Душанбе -->
+                <!-- Культурно познавательные туры -->
                 <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
                     <div class="relative overflow-hidden rounded-t-lg">
                         <div class="w-full h-48 bg-gray-200"></div>
-                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                        </button>
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
-                        <div class="text-xs text-gray-500 mb-1 flex items-center">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                            </svg>
-                            Душанбе, Таджикистан
-                        </div>
-                        <div class="flex items-center text-green-600 text-xs mb-2">
-                            <span class="mr-1">★</span>
-                            <span class="font-semibold">4.7</span>
-                            <span class="text-gray-500 ml-1">(156)</span>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
-                            Культурный тур по столице Таджикистана
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Культурно познавательные туры
                         </h3>
-                        <div class="text-lg font-bold text-gray-900">от $75</div>
+                        <p class="text-sm text-gray-600">Погружение в традиции, обычаи и культурное наследие Таджикистана</p>
                     </div>
                 </div>
 
-                <!-- Хорог -->
+                <!-- Исторические туры -->
                 <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
                     <div class="relative overflow-hidden rounded-t-lg">
                         <div class="w-full h-48 bg-gray-200"></div>
-                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                        </button>
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
-                        <div class="text-xs text-gray-500 mb-1 flex items-center">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                            </svg>
-                            Хорог, Таджикистан
-                        </div>
-                        <div class="flex items-center text-green-600 text-xs mb-2">
-                            <span class="mr-1">★</span>
-                            <span class="font-semibold">4.6</span>
-                            <span class="text-gray-500 ml-1">(98)</span>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
-                            Приключение в Бадахшане и горячие источники
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Исторические туры
                         </h3>
-                        <div class="text-lg font-bold text-gray-900">от $180</div>
+                        <p class="text-sm text-gray-600">Посещение древних крепостей, археологических памятников и исторических мест</p>
+                    </div>
+                </div>
+
+                <!-- Походы, трекинги -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gray-200"></div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Походы, трекинги
+                        </h3>
+                        <p class="text-sm text-gray-600">Пешие походы по горным тропам с различным уровнем сложности</p>
+                    </div>
+                </div>
+
+                <!-- Горные ландшафты -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gray-200"></div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Горные ландшафты
+                        </h3>
+                        <p class="text-sm text-gray-600">Путешествия к живописным горным вершинам и панорамным смотровым площадкам</p>
+                    </div>
+                </div>
+
+                <!-- Озерные ландшафты -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gray-200"></div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Озерные ландшафты
+                        </h3>
+                        <p class="text-sm text-gray-600">Отдых у кристально чистых горных озёр и водоёмов</p>
+                    </div>
+                </div>
+
+                <!-- Приключенческие туры -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gray-200"></div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Приключенческие туры
+                        </h3>
+                        <p class="text-sm text-gray-600">Экстремальные виды спорта и активные приключения в горах</p>
+                    </div>
+                </div>
+
+                <!-- Гастрономические туры -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gray-200"></div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Гастрономические туры
+                        </h3>
+                        <p class="text-sm text-gray-600">Дегустация национальной кухни и знакомство с кулинарными традициями</p>
+                    </div>
+                </div>
+
+                <!-- Автотуры, сафари, джип-туры -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gray-200"></div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Автотуры, сафари, джип-туры
+                        </h3>
+                        <p class="text-sm text-gray-600">Путешествия на внедорожниках по труднодоступным горным маршрутам</p>
+                    </div>
+                </div>
+
+                <!-- Агротуры -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gray-200"></div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            Агротуры
+                        </h3>
+                        <p class="text-sm text-gray-600">Знакомство с сельским хозяйством и жизнью в горных деревнях</p>
+                    </div>
+                </div>
+
+                <!-- VIP туры -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gray-200"></div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            VIP туры
+                        </h3>
+                        <p class="text-sm text-gray-600">Эксклюзивные туры с повышенным уровнем комфорта и персональным сервисом</p>
+                    </div>
+                </div>
+
+                <!-- MICE, корпоративные туры -->
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gray-200"></div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600">
+                            MICE, корпоративные туры
+                        </h3>
+                        <p class="text-sm text-gray-600">Организация деловых мероприятий, конференций и корпоративного отдыха</p>
                     </div>
                 </div>
             </div>
