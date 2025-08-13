@@ -279,6 +279,12 @@
         
         .selected-flag {
             font-size: 1.125rem;
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "EmojiOne Color", "Android Emoji", "Twemoji Mozilla", sans-serif;
+        }
+        
+        .flag {
+            font-size: 1rem;
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "EmojiOne Color", "Android Emoji", "Twemoji Mozilla", sans-serif;
         }
         
         .dropdown-arrow {
@@ -552,31 +558,35 @@
                 <nav class="hidden md:flex space-x-6">
                     <a href="#" class="text-white hover:text-gray-300 transition-colors">О нас</a>
                     
+                    <!-- Туры (отдельный пункт меню с категориями) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туры</a>
+                        <div class="dropdown-content" style="width: 400px; padding: 12px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <a href="#" style="padding: 8px;">Городские туры</a>
+                                <a href="#" style="padding: 8px;">Природа/экологические туры</a>
+                                <a href="#" style="padding: 8px;">Культурно познавательные туры</a>
+                                <a href="#" style="padding: 8px;">Исторические туры</a>
+                                <a href="#" style="padding: 8px;">Походы/трекинги</a>
+                                <a href="#" style="padding: 8px;">Горные ландшафты</a>
+                                <a href="#" style="padding: 8px;">Озерные ландшафты</a>
+                                <a href="#" style="padding: 8px;">Приключенческие туры</a>
+                                <a href="#" style="padding: 8px;">Гастрономические туры</a>
+                                <a href="#" style="padding: 8px;">Автотуры/сафари/джип-туры</a>
+                                <a href="#" style="padding: 8px;">Агротуры</a>
+                                <a href="#" style="padding: 8px;">VIP туры</a>
+                                <a href="#" style="padding: 8px;">Однодневные</a>
+                                <a href="#" style="padding: 8px;">Многодневные</a>
+                                <a href="#" style="padding: 8px;">Экскурсии</a>
+                                <a href="#" style="padding: 8px;"></a>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Услуги (с выпадающим меню) -->
                     <div class="dropdown">
                         <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
                         <div class="dropdown-content">
-                            <div class="dropdown-submenu">
-                                <a href="#">Туры</a>
-                                <div class="dropdown-subcontent" style="width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px;">
-                                    <a href="#" style="padding: 8px;">Городские туры</a>
-                                    <a href="#" style="padding: 8px;">Природа/экологические туры</a>
-                                    <a href="#" style="padding: 8px;">Культурно познавательные туры</a>
-                                    <a href="#" style="padding: 8px;">Исторические туры</a>
-                                    <a href="#" style="padding: 8px;">Походы/трекинги</a>
-                                    <a href="#" style="padding: 8px;">Горные ландшафты</a>
-                                    <a href="#" style="padding: 8px;">Озерные ландшафты</a>
-                                    <a href="#" style="padding: 8px;">Приключенческие туры</a>
-                                    <a href="#" style="padding: 8px;">Гастрономические туры</a>
-                                    <a href="#" style="padding: 8px;">Автотуры/сафари/джип-туры</a>
-                                    <a href="#" style="padding: 8px;">Агротуры</a>
-                                    <a href="#" style="padding: 8px;">VIP туры</a>
-                                    <a href="#" style="padding: 8px;">Однодневные</a>
-                                    <a href="#" style="padding: 8px;">Многодневные</a>
-                                    <a href="#" style="padding: 8px;">Экскурсии</a>
-                                    <a href="#" style="padding: 8px;"></a>
-                                </div>
-                            </div>
                             <a href="#">Тургиды</a>
                             <a href="#">Трансфер</a>
                             <a href="#">Заказ тура</a>
@@ -643,14 +653,6 @@
                             <a href="#" class="lang-option" data-lang="fa" onclick="selectLanguage('fa', '🇮🇷', 'فارسی')">
                                 <span class="flag">🇮🇷</span>
                                 <span class="lang-name">فارسی</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', '🇩🇪', 'Deutsch')">
-                                <span class="flag">🇩🇪</span>
-                                <span class="lang-name">Deutsch</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="cn" onclick="selectLanguage('cn', '🇨🇳', '中文')">
-                                <span class="flag">🇨🇳</span>
-                                <span class="lang-name">中文</span>
                             </a>
                             <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', '🇩🇪', 'Deutsch')">
                                 <span class="flag">🇩🇪</span>
