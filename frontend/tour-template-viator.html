@@ -837,10 +837,19 @@
             const modal = document.getElementById('hotelAvailabilityModal');
             if (modal) {
                 modal.style.display = 'flex';
-                // Set minimum check-in date to today
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('checkInDate').min = today;
-                document.getElementById('checkOutDate').min = today;
+                // Skip search form and show results directly
+                document.getElementById('hotelSearchForm').style.display = 'none';
+                document.getElementById('hotelResults').style.display = 'block';
+                
+                // Show default search parameters
+                document.getElementById('searchParams').innerHTML = `
+                    <div class="text-sm text-gray-600 mb-4">
+                        <strong>Доступные отели в Душанбе</strong>
+                    </div>
+                `;
+                
+                // Display hotel cards immediately
+                displayHotelCards();
             }
         }
 
@@ -894,41 +903,41 @@
                     id: 1,
                     name: "Гранд Отель Душанбе",
                     stars: 5,
-                    price: 8500,
+                    price: 120,
                     description: "Роскошный отель в центре столицы с видом на горы и современными удобствами",
-                    image: "https://via.placeholder.com/300x200/4F46E5/ffffff?text=Гранд+Отель"
+                    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&h=200&fit=crop"
                 },
                 {
                     id: 2,
                     name: "Гостиница Таджикистан",
                     stars: 4,
-                    price: 5200,
+                    price: 85,
                     description: "Комфортабельный отель с традиционным дизайном и отличным сервисом",
-                    image: "https://via.placeholder.com/300x200/059669/ffffff?text=Таджикистан"
+                    image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=300&h=200&fit=crop"
                 },
                 {
                     id: 3,
                     name: "Памир Палас",
                     stars: 4,
-                    price: 6800,
+                    price: 95,
                     description: "Современный отель с spa-центром и ресторанами национальной кухни",
-                    image: "https://via.placeholder.com/300x200/DC2626/ffffff?text=Памир+Палас"
+                    image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=300&h=200&fit=crop"
                 },
                 {
                     id: 4,
                     name: "Бизнес Отель Орзу",
                     stars: 3,
-                    price: 3500,
+                    price: 60,
                     description: "Уютный отель для деловых поездок с конференц-залом и Wi-Fi",
-                    image: "https://via.placeholder.com/300x200/7C3AED/ffffff?text=Орзу"
+                    image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=300&h=200&fit=crop"
                 },
                 {
                     id: 5,
                     name: "Гостевой дом Восток",
                     stars: 3,
-                    price: 2800,
+                    price: 45,
                     description: "Семейный гостевой дом с домашней атмосферой и национальной кухней",
-                    image: "https://via.placeholder.com/300x200/EA580C/ffffff?text=Восток"
+                    image: "https://images.unsplash.com/photo-1587381420270-3e1a5b9e6904?w=300&h=200&fit=crop"
                 }
             ];
 
@@ -946,11 +955,11 @@
                         <p class="text-gray-600 text-sm mb-3">${hotel.description}</p>
                         <div class="flex justify-between items-center">
                             <div>
-                                <span class="text-2xl font-bold text-green-600">от ${hotel.price.toLocaleString()}₽</span>
+                                <span class="text-2xl font-bold text-black">$${hotel.price}</span>
                                 <div class="text-xs text-gray-500">за ночь</div>
                             </div>
                             <button onclick="selectHotel(${hotel.id}, '${hotel.name}', ${hotel.price})" 
-                                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                    class="text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity" style="background-color: #3E3E3E;">
                                 Выбрать
                             </button>
                         </div>
@@ -972,7 +981,7 @@
         }
 
         function selectHotel(hotelId, hotelName, price) {
-            alert(`Вы выбрали: ${hotelName}\nЦена: ${price.toLocaleString()}₽ за ночь\n\nБронирование будет доступно в ближайшее время.`);
+            alert(`Вы выбрали: ${hotelName}\nЦена: $${price} за ночь\n\nБронирование будет доступно в ближайшее время.`);
             closeHotelModal();
         }
 
