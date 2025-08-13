@@ -319,7 +319,7 @@
                     </div>
                     
                     <!-- Check Availability Button -->
-                    <button class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium mb-4 transition-colors">
+                    <button onclick="checkHotelAvailability()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium mb-4 transition-colors">
                         Проверить наличие
                     </button>
                     
@@ -462,6 +462,72 @@
             </div>
         </div>
     </footer>
+
+    <!-- Hotel Availability Modal -->
+    <div id="hotelAvailabilityModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+        <div class="bg-white rounded-lg max-w-4xl w-full mx-4 p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Проверить наличие отелей</h3>
+                <button onclick="closeHotelModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Search Form -->
+            <div id="hotelSearchForm">
+                <form onsubmit="event.preventDefault(); performHotelSearch();">
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="checkInDate" class="block text-sm font-medium text-gray-700 mb-1">Заезд</label>
+                                <input type="date" id="checkInDate" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div>
+                                <label for="checkOutDate" class="block text-sm font-medium text-gray-700 mb-1">Выезд</label>
+                                <input type="date" id="checkOutDate" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="guestCount" class="block text-sm font-medium text-gray-700 mb-1">Количество гостей</label>
+                            <select id="guestCount" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="1">1 гость</option>
+                                <option value="2">2 гостя</option>
+                                <option value="3">3 гостя</option>
+                                <option value="4">4 гостя</option>
+                                <option value="5">5+ гостей</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" onclick="closeHotelModal()" class="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                            Отмена
+                        </button>
+                        <button type="submit" class="flex-1 py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700">
+                            Проверить наличие
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Hotel Results -->
+            <div id="hotelResults" style="display: none;">
+                <div class="flex justify-between items-center mb-4">
+                    <div id="searchParams"></div>
+                    <button onclick="backToSearch()" class="text-blue-600 hover:text-blue-800 text-sm">
+                        ← Изменить поиск
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="hotelCards">
+                    <!-- Hotel cards will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         let currentImageIndex = 0;
@@ -765,6 +831,155 @@
             loadTourData();
             setupEventListeners();
         });
+
+        // Hotel availability checker functions
+        function checkHotelAvailability() {
+            const modal = document.getElementById('hotelAvailabilityModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                // Set minimum check-in date to today
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('checkInDate').min = today;
+                document.getElementById('checkOutDate').min = today;
+            }
+        }
+
+        function closeHotelModal() {
+            const modal = document.getElementById('hotelAvailabilityModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function performHotelSearch() {
+            const checkIn = document.getElementById('checkInDate').value;
+            const checkOut = document.getElementById('checkOutDate').value;
+            const guests = document.getElementById('guestCount').value;
+            
+            if (!checkIn || !checkOut) {
+                alert('Пожалуйста, выберите даты заезда и выезда');
+                return;
+            }
+            
+            if (new Date(checkIn) >= new Date(checkOut)) {
+                alert('Дата выезда должна быть позже даты заезда');
+                return;
+            }
+            
+            // Hide search form and show results
+            document.getElementById('hotelSearchForm').style.display = 'none';
+            document.getElementById('hotelResults').style.display = 'block';
+            
+            // Show search parameters
+            document.getElementById('searchParams').innerHTML = `
+                <div class="text-sm text-gray-600 mb-4">
+                    <strong>Поиск:</strong> ${checkIn} - ${checkOut}, ${guests} ${getGuestWord(guests)}
+                </div>
+            `;
+            
+            // Display hotel cards
+            displayHotelCards();
+        }
+
+        function getGuestWord(count) {
+            const num = parseInt(count);
+            if (num === 1) return 'гость';
+            if (num >= 2 && num <= 4) return 'гостя';
+            return 'гостей';
+        }
+
+        function displayHotelCards() {
+            const hotelData = [
+                {
+                    id: 1,
+                    name: "Гранд Отель Душанбе",
+                    stars: 5,
+                    price: 8500,
+                    description: "Роскошный отель в центре столицы с видом на горы и современными удобствами",
+                    image: "https://via.placeholder.com/300x200/4F46E5/ffffff?text=Гранд+Отель"
+                },
+                {
+                    id: 2,
+                    name: "Гостиница Таджикистан",
+                    stars: 4,
+                    price: 5200,
+                    description: "Комфортабельный отель с традиционным дизайном и отличным сервисом",
+                    image: "https://via.placeholder.com/300x200/059669/ffffff?text=Таджикистан"
+                },
+                {
+                    id: 3,
+                    name: "Памир Палас",
+                    stars: 4,
+                    price: 6800,
+                    description: "Современный отель с spa-центром и ресторанами национальной кухни",
+                    image: "https://via.placeholder.com/300x200/DC2626/ffffff?text=Памир+Палас"
+                },
+                {
+                    id: 4,
+                    name: "Бизнес Отель Орзу",
+                    stars: 3,
+                    price: 3500,
+                    description: "Уютный отель для деловых поездок с конференц-залом и Wi-Fi",
+                    image: "https://via.placeholder.com/300x200/7C3AED/ffffff?text=Орзу"
+                },
+                {
+                    id: 5,
+                    name: "Гостевой дом Восток",
+                    stars: 3,
+                    price: 2800,
+                    description: "Семейный гостевой дом с домашней атмосферой и национальной кухней",
+                    image: "https://via.placeholder.com/300x200/EA580C/ffffff?text=Восток"
+                }
+            ];
+
+            const hotelContainer = document.getElementById('hotelCards');
+            hotelContainer.innerHTML = hotelData.map(hotel => `
+                <div class="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                    <img src="${hotel.image}" alt="${hotel.name}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-semibold text-lg">${hotel.name}</h4>
+                            <div class="flex items-center">
+                                ${generateStars(hotel.stars)}
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">${hotel.description}</p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl font-bold text-green-600">от ${hotel.price.toLocaleString()}₽</span>
+                                <div class="text-xs text-gray-500">за ночь</div>
+                            </div>
+                            <button onclick="selectHotel(${hotel.id}, '${hotel.name}', ${hotel.price})" 
+                                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                Выбрать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function generateStars(count) {
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < count) {
+                    stars += '<svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+                } else {
+                    stars += '<svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>';
+                }
+            }
+            return stars;
+        }
+
+        function selectHotel(hotelId, hotelName, price) {
+            alert(`Вы выбрали: ${hotelName}\nЦена: ${price.toLocaleString()}₽ за ночь\n\nБронирование будет доступно в ближайшее время.`);
+            closeHotelModal();
+        }
+
+        function backToSearch() {
+            document.getElementById('hotelSearchForm').style.display = 'block';
+            document.getElementById('hotelResults').style.display = 'none';
+        }
     </script>
     
     <script src="sample-tour-data.js"></script>
