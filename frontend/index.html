@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bunyod-Tour - Туры по Таджикистану</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Noto Sans', 'Ubuntu', 'Cantarell', 'Helvetica Neue', sans-serif; }
+    </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -284,7 +289,9 @@
         
         .flag {
             font-size: 1rem;
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "EmojiOne Color", "Android Emoji", "Twemoji Mozilla", sans-serif;
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "EmojiOne Color", "Android Emoji", "Twemoji Mozilla", emoji, sans-serif;
+            font-feature-settings: "liga", "kern";
+            text-rendering: optimizeLegibility;
         }
         
         .dropdown-arrow {
@@ -558,37 +565,33 @@
                 <nav class="hidden md:flex space-x-6">
                     <a href="#" class="text-white hover:text-gray-300 transition-colors">О нас</a>
                     
-                    <!-- Туры (отдельный пункт меню с категориями) -->
-                    <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туры</a>
-                        <div class="dropdown-content" style="width: 400px; padding: 12px;">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                                <a href="#" style="padding: 8px;">Городские туры</a>
-                                <a href="#" style="padding: 8px;">Природа/экологические туры</a>
-                                <a href="#" style="padding: 8px;">Культурно познавательные туры</a>
-                                <a href="#" style="padding: 8px;">Исторические туры</a>
-                                <a href="#" style="padding: 8px;">Походы/трекинги</a>
-                                <a href="#" style="padding: 8px;">Горные ландшафты</a>
-                                <a href="#" style="padding: 8px;">Озерные ландшафты</a>
-                                <a href="#" style="padding: 8px;">Приключенческие туры</a>
-                                <a href="#" style="padding: 8px;">Гастрономические туры</a>
-                                <a href="#" style="padding: 8px;">Автотуры/сафари/джип-туры</a>
-                                <a href="#" style="padding: 8px;">Агротуры</a>
-                                <a href="#" style="padding: 8px;">VIP туры</a>
-                                <a href="#" style="padding: 8px;">Однодневные</a>
-                                <a href="#" style="padding: 8px;">Многодневные</a>
-                                <a href="#" style="padding: 8px;">Экскурсии</a>
-                                <a href="#" style="padding: 8px;"></a>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Услуги (с выпадающим меню) -->
                     <div class="dropdown">
                         <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
                         <div class="dropdown-content">
+                            <div class="dropdown-submenu">
+                                <a href="#">Туры</a>
+                                <div class="dropdown-subcontent" style="width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px;">
+                                    <a href="#" style="padding: 8px;">Городские туры</a>
+                                    <a href="#" style="padding: 8px;">Природа/экологические туры</a>
+                                    <a href="#" style="padding: 8px;">Культурно познавательные туры</a>
+                                    <a href="#" style="padding: 8px;">Исторические туры</a>
+                                    <a href="#" style="padding: 8px;">Походы/трекинги</a>
+                                    <a href="#" style="padding: 8px;">Горные ландшафты</a>
+                                    <a href="#" style="padding: 8px;">Озерные ландшафты</a>
+                                    <a href="#" style="padding: 8px;">Приключенческие туры</a>
+                                    <a href="#" style="padding: 8px;">Гастрономические туры</a>
+                                    <a href="#" style="padding: 8px;">Автотуры/сафари/джип-туры</a>
+                                    <a href="#" style="padding: 8px;">Агротуры</a>
+                                    <a href="#" style="padding: 8px;">VIP туры</a>
+                                    <a href="#" style="padding: 8px;">Однодневные</a>
+                                    <a href="#" style="padding: 8px;">Многодневные</a>
+                                    <a href="#" style="padding: 8px;">Экскурсии</a>
+                                    <a href="#" style="padding: 8px;"></a>
+                                </div>
+                            </div>
                             <a href="#">Тургиды</a>
-                            <a href="#">Трансфер</a>
+                            <a href="#" >Трансфер</a>
                             <a href="#">Заказ тура</a>
                             <a href="#">Визовая поддержка</a>
                         </div>
@@ -2525,7 +2528,7 @@
         
         function selectLanguage(lang, flag, name) {
             // Обновляем кнопку селектора
-            document.querySelector('.selected-flag').textContent = flag;
+            document.querySelector('.selected-flag').innerHTML = flag;
             document.querySelector('.selected-lang').textContent = name;
             
             // Убираем активный класс со всех опций
