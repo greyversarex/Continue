@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "python-3.11"]
+modules = ["web", "nodejs-20", "python-3.11"]
 [agent]
 expertMode = true
 
@@ -15,37 +15,11 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Backend Server"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Frontend React App"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
 args = "Frontend Demo"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Demo Page"
-
-[[workflows.workflow]]
-name = "Backend Server"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"DATABASE_URL=file:./dev.db\" > .env && npx prisma generate && npx ts-node src/server.ts"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "Frontend React App"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd frontend && npm start"
-waitForPort = 3000
+args = "Backend API"
 
 [[workflows.workflow]]
 name = "Frontend Demo"
@@ -53,17 +27,23 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd frontend && python3 -m http.server 3000"
-waitForPort = 3000
+args = "cd frontend && python3 -m http.server 5000"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
 
 [[workflows.workflow]]
-name = "Demo Page"
+name = "Backend API"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd frontend && python3 -m http.server 8000"
-waitForPort = 8000
+args = "npx ts-node src/server.ts"
+waitForPort = 3001
+
+[workflows.workflow.metadata]
+outputType = "console"
 
 [[ports]]
 localPort = 3000
