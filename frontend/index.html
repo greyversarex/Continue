@@ -887,86 +887,119 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Бесплатная отмена -->
-                <div class="bg-gray-50 rounded-lg p-6 relative info-block">
-                    <div class="mb-4">
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">Бесплатная отмена</h3>
-                        <p class="text-sm text-gray-600">Отмена бронирования до 30 дней до начала тура, возврат 100%</p>
-                    </div>
-                    <div class="flex justify-end">
-                        <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('cancel-details')">
+                <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center">Бесплатная отмена</h3>
+                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Отмена бронирования до 30 дней до начала тура, возврат 100%</p>
+                    <div class="flex justify-end mt-auto">
+                        <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('cancel-details', this)">
                             подробнее
                         </button>
                     </div>
-                    <div id="cancel-details" class="details-content hidden mt-4 pt-4 border-t border-gray-200">
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            Бесплатная отмена – отмена тура со стороны клиента в срок до 30 дней до начала тура, возврат 100%. Однако данный возврат не распространяется на туры, забронированные менее чем за этот срок.
-                        </p>
-                        <br>
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            Система должна распознавать эти требования автоматически.
-                        </p>
+                    <!-- Оверлей для деталей -->
+                    <div id="cancel-details" class="details-overlay hidden absolute inset-0 bg-gray-50 rounded-lg p-6 z-10">
+                        <div class="h-full flex flex-col">
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Бесплатная отмена</h3>
+                            <div class="flex-grow overflow-y-auto pr-2">
+                                <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                                    Бесплатная отмена – отмена тура со стороны клиента в срок до 30 дней до начала тура, возврат 100%. Однако данный возврат не распространяется на туры, забронированные менее чем за этот срок.
+                                </p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    Система должна распознавать эти требования автоматически.
+                                </p>
+                            </div>
+                            <div class="flex justify-end mt-4">
+                                <button class="details-btn text-sm text-red-600 hover:text-red-800 font-medium" onclick="toggleDetails('cancel-details', this)">
+                                    скрыть
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Бронируй сейчас - плати потом -->
-                <div class="bg-gray-50 rounded-lg p-6 relative info-block">
-                    <div class="mb-4">
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">Бронируй сейчас - плати потом</h3>
-                        <p class="text-sm text-gray-600">Записывайтесь на групповые туры всего за 10% от стоимости тура</p>
-                    </div>
-                    <div class="flex justify-end">
-                        <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('book-details')">
+                <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center">Бронируй сейчас - плати потом</h3>
+                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Записывайтесь на групповые туры всего за 10% от стоимости тура</p>
+                    <div class="flex justify-end mt-auto">
+                        <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('book-details', this)">
                             подробнее
                         </button>
                     </div>
-                    <div id="book-details" class="details-content hidden mt-4 pt-4 border-t border-gray-200">
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            Турист записывается на групповой общий тур; оплачивает 10% от стоимости тура, чтобы забронировать тур. Это раннее бронирование за 12 месяцев (минимум до 30 дней до начала тура).
-                        </p>
-                        <br>
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            В калькуляторе нужно установить ограничение: любая запись на тур доступна в срок бронирования до 30 дней; в 29-й день до срока доступ закрывается.
-                        </p>
+                    <!-- Оверлей для деталей -->
+                    <div id="book-details" class="details-overlay hidden absolute inset-0 bg-gray-50 rounded-lg p-6 z-10">
+                        <div class="h-full flex flex-col">
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Бронируй сейчас - плати потом</h3>
+                            <div class="flex-grow overflow-y-auto pr-2">
+                                <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                                    Турист записывается на групповой общий тур; оплачивает 10% от стоимости тура, чтобы забронировать тур. Это раннее бронирование за 12 месяцев (минимум до 30 дней до начала тура).
+                                </p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    В калькуляторе нужно установить ограничение: любая запись на тур доступна в срок бронирования до 30 дней; в 29-й день до срока доступ закрывается.
+                                </p>
+                            </div>
+                            <div class="flex justify-end mt-4">
+                                <button class="details-btn text-sm text-red-600 hover:text-red-800 font-medium" onclick="toggleDetails('book-details', this)">
+                                    скрыть
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Горящие туры -->
-                <div class="bg-gray-50 rounded-lg p-6 relative info-block">
-                    <div class="mb-4">
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">Горящие туры</h3>
-                        <p class="text-sm text-gray-600">Успейте забронировать туры и экскурсии за доступные цены!</p>
-                    </div>
-                    <div class="flex justify-end">
-                        <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('hot-details')">
+                <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center">Горящие туры</h3>
+                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Успейте забронировать туры и экскурсии за доступные цены!</p>
+                    <div class="flex justify-end mt-auto">
+                        <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('hot-details', this)">
                             подробнее
                         </button>
                     </div>
-                    <div id="hot-details" class="details-content hidden mt-4 pt-4 border-t border-gray-200">
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            В системе бронирования необходимо установить лимит, когда необходимо, чтобы туры, особенно групповые общие экскурсии, были переключены в категорию "Горящие туры".
-                        </p>
-                        <br>
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            Пока остается так, однако два предыдущих блока "Бронируй сейчас, плати потом" и "Горящие туры" входят в этот компонент.
-                        </p>
+                    <!-- Оверлей для деталей -->
+                    <div id="hot-details" class="details-overlay hidden absolute inset-0 bg-gray-50 rounded-lg p-6 z-10">
+                        <div class="h-full flex flex-col">
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Горящие туры</h3>
+                            <div class="flex-grow overflow-y-auto pr-2">
+                                <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                                    В системе бронирования необходимо установить лимит, когда необходимо, чтобы туры, особенно групповые общие экскурсии, были переключены в категорию "Горящие туры".
+                                </p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    Пока остается так, однако два предыдущих блока "Бронируй сейчас, плати потом" и "Горящие туры" входят в этот компонент.
+                                </p>
+                            </div>
+                            <div class="flex justify-end mt-4">
+                                <button class="details-btn text-sm text-red-600 hover:text-red-800 font-medium" onclick="toggleDetails('hot-details', this)">
+                                    скрыть
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Акции -->
-                <div class="bg-gray-50 rounded-lg p-6 relative info-block">
-                    <div class="mb-4">
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">Акции</h3>
-                        <p class="text-sm text-gray-600">Бронируйте любой тур за 12 месяцев и экономьте 12%, это и другие привилегии у нас!</p>
-                    </div>
-                    <div class="flex justify-end">
-                        <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('promo-details')">
+                <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center">Акции</h3>
+                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Бронируйте любой тур за 12 месяцев и экономьте 12%, это и другие привилегии у нас!</p>
+                    <div class="flex justify-end mt-auto">
+                        <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('promo-details', this)">
                             подробнее
                         </button>
                     </div>
-                    <div id="promo-details" class="details-content hidden mt-4 pt-4 border-t border-gray-200">
-                        <p class="text-sm text-gray-700 leading-relaxed">
-                            Пока остается так, однако два предыдущих блока "Бронируй сейчас, плати потом" входят в этот компонент.
-                        </p>
+                    <!-- Оверлей для деталей -->
+                    <div id="promo-details" class="details-overlay hidden absolute inset-0 bg-gray-50 rounded-lg p-6 z-10">
+                        <div class="h-full flex flex-col">
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Акции</h3>
+                            <div class="flex-grow overflow-y-auto pr-2">
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    Пока остается так, однако два предыдущих блока "Бронируй сейчас, плати потом" входят в этот компонент.
+                                </p>
+                            </div>
+                            <div class="flex justify-end mt-4">
+                                <button class="details-btn text-sm text-red-600 hover:text-red-800 font-medium" onclick="toggleDetails('promo-details', this)">
+                                    скрыть
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2325,20 +2358,13 @@
 
     <script>
         // Функция для переключения деталей информационных блоков
-        function toggleDetails(detailsId) {
+        function toggleDetails(detailsId, button) {
             const detailsElement = document.getElementById(detailsId);
-            const button = event.target;
             
             if (detailsElement.classList.contains('hidden')) {
                 detailsElement.classList.remove('hidden');
-                button.textContent = 'скрыть';
-                button.classList.add('text-red-600');
-                button.classList.remove('text-blue-600');
             } else {
                 detailsElement.classList.add('hidden');
-                button.textContent = 'подробнее';
-                button.classList.add('text-blue-600');
-                button.classList.remove('text-red-600');
             }
         }
 
