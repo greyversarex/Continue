@@ -888,11 +888,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Бесплатная отмена -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Бесплатная отмена</h3>
-                            <p class="text-sm text-gray-600">Отмена бронирования до 30 дней до начала тура, возврат 100%</p>
-                        </div>
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Бесплатная отмена</h3>
+                        <p class="text-sm text-gray-600">Отмена бронирования до 30 дней до начала тура, возврат 100%</p>
+                    </div>
+                    <div class="flex justify-end">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('cancel-details')">
                             подробнее
                         </button>
@@ -910,11 +910,11 @@
 
                 <!-- Бронируй сейчас - плати потом -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Бронируй сейчас - плати потом</h3>
-                            <p class="text-sm text-gray-600">Записывайтесь на групповые туры всего за 10% от стоимости тура</p>
-                        </div>
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Бронируй сейчас - плати потом</h3>
+                        <p class="text-sm text-gray-600">Записывайтесь на групповые туры всего за 10% от стоимости тура</p>
+                    </div>
+                    <div class="flex justify-end">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('book-details')">
                             подробнее
                         </button>
@@ -932,11 +932,11 @@
 
                 <!-- Горящие туры -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Горящие туры</h3>
-                            <p class="text-sm text-gray-600">Успейте забронировать туры и экскурсии за доступные цены!</p>
-                        </div>
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Горящие туры</h3>
+                        <p class="text-sm text-gray-600">Успейте забронировать туры и экскурсии за доступные цены!</p>
+                    </div>
+                    <div class="flex justify-end">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('hot-details')">
                             подробнее
                         </button>
@@ -954,11 +954,11 @@
 
                 <!-- Акции -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Акции</h3>
-                            <p class="text-sm text-gray-600">Бронируйте любой тур за 12 месяцев и экономьте 12%, это и другие привилегии у нас!</p>
-                        </div>
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Акции</h3>
+                        <p class="text-sm text-gray-600">Бронируйте любой тур за 12 месяцев и экономьте 12%, это и другие привилегии у нас!</p>
+                    </div>
+                    <div class="flex justify-end">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('promo-details')">
                             подробнее
                         </button>
@@ -1239,40 +1239,7 @@
         </div>
     </section>
 
-    <!-- Специальные предложения -->
-    <section class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Бесплатная отмена бронирования -->
-                <div class="text-center bg-gray-50 rounded-lg p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Бесплатная отмена бронирования</h3>
-                    <p class="text-gray-600 mb-6">Отмените бронирование до 24 часов до начала тура без дополнительных комиссий</p>
-                    <button class="text-gray-600 font-medium hover:text-gray-900 transition-colors">Подробнее</button>
-                </div>
 
-                <!-- Бронируй сейчас – плати потом -->
-                <div class="text-center bg-gray-50 rounded-lg p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Бронируй сейчас – плати потом</h3>
-                    <p class="text-gray-600 mb-6">Забронируйте место в туре сейчас, а оплатите позже удобным способом</p>
-                    <button class="text-gray-600 font-medium hover:text-gray-900 transition-colors">Подробнее</button>
-                </div>
-
-                <!-- Горящие туры -->
-                <div class="text-center bg-gray-50 rounded-lg p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Горящие туры</h3>
-                    <p class="text-gray-600 mb-6">Специальные предложения на туры с выездом в ближайшие дни</p>
-                    <button class="text-gray-600 font-medium hover:text-gray-900 transition-colors">Подробнее</button>
-                </div>
-
-                <!-- Акции -->
-                <div class="text-center bg-gray-50 rounded-lg p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Акции</h3>
-                    <p class="text-gray-600 mb-6">Сезонные скидки и специальные предложения для наших клиентов</p>
-                    <button class="text-gray-600 font-medium hover:text-gray-900 transition-colors">Подробнее</button>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Categories section removed as requested -->
 
@@ -2357,6 +2324,24 @@
     </footer>
 
     <script>
+        // Функция для переключения деталей информационных блоков
+        function toggleDetails(detailsId) {
+            const detailsElement = document.getElementById(detailsId);
+            const button = event.target;
+            
+            if (detailsElement.classList.contains('hidden')) {
+                detailsElement.classList.remove('hidden');
+                button.textContent = 'скрыть';
+                button.classList.add('text-red-600');
+                button.classList.remove('text-blue-600');
+            } else {
+                detailsElement.classList.add('hidden');
+                button.textContent = 'подробнее';
+                button.classList.add('text-blue-600');
+                button.classList.remove('text-red-600');
+            }
+        }
+
         // Данные о городах по странам
         const citiesByCountry = {
             'Таджикистан': ['Душанбе', 'Худжанд', 'Хорог', 'Куляб', 'Курган-Тюбе', 'Истаравшан'],
@@ -2619,23 +2604,7 @@
                 console.log('Минимальная дата установлена:', minDate);
             }
 
-            // Функция для переключения деталей информационных блоков
-            function toggleDetails(detailsId) {
-                const detailsElement = document.getElementById(detailsId);
-                const button = event.target;
-                
-                if (detailsElement.classList.contains('hidden')) {
-                    detailsElement.classList.remove('hidden');
-                    button.textContent = 'скрыть';
-                    button.classList.add('text-red-600');
-                    button.classList.remove('text-blue-600');
-                } else {
-                    detailsElement.classList.add('hidden');
-                    button.textContent = 'подробнее';
-                    button.classList.add('text-blue-600');
-                    button.classList.remove('text-red-600');
-                }
-            }
+
             
             // Карта туров с их именами и ключами
             const tourMap = {
