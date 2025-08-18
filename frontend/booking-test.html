@@ -126,21 +126,11 @@
             try {
                 // Try different API endpoints based on current environment
                 const apiUrls = [
-                    '/api/tours',
-                    'http://localhost:3001/api/tours',
-                    window.location.origin + '/api/tours'
+                    'http://localhost:3001/api/tours'
                 ];
                 
                 let response;
-                for (const url of apiUrls) {
-                    try {
-                        response = await axios.get(url);
-                        break;
-                    } catch (err) {
-                        console.log(`Failed to connect to ${url}, trying next...`);
-                        continue;
-                    }
-                }
+                response = await axios.get(apiUrls[0]);
                 
                 if (response && response.data.success) {
                     tours = response.data.data;
@@ -167,21 +157,7 @@
         // Load hotels from API
         async function loadHotels() {
             try {
-                const apiUrls = [
-                    '/api/hotels',
-                    'http://localhost:3001/api/hotels',
-                    window.location.origin + '/api/hotels'
-                ];
-                
-                let response;
-                for (const url of apiUrls) {
-                    try {
-                        response = await axios.get(url);
-                        break;
-                    } catch (err) {
-                        continue;
-                    }
-                }
+                const response = await axios.get('http://localhost:3001/api/hotels');
                 
                 if (response && response.data.success) {
                     hotels = response.data.data;
@@ -200,21 +176,7 @@
         // Load guides from API
         async function loadGuides() {
             try {
-                const apiUrls = [
-                    '/api/guides',
-                    'http://localhost:3001/api/guides',
-                    window.location.origin + '/api/guides'
-                ];
-                
-                let response;
-                for (const url of apiUrls) {
-                    try {
-                        response = await axios.get(url);
-                        break;
-                    } catch (err) {
-                        continue;
-                    }
-                }
+                const response = await axios.get('http://localhost:3001/api/guides');
                 
                 if (response && response.data.success) {
                     guides = response.data.data;
@@ -675,22 +637,7 @@
             };
 
             try {
-                const apiUrls = [
-                    '/api/tours/booking-requests',
-                    'http://localhost:3001/api/tours/booking-requests',
-                    window.location.origin + '/api/tours/booking-requests'
-                ];
-                
-                let response;
-                for (const url of apiUrls) {
-                    try {
-                        response = await axios.post(url, bookingData);
-                        break;
-                    } catch (err) {
-                        console.log(`Failed to send booking to ${url}, trying next...`);
-                        continue;
-                    }
-                }
+                const response = await axios.post('http://localhost:3001/api/tours/booking-requests', bookingData);
                 
                 if (response && response.data.success) {
                     alert(`🎉 Бронирование успешно создано!\n\nНомер заказа: ${response.data.data.id}\nПроверьте email для подтверждения`);
