@@ -11,9 +11,7 @@ run = "npx ts-node src/server.ts"
 key = "NODE_ENV"
 value = "production"
 
-[[deployment.env]]
-key = "PORT"
-value = "8080"
+
 
 # Build command (if needed)
 build = "npx prisma generate"

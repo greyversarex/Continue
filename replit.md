@@ -33,7 +33,7 @@ A complete TypeScript Express backend API for Bunyod-Tour tour agency specializi
 - **Banner-Style Tour Types Section**: Redesigned "Виды туров" from card-based layout to elegant banner-style presentation with inline sections (Персональный, Групповой персональный, Групповой общий, VIP) removing icons for cleaner appearance
 - **Tour Information Simplification**: Removed hotel information content blocks from all tour page templates, streamlining information display to focus on tour description and program only
 - **Multilingual Header Integration**: Added 4-language selector (English, Русский, Таджикский, Фарси) to header navigation for international accessibility
-- **Deployment Configuration (August 2025)**: Fixed deployment issues by updating server port configuration for production environments, added proper CORS origins for Replit deployment URLs, created Dockerfile and startup scripts for Cloud Run deployment, and configured proper health checks for autoscale deployments
+- **Deployment Configuration (August 2025)**: Comprehensive deployment fixes including: updated deployment.toml run command to use start.sh script, configured port 80 for autoscale deployments, updated server.ts to properly handle environment PORT variables, added proper CORS origins for Replit deployment URLs, ensured health checks work correctly with /api/health endpoint, and created production-ready startup scripts with database migrations
 
 ## User Preferences
 

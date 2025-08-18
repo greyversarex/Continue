@@ -4,8 +4,8 @@
 # Set production environment
 export NODE_ENV=production
 
-# Use the PORT environment variable or default to 8080
-export PORT=${PORT:-8080}
+# Use the PORT environment variable or default to 80 for autoscale deployment
+export PORT=${PORT:-80}
 
 # Generate Prisma client if needed
 npx prisma generate

@@ -1,11 +1,12 @@
 import app from './app';
 import prisma from './config/database';
 
-// For deployment, use PORT from environment (usually 8080 for Cloud Run)
-// For development, use 3001 to match the workflow configuration
-const PORT = process.env.NODE_ENV === 'production' 
-  ? parseInt(process.env.PORT || '8080', 10)
-  : parseInt(process.env.PORT || '3001', 10);
+// Port configuration for different environments
+// Production: Use PORT from environment (Replit Autoscale uses port 80)
+// Development: Use 3001 to match the workflow configuration
+const PORT = process.env.PORT 
+  ? parseInt(process.env.PORT, 10)
+  : (process.env.NODE_ENV === 'production' ? 80 : 3001);
 const HOST = '0.0.0.0';
 
 async function startServer() {
