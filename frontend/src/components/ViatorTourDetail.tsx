@@ -19,7 +19,7 @@ const ViatorTourDetail: React.FC = () => {
       if (!id) return;
       
       try {
-        const response = await axios.get(`http://localhost:3001/api/tours/tours/${id}`);
+        const response = await axios.get(`http://localhost:3001/api/tours/${id}`);
         if (response.data.success) {
           setTour(response.data.data);
         }

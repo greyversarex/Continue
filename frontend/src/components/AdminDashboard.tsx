@@ -1,104 +1,305 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 import TourForm from './TourForm';
 import BookingsTable from './BookingsTable';
 import ReviewsTable from './ReviewsTable';
+import { Tour, Category, BookingRequest, Review } from '../types';
 
-type TabType = 'tours' | 'bookings' | 'reviews';
+interface AdminStats {
+  totalTours: number;
+  totalBookings: number;
+  totalReviews: number;
+  pendingReviews: number;
+}
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('tours');
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState<'overview' | 'tours' | 'bookings' | 'reviews' | 'categories'>('overview');
+  const [stats, setStats] = useState<AdminStats>({
+    totalTours: 0,
+    totalBookings: 0,
+    totalReviews: 0,
+    pendingReviews: 0
+  });
+  const [tours, setTours] = useState<Tour[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedTour, setSelectedTour] = useState<Tour | null>(null);
   const [showTourForm, setShowTourForm] = useState(false);
-  const [editingTour, setEditingTour] = useState<any>(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check authentication
-    if (localStorage.getItem('adminAuthenticated') !== 'true') {
-      navigate('/admin');
-    }
-  }, [navigate]);
+    fetchDashboardData();
+  }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminAuthenticated');
-    navigate('/admin');
+  const fetchDashboardData = async () => {
+    try {
+      const [toursRes, categoriesRes, bookingsRes, reviewsRes] = await Promise.all([
+        axios.get('http://localhost:3001/api/tours'),
+        axios.get('http://localhost:3001/api/categories'),
+        axios.get('http://localhost:3001/api/tours/booking-requests'),
+        axios.get('http://localhost:3001/api/tours/reviews')
+      ]);
+
+      if (toursRes.data.success) {
+        setTours(toursRes.data.data);
+      }
+
+      if (categoriesRes.data.success) {
+        setCategories(categoriesRes.data.data);
+      }
+
+      // Calculate stats
+      const totalTours = toursRes.data.success ? toursRes.data.data.length : 0;
+      const totalBookings = bookingsRes.data.success ? bookingsRes.data.data.length : 0;
+      const totalReviews = reviewsRes.data.success ? reviewsRes.data.data.length : 0;
+      const pendingReviews = reviewsRes.data.success 
+        ? reviewsRes.data.data.filter((review: Review) => !review.isModerated).length 
+        : 0;
+
+      setStats({
+        totalTours,
+        totalBookings,
+        totalReviews,
+        pendingReviews
+      });
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEditTour = (tour: any) => {
-    setEditingTour(tour);
+  const handleEditTour = (tour: Tour) => {
+    setSelectedTour(tour);
     setShowTourForm(true);
   };
 
-  const handleCloseTourForm = () => {
-    setShowTourForm(false);
-    setEditingTour(null);
+  const handleDeleteTour = async (tourId: number) => {
+    if (window.confirm('Вы уверены, что хотите удалить этот тур?')) {
+      try {
+        const response = await axios.delete(`http://localhost:3001/api/tours/${tourId}`);
+        if (response.data.success) {
+          setTours(tours.filter(tour => tour.id !== tourId));
+          setStats(prev => ({ ...prev, totalTours: prev.totalTours - 1 }));
+        }
+      } catch (error) {
+        console.error('Error deleting tour:', error);
+        alert('Ошибка при удалении тура');
+      }
+    }
   };
 
-  const tabs = [
-    { id: 'tours' as TabType, label: 'Manage Tours', icon: '🏔️' },
-    { id: 'bookings' as TabType, label: 'Booking Requests', icon: '📅' },
-    { id: 'reviews' as TabType, label: 'Reviews', icon: '⭐' }
-  ];
+  const handleTourFormClose = () => {
+    setShowTourForm(false);
+    setSelectedTour(null);
+    fetchDashboardData();
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Загрузка панели администратора...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-800">
-              Admin Dashboard
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-2xl font-bold text-gray-900">
+              Админ-панель Bunyod-Tour
             </h1>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
-            >
-              Logout
-            </button>
+            <div className="text-sm text-gray-500">
+              Администратор
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Navigation Tabs */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Navigation Tabs */}
+        <div className="mb-8">
           <nav className="flex space-x-8">
-            {tabs.map((tab) => (
+            {[
+              { key: 'overview', label: 'Обзор', icon: '📊' },
+              { key: 'tours', label: 'Туры', icon: '🏔️' },
+              { key: 'bookings', label: 'Заказы', icon: '📋' },
+              { key: 'reviews', label: 'Отзывы', icon: '⭐' },
+              { key: 'categories', label: 'Категории', icon: '📁' }
+            ].map((tab) => (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key as any)}
+                className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
+                  activeTab === tab.key
+                    ? 'bg-blue-100 text-blue-700 border-blue-200'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >
                 <span className="mr-2">{tab.icon}</span>
                 {tab.label}
+                {tab.key === 'reviews' && stats.pendingReviews > 0 && (
+                  <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                    {stats.pendingReviews}
+                  </span>
+                )}
               </button>
             ))}
           </nav>
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Content */}
+        {activeTab === 'overview' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <span className="text-blue-600 text-lg">🏔️</span>
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-500">Всего туров</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.totalTours}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                    <span className="text-green-600 text-lg">📋</span>
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-500">Заказов</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.totalBookings}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <span className="text-yellow-600 text-lg">⭐</span>
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-500">Отзывов</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.totalReviews}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                    <span className="text-red-600 text-lg">⏳</span>
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-500">Ожидает модерации</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.pendingReviews}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeTab === 'tours' && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">Tour Management</h2>
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-900">Управление турами</h2>
               <button
                 onClick={() => setShowTourForm(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
               >
-                Add New Tour
+                Добавить тур
               </button>
             </div>
-            <div className="bg-white rounded-lg shadow p-6">
-              <p className="text-gray-600 mb-4">Manage your tour listings here.</p>
-              {/* Tour management content will be added here */}
-              <div className="text-center py-8 text-gray-500">
-                Tour management interface coming soon. Use the "Add New Tour" button to create tours.
+
+            <div className="bg-white shadow rounded-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Тур
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Категория
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Цена
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Длительность
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Статус
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Действия
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {tours.map((tour) => (
+                      <tr key={tour.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {typeof tour.title === 'object' ? tour.title.ru : tour.title}
+                            </div>
+                            <div className="text-sm text-gray-500">{tour.city}, {tour.country}</div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {tour.category ? (typeof tour.category.name === 'object' ? tour.category.name.ru : tour.category.name) : 'Не указана'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          ${tour.price}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {tour.duration}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            tour.isActive 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-red-100 text-red-800'
+                          }`}>
+                            {tour.isActive ? 'Активен' : 'Неактивен'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button
+                            onClick={() => handleEditTour(tour)}
+                            className="text-indigo-600 hover:text-indigo-900 mr-4"
+                          >
+                            Редактировать
+                          </button>
+                          <button
+                            onClick={() => handleDeleteTour(tour.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Удалить
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -106,31 +307,51 @@ const AdminDashboard: React.FC = () => {
 
         {activeTab === 'bookings' && <BookingsTable />}
         {activeTab === 'reviews' && <ReviewsTable />}
+        
+        {activeTab === 'categories' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-900">Категории туров</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categories.map((category) => (
+                <div key={category.id} className="bg-white rounded-lg shadow p-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    {typeof category.name === 'object' ? category.name.ru : category.name}
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Туров в категории: {category._count?.tours || 0}
+                  </p>
+                  <div className="flex justify-end space-x-2">
+                    <button className="text-sm text-indigo-600 hover:text-indigo-900">
+                      Редактировать
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tour Form Modal */}
       {showTourForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-screen overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-gray-800">
-                  {editingTour ? 'Edit Tour' : 'Add New Tour'}
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium text-gray-900">
+                  {selectedTour ? 'Редактировать тур' : 'Добавить новый тур'}
                 </h3>
                 <button
-                  onClick={handleCloseTourForm}
+                  onClick={handleTourFormClose}
                   className="text-gray-400 hover:text-gray-600"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  ✕
                 </button>
               </div>
-              <TourForm
-                tour={editingTour}
-                onSuccess={handleCloseTourForm}
-                onCancel={handleCloseTourForm}
-              />
+              <TourForm tour={selectedTour} onClose={handleTourFormClose} />
             </div>
           </div>
         </div>

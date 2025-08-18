@@ -9,28 +9,19 @@ import {
 const router = Router();
 
 // Tour routes
-router.get('/tours', TourController.getAllTours);
-router.get('/tours/search', TourController.searchTours);
-router.get('/tours/:id', TourController.getTourById);
-router.post('/tours', TourController.createTour);
-router.put('/tours/:id', TourController.updateTour);
-router.delete('/tours/:id', TourController.deleteTour);
+router.get('/', TourController.getAllTours);
+router.get('/search', TourController.searchTours);
+router.get('/:id', TourController.getTourById);
+router.post('/', TourController.createTour);
+router.put('/:id', TourController.updateTour);
+router.delete('/:id', TourController.deleteTour);
 
-// Category routes
-router.get('/categories', CategoryController.getAllCategories);
-router.get('/categories/:id', CategoryController.getCategoryById);
-router.post('/categories', CategoryController.createCategory);
-router.put('/categories/:id', CategoryController.updateCategory);
-router.delete('/categories/:id', CategoryController.deleteCategory);
-
-// Public booking request routes
+// Booking request routes for tours
 router.post('/booking-requests', BookingRequestController.createBookingRequest);
-
-// Public review routes
-router.post('/reviews', ReviewController.createReview);
-
-// Admin routes
 router.get('/booking-requests', BookingRequestController.getAllBookingRequests);
+
+// Review routes for tours
+router.post('/reviews', ReviewController.createReview);
 router.get('/reviews', ReviewController.getAllReviews);
 router.put('/reviews/:id', ReviewController.updateReview);
 

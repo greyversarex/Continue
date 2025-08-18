@@ -19,7 +19,7 @@ const TourCatalog: React.FC = () => {
 
   const fetchTours = async () => {
     try {
-      const response = await axios.get<ApiResponse>('http://localhost:3001/api/tours/tours');
+      const response = await axios.get<ApiResponse>('http://localhost:3001/api/tours');
       if (response.data.success) {
         setTours(response.data.data);
       }
@@ -33,7 +33,7 @@ const TourCatalog: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get<ApiResponse>('http://localhost:3001/api/tours/categories');
+      const response = await axios.get<ApiResponse>('http://localhost:3001/api/categories');
       if (response.data.success) {
         setCategories(response.data.data);
       }

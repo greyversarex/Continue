@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import tourRoutes from './tourRoutes';
+import categoryRoutes from './categoryRoutes';
 import hotelRoutes from './hotelRoutes';
 import guideRoutes from './guideRoutes';
 import orderRoutes from './orderRoutes';
@@ -8,8 +9,9 @@ import customerRoutes from './customerRoutes';
 
 const router = Router();
 
-// Mount routes
-router.use('/', tourRoutes);  // Keep legacy tour routes structure
+// Mount routes - proper API structure
+router.use('/tours', tourRoutes); 
+router.use('/categories', categoryRoutes);
 router.use('/hotels', hotelRoutes);
 router.use('/guides', guideRoutes);
 router.use('/orders', orderRoutes);

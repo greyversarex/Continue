@@ -23,8 +23,8 @@ const ViatorTourCatalog: React.FC = () => {
     const fetchData = async () => {
       try {
         const [toursResponse, categoriesResponse] = await Promise.all([
-          axios.get('http://localhost:3001/api/tours/tours'),
-          axios.get('http://localhost:3001/api/tours/categories')
+          axios.get('http://localhost:3001/api/tours'),
+          axios.get('http://localhost:3001/api/categories')
         ]);
         
         if (toursResponse.data.success) {
