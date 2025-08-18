@@ -294,7 +294,7 @@
                         `).join('')}
                     </div>
                     <div class="flex justify-end">
-                        <button onclick="showStep(2)" 
+                        <button id="continue-to-booking" onclick="continueToBooking()" 
                                 ${!selectedHotel ? 'disabled' : ''}
                                 class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white px-6 py-2 rounded-lg font-medium">
                             Продолжить
@@ -308,6 +308,15 @@
         function selectHotel(hotelId) {
             selectedHotel = hotels.find(h => h.id === hotelId);
             showHotelSelection(); // Refresh display
+        }
+
+        // Continue to booking form
+        function continueToBooking() {
+            if (!selectedHotel) {
+                alert('Пожалуйста, выберите отель');
+                return;
+            }
+            showStep(2);
         }
 
         // Show booking form
@@ -401,10 +410,10 @@
                     </div>
 
                     <div class="flex justify-between">
-                        <button onclick="showStep(1)" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-50">
+                        <button onclick="goBackToHotels()" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-50">
                             Назад
                         </button>
-                        <button onclick="validateAndContinue()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
+                        <button id="continue-to-payment" onclick="validateAndContinue()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
                             Продолжить к оплате
                         </button>
                     </div>
@@ -446,26 +455,77 @@
             container.appendChild(newParticipant);
         }
 
-        // Validate and continue
+        // Go back to hotel selection
+        function goBackToHotels() {
+            showStep(1);
+        }
+
+        // Validate and continue to payment
         function validateAndContinue() {
             const customerName = document.getElementById('customer-name').value;
             const customerPhone = document.getElementById('customer-phone').value;
             const customerEmail = document.getElementById('customer-email').value;
+            const tourDate = document.getElementById('tour-date').value;
             const agreeTerms = document.getElementById('agree-terms').checked;
             const agreePayment = document.getElementById('agree-payment').checked;
 
-            if (!customerName || !customerPhone || !customerEmail || !agreeTerms || !agreePayment) {
-                alert('Пожалуйста, заполните все обязательные поля и согласитесь с условиями');
+            // Validate participants
+            const participantNames = document.querySelectorAll('.participant-name');
+            const participantDobs = document.querySelectorAll('.participant-dob');
+            
+            let allParticipantsValid = true;
+            participantNames.forEach((nameInput, index) => {
+                const dobInput = participantDobs[index];
+                if (!nameInput.value.trim() || !dobInput.value) {
+                    allParticipantsValid = false;
+                }
+            });
+
+            if (!customerName.trim() || !customerPhone.trim() || !customerEmail.trim() || !tourDate || !allParticipantsValid) {
+                alert('Пожалуйста, заполните все обязательные поля');
+                return;
+            }
+
+            if (!agreeTerms || !agreePayment) {
+                alert('Необходимо принять все соглашения');
+                return;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(customerEmail)) {
+                alert('Пожалуйста, введите корректный email адрес');
+                return;
+            }
+
+            // Phone validation
+            if (customerPhone.length < 10) {
+                alert('Пожалуйста, введите корректный номер телефона');
+                return;
+            }
+
+            // Date validation - must be in future
+            const selectedDate = new Date(tourDate);
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            if (selectedDate <= tomorrow) {
+                alert('Дата тура должна быть не раньше завтрашнего дня');
                 return;
             }
 
             showStep(3);
         }
 
+        // Go back to booking form
+        function goBackToBooking() {
+            showStep(2);
+        }
+
         // Show payment options
         function showPaymentOptions() {
             const participants = document.querySelectorAll('.participant-name');
-            const totalCost = selectedTour.price * participants.length;
+            const totalCost = selectedTour ? (parseInt(selectedTour.price) * participants.length) : 0;
 
             const stepContent = document.getElementById('step-content');
             stepContent.innerHTML = `
@@ -483,6 +543,7 @@
                                  onclick="processBooking('${method.key}')">
                                 <div class="text-2xl mb-2">${method.icon}</div>
                                 <div class="font-medium text-gray-900">${method.name}</div>
+                                <div class="text-xs text-gray-500 mt-1">Нажмите для оплаты</div>
                             </div>
                         `).join('')}
                     </div>
@@ -519,8 +580,8 @@
                     </div>
 
                     <div class="flex justify-between">
-                        <button onclick="showStep(2)" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-50">
-                            Назад
+                        <button onclick="goBackToBooking()" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-50">
+                            Назад к форме
                         </button>
                     </div>
                 </div>
