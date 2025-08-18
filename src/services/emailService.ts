@@ -1,190 +1,308 @@
 import nodemailer from 'nodemailer';
+import { Order, Customer, Tour } from '@prisma/client';
 
-interface BookingConfirmationData {
-  order: any;
-  customerEmail: string;
-  adminEmail: string;
-  communityEmail: string;
-}
-
-// Create reusable transporter object using the default SMTP transport
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-};
-
-export const sendBookingConfirmation = async (data: BookingConfirmationData) => {
-  try {
-    const transporter = createTransporter();
-
-    // Parse tourists data
-    const tourists = JSON.parse(data.order.tourists);
-    const touristsText = tourists.map((t: any, index: number) => 
-      `${index + 1}. ${t.fullName} (${t.dateOfBirth})`
-    ).join('\n');
-
-    // Customer email template
-    const customerHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #667eea;">Подтверждение бронирования - Bunyod-Tour</h2>
-        
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3>Номер заказа: ${data.order.orderNumber}</h3>
-          <p><strong>Статус:</strong> ${data.order.status === 'pending' ? 'Ожидает подтверждения' : data.order.status}</p>
-        </div>
-        
-        <div style="margin: 20px 0;">
-          <h3>Детали тура:</h3>
-          <p><strong>Тур:</strong> ${JSON.parse(data.order.tour.title).ru}</p>
-          <p><strong>Дата:</strong> ${data.order.tourDate}</p>
-          <p><strong>Сумма:</strong> ${data.order.totalAmount} USD</p>
-          ${data.order.hotel ? `<p><strong>Отель:</strong> ${JSON.parse(data.order.hotel.name).ru}</p>` : ''}
-          ${data.order.guide ? `<p><strong>Гид:</strong> ${JSON.parse(data.order.guide.name).ru}</p>` : ''}
-        </div>
-        
-        <div style="margin: 20px 0;">
-          <h3>Туристы:</h3>
-          <pre style="background: #f8f9fa; padding: 15px; border-radius: 4px;">${touristsText}</pre>
-        </div>
-        
-        ${data.order.wishes ? `
-        <div style="margin: 20px 0;">
-          <h3>Пожелания:</h3>
-          <p>${data.order.wishes}</p>
-        </div>
-        ` : ''}
-        
-        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <p><strong>Следующие шаги:</strong></p>
-          <p>1. Мы обработаем ваш заказ в течение 24 часов</p>
-          <p>2. Вам будет отправлена ссылка для оплаты</p>
-          <p>3. После оплаты вы получите подтверждение и детали тура</p>
-        </div>
-        
-        <p>С уважением,<br>Команда Bunyod-Tour</p>
-      </div>
-    `;
-
-    // Admin email template
-    const adminHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #dc3545;">Новый заказ - ${data.order.orderNumber}</h2>
-        
-        <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3>Информация о заказе:</h3>
-          <p><strong>Номер:</strong> ${data.order.orderNumber}</p>
-          <p><strong>Дата создания:</strong> ${new Date(data.order.createdAt).toLocaleString('ru-RU')}</p>
-          <p><strong>Сумма:</strong> ${data.order.totalAmount} USD</p>
-        </div>
-        
-        <div style="margin: 20px 0;">
-          <h3>Клиент:</h3>
-          <p><strong>Имя:</strong> ${data.order.customer.fullName}</p>
-          <p><strong>Email:</strong> ${data.order.customer.email}</p>
-          <p><strong>Телефон:</strong> ${data.order.customer.phone}</p>
-        </div>
-        
-        <div style="margin: 20px 0;">
-          <h3>Детали тура:</h3>
-          <p><strong>Тур:</strong> ${JSON.parse(data.order.tour.title).ru}</p>
-          <p><strong>Дата:</strong> ${data.order.tourDate}</p>
-          ${data.order.hotel ? `<p><strong>Отель:</strong> ${JSON.parse(data.order.hotel.name).ru}</p>` : ''}
-          ${data.order.guide ? `<p><strong>Гид:</strong> ${JSON.parse(data.order.guide.name).ru}</p>` : ''}
-        </div>
-        
-        <div style="margin: 20px 0;">
-          <h3>Туристы (${tourists.length}):</h3>
-          <pre style="background: #f8f9fa; padding: 15px; border-radius: 4px;">${touristsText}</pre>
-        </div>
-        
-        ${data.order.wishes ? `
-        <div style="margin: 20px 0;">
-          <h3>Пожелания клиента:</h3>
-          <p style="background: #f8f9fa; padding: 15px; border-radius: 4px;">${data.order.wishes}</p>
-        </div>
-        ` : ''}
-        
-        <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <p><strong>Требуется действие:</strong> Обработайте заказ в админ-панели</p>
-        </div>
-      </div>
-    `;
-
-    // Send emails
-    const emailPromises = [
-      // Customer email
-      transporter.sendMail({
-        from: `"Bunyod-Tour" <${process.env.SMTP_USER}>`,
-        to: data.customerEmail,
-        subject: `Подтверждение бронирования ${data.order.orderNumber}`,
-        html: customerHtml,
-      }),
-      
-      // Admin email
-      transporter.sendMail({
-        from: `"Bunyod-Tour System" <${process.env.SMTP_USER}>`,
-        to: data.adminEmail,
-        subject: `Новый заказ ${data.order.orderNumber}`,
-        html: adminHtml,
-      }),
-      
-      // Community email
-      transporter.sendMail({
-        from: `"Bunyod-Tour System" <${process.env.SMTP_USER}>`,
-        to: data.communityEmail,
-        subject: `Новый заказ ${data.order.orderNumber}`,
-        html: adminHtml,
-      }),
-    ];
-
-    await Promise.allSettled(emailPromises);
-    console.log('Booking confirmation emails sent successfully');
-  } catch (error) {
-    console.error('Failed to send booking confirmation emails:', error);
-    // Don't throw error - email is non-critical
+// Email configuration - in production, use environment variables
+const EMAIL_CONFIG = {
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER || 'noreply@bunyod-tour.com',
+    pass: process.env.SMTP_PASS || 'your-password'
   }
 };
 
-export const sendPaymentConfirmation = async (orderNumber: string, customerEmail: string, receiptData: any) => {
-  try {
-    const transporter = createTransporter();
+// Create reusable transporter
+const transporter = nodemailer.createTransport(EMAIL_CONFIG);
 
-    const html = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #28a745;">Оплата подтверждена - Bunyod-Tour</h2>
-        
-        <div style="background: #d4edda; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3>Заказ ${orderNumber} успешно оплачен!</h3>
-          <p>Ваша оплата получена и обработана.</p>
+// Email templates
+const emailTemplates = {
+  bookingConfirmation: (order: any, customer: Customer, tour: any) => ({
+    subject: `Подтверждение бронирования №${order.orderNumber}`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }
+          .order-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
+          .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+          .detail-row:last-child { border-bottom: none; }
+          .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+          .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Спасибо за ваш заказ!</h1>
+            <p>Ваше бронирование успешно подтверждено</p>
+          </div>
+          
+          <div class="content">
+            <p>Уважаемый(ая) ${customer.fullName},</p>
+            <p>Мы рады подтвердить ваше бронирование тура. Ниже вы найдете детали вашего заказа:</p>
+            
+            <div class="order-details">
+              <h3>Детали заказа</h3>
+              <div class="detail-row">
+                <span><strong>Номер заказа:</strong></span>
+                <span>${order.orderNumber}</span>
+              </div>
+              <div class="detail-row">
+                <span><strong>Тур:</strong></span>
+                <span>${tour.title?.ru || tour.title?.en || 'Tour'}</span>
+              </div>
+              <div class="detail-row">
+                <span><strong>Дата тура:</strong></span>
+                <span>${new Date(order.tourDate).toLocaleDateString('ru-RU')}</span>
+              </div>
+              <div class="detail-row">
+                <span><strong>Количество туристов:</strong></span>
+                <span>${JSON.parse(order.tourists || '[]').length}</span>
+              </div>
+              <div class="detail-row">
+                <span><strong>Общая сумма:</strong></span>
+                <span style="font-size: 20px; color: #667eea;"><strong>$${order.totalAmount}</strong></span>
+              </div>
+            </div>
+            
+            <h3>Список туристов</h3>
+            <ol>
+              ${JSON.parse(order.tourists || '[]').map((t: any) => `
+                <li>${t.fullName} (${t.birthDate})</li>
+              `).join('')}
+            </ol>
+            
+            ${order.hotel ? `
+              <h3>Отель</h3>
+              <p>${order.hotel.name?.ru || order.hotel.name?.en || 'Hotel'}</p>
+            ` : ''}
+            
+            ${order.guide ? `
+              <h3>Гид</h3>
+              <p>${order.guide.name?.ru || order.guide.name?.en || 'Guide'}</p>
+            ` : ''}
+            
+            <div style="text-align: center;">
+              <a href="http://localhost:5000/my-bookings.html?order=${order.orderNumber}" class="button">
+                Посмотреть детали заказа
+              </a>
+            </div>
+            
+            <div class="footer">
+              <p><strong>Контакты для связи:</strong></p>
+              <p>📞 +992 123 456 789 | ✉️ support@bunyod-tour.com</p>
+              <p>© 2025 Bunyod-Tour. Все права защищены.</p>
+            </div>
+          </div>
         </div>
-        
-        <div style="margin: 20px 0;">
-          <h3>Электронный чек:</h3>
-          <pre style="background: #f8f9fa; padding: 15px; border-radius: 4px;">${JSON.stringify(receiptData, null, 2)}</pre>
+      </body>
+      </html>
+    `
+  }),
+  
+  bookingCancellation: (order: any, customer: Customer) => ({
+    subject: `Отмена бронирования №${order.orderNumber}`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #ef4444; color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Бронирование отменено</h1>
+          </div>
+          <div class="content">
+            <p>Уважаемый(ая) ${customer.fullName},</p>
+            <p>Ваше бронирование №${order.orderNumber} было отменено.</p>
+            <p>Если у вас есть вопросы, пожалуйста, свяжитесь с нами.</p>
+            <p>С уважением,<br>Команда Bunyod-Tour</p>
+          </div>
         </div>
-        
-        <p>В ближайшее время с вами свяжется наш менеджер для уточнения деталей тура.</p>
-        
-        <p>С уважением,<br>Команда Bunyod-Tour</p>
-      </div>
-    `;
+      </body>
+      </html>
+    `
+  }),
+  
+  paymentConfirmation: (order: any, customer: Customer) => ({
+    subject: `Подтверждение оплаты заказа №${order.orderNumber}`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #10b981; color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Оплата получена!</h1>
+          </div>
+          <div class="content">
+            <p>Уважаемый(ая) ${customer.fullName},</p>
+            <p>Мы получили вашу оплату для заказа №${order.orderNumber}.</p>
+            <p>Сумма: <strong>$${order.totalAmount}</strong></p>
+            <p>Способ оплаты: ${order.paymentMethod}</p>
+            <p>Ваш тур полностью подтвержден. Желаем вам приятного путешествия!</p>
+            <p>С уважением,<br>Команда Bunyod-Tour</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  }),
+  
+  adminNotification: (order: any, customer: Customer, tour: any) => ({
+    subject: `Новый заказ №${order.orderNumber}`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #667eea; color: white; padding: 20px; text-align: center; }
+          .content { background: #f8f9fa; padding: 20px; }
+          .details { background: white; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h2>Новый заказ в системе</h2>
+          </div>
+          <div class="content">
+            <div class="details">
+              <h3>Информация о заказе</h3>
+              <p><strong>Номер:</strong> ${order.orderNumber}</p>
+              <p><strong>Тур:</strong> ${tour.title?.ru || tour.title?.en}</p>
+              <p><strong>Дата:</strong> ${new Date(order.tourDate).toLocaleDateString('ru-RU')}</p>
+              <p><strong>Сумма:</strong> $${order.totalAmount}</p>
+            </div>
+            <div class="details">
+              <h3>Информация о клиенте</h3>
+              <p><strong>Имя:</strong> ${customer.fullName}</p>
+              <p><strong>Email:</strong> ${customer.email}</p>
+              <p><strong>Телефон:</strong> ${customer.phone}</p>
+            </div>
+            <p><a href="http://localhost:5000/admin-dashboard.html" style="background: #667eea; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Открыть в админ-панели</a></p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  })
+};
 
-    await transporter.sendMail({
-      from: `"Bunyod-Tour" <${process.env.SMTP_USER}>`,
-      to: customerEmail,
-      subject: `Оплата подтверждена - ${orderNumber}`,
-      html,
-    });
-
-    console.log('Payment confirmation email sent successfully');
-  } catch (error) {
-    console.error('Failed to send payment confirmation email:', error);
+// Email service functions
+export const emailService = {
+  // Send booking confirmation email
+  async sendBookingConfirmation(order: any, customer: Customer, tour: any): Promise<boolean> {
+    try {
+      const template = emailTemplates.bookingConfirmation(order, customer, tour);
+      
+      await transporter.sendMail({
+        from: `"Bunyod-Tour" <${EMAIL_CONFIG.auth.user}>`,
+        to: customer.email,
+        subject: template.subject,
+        html: template.html
+      });
+      
+      console.log(`Booking confirmation email sent to ${customer.email}`);
+      return true;
+    } catch (error) {
+      console.error('Error sending booking confirmation email:', error);
+      return false;
+    }
+  },
+  
+  // Send cancellation email
+  async sendCancellationEmail(order: any, customer: Customer): Promise<boolean> {
+    try {
+      const template = emailTemplates.bookingCancellation(order, customer);
+      
+      await transporter.sendMail({
+        from: `"Bunyod-Tour" <${EMAIL_CONFIG.auth.user}>`,
+        to: customer.email,
+        subject: template.subject,
+        html: template.html
+      });
+      
+      console.log(`Cancellation email sent to ${customer.email}`);
+      return true;
+    } catch (error) {
+      console.error('Error sending cancellation email:', error);
+      return false;
+    }
+  },
+  
+  // Send payment confirmation email
+  async sendPaymentConfirmation(order: any, customer: Customer): Promise<boolean> {
+    try {
+      const template = emailTemplates.paymentConfirmation(order, customer);
+      
+      await transporter.sendMail({
+        from: `"Bunyod-Tour" <${EMAIL_CONFIG.auth.user}>`,
+        to: customer.email,
+        subject: template.subject,
+        html: template.html
+      });
+      
+      console.log(`Payment confirmation email sent to ${customer.email}`);
+      return true;
+    } catch (error) {
+      console.error('Error sending payment confirmation email:', error);
+      return false;
+    }
+  },
+  
+  // Send admin notification
+  async sendAdminNotification(order: any, customer: Customer, tour: any): Promise<boolean> {
+    try {
+      const adminEmail = process.env.ADMIN_EMAIL || 'admin@bunyod-tour.com';
+      const template = emailTemplates.adminNotification(order, customer, tour);
+      
+      await transporter.sendMail({
+        from: `"Bunyod-Tour System" <${EMAIL_CONFIG.auth.user}>`,
+        to: adminEmail,
+        subject: template.subject,
+        html: template.html
+      });
+      
+      console.log(`Admin notification email sent to ${adminEmail}`);
+      return true;
+    } catch (error) {
+      console.error('Error sending admin notification email:', error);
+      return false;
+    }
+  },
+  
+  // Test email configuration
+  async testEmailConfiguration(): Promise<boolean> {
+    try {
+      await transporter.verify();
+      console.log('Email server is ready to send messages');
+      return true;
+    } catch (error) {
+      console.error('Email server configuration error:', error);
+      return false;
+    }
   }
 };
+
+export default emailService;

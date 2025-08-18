@@ -981,8 +981,10 @@
         }
 
         function selectHotel(hotelId, hotelName, price) {
-            alert(`Вы выбрали: ${hotelName}\nЦена: $${price} за ночь\n\nБронирование будет доступно в ближайшее время.`);
-            closeHotelModal();
+            // Store selected hotel and redirect to booking flow
+            const tourId = new URLSearchParams(window.location.search).get('tour') || 1;
+            localStorage.setItem('selectedHotel', JSON.stringify({ id: hotelId, name: hotelName, price: price }));
+            window.location.href = `booking-flow.html?tourId=${tourId}`;
         }
 
         function backToSearch() {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/database';
 import { BookingFormData, OrderData } from '../types/booking';
-import { sendBookingConfirmation } from '../services/emailService';
+import { emailService } from '../services/emailService';
 
 // Generate unique order number
 const generateOrderNumber = (): string => {
@@ -94,12 +94,8 @@ export const createOrder = async (req: Request, res: Response) => {
 
     // Send confirmation emails (non-blocking)
     try {
-      await sendBookingConfirmation({
-        order,
-        customerEmail: customer.email,
-        adminEmail: process.env.ADMIN_EMAIL || 'admin@bunyod-tour.com',
-        communityEmail: process.env.COMMUNITY_EMAIL || 'community@bunyod-tour.com',
-      });
+      await emailService.sendBookingConfirmation(order, customer, order.tour);
+      await emailService.sendAdminNotification(order, customer, order.tour);
     } catch (emailError) {
       console.error('Email sending failed (non-critical):', emailError);
     }

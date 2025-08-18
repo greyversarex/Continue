@@ -135,6 +135,7 @@ model Order {
   status        String   @default("pending") // pending, confirmed, paid, cancelled, completed
   paymentStatus String   @default("unpaid") @map("payment_status") // unpaid, paid, refunded
   paymentMethod String?  @map("payment_method") // payme, click, stripe, paypal
+  paymentIntentId String? @map("payment_intent_id") // Stripe payment intent ID
   receiptData   String?  @map("receipt_data") // JSON receipt information
   customer      Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   tour          Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
