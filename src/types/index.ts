@@ -67,18 +67,25 @@ export interface CreateBookingRequestData {
 // Review types
 export interface ReviewData {
   id: number;
-  authorName: string;
+  customerId: number;
   rating: number;
   text: string;
   isModerated: boolean;
+  isApproved: boolean;
   tourId: number;
+  customer?: {
+    id: number;
+    fullName: string;
+    email: string;
+    phone?: string;
+  };
   tour?: TourData;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface CreateReviewData {
-  authorName: string;
+  customerId: number;
   rating: number;
   text: string;
   tourId: number;
@@ -86,6 +93,7 @@ export interface CreateReviewData {
 
 export interface UpdateReviewData {
   isModerated?: boolean;
+  isApproved?: boolean;
 }
 
 // Error types

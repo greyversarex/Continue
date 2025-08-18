@@ -31,14 +31,119 @@ model Tour {
   theme          String?          // Тематика тура
   startDate      String?          // Дата начала
   endDate        String?          // Дата окончания
+  images         String?          // JSON array of image URLs
+  services       String?          // JSON array of included services
+  highlights     String?          // JSON array of tour highlights
+  isActive       Boolean          @default(true)
   categoryId     Int
   category       Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   bookingRequests BookingRequest[]
+  orders         Order[]
   reviews        Review[]
+  tourHotels     TourHotel[]
+  tourGuides     TourGuide[]
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
   @@map("tours")
+}
+
+model Hotel {
+  id          Int         @id @default(autoincrement())
+  name        String      // JSON field for multilingual content
+  description String?     // JSON field for multilingual content
+  images      String?     // JSON array of image URLs
+  address     String?
+  rating      Float?
+  amenities   String?     // JSON array of amenities
+  isActive    Boolean     @default(true)
+  tourHotels  TourHotel[]
+  orders      Order[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("hotels")
+}
+
+model TourHotel {
+  id        Int     @id @default(autoincrement())
+  tourId    Int     @map("tour_id")
+  hotelId   Int     @map("hotel_id")
+  pricePerNight Float? @map("price_per_night")
+  isDefault Boolean @default(false) @map("is_default")
+  tour      Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  hotel     Hotel   @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  @@unique([tourId, hotelId])
+  @@map("tour_hotels")
+}
+
+model Guide {
+  id          Int         @id @default(autoincrement())
+  name        String      // JSON field for multilingual content
+  description String?     // JSON field for multilingual content
+  photo       String?     // Profile photo URL
+  languages   String      // JSON array of languages
+  contact     String?     // JSON object with phone, email, etc.
+  experience  Int?        // Years of experience
+  rating      Float?      // Average rating
+  isActive    Boolean     @default(true)
+  tourGuides  TourGuide[]
+  orders      Order[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("guides")
+}
+
+model TourGuide {
+  id       Int     @id @default(autoincrement())
+  tourId   Int     @map("tour_id")
+  guideId  Int     @map("guide_id")
+  isDefault Boolean @default(false) @map("is_default")
+  tour     Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  guide    Guide   @relation(fields: [guideId], references: [id], onDelete: Cascade)
+
+  @@unique([tourId, guideId])
+  @@map("tour_guides")
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  fullName  String   @map("full_name")
+  email     String   @unique
+  phone     String?
+  orders    Order[]
+  reviews   Review[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("customers")
+}
+
+model Order {
+  id            Int      @id @default(autoincrement())
+  orderNumber   String   @unique @map("order_number") // Generated order number
+  customerId    Int      @map("customer_id")
+  tourId        Int      @map("tour_id")
+  hotelId       Int?     @map("hotel_id")
+  guideId       Int?     @map("guide_id")
+  tourDate      String   @map("tour_date")
+  tourists      String   // JSON array of tourists data
+  wishes        String?  // Customer wishes/notes
+  totalAmount   Float    @map("total_amount")
+  status        String   @default("pending") // pending, confirmed, paid, cancelled, completed
+  paymentStatus String   @default("unpaid") @map("payment_status") // unpaid, paid, refunded
+  paymentMethod String?  @map("payment_method") // payme, click, stripe, paypal
+  receiptData   String?  @map("receipt_data") // JSON receipt information
+  customer      Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tour          Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  hotel         Hotel?   @relation(fields: [hotelId], references: [id])
+  guide         Guide?   @relation(fields: [guideId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("orders")
 }
 
 model BookingRequest {
@@ -57,14 +162,30 @@ model BookingRequest {
 
 model Review {
   id          Int      @id @default(autoincrement())
-  authorName  String   @map("author_name")
-  rating      Int
+  customerId  Int      @map("customer_id")
+  tourId      Int      @map("tour_id")
+  rating      Int      // 1-5 stars
   text        String
   isModerated Boolean  @default(false) @map("is_moderated")
-  tourId      Int      @map("tour_id")
+  isApproved  Boolean  @default(false) @map("is_approved")
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   tour        Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@map("reviews")
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String   // Hashed password
+  fullName  String   @map("full_name")
+  role      String   @default("admin") // admin, manager
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
 }

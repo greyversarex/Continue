@@ -266,6 +266,7 @@ export class ReviewModel {
   static async findAll() {
     return await prisma.review.findMany({
       include: {
+        customer: true,
         tour: {
           include: {
             category: true
@@ -284,9 +285,11 @@ export class ReviewModel {
   static async findModerated() {
     return await prisma.review.findMany({
       where: {
-        isModerated: true
+        isModerated: true,
+        isApproved: true
       },
       include: {
+        customer: true,
         tour: {
           include: {
             category: true
@@ -306,7 +309,11 @@ export class ReviewModel {
     return await prisma.review.findMany({
       where: {
         tourId,
-        isModerated: true
+        isModerated: true,
+        isApproved: true
+      },
+      include: {
+        customer: true
       },
       orderBy: {
         createdAt: 'desc'
@@ -321,6 +328,7 @@ export class ReviewModel {
     return await prisma.review.findUnique({
       where: { id },
       include: {
+        customer: true,
         tour: {
           include: {
             category: true
@@ -350,12 +358,13 @@ export class ReviewModel {
 
     return await prisma.review.create({
       data: {
-        authorName: data.authorName,
+        customerId: data.customerId,
         rating: data.rating,
         text: data.text,
         tourId: data.tourId
       },
       include: {
+        customer: true,
         tour: {
           include: {
             category: true
@@ -373,6 +382,7 @@ export class ReviewModel {
       where: { id },
       data,
       include: {
+        customer: true,
         tour: {
           include: {
             category: true

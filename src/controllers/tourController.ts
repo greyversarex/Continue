@@ -732,7 +732,8 @@ export class ReviewController {
       // Parse JSON fields for response
       const parsedReviews = reviews.map(review => ({
         ...review,
-        tour: {
+        customer: review.customer,
+        tour: review.tour ? {
           ...review.tour,
           title: JSON.parse(review.tour.title) as MultilingualContent,
           description: JSON.parse(review.tour.description) as MultilingualContent,
@@ -740,7 +741,7 @@ export class ReviewController {
             ...review.tour.category,
             name: JSON.parse(review.tour.category.name) as MultilingualContent
           }
-        }
+        } : null
       }));
 
       const response: ApiResponse = {
@@ -761,13 +762,13 @@ export class ReviewController {
    */
   static async createReview(req: Request, res: Response, next: NextFunction) {
     try {
-      const { authorName, rating, text, tourId }: CreateReviewData = req.body;
+      const { customerId, rating, text, tourId }: CreateReviewData = req.body;
 
       // Validation
-      if (!authorName) {
+      if (!customerId) {
         return res.status(400).json({
           success: false,
-          error: 'Author name is required'
+          error: 'Customer ID is required'
         });
       }
 
@@ -793,7 +794,7 @@ export class ReviewController {
       }
 
       const review = await ReviewModel.create({
-        authorName,
+        customerId,
         rating,
         text,
         tourId
@@ -802,7 +803,8 @@ export class ReviewController {
       // Parse JSON fields for response
       const parsedReview = {
         ...review,
-        tour: {
+        customer: review.customer,
+        tour: review.tour ? {
           ...review.tour,
           title: JSON.parse(review.tour.title) as MultilingualContent,
           description: JSON.parse(review.tour.description) as MultilingualContent,
@@ -810,7 +812,7 @@ export class ReviewController {
             ...review.tour.category,
             name: JSON.parse(review.tour.category.name) as MultilingualContent
           }
-        }
+        } : null
       };
 
       const response: ApiResponse = {
