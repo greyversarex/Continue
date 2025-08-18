@@ -6,6 +6,31 @@ A comprehensive tourism booking platform for Central Asia featuring complete tou
 
 ## Recent Changes (August 2025)
 
+### Major Updates - Admin Panel & Booking System (August 18, 2025)
+- **Comprehensive Admin Dashboard**: Created full-featured admin panel (admin-dashboard.html) with:
+  - Statistics dashboard with sales charts and key metrics
+  - Complete tour management with CRUD operations
+  - Order management with status tracking and payment monitoring
+  - Hotel and guide management interfaces
+  - Review moderation system with approval/rejection workflow
+  - Payment settings configuration for Payme, Click, Stripe, PayPal
+  - Responsive design with collapsible sidebar navigation
+  
+- **Enhanced Booking Flow**: Implemented 3-step booking process (booking-flow.html):
+  - Step 1: Date selection and hotel choice with real-time pricing
+  - Step 2: Tourist information collection with multi-passenger support
+  - Step 3: Payment method selection with integrated gateway support
+  - Dynamic price calculation including base price, hotel, and guide fees
+  - Legal agreements and consent checkboxes
+  - Email confirmation system integration
+
+- **API Enhancements**:
+  - Added order status update endpoints for admin operations
+  - Implemented getOrderById for detailed order viewing
+  - Enhanced order response format for admin panel compatibility
+
+## Recent Changes (Previous)
+
 - **Complete Tourism Booking Platform**: Built comprehensive booking system according to technical specifications
 - **Full CRUD Operations**: Complete Create, Read, Update, Delete functionality for tours, hotels, guides, categories
 - **3-Step Booking Process**: Hotel selection → Customer details → Payment integration

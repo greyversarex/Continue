@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование тура - Bunyod-Tour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #9ca3af;
+            transition: all 0.3s;
+        }
+        
+        .step.active .step-circle {
+            background: #667eea;
+            color: white;
+        }
+        
+        .step.completed .step-circle {
+            background: #10b981;
+            color: white;
+        }
+        
+        .step-label {
+            margin-left: 12px;
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .step.active .step-label {
+            color: #667eea;
+        }
+        
+        .step.completed .step-label {
+            color: #10b981;
+        }
+        
+        .step-connector {
+            width: 100px;
+            height: 2px;
+            background: #e5e7eb;
+            margin: 0 20px;
+        }
+        
+        .step.completed + .step-connector {
+            background: #10b981;
+        }
+        
+        .booking-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .booking-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .main-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .sidebar {
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .sidebar-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .hotel-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .hotel-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102,126,234,0.15);
+        }
+        
+        .hotel-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        
+        .tourist-card {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+        
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+        
+        .payment-method {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s;
+        }
+        
+        .payment-method:hover {
+            border-color: #667eea;
+        }
+        
+        .payment-method.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .payment-icon {
+            width: 60px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f4f6;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .agreement-box {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+        }
+        
+        .checkbox-label input[type="checkbox"] {
+            margin-top: 4px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .price-breakdown {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 16px;
+            margin-top: 16px;
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #6b7280;
+        }
+        
+        .price-row.total {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .booking-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+            
+            .step-connector {
+                width: 40px;
+                margin: 0 10px;
+            }
+            
+            .step-label {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-800">Bunyod-Tour</h1>
+                <a href="index.html" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-times text-xl"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+        <div class="step active" id="step1">
+            <div class="step-circle">1</div>
+            <span class="step-label">Выбор даты и отеля</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" id="step2">
+            <div class="step-circle">2</div>
+            <span class="step-label">Данные туристов</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" id="step3">
+            <div class="step-circle">3</div>
+            <span class="step-label">Оплата</span>
+        </div>
+    </div>
+
+    <!-- Booking Container -->
+    <div class="booking-container">
+        <div class="booking-content">
+            <!-- Main Section -->
+            <div class="main-section">
+                <!-- Step 1: Date and Hotel Selection -->
+                <div id="step1Content">
+                    <h2 class="text-2xl font-semibold mb-6">Выберите дату и отель</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-alt text-gray-500 mr-2"></i>
+                            Дата начала тура
+                        </label>
+                        <input type="date" id="tourDate" class="form-input" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-4">
+                            <i class="fas fa-hotel text-gray-500 mr-2"></i>
+                            Доступные отели
+                        </h3>
+                        <div id="hotelsList">
+                            <!-- Hotels will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button class="btn btn-primary" onclick="goToStep2()">
+                            Продолжить
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Tourist Information -->
+                <div id="step2Content" style="display: none;">
+                    <h2 class="text-2xl font-semibold mb-6">Информация о туристах</h2>
+                    
+                    <!-- Contact Information -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold mb-4">Контактная информация</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">ФИО контактного лица *</label>
+                                <input type="text" id="contactName" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Номер телефона *</label>
+                                <input type="tel" id="contactPhone" class="form-input" placeholder="+992 XX XXX XX XX" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Email *</label>
+                                <input type="email" id="contactEmail" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Количество туристов *</label>
+                                <input type="number" id="touristCount" class="form-input" min="1" value="1" onchange="updateTouristFields()" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tourists List -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold mb-4">Список туристов</h3>
+                        <div id="touristsList">
+                            <!-- Tourist fields will be generated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Guide Selection -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold mb-4">Выбор гида</h3>
+                        <select id="guideSelect" class="form-input">
+                            <option value="">Без гида</option>
+                            <!-- Guides will be loaded here -->
+                        </select>
+                    </div>
+                    
+                    <!-- Special Requests -->
+                    <div class="mb-8">
+                        <label class="form-label">Пожелания и особые требования</label>
+                        <textarea id="specialRequests" class="form-input" rows="4" 
+                                  placeholder="Укажите любые особые пожелания или требования..."></textarea>
+                    </div>
+                    
+                    <!-- Agreements -->
+                    <div class="mb-8">
+                        <div class="agreement-box">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="agreement1" required>
+                                <span>Я принимаю все условия Оферты (Договора) и даю согласие на использование моих персональных данных в рамках бронирования выбранного туристического продукта.</span>
+                            </label>
+                        </div>
+                        
+                        <div class="agreement-box">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="agreement2" required>
+                                <span>Я ознакомлен с Правилами оплаты и возврата средств и подтверждаю их применение.</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button class="btn btn-secondary" onclick="goToStep1()">
+                            <i class="fas fa-arrow-left"></i>
+                            Назад
+                        </button>
+                        <button class="btn btn-primary" onclick="goToStep3()">
+                            Подтвердить и перейти к оплате
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Payment -->
+                <div id="step3Content" style="display: none;">
+                    <h2 class="text-2xl font-semibold mb-6">Выберите способ оплаты</h2>
+                    
+                    <div class="success-message" id="successMessage">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Ваш заказ успешно оформлен! На указанный email отправлено подтверждение.
+                    </div>
+                    
+                    <div class="error-message" id="errorMessage">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span id="errorText">Произошла ошибка при оформлении заказа.</span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <div class="payment-method" onclick="selectPayment('payme')">
+                            <div class="payment-icon" style="background: #00CCCC; color: white;">
+                                Payme
+                            </div>
+                            <div>
+                                <div class="font-semibold">Payme</div>
+                                <div class="text-sm text-gray-600">Оплата через мобильное приложение</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-method" onclick="selectPayment('click')">
+                            <div class="payment-icon" style="background: #FFC107; color: white;">
+                                Click
+                            </div>
+                            <div>
+                                <div class="font-semibold">Click</div>
+                                <div class="text-sm text-gray-600">Быстрая оплата картой</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-method" onclick="selectPayment('stripe')">
+                            <div class="payment-icon" style="background: #635BFF; color: white;">
+                                Stripe
+                            </div>
+                            <div>
+                                <div class="font-semibold">Stripe</div>
+                                <div class="text-sm text-gray-600">Международные карты</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-method" onclick="selectPayment('paypal')">
+                            <div class="payment-icon" style="background: #0070BA; color: white;">
+                                PayPal
+                            </div>
+                            <div>
+                                <div class="font-semibold">PayPal</div>
+                                <div class="text-sm text-gray-600">Безопасная оплата через PayPal</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                        <p class="text-sm text-yellow-800">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            После выбора способа оплаты вы будете перенаправлены на защищенную страницу платежной системы.
+                        </p>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button class="btn btn-secondary" onclick="goToStep2()">
+                            <i class="fas fa-arrow-left"></i>
+                            Назад
+                        </button>
+                        <button class="btn btn-primary" onclick="processPayment()" id="payButton">
+                            <i class="fas fa-lock mr-2"></i>
+                            Оплатить $<span id="paymentAmount">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Tour Summary -->
+                <div class="sidebar-card">
+                    <h3 class="text-lg font-semibold mb-4">Детали тура</h3>
+                    <div id="tourSummary">
+                        <!-- Tour details will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Price Summary -->
+                <div class="sidebar-card">
+                    <h3 class="text-lg font-semibold mb-4">Стоимость</h3>
+                    <div id="priceSummary">
+                        <div class="price-row">
+                            <span>Базовая цена</span>
+                            <span>$<span id="basePrice">0</span></span>
+                        </div>
+                        <div class="price-row" id="hotelPriceRow" style="display: none;">
+                            <span>Отель</span>
+                            <span>$<span id="hotelPrice">0</span></span>
+                        </div>
+                        <div class="price-row" id="guidePriceRow" style="display: none;">
+                            <span>Услуги гида</span>
+                            <span>$<span id="guidePrice">0</span></span>
+                        </div>
+                        <div class="price-row total">
+                            <span>Итого</span>
+                            <span>$<span id="totalPrice">0</span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="sidebar-card">
+                    <h4 class="font-semibold mb-3">Нужна помощь?</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-phone text-gray-500"></i>
+                            <span>+992 123 456 789</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-envelope text-gray-500"></i>
+                            <span>support@bunyod-tour.com</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-clock text-gray-500"></i>
+                            <span>Пн-Пт: 9:00 - 18:00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentStep = 1;
+        let selectedTourId = null;
+        let selectedHotel = null;
+        let selectedGuide = null;
+        let selectedPaymentMethod = null;
+        let tourData = null;
+        let availableHotels = [];
+        let availableGuides = [];
+        let basePrice = 0;
+        let totalPrice = 0;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get tour ID from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            selectedTourId = urlParams.get('tourId') || 1; // Default to tour 1 for testing
+            
+            // Set minimum date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('tourDate').min = tomorrow.toISOString().split('T')[0];
+            document.getElementById('tourDate').value = tomorrow.toISOString().split('T')[0];
+            
+            // Load tour data
+            loadTourData();
+            
+            // Initialize tourist fields
+            updateTouristFields();
+        });
+        
+        // Load tour data
+        function loadTourData() {
+            fetch(`http://localhost:3001/api/tours/${selectedTourId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        tourData = data.tour;
+                        displayTourSummary();
+                        loadHotels();
+                        loadGuides();
+                        calculatePrice();
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading tour:', err);
+                    // Use sample data for testing
+                    tourData = {
+                        id: 1,
+                        title: { ru: 'Памирский тракт - Крыша мира', en: 'Pamir Highway - Roof of the World' },
+                        description: { ru: 'Незабываемое путешествие по Памирскому тракту' },
+                        price: '1200',
+                        durationDays: 7,
+                        country: 'Таджикистан',
+                        city: 'Хорог'
+                    };
+                    displayTourSummary();
+                    loadSampleHotels();
+                    loadSampleGuides();
+                    calculatePrice();
+                });
+        }
+        
+        // Display tour summary
+        function displayTourSummary() {
+            const title = tourData.title?.ru || tourData.title?.en || 'Tour';
+            const description = tourData.description?.ru || tourData.description?.en || '';
+            
+            document.getElementById('tourSummary').innerHTML = `
+                <div class="space-y-3">
+                    <h4 class="font-semibold">${title}</h4>
+                    <div class="text-sm text-gray-600">
+                        <div class="mb-2">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            ${tourData.country}, ${tourData.city}
+                        </div>
+                        <div class="mb-2">
+                            <i class="fas fa-calendar mr-2"></i>
+                            ${tourData.durationDays} дней
+                        </div>
+                        <div>
+                            <i class="fas fa-users mr-2"></i>
+                            <span id="touristCountDisplay">1</span> человек
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            basePrice = parseFloat(tourData.price) || 0;
+            document.getElementById('basePrice').textContent = basePrice;
+            calculatePrice();
+        }
+        
+        // Load hotels
+        function loadHotels() {
+            fetch(`http://localhost:3001/api/tours/${selectedTourId}/hotels`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        availableHotels = data.hotels;
+                        displayHotels();
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading hotels:', err);
+                    loadSampleHotels();
+                });
+        }
+        
+        // Load sample hotels
+        function loadSampleHotels() {
+            availableHotels = [
+                {
+                    id: 1,
+                    name: { ru: 'Serena Inn Dushanbe', en: 'Serena Inn Dushanbe' },
+                    description: { ru: 'Роскошный отель в центре Душанбе' },
+                    rating: 5,
+                    pricePerNight: 120,
+                    amenities: ['Wi-Fi', 'Бассейн', 'Спа', 'Ресторан']
+                },
+                {
+                    id: 2,
+                    name: { ru: 'Hilton Dushanbe', en: 'Hilton Dushanbe' },
+                    description: { ru: 'Современный отель международного класса' },
+                    rating: 5,
+                    pricePerNight: 150,
+                    amenities: ['Wi-Fi', 'Фитнес', 'Ресторан', 'Бар']
+                },
+                {
+                    id: 3,
+                    name: { ru: 'Atlas Hotel', en: 'Atlas Hotel' },
+                    description: { ru: 'Комфортабельный отель с хорошим расположением' },
+                    rating: 4,
+                    pricePerNight: 80,
+                    amenities: ['Wi-Fi', 'Ресторан', 'Парковка']
+                }
+            ];
+            displayHotels();
+        }
+        
+        // Display hotels
+        function displayHotels() {
+            const hotelsList = document.getElementById('hotelsList');
+            hotelsList.innerHTML = availableHotels.map(hotel => {
+                const name = hotel.name?.ru || hotel.name?.en || hotel.name || 'Hotel';
+                const description = hotel.description?.ru || hotel.description?.en || '';
+                const amenities = hotel.amenities || [];
+                
+                return `
+                    <div class="hotel-card" onclick="selectHotel(${hotel.id})" id="hotel-${hotel.id}">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h4 class="font-semibold text-lg">${name}</h4>
+                                <div class="text-yellow-500 text-sm mt-1">
+                                    ${'★'.repeat(hotel.rating || 4)}${'☆'.repeat(5 - (hotel.rating || 4))}
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-green-600">$${hotel.pricePerNight || 100}</div>
+                                <div class="text-xs text-gray-500">за ночь</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">${description}</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${amenities.map(a => `
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                                    ${a}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Load guides
+        function loadGuides() {
+            fetch(`http://localhost:3001/api/tours/${selectedTourId}/guides`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        availableGuides = data.guides;
+                        displayGuides();
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading guides:', err);
+                    loadSampleGuides();
+                });
+        }
+        
+        // Load sample guides
+        function loadSampleGuides() {
+            availableGuides = [
+                {
+                    id: 1,
+                    name: { ru: 'Алексей Иванов', en: 'Alexey Ivanov' },
+                    languages: ['Русский', 'English', 'Deutsch'],
+                    experience: 10,
+                    pricePerDay: 50
+                },
+                {
+                    id: 2,
+                    name: { ru: 'Мухаммад Каримов', en: 'Muhammad Karimov' },
+                    languages: ['Таджикский', 'Русский', 'English'],
+                    experience: 8,
+                    pricePerDay: 40
+                },
+                {
+                    id: 3,
+                    name: { ru: 'Джон Смит', en: 'John Smith' },
+                    languages: ['English', 'Русский'],
+                    experience: 5,
+                    pricePerDay: 45
+                }
+            ];
+            displayGuides();
+        }
+        
+        // Display guides in select
+        function displayGuides() {
+            const guideSelect = document.getElementById('guideSelect');
+            const options = availableGuides.map(guide => {
+                const name = guide.name?.ru || guide.name?.en || guide.name || 'Guide';
+                const languages = guide.languages?.join(', ') || '';
+                return `
+                    <option value="${guide.id}">
+                        ${name} - ${languages} ($${guide.pricePerDay || 50}/день)
+                    </option>
+                `;
+            }).join('');
+            
+            guideSelect.innerHTML = '<option value="">Без гида</option>' + options;
+        }
+        
+        // Select hotel
+        function selectHotel(hotelId) {
+            // Remove previous selection
+            document.querySelectorAll('.hotel-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked hotel
+            document.getElementById(`hotel-${hotelId}`).classList.add('selected');
+            
+            // Update selected hotel
+            selectedHotel = availableHotels.find(h => h.id === hotelId);
+            
+            // Update price
+            calculatePrice();
+        }
+        
+        // Update tourist fields
+        function updateTouristFields() {
+            const count = parseInt(document.getElementById('touristCount').value) || 1;
+            const container = document.getElementById('touristsList');
+            
+            container.innerHTML = '';
+            for (let i = 1; i <= count; i++) {
+                container.innerHTML += `
+                    <div class="tourist-card">
+                        <h4 class="font-medium mb-3">Турист ${i}</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label text-sm">ФИО *</label>
+                                <input type="text" class="form-input" id="tourist${i}Name" required>
+                            </div>
+                            <div>
+                                <label class="form-label text-sm">Дата рождения *</label>
+                                <input type="date" class="form-input" id="tourist${i}Birth" required>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('touristCountDisplay').textContent = count;
+            calculatePrice();
+        }
+        
+        // Calculate total price
+        function calculatePrice() {
+            const touristCount = parseInt(document.getElementById('touristCount')?.value) || 1;
+            const days = tourData?.durationDays || 7;
+            
+            let total = basePrice * touristCount;
+            
+            // Add hotel price
+            if (selectedHotel) {
+                const hotelTotal = (selectedHotel.pricePerNight || 100) * days * touristCount;
+                document.getElementById('hotelPrice').textContent = hotelTotal;
+                document.getElementById('hotelPriceRow').style.display = 'flex';
+                total += hotelTotal;
+            } else {
+                document.getElementById('hotelPriceRow').style.display = 'none';
+            }
+            
+            // Add guide price
+            const guideId = document.getElementById('guideSelect')?.value;
+            if (guideId) {
+                selectedGuide = availableGuides.find(g => g.id == guideId);
+                if (selectedGuide) {
+                    const guideTotal = (selectedGuide.pricePerDay || 50) * days;
+                    document.getElementById('guidePrice').textContent = guideTotal;
+                    document.getElementById('guidePriceRow').style.display = 'flex';
+                    total += guideTotal;
+                }
+            } else {
+                document.getElementById('guidePriceRow').style.display = 'none';
+            }
+            
+            totalPrice = total;
+            document.getElementById('totalPrice').textContent = total;
+            document.getElementById('paymentAmount').textContent = total;
+        }
+        
+        // Navigation functions
+        function goToStep1() {
+            showStep(1);
+        }
+        
+        function goToStep2() {
+            if (currentStep === 1) {
+                // Validate step 1
+                const tourDate = document.getElementById('tourDate').value;
+                if (!tourDate) {
+                    alert('Пожалуйста, выберите дату тура');
+                    return;
+                }
+                if (!selectedHotel) {
+                    alert('Пожалуйста, выберите отель');
+                    return;
+                }
+            }
+            showStep(2);
+        }
+        
+        function goToStep3() {
+            // Validate step 2
+            const contactName = document.getElementById('contactName').value;
+            const contactPhone = document.getElementById('contactPhone').value;
+            const contactEmail = document.getElementById('contactEmail').value;
+            const agreement1 = document.getElementById('agreement1').checked;
+            const agreement2 = document.getElementById('agreement2').checked;
+            
+            if (!contactName || !contactPhone || !contactEmail) {
+                alert('Пожалуйста, заполните контактную информацию');
+                return;
+            }
+            
+            // Validate tourist information
+            const touristCount = parseInt(document.getElementById('touristCount').value);
+            for (let i = 1; i <= touristCount; i++) {
+                const name = document.getElementById(`tourist${i}Name`).value;
+                const birth = document.getElementById(`tourist${i}Birth`).value;
+                if (!name || !birth) {
+                    alert(`Пожалуйста, заполните данные туриста ${i}`);
+                    return;
+                }
+            }
+            
+            if (!agreement1 || !agreement2) {
+                alert('Пожалуйста, примите условия договора');
+                return;
+            }
+            
+            showStep(3);
+        }
+        
+        function showStep(step) {
+            // Hide all steps
+            document.getElementById('step1Content').style.display = 'none';
+            document.getElementById('step2Content').style.display = 'none';
+            document.getElementById('step3Content').style.display = 'none';
+            
+            // Reset step indicators
+            document.querySelectorAll('.step').forEach(s => {
+                s.classList.remove('active', 'completed');
+            });
+            
+            // Show selected step
+            document.getElementById(`step${step}Content`).style.display = 'block';
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            // Mark previous steps as completed
+            for (let i = 1; i < step; i++) {
+                document.getElementById(`step${i}`).classList.add('completed');
+            }
+            
+            currentStep = step;
+            
+            // Update guide select listener when showing step 2
+            if (step === 2) {
+                document.getElementById('guideSelect').addEventListener('change', calculatePrice);
+            }
+        }
+        
+        // Select payment method
+        function selectPayment(method) {
+            // Remove previous selection
+            document.querySelectorAll('.payment-method').forEach(m => {
+                m.classList.remove('selected');
+            });
+            
+            // Add selection
+            event.currentTarget.classList.add('selected');
+            selectedPaymentMethod = method;
+        }
+        
+        // Process payment
+        function processPayment() {
+            if (!selectedPaymentMethod) {
+                alert('Пожалуйста, выберите способ оплаты');
+                return;
+            }
+            
+            // Prepare order data
+            const touristCount = parseInt(document.getElementById('touristCount').value);
+            const tourists = [];
+            for (let i = 1; i <= touristCount; i++) {
+                tourists.push({
+                    fullName: document.getElementById(`tourist${i}Name`).value,
+                    birthDate: document.getElementById(`tourist${i}Birth`).value
+                });
+            }
+            
+            const orderData = {
+                tourId: selectedTourId,
+                hotelId: selectedHotel?.id,
+                guideId: selectedGuide?.id,
+                tourDate: document.getElementById('tourDate').value,
+                customerName: document.getElementById('contactName').value,
+                customerPhone: document.getElementById('contactPhone').value,
+                customerEmail: document.getElementById('contactEmail').value,
+                tourists: tourists,
+                wishes: document.getElementById('specialRequests').value,
+                totalAmount: totalPrice,
+                paymentMethod: selectedPaymentMethod
+            };
+            
+            // Submit order
+            fetch('http://localhost:3001/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                    
+                    // Simulate payment redirect
+                    setTimeout(() => {
+                        alert(`Перенаправление на ${selectedPaymentMethod}...\nНомер заказа: ${data.orderNumber}`);
+                        // In production, redirect to payment gateway
+                        // window.location.href = data.paymentUrl;
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || 'Ошибка при создании заказа');
+                }
+            })
+            .catch(err => {
+                console.error('Error creating order:', err);
+                document.getElementById('errorText').textContent = err.message;
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>

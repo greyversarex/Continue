@@ -185,6 +185,66 @@ export const getOrder = async (req: Request, res: Response) => {
   }
 };
 
+export const getOrderById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const order = await prisma.order.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        customer: true,
+        tour: {
+          include: {
+            category: true,
+          },
+        },
+        hotel: true,
+        guide: true,
+      },
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      });
+    }
+
+    // Parse JSON fields
+    const formattedOrder = {
+      ...order,
+      tourists: JSON.parse(order.tourists),
+      tour: {
+        ...order.tour,
+        title: JSON.parse(order.tour.title),
+        description: JSON.parse(order.tour.description),
+      },
+      hotel: order.hotel ? {
+        ...order.hotel,
+        name: JSON.parse(order.hotel.name),
+        description: order.hotel.description ? JSON.parse(order.hotel.description) : null,
+      } : null,
+      guide: order.guide ? {
+        ...order.guide,
+        name: JSON.parse(order.guide.name),
+        description: order.guide.description ? JSON.parse(order.guide.description) : null,
+      } : null,
+    };
+
+    return res.json({
+      success: true,
+      order: formattedOrder,
+    });
+  } catch (error) {
+    console.error('Error fetching order:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch order',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};
+
 export const getAllOrders = async (req: Request, res: Response) => {
   try {
     const { status, paymentStatus, page = 1, limit = 20 } = req.query;
@@ -245,7 +305,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
 
     return res.json({
       success: true,
-      data: formattedOrders,
+      orders: formattedOrders,
       pagination: {
         page: parseInt(page as string),
         limit: parseInt(limit as string),
@@ -258,6 +318,46 @@ export const getAllOrders = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: 'Failed to fetch orders',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};
+
+export const updateOrderStatusById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status, paymentStatus, paymentMethod, receiptData } = req.body;
+
+    const updateData: any = {};
+    if (status) updateData.status = status;
+    if (paymentStatus) updateData.paymentStatus = paymentStatus;
+    if (paymentMethod) updateData.paymentMethod = paymentMethod;
+    if (receiptData) updateData.receiptData = JSON.stringify(receiptData);
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: parseInt(id) },
+      data: updateData,
+      include: {
+        customer: true,
+        tour: true,
+      },
+    });
+
+    // Send email notification if order is confirmed
+    if (status === 'confirmed') {
+      // Email logic will be added here
+    }
+
+    return res.json({
+      success: true,
+      message: 'Order status updated successfully',
+      data: updatedOrder,
+    });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update order status',
       error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
