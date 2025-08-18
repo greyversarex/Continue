@@ -1,7 +1,11 @@
 import app from './app';
 import prisma from './config/database';
 
-const PORT = parseInt(process.env.PORT || '5000', 10);
+// For deployment, use PORT from environment (usually 8080 for Cloud Run)
+// For development, use 3001 to match the workflow configuration
+const PORT = process.env.NODE_ENV === 'production' 
+  ? parseInt(process.env.PORT || '8080', 10)
+  : parseInt(process.env.PORT || '3001', 10);
 const HOST = '0.0.0.0';
 
 async function startServer() {

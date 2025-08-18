@@ -5,9 +5,30 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 const app = express();
 
-// CORS configuration
+// CORS configuration - support multiple environments
+const getAllowedOrigins = () => {
+  const origins = [];
+  
+  // Add environment-specific frontend URL
+  if (process.env.FRONTEND_URL) {
+    origins.push(process.env.FRONTEND_URL);
+  }
+  
+  // Development origins
+  if (process.env.NODE_ENV !== 'production') {
+    origins.push('http://localhost:5000', 'http://127.0.0.1:5000', 'http://0.0.0.0:5000');
+  }
+  
+  // Production origins (Replit deployment URLs)
+  if (process.env.REPLIT_DEV_DOMAIN) {
+    origins.push(`https://${process.env.REPLIT_DEV_DOMAIN}`);
+  }
+  
+  return origins.length > 0 ? origins : true; // Allow all if no specific origins
+};
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:5000',
+  origin: getAllowedOrigins(),
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
