@@ -31,7 +31,7 @@ const ReviewsTable: React.FC = () => {
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      const response = await axios.get<ApiResponse>('http://localhost:5000/api/reviews');
+      const response = await axios.get<ApiResponse>('http://localhost:3001/api/tours/reviews');
       if (response.data.success) {
         setReviews(response.data.data);
       }
@@ -46,7 +46,7 @@ const ReviewsTable: React.FC = () => {
   const handleModerate = async (reviewId: number, isModerated: boolean) => {
     try {
       setUpdating(reviewId);
-      const response = await axios.put<ApiResponse>(`http://localhost:5000/api/reviews/${reviewId}`, {
+      const response = await axios.put<ApiResponse>(`http://localhost:3001/api/tours/reviews/${reviewId}`, {
         isModerated
       });
 

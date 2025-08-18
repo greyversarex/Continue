@@ -31,7 +31,7 @@ const BookingsTable: React.FC = () => {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const response = await axios.get<ApiResponse>('http://localhost:5000/api/booking-requests');
+      const response = await axios.get<ApiResponse>('http://localhost:3001/api/tours/booking-requests');
       if (response.data.success) {
         setBookings(response.data.data);
       }

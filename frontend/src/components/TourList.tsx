@@ -11,7 +11,7 @@ const TourList: React.FC = () => {
     const fetchTours = async () => {
       try {
         setLoading(true);
-        const response = await axios.get<ApiResponse<Tour[]>>('http://localhost:5000/api/tours');
+        const response = await axios.get<ApiResponse<Tour[]>>('http://localhost:3001/api/tours/tours');
         
         if (response.data.success && response.data.data) {
           setTours(response.data.data);
