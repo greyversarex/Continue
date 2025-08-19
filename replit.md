@@ -34,7 +34,7 @@ The platform features a **comprehensive Admin Dashboard** for managing tours, or
 - **Universal Tab System**: All tour pages consistently use a two-tab structure ("Tour Description" and "Tour Program") for streamlined information display.
 - **Navigation System Overhaul**: Implemented comprehensive dropdown navigation with nested sub-menus.
 - **Modern Toggle Filter System**: An elegant filter system for tours, supporting country, city, tour type, and category filtering.
-- **Category System**: Features 13 specific tourism categories (e.g., City tours, Nature/Eco-tours, Historical tours).
+- **Category System**: Features 15 specific tourism categories including Day Tours, Multi-day Tours, Excursions, City Tours, Nature/Eco Tours, Cultural Educational Tours, Historical Tours, Hiking/Trekking, Mountain Landscapes, Lake Landscapes, Adventure Tours, Gastronomic Tours, Auto Tours/Safari/Jeep Tours, Agro Tours, and VIP Tours.
 - **Banner-Style Tour Types Section**: Redesigned "Виды туров" (Tour Types) into an elegant banner presentation.
 
 ### Technical Implementations
