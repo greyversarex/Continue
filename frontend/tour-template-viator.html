@@ -1013,5 +1013,108 @@
     </script>
     
     <script src="sample-tour-data.js"></script>
+    <script>
+        // API Tour Loading
+        const API_BASE_URL = 'http://localhost:3000/api';
+        
+        async function loadTourFromAPI() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tourId = urlParams.get('tour');
+            
+            if (!tourId) {
+                console.log('No tour ID provided, using sample data');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/tours/${tourId}`);
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const apiTourData = result.data;
+                    
+                    // Parse multilingual content
+                    const title = JSON.parse(apiTourData.title);
+                    const description = JSON.parse(apiTourData.description);
+                    
+                    // Update global tourData
+                    tourData = {
+                        ...tourData,
+                        id: apiTourData.id,
+                        title: title.ru,
+                        description: description.ru,
+                        price: apiTourData.price,
+                        priceType: apiTourData.priceType,
+                        location: `${apiTourData.city}, ${apiTourData.country}`,
+                        duration: apiTourData.duration,
+                        format: apiTourData.format,
+                        difficulty: apiTourData.difficulty,
+                        rating: apiTourData.rating || 4.8,
+                        reviewCount: apiTourData.reviewsCount || 0,
+                        maxPeople: apiTourData.maxPeople,
+                        country: apiTourData.country
+                    };
+                    
+                    // Parse optional JSON fields
+                    if (apiTourData.images) {
+                        try {
+                            tourData.images = JSON.parse(apiTourData.images);
+                        } catch (e) {
+                            console.warn('Failed to parse images:', e);
+                        }
+                    }
+                    
+                    if (apiTourData.highlights) {
+                        try {
+                            const highlights = JSON.parse(apiTourData.highlights);
+                            tourData.highlights = highlights.ru || highlights;
+                        } catch (e) {
+                            console.warn('Failed to parse highlights:', e);
+                        }
+                    }
+                    
+                    if (apiTourData.itinerary) {
+                        try {
+                            const itinerary = JSON.parse(apiTourData.itinerary);
+                            tourData.itinerary = itinerary.ru || itinerary;
+                        } catch (e) {
+                            console.warn('Failed to parse itinerary:', e);
+                        }
+                    }
+                    
+                    if (apiTourData.included) {
+                        try {
+                            const included = JSON.parse(apiTourData.included);
+                            tourData.included = included.ru || included;
+                        } catch (e) {
+                            console.warn('Failed to parse included:', e);
+                        }
+                    }
+                    
+                    if (apiTourData.excluded) {
+                        try {
+                            const excluded = JSON.parse(apiTourData.excluded);
+                            tourData.excluded = excluded.ru || excluded;
+                        } catch (e) {
+                            console.warn('Failed to parse excluded:', e);
+                        }
+                    }
+                    
+                    console.log('Tour loaded from API:', tourData);
+                } else {
+                    console.error('Failed to load tour from API');
+                }
+            } catch (error) {
+                console.error('Error loading tour from API:', error);
+            }
+        }
+
+        // Override the DOMContentLoaded to load from API first
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTourFromAPI().then(() => {
+                loadTourData();
+            });
+        });
+    </script>
 </body>
 </html>

@@ -18,10 +18,20 @@ export class TourController {
    */
   static async getAllTours(req: Request, res: Response, next: NextFunction) {
     try {
-      const tours = await TourModel.findAll();
+      const { blockId, limit } = req.query;
+      
+      let filters: any = {};
+      if (blockId) {
+        filters.tourBlockId = parseInt(blockId as string);
+      }
+      
+      const tours = await TourModel.search(filters);
+      
+      // Apply limit if specified
+      const limitedTours = limit ? tours.slice(0, parseInt(limit as string)) : tours;
       
       // Parse JSON fields for response
-      const parsedTours = tours.map(tour => ({
+      const parsedTours = limitedTours.map((tour: any) => ({
         ...tour,
         title: JSON.parse(tour.title) as MultilingualContent,
         description: JSON.parse(tour.description) as MultilingualContent,

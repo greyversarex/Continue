@@ -3006,6 +3006,131 @@
             alert(`Поиск отелей:\nЗаезд: ${checkIn}\nВыезд: ${checkOut}\nГостей: ${guests}\n\nФункция будет доступна в ближайшее время.`);
         }
 
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:3000/api';
+        
+        // Tour loading functions
+        async function loadTourBlocks() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/tour-blocks`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    for (const block of result.data) {
+                        await loadToursForBlock(block);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading tour blocks:', error);
+            }
+        }
+        
+        async function loadToursForBlock(block) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/tours?blockId=${block.id}&limit=4`);
+                const result = await response.json();
+                
+                if (result.success && result.data.length > 0) {
+                    renderTourBlock(block, result.data);
+                }
+            } catch (error) {
+                console.error(`Error loading tours for block ${block.id}:`, error);
+            }
+        }
+        
+        function renderTourBlock(block, tours) {
+            const blockTitle = JSON.parse(block.title);
+            const blockId = `tour-block-${block.id}`;
+            
+            // Найдем место для вставки или создадим новую секцию
+            let existingSection = document.getElementById(blockId);
+            
+            if (!existingSection) {
+                // Создаем новую секцию после популярных туров
+                const popularSection = document.querySelector('.py-16.bg-white');
+                if (popularSection) {
+                    existingSection = document.createElement('section');
+                    existingSection.id = blockId;
+                    existingSection.className = 'py-16 bg-white';
+                    popularSection.parentNode.insertBefore(existingSection, popularSection.nextSibling);
+                }
+            }
+            
+            if (existingSection) {
+                existingSection.innerHTML = `
+                    <div class="max-w-7xl mx-auto px-6">
+                        <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+                            ${blockTitle.ru}
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            ${tours.map(tour => renderTourCard(tour)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderTourCard(tour) {
+            const title = JSON.parse(tour.title);
+            const description = JSON.parse(tour.description);
+            const shortDesc = tour.shortDesc ? JSON.parse(tour.shortDesc) : null;
+            
+            return `
+                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full"
+                     onclick="window.location.href='tour-template-viator.html?tour=${tour.id}'">
+                    <div class="relative overflow-hidden rounded-t-lg">
+                        <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                            ${tour.mainImage ? 
+                                `<img src="${tour.mainImage}" alt="${title.ru}" class="w-full h-full object-cover">` :
+                                `<span class="text-gray-500">${title.ru}</span>`
+                            }
+                        </div>
+                        <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-xs text-gray-500 mb-1 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            ${tour.city}, ${tour.country}
+                        </div>
+                        ${tour.rating ? `
+                        <div class="flex items-center text-green-600 text-xs mb-2">
+                            <span class="mr-1">★</span>
+                            <span class="font-semibold">${tour.rating}</span>
+                            <span class="text-gray-500 ml-1">(${tour.reviewsCount || 0})</span>
+                        </div>` : ''}
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
+                            ${shortDesc ? shortDesc.ru : title.ru}
+                        </h3>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="text-lg font-bold text-gray-900">
+                                ${tour.originalPrice ? `
+                                    <span class="text-sm line-through text-gray-400 mr-2">$${tour.originalPrice}</span>
+                                ` : ''}
+                                от $${tour.price}
+                                <div class="text-xs text-gray-500">${tour.priceType}</div>
+                            </div>
+                            <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" 
+                                    style="background-color: #3E3E3E;"
+                                    onclick="event.stopPropagation(); window.location.href='booking-flow.html?tour=${tour.id}'">
+                                Бронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Загружаем туры при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTourBlocks();
+        });
 
     </script>
 </body>
