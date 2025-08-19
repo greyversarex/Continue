@@ -63,10 +63,15 @@
                 return 'http://localhost:3001/api';
             }
             
-            // Для Replit - API доступен на том же домене через проксирование
+            // Для Replit - API доступен на том же домене и порту
             if (hostname.includes('replit')) {
-                // В Replit API проксируется через основной домен
-                return `${protocol}//${hostname}/api`;
+                // В Replit используем тот же порт что и для фронтенда  
+                const currentPort = window.location.port;
+                if (currentPort && currentPort !== '80' && currentPort !== '443') {
+                    return `${protocol}//${hostname}:${currentPort}/api`;
+                } else {
+                    return `${protocol}//${hostname}/api`;
+                }
             }
             
             // Попробовать тот же хост с портом 3001

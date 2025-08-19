@@ -3,7 +3,7 @@ const path = require('path');
 const { exec } = require('child_process');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || (process.env.NODE_ENV === 'production' ? 80 : 3000);
 
 // Middleware для парсинга JSON
 app.use(express.json({ limit: '10mb' }));

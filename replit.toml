@@ -3,12 +3,15 @@ channel = "stable-24_05"
 
 [deployment]
 deploymentTarget = "autoscale"
-run = "npx ts-node src/server.ts"
+run = "node index.js"
 build = "npx prisma generate"
 
+[deployment.web]
+port = 3000
+
 [[ports]]
-localPort = 3001
-externalPort = 80
+localPort = 3000
+externalPort = 3000
 
 [env]
 NODE_ENV = "development"
