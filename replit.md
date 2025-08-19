@@ -8,6 +8,7 @@ Bunyod-Tour is a comprehensive tourism booking platform focused on Central Asia.
 
 Preferred communication style: Simple, everyday language.
 Development approach: Improve existing files rather than creating new ones. User prefers enhancement of existing admin-dashboard.html over creation of separate admin panels.
+Frontend structure alignment: Admin panel must perfectly match the frontend homepage structure with exact block names and tour organization as shown in provided screenshots.
 
 ## System Architecture
 
@@ -15,7 +16,7 @@ Development approach: Improve existing files rather than creating new ones. User
 The backend is built with **Express.js and TypeScript**, chosen for type safety, developer productivity, and robust ecosystem support. It follows a **modular architecture** organized into controllers, models, routes, and middleware, adhering to an **MVC pattern** for clear separation of concerns.
 
 ### Database Layer
-**SQLite with Prisma ORM** is used for the database. SQLite offers simplicity for development and deployment, while Prisma provides type-safe database access and excellent TypeScript integration. The schema includes **Tours** with multilingual JSON fields and **Categories** for classification, maintaining foreign key relationships. A global Prisma client instance manages database connections with graceful shutdown.
+**SQLite with Prisma ORM** is used for the database. SQLite offers simplicity for development and deployment, while Prisma provides type-safe database access and excellent TypeScript integration. The schema includes **Tours** with multilingual JSON fields, **Categories** for classification, and **TourBlocks** for frontend organization, maintaining foreign key relationships. The database contains 14 tours organized into 6 blocks matching the frontend structure. A global Prisma client instance manages database connections with graceful shutdown.
 
 ### API Design
 The API implements **RESTful endpoints** using standard HTTP methods. It supports **multilingual content** stored as JSON in database fields. API responses follow a standardized structure with success/error states and consistent data formatting.
@@ -36,6 +37,7 @@ The platform features a **comprehensive Admin Dashboard** for managing tours, or
 - **Modern Toggle Filter System**: An elegant filter system for tours, supporting country, city, tour type, and category filtering.
 - **Category System**: Features 15 specific tourism categories including Day Tours, Multi-day Tours, Excursions, City Tours, Nature/Eco Tours, Cultural Educational Tours, Historical Tours, Hiking/Trekking, Mountain Landscapes, Lake Landscapes, Adventure Tours, Gastronomic Tours, Auto Tours/Safari/Jeep Tours, Agro Tours, and VIP Tours.
 - **Banner-Style Tour Types Section**: Redesigned "Виды туров" (Tour Types) into an elegant banner presentation.
+- **Frontend-Aligned Tour Block System**: Implemented 6 tour blocks matching exact frontend structure: Популярные туры, Рекомендованные туры по Центральной Азии, Туры по Таджикистану, Туры по Узбекистану, Туры по Киргизстану, Туры по Туркменистану.
 
 ### Technical Implementations
 - **Payment System**: Integrated with Stripe, Payme, Click, and PayPal, handling payment intents, confirmations, and refunds, with webhook support.
