@@ -987,13 +987,6 @@
                 return;
             }
             
-            for (const tourist of touristsList) {
-                if (!tourist.birthDate) {
-                    alert(`Пожалуйста, заполните дату рождения для туриста: ${tourist.fullName}`);
-                    return;
-                }
-            }
-            
             if (!agreement1 || !agreement2) {
                 alert('Пожалуйста, примите условия договора');
                 return;
@@ -1051,8 +1044,7 @@
             
             // Prepare order data
             const tourists = touristsList.map(tourist => ({
-                fullName: tourist.fullName,
-                birthDate: tourist.birthDate
+                fullName: tourist.fullName
             }));
             
             const orderData = {
