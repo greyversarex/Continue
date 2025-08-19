@@ -10,6 +10,7 @@ import paymentRoutes from './paymentRoutes';
 import cmsRoutes from './cmsRoutes';
 import adminRoutes from './adminRoutes';
 import publicRoutes from './publicRoutes';
+import tourBlockRoutes from './tourBlockRoutes';
 
 const router = Router();
 
@@ -25,6 +26,7 @@ router.use('/payments', paymentRoutes);
 router.use('/cms', cmsRoutes);
 router.use('/admin', adminRoutes);
 router.use('/public', publicRoutes);
+router.use('/tour-blocks', tourBlockRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {

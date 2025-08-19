@@ -648,19 +648,19 @@
                 <section id="cmsSection" style="display: none;">
                     <div class="mb-6">
                         <div class="flex gap-2 mb-4">
-                            <button class="tab-button active" onclick="switchCMSTab('blocks')">Блоки контента</button>
+                            <button class="tab-button active" onclick="switchCMSTab('blocks')">Блоки туров</button>
                             <button class="tab-button" onclick="switchCMSTab('settings')">Настройки сайта</button>
-                            <button class="tab-button" onclick="switchCMSTab('homepage')">Главная страница</button>
+                            <button class="tab-button" onclick="switchCMSTab('tours')">Форма туров</button>
                         </div>
                     </div>
 
-                    <!-- Content Blocks Tab -->
+                    <!-- Tour Blocks Tab -->
                     <div id="cmsBlocksTab">
                         <div class="mb-6 flex justify-between items-center">
-                            <h2 class="text-xl font-semibold">Управление блоками контента</h2>
-                            <button class="btn btn-primary" onclick="openContentBlockModal()">
+                            <h2 class="text-xl font-semibold">Управление блоками туров</h2>
+                            <button class="btn btn-primary" onclick="openTourBlockModal()">
                                 <i class="fas fa-plus"></i>
-                                Добавить блок
+                                Создать блок туров
                             </button>
                         </div>
                         
@@ -670,16 +670,17 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Тип</th>
-                                            <th>Заголовок (RU)</th>
-                                            <th>Заголовок (EN)</th>
+                                            <th>Название блока (RU)</th>
+                                            <th>Название блока (EN)</th>
+                                            <th>Слаг</th>
+                                            <th>Количество туров</th>
                                             <th>Статус</th>
-                                            <th>Последнее обновление</th>
+                                            <th>Порядок</th>
                                             <th>Действия</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="contentBlocksTable">
-                                        <!-- Content blocks will be loaded here -->
+                                    <tbody id="tourBlocksTable">
+                                        <!-- Tour blocks will be loaded here -->
                                     </tbody>
                                 </table>
                             </div>
@@ -730,14 +731,145 @@
                         </div>
                     </div>
 
-                    <!-- Homepage Tab -->
-                    <div id="cmsHomepageTab" style="display: none;">
+                    <!-- Enhanced Tours Form Tab -->
+                    <div id="cmsToursTab" style="display: none;">
                         <div class="mb-6">
-                            <h2 class="text-xl font-semibold">Контент главной страницы</h2>
+                            <h2 class="text-xl font-semibold">Расширенная форма создания туров</h2>
+                            <p class="text-gray-600">Создавайте туры со всеми необходимыми полями для карточек и страниц туров</p>
                         </div>
                         
-                        <div id="homepageContentList" class="space-y-4">
-                            <!-- Homepage content will be loaded here -->
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <form id="enhancedTourForm">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <!-- Basic Info -->
+                                    <div class="lg:col-span-2">
+                                        <h3 class="text-lg font-semibold mb-4">Основная информация</h3>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Название тура (RU)</label>
+                                        <input type="text" class="form-input" id="eTourTitleRu" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Название тура (EN)</label>
+                                        <input type="text" class="form-input" id="eTourTitleEn" required>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Краткое описание (для карточек)</label>
+                                        <textarea class="form-input" rows="3" id="eTourShortDesc" placeholder="Краткое описание для отображения на карточке тура"></textarea>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Полное описание</label>
+                                        <textarea class="form-input" rows="5" id="eTourFullDesc"></textarea>
+                                    </div>
+                                    
+                                    <!-- Pricing -->
+                                    <div class="lg:col-span-2">
+                                        <h3 class="text-lg font-semibold mb-4 mt-6">Цены и детали</h3>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Цена</label>
+                                        <input type="number" class="form-input" id="eTourPrice" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Оригинальная цена (для скидки)</label>
+                                        <input type="number" class="form-input" id="eTourOriginalPrice">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Количество дней</label>
+                                        <input type="number" class="form-input" id="eTourDurationDays" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Сложность</label>
+                                        <select class="form-input" id="eTourDifficulty">
+                                            <option value="">Выберите сложность</option>
+                                            <option value="Easy">Легкий</option>
+                                            <option value="Medium">Средний</option>
+                                            <option value="Hard">Сложный</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Максимум людей</label>
+                                        <input type="number" class="form-input" id="eTourMaxPeople">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Минимум людей</label>
+                                        <input type="number" class="form-input" id="eTourMinPeople">
+                                    </div>
+                                    
+                                    <!-- Location -->
+                                    <div class="form-group">
+                                        <label class="form-label">Страна</label>
+                                        <select class="form-input" id="eTourCountry">
+                                            <option value="">Выберите страну</option>
+                                            <option value="Uzbekistan">Узбекистан</option>
+                                            <option value="Tajikistan">Таджикистан</option>
+                                            <option value="Kyrgyzstan">Кыргызстан</option>
+                                            <option value="Kazakhstan">Казахстан</option>
+                                            <option value="Turkmenistan">Туркменистан</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Город</label>
+                                        <input type="text" class="form-input" id="eTourCity">
+                                    </div>
+                                    
+                                    <!-- Images -->
+                                    <div class="lg:col-span-2">
+                                        <h3 class="text-lg font-semibold mb-4 mt-6">Изображения</h3>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Главное изображение (URL)</label>
+                                        <input type="url" class="form-input" id="eTourMainImage" placeholder="https://example.com/image.jpg">
+                                    </div>
+                                    
+                                    <!-- Block Assignment -->
+                                    <div class="lg:col-span-2">
+                                        <h3 class="text-lg font-semibold mb-4 mt-6">Размещение в блоке</h3>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Блок туров</label>
+                                        <select class="form-input" id="eTourBlockId">
+                                            <option value="">Выберите блок туров</option>
+                                            <!-- Tour blocks will be loaded here -->
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Категория</label>
+                                        <select class="form-input" id="eTourCategoryId" required>
+                                            <option value="">Выберите категорию</option>
+                                            <!-- Categories will be loaded here -->
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label flex items-center">
+                                            <input type="checkbox" id="eTourIsFeatured" class="mr-2">
+                                            Рекомендуемый тур
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i>
+                                        Создать тур
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </section>
@@ -2318,6 +2450,389 @@
                 console.error('Error loading homepage content:', err);
                 const container = document.getElementById('homepageContentList');
                 container.innerHTML = '<div class="text-center text-red-500">Ошибка загрузки контента</div>';
+            });
+        }
+
+        // Tour Blocks Management Functions
+        function switchCMSTab(tab) {
+            // Hide all tabs
+            document.getElementById('cmsBlocksTab').style.display = 'none';
+            document.getElementById('cmsSettingsTab').style.display = 'none';
+            document.getElementById('cmsToursTab').style.display = 'none';
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('#cmsSection .tab-button').forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab and add active class
+            if (tab === 'blocks') {
+                document.getElementById('cmsBlocksTab').style.display = 'block';
+                document.querySelector('#cmsSection .tab-button:nth-child(1)').classList.add('active');
+                loadTourBlocks();
+            } else if (tab === 'settings') {
+                document.getElementById('cmsSettingsTab').style.display = 'block';
+                document.querySelector('#cmsSection .tab-button:nth-child(2)').classList.add('active');
+                loadCMSSettings();
+            } else if (tab === 'tours') {
+                document.getElementById('cmsToursTab').style.display = 'block';
+                document.querySelector('#cmsSection .tab-button:nth-child(3)').classList.add('active');
+                loadEnhancedTourForm();
+            }
+        }
+
+        // Load Tour Blocks
+        function loadTourBlocks() {
+            fetch(`${getApiUrl()}/tour-blocks`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById('tourBlocksTable');
+                
+                if (!data.success || !data.data || data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-500">Нет блоков туров</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = data.data.map(block => {
+                    const title = JSON.parse(block.title || '{}');
+                    const toursCount = block.tours ? block.tours.length : 0;
+                    return `
+                        <tr>
+                            <td class="font-medium">${block.id}</td>
+                            <td>${title.ru || 'Не указано'}</td>
+                            <td>${title.en || 'Не указано'}</td>
+                            <td><code class="bg-gray-100 px-2 py-1 rounded text-sm">${block.slug}</code></td>
+                            <td>${toursCount} туров</td>
+                            <td>${block.isActive ? '<span class="badge badge-success">Активен</span>' : '<span class="badge badge-warning">Неактивен</span>'}</td>
+                            <td>${block.sortOrder}</td>
+                            <td class="flex gap-2">
+                                <button onclick="editTourBlock(${block.id})" class="text-blue-600 hover:text-blue-800" title="Редактировать">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="manageTourBlockTours(${block.id})" class="text-green-600 hover:text-green-800" title="Управлять турами">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                                <button onclick="deleteTourBlock(${block.id})" class="text-red-600 hover:text-red-800" title="Удалить">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            })
+            .catch(err => {
+                console.error('Error loading tour blocks:', err);
+                const tbody = document.getElementById('tourBlocksTable');
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-red-500">Ошибка загрузки данных</td></tr>';
+            });
+        }
+
+        // Global variables for modal handling
+        let currentTourBlockId = null;
+
+        // Open Tour Block Modal
+        function openTourBlockModal(id = null) {
+            currentTourBlockId = id;
+            
+            // Create modal HTML if it doesn't exist
+            let modal = document.getElementById('tourBlockModal');
+            if (!modal) {
+                const modalHTML = `
+                    <div id="tourBlockModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 id="tourBlockModalTitle">Создать блок туров</h2>
+                                <button onclick="closeTourBlockModal()" class="modal-close">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="tourBlockForm">
+                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Название блока (RU)</label>
+                                            <input type="text" class="form-input" id="blockTitleRu" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Название блока (EN)</label>
+                                            <input type="text" class="form-input" id="blockTitleEn" required>
+                                        </div>
+                                        <div class="form-group lg:col-span-2">
+                                            <label class="form-label">Описание блока (RU)</label>
+                                            <textarea class="form-input" id="blockDescRu" rows="3"></textarea>
+                                        </div>
+                                        <div class="form-group lg:col-span-2">
+                                            <label class="form-label">Описание блока (EN)</label>
+                                            <textarea class="form-input" id="blockDescEn" rows="3"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Слаг (URL)</label>
+                                            <input type="text" class="form-input" id="blockSlug" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Порядок сортировки</label>
+                                            <input type="number" class="form-input" id="blockSortOrder" value="0">
+                                        </div>
+                                        <div class="form-group lg:col-span-2">
+                                            <label class="form-label flex items-center">
+                                                <input type="checkbox" id="blockIsActive" class="mr-2" checked>
+                                                Активный блок
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-6 flex gap-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i>
+                                            Сохранить
+                                        </button>
+                                        <button type="button" onclick="closeTourBlockModal()" class="btn btn-secondary">
+                                            Отмена
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                modal = document.getElementById('tourBlockModal');
+            }
+            
+            const title = document.getElementById('tourBlockModalTitle');
+            
+            if (id) {
+                title.textContent = 'Редактировать блок туров';
+                loadTourBlockData(id);
+            } else {
+                title.textContent = 'Создать блок туров';
+                document.getElementById('tourBlockForm').reset();
+                document.getElementById('blockIsActive').checked = true;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        // Close Tour Block Modal
+        function closeTourBlockModal() {
+            const modal = document.getElementById('tourBlockModal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+            currentTourBlockId = null;
+        }
+
+        // Load Tour Block Data for editing
+        function loadTourBlockData(id) {
+            fetch(`${getApiUrl()}/tour-blocks/${id}`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    const block = data.data;
+                    const title = JSON.parse(block.title || '{}');
+                    const description = JSON.parse(block.description || '{}');
+                    
+                    document.getElementById('blockTitleRu').value = title.ru || '';
+                    document.getElementById('blockTitleEn').value = title.en || '';
+                    document.getElementById('blockDescRu').value = description.ru || '';
+                    document.getElementById('blockDescEn').value = description.en || '';
+                    document.getElementById('blockSlug').value = block.slug || '';
+                    document.getElementById('blockSortOrder').value = block.sortOrder || 0;
+                    document.getElementById('blockIsActive').checked = block.isActive;
+                }
+            })
+            .catch(err => {
+                console.error('Error loading tour block:', err);
+                alert('Ошибка загрузки блока');
+            });
+        }
+
+        // Initialize form handlers when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tour Block Form Handler
+            setTimeout(() => {
+                const form = document.getElementById('tourBlockForm');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        saveTourBlock();
+                    });
+                }
+            }, 100);
+        });
+
+        // Save Tour Block
+        function saveTourBlock() {
+            const formData = {
+                title: JSON.stringify({
+                    ru: document.getElementById('blockTitleRu').value,
+                    en: document.getElementById('blockTitleEn').value
+                }),
+                description: JSON.stringify({
+                    ru: document.getElementById('blockDescRu').value,
+                    en: document.getElementById('blockDescEn').value
+                }),
+                slug: document.getElementById('blockSlug').value,
+                sortOrder: parseInt(document.getElementById('blockSortOrder').value) || 0,
+                isActive: document.getElementById('blockIsActive').checked
+            };
+            
+            const url = currentTourBlockId ? 
+                `${getApiUrl()}/tour-blocks/${currentTourBlockId}` : 
+                `${getApiUrl()}/tour-blocks`;
+            const method = currentTourBlockId ? 'PUT' : 'POST';
+            
+            fetch(url, {
+                method: method,
+                headers: getAuthHeaders(),
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Блок туров успешно сохранен!');
+                    closeTourBlockModal();
+                    loadTourBlocks();
+                } else {
+                    alert('Ошибка при сохранении: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Error saving tour block:', err);
+                alert('Ошибка соединения с сервером');
+            });
+        }
+
+        // Edit Tour Block
+        function editTourBlock(id) {
+            openTourBlockModal(id);
+        }
+
+        // Delete Tour Block
+        function deleteTourBlock(id) {
+            if (confirm('Вы уверены, что хотите удалить этот блок туров? Все туры из блока останутся, но будут не привязаны к блоку.')) {
+                fetch(`${getApiUrl()}/tour-blocks/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Блок туров удален');
+                        loadTourBlocks();
+                    } else {
+                        alert('Ошибка при удалении: ' + (data.message || 'Неизвестная ошибка'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error deleting tour block:', err);
+                    alert('Ошибка соединения с сервером');
+                });
+            }
+        }
+
+        // Manage Tour Block Tours
+        function manageTourBlockTours(blockId) {
+            alert('Функция управления турами в блоке скоро будет реализована');
+        }
+
+        // Load Enhanced Tour Form
+        function loadEnhancedTourForm() {
+            // Load tour blocks for selection
+            fetch(`${getApiUrl()}/tour-blocks`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                const select = document.getElementById('eTourBlockId');
+                if (select && data.success && data.data) {
+                    select.innerHTML = '<option value="">Выберите блок туров</option>' +
+                        data.data.map(block => {
+                            const title = JSON.parse(block.title || '{}');
+                            return `<option value="${block.id}">${title.ru || title.en || `Блок ${block.id}`}</option>`;
+                        }).join('');
+                }
+            })
+            .catch(err => console.error('Error loading tour blocks for form:', err));
+
+            // Load categories for selection
+            loadCategories().then(categories => {
+                const select = document.getElementById('eTourCategoryId');
+                if (select && categories) {
+                    select.innerHTML = '<option value="">Выберите категорию</option>' +
+                        categories.map(cat => {
+                            const title = JSON.parse(cat.title || '{}');
+                            return `<option value="${cat.id}">${title.ru || title.en || cat.name}</option>`;
+                        }).join('');
+                }
+            });
+        }
+
+        // Initialize Enhanced Tour Form Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const form = document.getElementById('enhancedTourForm');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        saveEnhancedTour();
+                    });
+                }
+            }, 100);
+        });
+
+        // Save Enhanced Tour
+        function saveEnhancedTour() {
+            const formData = {
+                title: JSON.stringify({
+                    ru: document.getElementById('eTourTitleRu').value,
+                    en: document.getElementById('eTourTitleEn').value
+                }),
+                shortDescription: JSON.stringify({
+                    ru: document.getElementById('eTourShortDesc').value,
+                    en: document.getElementById('eTourShortDesc').value
+                }),
+                description: JSON.stringify({
+                    ru: document.getElementById('eTourFullDesc').value,
+                    en: document.getElementById('eTourFullDesc').value
+                }),
+                price: parseFloat(document.getElementById('eTourPrice').value),
+                originalPrice: document.getElementById('eTourOriginalPrice').value ? parseFloat(document.getElementById('eTourOriginalPrice').value) : null,
+                durationDays: parseInt(document.getElementById('eTourDurationDays').value),
+                difficulty: document.getElementById('eTourDifficulty').value,
+                maxPeople: document.getElementById('eTourMaxPeople').value ? parseInt(document.getElementById('eTourMaxPeople').value) : null,
+                minPeople: document.getElementById('eTourMinPeople').value ? parseInt(document.getElementById('eTourMinPeople').value) : null,
+                country: document.getElementById('eTourCountry').value,
+                city: document.getElementById('eTourCity').value,
+                mainImage: document.getElementById('eTourMainImage').value,
+                images: JSON.stringify([document.getElementById('eTourMainImage').value].filter(Boolean)),
+                categoryId: parseInt(document.getElementById('eTourCategoryId').value),
+                tourBlockId: document.getElementById('eTourBlockId').value ? parseInt(document.getElementById('eTourBlockId').value) : null,
+                isFeatured: document.getElementById('eTourIsFeatured').checked,
+                isActive: true,
+                highlights: JSON.stringify({ ru: "", en: "" }),
+                itinerary: JSON.stringify({ ru: [], en: [] }),
+                included: JSON.stringify({ ru: [], en: [] }),
+                excluded: JSON.stringify({ ru: [], en: [] })
+            };
+
+            fetch(`${getApiUrl()}/tours`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Тур успешно создан!');
+                    document.getElementById('enhancedTourForm').reset();
+                    loadEnhancedTourForm(); // Reload form to refresh selects
+                } else {
+                    alert('Ошибка при создании тура: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Error saving tour:', err);
+                alert('Ошибка соединения с сервером');
             });
         }
     </script>

@@ -18,12 +18,28 @@ model Category {
   @@map("categories")
 }
 
+model TourBlock {
+  id          Int      @id @default(autoincrement())
+  title       String   // JSON field for multilingual content
+  description String?  // JSON field for multilingual content
+  slug        String   @unique // URL slug
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  tours       Tour[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tour_blocks")
+}
+
 model Tour {
   id             Int              @id @default(autoincrement())
   title          String           // JSON field for multilingual content
   description    String           // JSON field for multilingual content
+  shortDesc      String?          // JSON field for short description on cards
   duration       String
   price          String
+  originalPrice  String?          // For discount display
   country        String?          // Страна
   city           String?          // Город
   format         String?          // Формат: Групповой, Индивидуальный, VIP
@@ -32,11 +48,26 @@ model Tour {
   startDate      String?          // Дата начала
   endDate        String?          // Дата окончания
   images         String?          // JSON array of image URLs
+  mainImage      String?          // Main card image
   services       String?          // JSON array of included services
   highlights     String?          // JSON array of tour highlights
+  itinerary      String?          // JSON array of daily itinerary
+  included       String?          // JSON array of what's included
+  excluded       String?          // JSON array of what's excluded
+  requirements   String?          // JSON field for requirements/restrictions
+  difficulty     String?          // Easy, Medium, Hard
+  rating         Float?           // Average rating
+  reviewsCount   Int?             // Number of reviews
+  maxPeople      Int?             // Maximum group size
+  minPeople      Int?             // Minimum group size
+  location       String?          // JSON object with coordinates
+  tags           String?          // JSON array of tags
   isActive       Boolean          @default(true)
+  isFeatured     Boolean          @default(false)
   categoryId     Int
+  tourBlockId    Int?             @map("tour_block_id")
   category       Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  tourBlock      TourBlock?       @relation(fields: [tourBlockId], references: [id])
   bookingRequests BookingRequest[]
   orders         Order[]
   reviews        Review[]
