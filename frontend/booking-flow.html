@@ -405,8 +405,16 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Количество туристов *</label>
-                                <input type="number" id="touristCount" class="form-input" min="1" value="1" onchange="updateTouristFields()" required>
+                                <label class="form-label">Добавление туриста</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="newTouristName" class="form-input" placeholder="ФИО туриста">
+                                    <button type="button" onclick="addTourist()" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Добавить
+                                    </button>
+                                </div>
+                                <div class="text-sm text-gray-600 mt-1">
+                                    Всего туристов: <span id="touristCountDisplay">0</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -848,37 +856,81 @@
             calculatePrice();
         }
         
-        // Update tourist fields
-        function updateTouristFields() {
-            const count = parseInt(document.getElementById('touristCount').value) || 1;
-            const container = document.getElementById('touristsList');
+        // Tourist management
+        let touristsList = [];
+        
+        function addTourist() {
+            const nameInput = document.getElementById('newTouristName');
+            const fullName = nameInput.value.trim();
             
-            container.innerHTML = '';
-            for (let i = 1; i <= count; i++) {
-                container.innerHTML += `
-                    <div class="tourist-card">
-                        <h4 class="font-medium mb-3">Турист ${i}</h4>
+            if (!fullName) {
+                alert('Пожалуйста, введите ФИО туриста');
+                return;
+            }
+            
+            const touristId = Date.now(); // Unique ID
+            const tourist = {
+                id: touristId,
+                fullName: fullName,
+                birthDate: ''
+            };
+            
+            touristsList.push(tourist);
+            nameInput.value = ''; // Clear input
+            
+            updateTouristsList();
+            calculatePrice();
+        }
+        
+        function removeTourist(touristId) {
+            touristsList = touristsList.filter(t => t.id !== touristId);
+            updateTouristsList();
+            calculatePrice();
+        }
+        
+        function updateTouristsList() {
+            const container = document.getElementById('touristsList');
+            const count = touristsList.length;
+            
+            if (count === 0) {
+                container.innerHTML = '<div class="text-gray-500 text-center py-8">Нет добавленных туристов</div>';
+            } else {
+                container.innerHTML = touristsList.map(tourist => `
+                    <div class="tourist-card relative">
+                        <button type="button" onclick="removeTourist(${tourist.id})" 
+                                class="absolute top-2 right-2 text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <h4 class="font-medium mb-3">${tourist.fullName}</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="form-label text-sm">ФИО *</label>
-                                <input type="text" class="form-input" id="tourist${i}Name" required>
+                                <label class="form-label text-sm">ФИО</label>
+                                <input type="text" class="form-input bg-gray-50" value="${tourist.fullName}" readonly>
                             </div>
                             <div>
                                 <label class="form-label text-sm">Дата рождения *</label>
-                                <input type="date" class="form-input" id="tourist${i}Birth" required>
+                                <input type="date" class="form-input" id="tourist${tourist.id}Birth" 
+                                       value="${tourist.birthDate}" 
+                                       onchange="updateTouristBirthDate(${tourist.id}, this.value)" required>
                             </div>
                         </div>
                     </div>
-                `;
+                `).join('');
             }
             
             document.getElementById('touristCountDisplay').textContent = count;
-            calculatePrice();
+        }
+        
+        function updateTouristBirthDate(touristId, birthDate) {
+            const tourist = touristsList.find(t => t.id === touristId);
+            if (tourist) {
+                tourist.birthDate = birthDate;
+            }
         }
         
         // Calculate total price
         function calculatePrice() {
-            const touristCount = parseInt(document.getElementById('touristCount')?.value) || 1;
+            const touristCount = touristsList.length || 1;
             const days = tourData?.durationDays || 7;
             
             let total = basePrice * touristCount;
@@ -947,12 +999,14 @@
             }
             
             // Validate tourist information
-            const touristCount = parseInt(document.getElementById('touristCount').value);
-            for (let i = 1; i <= touristCount; i++) {
-                const name = document.getElementById(`tourist${i}Name`).value;
-                const birth = document.getElementById(`tourist${i}Birth`).value;
-                if (!name || !birth) {
-                    alert(`Пожалуйста, заполните данные туриста ${i}`);
+            if (touristsList.length === 0) {
+                alert('Пожалуйста, добавьте хотя бы одного туриста');
+                return;
+            }
+            
+            for (const tourist of touristsList) {
+                if (!tourist.birthDate) {
+                    alert(`Пожалуйста, заполните дату рождения для туриста: ${tourist.fullName}`);
                     return;
                 }
             }
@@ -1013,14 +1067,10 @@
             }
             
             // Prepare order data
-            const touristCount = parseInt(document.getElementById('touristCount').value);
-            const tourists = [];
-            for (let i = 1; i <= touristCount; i++) {
-                tourists.push({
-                    fullName: document.getElementById(`tourist${i}Name`).value,
-                    birthDate: document.getElementById(`tourist${i}Birth`).value
-                });
-            }
+            const tourists = touristsList.map(tourist => ({
+                fullName: tourist.fullName,
+                birthDate: tourist.birthDate
+            }));
             
             const orderData = {
                 tourId: selectedTourId,
@@ -1068,6 +1118,11 @@
                 document.getElementById('successMessage').style.display = 'none';
             });
         }
+        
+        // Initialize page on load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTouristsList();
+        });
     </script>
 </body>
 </html>

@@ -16,6 +16,38 @@
         .thumbnail-inactive {
             opacity: 0.7;
         }
+        
+        /* Price Toggle Styles */
+        .price-toggle {
+            display: flex;
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 2px;
+            gap: 2px;
+        }
+        
+        .price-toggle-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .price-toggle-btn:hover {
+            color: #374151;
+        }
+        
+        .price-toggle-btn.active {
+            background: white;
+            color: #1f2937;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -284,8 +316,14 @@
             <div class="lg:col-span-1">
                 <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-lg sticky top-6">
                     <div class="mb-4">
-                        <span class="text-2xl font-bold text-gray-900" id="tour-price">От 3 500₽</span>
-                        <span class="text-sm text-gray-600 ml-1">за человека</span>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl font-bold text-gray-900" id="tour-price">От 3 500₽</span>
+                            <div class="price-toggle">
+                                <button onclick="togglePriceType('person')" id="priceTogglePerson" class="price-toggle-btn active">За человека</button>
+                                <button onclick="togglePriceType('group')" id="priceToggleGroup" class="price-toggle-btn">За группу</button>
+                            </div>
+                        </div>
+                        <span class="text-sm text-gray-600" id="price-type-text">за человека</span>
                     </div>
                     
                     <!-- Date Selector -->
@@ -532,6 +570,9 @@
     <script>
         let currentImageIndex = 0;
         let tourData = {};
+        let currentPriceType = 'person'; // 'person' or 'group'
+        let basePricePerPerson = 3500; // Base price per person
+        let groupSize = 2; // Default group size
         
         // Embedded tour data for reliability
         const embeddedTourData = {
@@ -644,7 +685,9 @@
             document.getElementById('tour-location').textContent = tourData.location;
             document.getElementById('tour-reviews').textContent = `(${tourData.reviews_count} отзыва)`;
             document.getElementById('tour-duration').textContent = tourData.duration + ' (прибл.)';
-            document.getElementById('tour-price').textContent = tourData.price;
+            
+            // Initialize price display
+            updatePriceDisplay();
             
             // Update rating
             const ratingElement = document.getElementById('tour-rating');
@@ -659,6 +702,32 @@
             
             // Load reviews
             loadReviews();
+        }
+        
+        // Price toggle functionality
+        function togglePriceType(type) {
+            currentPriceType = type;
+            
+            // Update button states
+            document.getElementById('priceTogglePerson').classList.toggle('active', type === 'person');
+            document.getElementById('priceToggleGroup').classList.toggle('active', type === 'group');
+            
+            // Update price display
+            updatePriceDisplay();
+        }
+        
+        function updatePriceDisplay() {
+            const priceElement = document.getElementById('tour-price');
+            const priceTypeElement = document.getElementById('price-type-text');
+            
+            if (currentPriceType === 'person') {
+                priceElement.textContent = `От ${basePricePerPerson.toLocaleString()}₽`;
+                priceTypeElement.textContent = 'за человека';
+            } else {
+                const groupPrice = basePricePerPerson * groupSize;
+                priceElement.textContent = `От ${groupPrice.toLocaleString()}₽`;
+                priceTypeElement.textContent = `за группу (${groupSize} чел.)`;
+            }
         }
 
         function loadImages() {
