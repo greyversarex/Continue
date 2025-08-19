@@ -293,7 +293,7 @@
                     </div>
                     
                     <!-- Date Selector -->
-                    <div class="mb-4">
+                    <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Выберите дату</label>
                         <input 
                             type="date" 
@@ -303,27 +303,8 @@
                             min="2025-08-09">
                     </div>
                     
-                    <!-- Travelers Selector -->
-                    <div class="mb-4">
-                        <div class="border border-gray-300 rounded-lg p-3 flex items-center justify-between cursor-pointer">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
-                                </svg>
-                                <span class="text-gray-900 font-medium">2 человека</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Time Selector -->
-                    <div class="mb-6">
-                        <div class="border border-gray-300 rounded-lg p-3">
-                            <span class="text-gray-500">Выберите время</span>
-                        </div>
-                    </div>
-                    
                     <!-- Check Availability Button -->
-                    <button onclick="checkHotelAvailability()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium mb-4 transition-colors">
+                    <button onclick="goToBookingPage()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium mb-4 transition-colors">
                         Проверить наличие
                     </button>
                     
@@ -851,25 +832,20 @@
             setupEventListeners();
         });
 
-        // Hotel availability checker functions
-        function checkHotelAvailability() {
-            const modal = document.getElementById('hotelAvailabilityModal');
-            if (modal) {
-                modal.style.display = 'flex';
-                // Skip search form and show results directly
-                document.getElementById('hotelSearchForm').style.display = 'none';
-                document.getElementById('hotelResults').style.display = 'block';
-                
-                // Show default search parameters
-                document.getElementById('searchParams').innerHTML = `
-                    <div class="text-sm text-gray-600 mb-4">
-                        <strong>Доступные отели в Душанбе</strong>
-                    </div>
-                `;
-                
-                // Display hotel cards immediately
-                displayHotelCards();
-            }
+        // Direct booking page navigation
+        function goToBookingPage() {
+            const selectedDate = document.getElementById('tour-date').value;
+            const tourTitle = document.querySelector('#tour-title')?.textContent || 'Неизвестный тур';
+            
+            // Create booking URL with parameters
+            const params = new URLSearchParams({
+                tour: encodeURIComponent(tourTitle),
+                date: selectedDate,
+                step: '1'
+            });
+            
+            // Navigate to booking page
+            window.location.href = `booking.html?${params.toString()}`;
         }
 
         function closeHotelModal() {

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование тура - Bunyod-Tour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Hotel card image carousel styles */
+        .hotel-carousel {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hotel-images {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+        
+        .hotel-images img {
+            min-width: 100%;
+            height: 240px;
+            object-fit: cover;
+        }
+        
+        .carousel-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+        }
+        
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .carousel-dot.active {
+            background: white;
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .hotel-carousel:hover .carousel-nav {
+            opacity: 1;
+        }
+        
+        .carousel-prev {
+            left: 12px;
+        }
+        
+        .carousel-next {
+            right: 12px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-gray-900">Bunyod-Tour</div>
+                </div>
+                
+                <!-- Close button -->
+                <button onclick="goBack()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="flex items-center justify-center space-x-8">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold">1</div>
+                    <span class="ml-3 text-sm font-medium text-gray-900">Выбор даты и отеля</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center font-semibold">2</div>
+                    <span class="ml-3 text-sm font-medium text-gray-500">Данные туристов</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center font-semibold">3</div>
+                    <span class="ml-3 text-sm font-medium text-gray-500">Оплата</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Hotel Selection -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Выберите дату и отель</h2>
+                    
+                    <!-- Tour Date -->
+                    <div class="mb-6">
+                        <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Дата начала тура</span>
+                        </div>
+                        <input 
+                            type="date" 
+                            id="booking-date" 
+                            class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            value="2025-08-20"
+                            min="2025-08-20">
+                    </div>
+
+                    <!-- Available Hotels -->
+                    <div class="mb-6">
+                        <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+                            </svg>
+                            <span>Доступные отели</span>
+                        </div>
+                        
+                        <div class="grid gap-6" id="hotels-grid">
+                            <!-- Hotels will be loaded by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Booking Summary -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Детали тура</h3>
+                    
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <span class="font-medium text-gray-900" id="tour-title">Памирский тракт - Крыша мира</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span id="tour-location">Таджикистан, Хорог</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span id="tour-duration">7 дней</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+                            </svg>
+                            <span id="tour-people">1 человек</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-200 mt-6 pt-6">
+                        <h4 class="font-semibold text-gray-900 mb-4">Стоимость</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Базовая цена</span>
+                                <span class="font-medium" id="base-price">$1200</span>
+                            </div>
+                            <div class="flex justify-between text-lg font-bold">
+                                <span>Итого</span>
+                                <span id="total-price">$1200</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <h4 class="font-semibold text-gray-900 mb-3">Нужна помощь?</h4>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                                </svg>
+                                <span>+992 123 456 789</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                                </svg>
+                                <span>support@bunyod-tour.com</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span>Пн-Пт: 9:00 - 18:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Hotel data with multiple images for each hotel
+        const hotelData = [
+            {
+                id: 1,
+                name: "Serena Inn Dushanbe",
+                stars: 5,
+                price: 120,
+                description: "Роскошный отель в центре Душанбе",
+                amenities: ["Wi-Fi", "Бассейн", "Спа", "Ресторан"],
+                images: [
+                    "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=240&fit=crop",
+                    "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=240&fit=crop",
+                    "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=400&h=240&fit=crop"
+                ]
+            },
+            {
+                id: 2,
+                name: "Hilton Dushanbe",
+                stars: 5,
+                price: 150,
+                description: "Современный отель международного класса",
+                amenities: ["Wi-Fi", "Фитнес", "Ресторан", "Бар"],
+                images: [
+                    "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=240&fit=crop",
+                    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=240&fit=crop",
+                    "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&h=240&fit=crop"
+                ]
+            },
+            {
+                id: 3,
+                name: "Atlas Hotel",
+                stars: 4,
+                price: 80,
+                description: "Комфортабельный отель с хорошим расположением",
+                amenities: ["Wi-Fi", "Ресторан", "Парковка"],
+                images: [
+                    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=240&fit=crop",
+                    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=240&fit=crop",
+                    "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=400&h=240&fit=crop"
+                ]
+            }
+        ];
+
+        let selectedHotel = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTourDetails();
+            displayHotels();
+        });
+
+        function loadTourDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tourName = urlParams.get('tour');
+            const date = urlParams.get('date');
+
+            if (tourName) {
+                document.getElementById('tour-title').textContent = decodeURIComponent(tourName);
+            }
+            if (date) {
+                document.getElementById('booking-date').value = date;
+            }
+        }
+
+        function displayHotels() {
+            const hotelsGrid = document.getElementById('hotels-grid');
+            
+            hotelsGrid.innerHTML = hotelData.map(hotel => `
+                <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer hotel-card" 
+                     data-hotel-id="${hotel.id}" onclick="selectHotel(${hotel.id})">
+                    <!-- Image Carousel -->
+                    <div class="hotel-carousel" data-hotel-id="${hotel.id}">
+                        <div class="hotel-images" id="images-${hotel.id}">
+                            ${hotel.images.map(img => `<img src="${img}" alt="${hotel.name}">`).join('')}
+                        </div>
+                        
+                        <!-- Navigation buttons -->
+                        <button class="carousel-nav carousel-prev" onclick="event.stopPropagation(); prevImage(${hotel.id})">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <button class="carousel-nav carousel-next" onclick="event.stopPropagation(); nextImage(${hotel.id})">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Dots indicator -->
+                        <div class="carousel-dots">
+                            ${hotel.images.map((_, index) => `
+                                <div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="event.stopPropagation(); goToImage(${hotel.id}, ${index})"></div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <!-- Hotel Info -->
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-lg font-semibold text-gray-900">${hotel.name}</h3>
+                            <div class="flex items-center">
+                                ${generateStars(hotel.stars)}
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm mb-3">${hotel.description}</p>
+                        
+                        <!-- Amenities -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${hotel.amenities.map(amenity => `
+                                <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">${amenity}</span>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl font-bold text-green-600">$${hotel.price}</span>
+                                <span class="text-gray-500 text-sm">за ночь</span>
+                            </div>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                Выбрать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Carousel functionality
+        let currentImages = {};
+
+        hotelData.forEach(hotel => {
+            currentImages[hotel.id] = 0;
+        });
+
+        function prevImage(hotelId) {
+            const hotel = hotelData.find(h => h.id === hotelId);
+            currentImages[hotelId] = currentImages[hotelId] > 0 ? currentImages[hotelId] - 1 : hotel.images.length - 1;
+            updateCarousel(hotelId);
+        }
+
+        function nextImage(hotelId) {
+            const hotel = hotelData.find(h => h.id === hotelId);
+            currentImages[hotelId] = currentImages[hotelId] < hotel.images.length - 1 ? currentImages[hotelId] + 1 : 0;
+            updateCarousel(hotelId);
+        }
+
+        function goToImage(hotelId, index) {
+            currentImages[hotelId] = index;
+            updateCarousel(hotelId);
+        }
+
+        function updateCarousel(hotelId) {
+            const imagesContainer = document.getElementById(`images-${hotelId}`);
+            const transform = -currentImages[hotelId] * 100;
+            imagesContainer.style.transform = `translateX(${transform}%)`;
+            
+            // Update dots
+            const carousel = document.querySelector(`[data-hotel-id="${hotelId}"]`);
+            const dots = carousel.querySelectorAll('.carousel-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentImages[hotelId]);
+            });
+        }
+
+        function generateStars(rating) {
+            return Array.from({length: 5}, (_, i) => 
+                `<svg class="w-4 h-4 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>`
+            ).join('');
+        }
+
+        function selectHotel(hotelId) {
+            // Remove previous selection
+            document.querySelectorAll('.hotel-card').forEach(card => {
+                card.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
+            });
+            
+            // Add selection to clicked hotel
+            const selectedCard = document.querySelector(`[data-hotel-id="${hotelId}"]`);
+            selectedCard.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+            
+            selectedHotel = hotelData.find(h => h.id === hotelId);
+            
+            // Update price in summary
+            document.getElementById('base-price').textContent = `$${selectedHotel.price}`;
+            document.getElementById('total-price').textContent = `$${selectedHotel.price}`;
+            
+            // Auto proceed to next step after selection
+            setTimeout(() => {
+                goToNextStep();
+            }, 1000);
+        }
+
+        function goToNextStep() {
+            if (!selectedHotel) {
+                alert('Пожалуйста, выберите отель');
+                return;
+            }
+            
+            const selectedDate = document.getElementById('booking-date').value;
+            if (!selectedDate) {
+                alert('Пожалуйста, выберите дату');
+                return;
+            }
+            
+            alert(`Переход к следующему шагу:\nОтель: ${selectedHotel.name}\nДата: ${selectedDate}\nЦена: $${selectedHotel.price}`);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
