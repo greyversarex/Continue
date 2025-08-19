@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новости - Bunyod-Tour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .news-card {
+            transition: all 0.3s ease;
+        }
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .news-image {
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+        .category-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(255,255,255,0.9);
+            color: #4A5568;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 10;
+        }
+        .read-time {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Хедер -->
+    <header class="shadow-md sticky top-0 z-50" style="background-color: #3E3E3E;">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between h-16 px-6">
+                <div class="flex items-center">
+                    <a href="index.html">
+                        <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour Logo" class="w-12 h-12 mr-3 rounded-full">
+                    </a>
+                    <span class="text-xl font-bold text-white">Bunyod-Tour</span>
+                </div>
+                
+                <nav class="hidden md:flex space-x-6">
+                    <a href="index.html" class="text-white hover:text-gray-300 transition-colors">Главная</a>
+                    <a href="tours.html" class="text-white hover:text-gray-300 transition-colors">Туры</a>
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Турагентам</a>
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Горящие туры</a>
+                    <a href="news.html" class="text-blue-300 font-semibold">Новости</a>
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Пользователям</a>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <button class="md:hidden text-white" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobileMenu" class="md:hidden hidden bg-gray-700">
+                <div class="px-4 py-2 space-y-2">
+                    <a href="index.html" class="block text-white hover:text-gray-300 py-2">Главная</a>
+                    <a href="tours.html" class="block text-white hover:text-gray-300 py-2">Туры</a>
+                    <a href="#" class="block text-white hover:text-gray-300 py-2">Турагентам</a>
+                    <a href="#" class="block text-white hover:text-gray-300 py-2">Горящие туры</a>
+                    <a href="news.html" class="block text-blue-300 font-semibold py-2">Новости</a>
+                    <a href="#" class="block text-white hover:text-gray-300 py-2">Пользователям</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg py-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h1 class="text-5xl font-bold text-white mb-6">
+                <i class="fas fa-newspaper mr-4"></i>Новости и события
+            </h1>
+            <p class="text-xl text-white opacity-90 max-w-3xl mx-auto">
+                Будьте в курсе последних новостей туризма в Таджикистане, новых маршрутов, событий и специальных предложений
+            </p>
+        </div>
+    </section>
+
+    <!-- Фильтры новостей -->
+    <section class="py-8 bg-white border-b">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex flex-wrap gap-2">
+                    <button class="category-filter active px-4 py-2 rounded-full text-sm font-semibold bg-blue-600 text-white" data-category="all">
+                        Все новости
+                    </button>
+                    <button class="category-filter px-4 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300" data-category="tours">
+                        Новые туры
+                    </button>
+                    <button class="category-filter px-4 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300" data-category="events">
+                        События
+                    </button>
+                    <button class="category-filter px-4 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300" data-category="announcements">
+                        Объявления
+                    </button>
+                    <button class="category-filter px-4 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300" data-category="tips">
+                        Советы путешественникам
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <select class="px-3 py-2 border rounded-lg text-sm" id="sortSelect">
+                        <option value="newest">Сначала новые</option>
+                        <option value="oldest">Сначала старые</option>
+                        <option value="popular">По популярности</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Основной контент -->
+    <main class="py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- Загрузка -->
+            <div id="loadingSpinner" class="text-center py-12">
+                <i class="fas fa-spinner fa-spin text-4xl text-blue-600"></i>
+                <p class="text-gray-600 mt-4">Загружаем новости...</p>
+            </div>
+
+            <!-- Главная новость (Featured) -->
+            <div id="featuredNews" class="mb-12 hidden">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Главная новость</h2>
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <!-- Будет заполнено динамически -->
+                </div>
+            </div>
+
+            <!-- Сетка новостей -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="newsGrid">
+                <!-- Карточки новостей будут загружены динамически -->
+            </div>
+
+            <!-- Пагинация -->
+            <div class="mt-12 flex justify-center" id="pagination" style="display: none;">
+                <div class="flex items-center space-x-2">
+                    <button id="prevPage" class="px-4 py-2 text-gray-500 hover:text-blue-600 disabled:opacity-50" disabled>
+                        <i class="fas fa-chevron-left"></i> Предыдущая
+                    </button>
+                    <div id="pageNumbers" class="flex space-x-1">
+                        <!-- Номера страниц -->
+                    </div>
+                    <button id="nextPage" class="px-4 py-2 text-gray-500 hover:text-blue-600">
+                        Следующая <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Пустое состояние -->
+            <div id="emptyState" class="text-center py-20 hidden">
+                <i class="fas fa-newspaper text-6xl text-gray-300 mb-6"></i>
+                <h3 class="text-xl font-semibold text-gray-600 mb-4">Новости не найдены</h3>
+                <p class="text-gray-500">Попробуйте изменить фильтры поиска или вернитесь позже</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Подписка на новости -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">
+                Подпишитесь на наши новости
+            </h2>
+            <p class="text-gray-600 mb-8">
+                Получайте уведомления о новых турах, специальных предложениях и интересных событиях в мире туризма
+            </p>
+            <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto" id="newsletterForm">
+                <input 
+                    type="email" 
+                    placeholder="Введите ваш email" 
+                    class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    required
+                >
+                <button 
+                    type="submit" 
+                    class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                >
+                    <i class="fas fa-bell mr-2"></i>Подписаться
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour Logo" class="w-10 h-10 mr-3 rounded-full">
+                        <span class="text-xl font-bold">Bunyod-Tour</span>
+                    </div>
+                    <p class="text-gray-300 text-sm">
+                        Открывайте красоту Таджикистана с нами. Незабываемые туры по горам Памира и древним городам.
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Быстрые ссылки</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="text-gray-300 hover:text-white">Главная</a></li>
+                        <li><a href="tours.html" class="text-gray-300 hover:text-white">Туры</a></li>
+                        <li><a href="news.html" class="text-blue-300">Новости</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">О нас</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Контакты</h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><i class="fas fa-phone mr-2"></i>+992 123 456 789</li>
+                        <li><i class="fas fa-envelope mr-2"></i>info@bunyod-tour.tj</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>Душанбе, Таджикистан</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Следите за нами</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-telegram text-xl"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-whatsapp text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400 text-sm">
+                    © 2024 Bunyod-Tour. Все права защищены.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Глобальные переменные
+        let currentPage = 1;
+        let currentCategory = 'all';
+        let currentSort = 'newest';
+        let allNews = [];
+
+        // API URL
+        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
+
+        // Инициализация страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNews();
+            setupEventListeners();
+        });
+
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            // Фильтры категорий
+            document.querySelectorAll('.category-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-filter').forEach(b => {
+                        b.classList.remove('active', 'bg-blue-600', 'text-white');
+                        b.classList.add('bg-gray-200', 'text-gray-700');
+                    });
+                    
+                    this.classList.add('active', 'bg-blue-600', 'text-white');
+                    this.classList.remove('bg-gray-200', 'text-gray-700');
+                    
+                    currentCategory = this.dataset.category;
+                    currentPage = 1;
+                    loadNews();
+                });
+            });
+
+            // Сортировка
+            document.getElementById('sortSelect').addEventListener('change', function() {
+                currentSort = this.value;
+                loadNews();
+            });
+
+            // Подписка на новости
+            document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+                subscribeToNewsletter(email);
+            });
+        }
+
+        // Загрузка новостей
+        async function loadNews() {
+            try {
+                showLoading(true);
+                
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    limit: 9,
+                    category: currentCategory !== 'all' ? currentCategory : '',
+                    sort: currentSort
+                });
+
+                const response = await fetch(`${API_BASE}/news?${params}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    allNews = data.data.news;
+                    renderNews(data.data.news);
+                    renderPagination(data.data.pagination);
+                    
+                    // Показать главную новость если есть
+                    if (data.data.featured) {
+                        renderFeaturedNews(data.data.featured);
+                    }
+                } else {
+                    showError('Ошибка загрузки новостей');
+                }
+            } catch (error) {
+                console.error('Error loading news:', error);
+                showError('Ошибка соединения с сервером');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Отображение новостей
+        function renderNews(news) {
+            const grid = document.getElementById('newsGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!news || news.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            
+            grid.innerHTML = news.map(item => createNewsCard(item)).join('');
+        }
+
+        // Создание карточки новости
+        function createNewsCard(news) {
+            const publishDate = new Date(news.publishDate).toLocaleDateString('ru-RU', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            const readingTime = Math.ceil((news.content || '').split(' ').length / 200);
+            
+            return `
+                <article class="news-card bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer" 
+                         onclick="openNewsDetail(${news.id})">
+                    <div class="relative">
+                        <img src="${news.imageUrl || 'https://via.placeholder.com/400x225'}" 
+                             alt="${news.title}" 
+                             class="news-image w-full">
+                        <div class="category-badge">${getCategoryName(news.category)}</div>
+                        ${news.isFeatured ? '<div class="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">TOP</div>' : ''}
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <i class="fas fa-calendar mr-2"></i>${publishDate}
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-clock mr-2"></i>${readingTime} мин чтения
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors">
+                            ${news.title}
+                        </h3>
+                        
+                        <p class="text-gray-600 text-sm line-clamp-3 mb-4">
+                            ${news.excerpt || news.content?.substring(0, 150) + '...'}
+                        </p>
+                        
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center text-sm text-gray-500">
+                                ${news.author ? `<i class="fas fa-user mr-2"></i>${news.author}` : ''}
+                            </div>
+                            <div class="flex items-center text-blue-600 text-sm font-semibold hover:text-blue-800">
+                                Читать далее <i class="fas fa-arrow-right ml-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        // Отображение главной новости
+        function renderFeaturedNews(news) {
+            const container = document.getElementById('featuredNews');
+            const publishDate = new Date(news.publishDate).toLocaleDateString('ru-RU');
+            
+            container.innerHTML = `
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Главная новость</h2>
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer" onclick="openNewsDetail(${news.id})">
+                    <div class="md:flex">
+                        <div class="md:w-1/2">
+                            <img src="${news.imageUrl || 'https://via.placeholder.com/600x400'}" 
+                                 alt="${news.title}" 
+                                 class="w-full h-64 md:h-full object-cover">
+                        </div>
+                        <div class="md:w-1/2 p-8">
+                            <div class="flex items-center mb-4">
+                                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold mr-3">ГЛАВНАЯ</span>
+                                <span class="text-gray-500 text-sm">${publishDate}</span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-900 mb-4 hover:text-blue-600 transition-colors">
+                                ${news.title}
+                            </h3>
+                            <p class="text-gray-600 mb-6 text-lg">
+                                ${news.excerpt || news.content?.substring(0, 200) + '...'}
+                            </p>
+                            <div class="flex items-center justify-between">
+                                ${news.author ? `<span class="text-gray-500 text-sm"><i class="fas fa-user mr-2"></i>${news.author}</span>` : ''}
+                                <span class="text-blue-600 font-semibold hover:text-blue-800">
+                                    Читать полностью <i class="fas fa-arrow-right ml-1"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.classList.remove('hidden');
+        }
+
+        // Отображение пагинации
+        function renderPagination(pagination) {
+            const paginationContainer = document.getElementById('pagination');
+            const pageNumbers = document.getElementById('pageNumbers');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+
+            if (pagination.totalPages <= 1) {
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            paginationContainer.style.display = 'flex';
+
+            // Предыдущая страница
+            prevBtn.disabled = pagination.currentPage === 1;
+            prevBtn.onclick = () => {
+                if (pagination.currentPage > 1) {
+                    currentPage = pagination.currentPage - 1;
+                    loadNews();
+                }
+            };
+
+            // Следующая страница
+            nextBtn.disabled = pagination.currentPage === pagination.totalPages;
+            nextBtn.onclick = () => {
+                if (pagination.currentPage < pagination.totalPages) {
+                    currentPage = pagination.currentPage + 1;
+                    loadNews();
+                }
+            };
+
+            // Номера страниц
+            let pages = [];
+            for (let i = 1; i <= pagination.totalPages; i++) {
+                if (i === 1 || i === pagination.totalPages || 
+                    (i >= pagination.currentPage - 2 && i <= pagination.currentPage + 2)) {
+                    pages.push(i);
+                } else if (pages[pages.length - 1] !== '...') {
+                    pages.push('...');
+                }
+            }
+
+            pageNumbers.innerHTML = pages.map(page => {
+                if (page === '...') {
+                    return '<span class="px-3 py-2 text-gray-400">...</span>';
+                }
+                
+                const isActive = page === pagination.currentPage;
+                return `
+                    <button class="px-3 py-2 rounded-lg ${isActive ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-blue-600'}"
+                            onclick="goToPage(${page})">
+                        ${page}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // Переход на страницу
+        function goToPage(page) {
+            currentPage = page;
+            loadNews();
+        }
+
+        // Открытие детальной страницы новости
+        function openNewsDetail(newsId) {
+            window.location.href = `news-detail.html?id=${newsId}`;
+        }
+
+        // Получение названия категории
+        function getCategoryName(category) {
+            const categories = {
+                'tours': 'Новые туры',
+                'events': 'События',
+                'announcements': 'Объявления',
+                'tips': 'Советы'
+            };
+            return categories[category] || 'Новости';
+        }
+
+        // Показать/скрыть загрузку
+        function showLoading(show) {
+            document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
+        }
+
+        // Показать ошибку
+        function showError(message) {
+            const grid = document.getElementById('newsGrid');
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+                    <p class="text-gray-600">${message}</p>
+                    <button onclick="loadNews()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Попробовать снова
+                    </button>
+                </div>
+            `;
+        }
+
+        // Подписка на новости
+        async function subscribeToNewsletter(email) {
+            try {
+                const response = await fetch(`${API_BASE}/newsletter/subscribe`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Спасибо за подписку! Мы будем уведомлять вас о новых новостях.');
+                    document.getElementById('newsletterForm').reset();
+                } else {
+                    alert('Ошибка подписки: ' + (data.message || 'Попробуйте позже'));
+                }
+            } catch (error) {
+                console.error('Newsletter subscription error:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+
+        // Мобильное меню
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>

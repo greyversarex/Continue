@@ -304,11 +304,11 @@ export class PublicController {
       const news = await prisma.newsPost.findMany({
         where: { 
           isPublished: true,
-          publishedAt: {
+          publishDate: {
             lte: new Date()
           }
         },
-        orderBy: { publishedAt: 'desc' },
+        orderBy: { publishDate: 'desc' },
         take: parseInt(limit as string)
       });
 

@@ -421,7 +421,7 @@ export class CMSController {
 
       const news = await prisma.newsPost.findMany({
         where,
-        orderBy: { publishedAt: 'desc' },
+        orderBy: { createdAt: 'desc' },
         take: parseInt(limit as string)
       });
 

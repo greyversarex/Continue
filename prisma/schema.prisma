@@ -287,19 +287,41 @@ model MenuItem {
 }
 
 model NewsPost {
-  id          Int      @id @default(autoincrement())
-  title       String   // JSON multilingual title
-  slug        String   @unique
-  excerpt     String?  // JSON multilingual excerpt
-  content     String   // JSON multilingual content
-  image       String?  // Featured image URL
-  isPublished Boolean  @default(false)
-  publishedAt DateTime?
-  metaTitle   String?  // JSON multilingual SEO title
-  metaDesc    String?  // JSON multilingual SEO description
-  tags        String?  // JSON array of tags
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int       @id @default(autoincrement())
+  title        String    // JSON multilingual title
+  slug         String    @unique
+  excerpt      String?   // JSON multilingual excerpt
+  content      String    @db.Text // JSON multilingual content
+  imageUrl     String?   // Featured image URL
+  category     NewsCategory
+  author       String?
+  publishDate  DateTime  @default(now())
+  isFeatured   Boolean   @default(false)
+  isPublished  Boolean   @default(true)
+  views        Int       @default(0)
+  metaTitle    String?   // JSON multilingual SEO title
+  metaDesc     String?   // JSON multilingual SEO description
+  tags         String?   // JSON array of tags
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@map("news_posts")
+}
+
+model NewsletterSubscriber {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  isActive    Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+  unsubscribedAt DateTime?
+  
+  @@map("newsletter_subscribers")
+}
+
+enum NewsCategory {
+  tours
+  events
+  announcements
+  tips
+  general
 }
