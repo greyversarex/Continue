@@ -223,38 +223,7 @@
             gap: 12px;
         }
         
-        /* Price Toggle Styles */
-        .price-toggle {
-            display: flex;
-            background: #f3f4f6;
-            border-radius: 6px;
-            padding: 1px;
-            gap: 1px;
-            margin-top: 4px;
-        }
-        
-        .price-toggle-btn {
-            padding: 4px 8px;
-            border: none;
-            border-radius: 4px;
-            background: transparent;
-            color: #6b7280;
-            font-size: 10px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-        
-        .price-toggle-btn:hover {
-            color: #374151;
-        }
-        
-        .price-toggle-btn.active {
-            background: white;
-            color: #1f2937;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
+
         .search-input {
             flex: 1;
             padding: 16px 20px;
@@ -1565,11 +1534,8 @@
                         </h3>
                         <div class="flex items-center justify-between mt-auto">
                             <div>
-                                <div class="text-lg font-bold text-gray-900" data-price-person="150" data-price-group="600">от $150</div>
-                                <div class="price-toggle">
-                                    <button onclick="toggleCardPrice(this, 'person')" class="price-toggle-btn active">За человека</button>
-                                    <button onclick="toggleCardPrice(this, 'group')" class="price-toggle-btn">За группу</button>
-                                </div>
+                                <div class="text-lg font-bold text-gray-900">от $150</div>
+                                <div class="text-xs text-gray-500">за человека</div>
                             </div>
                             <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
                                 Бронировать
@@ -1605,11 +1571,8 @@
                         </h3>
                         <div class="flex items-center justify-between mt-auto">
                             <div>
-                                <div class="text-lg font-bold text-gray-900" data-price-person="135" data-price-group="540">от $135</div>
-                                <div class="price-toggle">
-                                    <button onclick="toggleCardPrice(this, 'person')" class="price-toggle-btn active">За человека</button>
-                                    <button onclick="toggleCardPrice(this, 'group')" class="price-toggle-btn">За группу</button>
-                                </div>
+                                <div class="text-lg font-bold text-gray-900">от $135</div>
+                                <div class="text-xs text-gray-500">за группу</div>
                             </div>
                             <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" style="background-color: #3E3E3E;">
                                 Бронировать
@@ -3043,27 +3006,7 @@
             alert(`Поиск отелей:\nЗаезд: ${checkIn}\nВыезд: ${checkOut}\nГостей: ${guests}\n\nФункция будет доступна в ближайшее время.`);
         }
 
-        // Price toggle functionality for tour cards
-        function toggleCardPrice(buttonElement, type) {
-            // Find the price container within the same card
-            const card = buttonElement.closest('.group');
-            const priceElement = card.querySelector('[data-price-person]');
-            const buttons = card.querySelectorAll('.price-toggle-btn');
-            
-            // Update button states
-            buttons.forEach(btn => btn.classList.remove('active'));
-            buttonElement.classList.add('active');
-            
-            // Update price display
-            const pricePerPerson = parseInt(priceElement.getAttribute('data-price-person'));
-            const pricePerGroup = parseInt(priceElement.getAttribute('data-price-group'));
-            
-            if (type === 'person') {
-                priceElement.textContent = `от $${pricePerPerson}`;
-            } else {
-                priceElement.textContent = `от $${pricePerGroup}`;
-            }
-        }
+
     </script>
 </body>
 </html>

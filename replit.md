@@ -38,6 +38,7 @@ The platform features a **comprehensive Admin Dashboard** for managing tours, or
 - **Category System**: Features 15 specific tourism categories including Day Tours, Multi-day Tours, Excursions, City Tours, Nature/Eco Tours, Cultural Educational Tours, Historical Tours, Hiking/Trekking, Mountain Landscapes, Lake Landscapes, Adventure Tours, Gastronomic Tours, Auto Tours/Safari/Jeep Tours, Agro Tours, and VIP Tours.
 - **Banner-Style Tour Types Section**: Redesigned "Виды туров" (Tour Types) into an elegant banner presentation.
 - **Frontend-Aligned Tour Block System**: Implemented 6 tour blocks matching exact frontend structure: Популярные туры, Рекомендованные туры по Центральной Азии, Туры по Таджикистану, Туры по Узбекистану, Туры по Киргизстану, Туры по Туркменистану.
+- **Static Price Type System**: Replaced frontend price toggles with database-driven static price type display. Admin panel now controls whether tour pricing is "за человека" or "за группу" during tour creation, eliminating frontend toggle complexity.
 
 ### Technical Implementations
 - **Payment System**: Integrated with Stripe, Payme, Click, and PayPal, handling payment intents, confirmations, and refunds, with webhook support.

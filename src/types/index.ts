@@ -21,6 +21,7 @@ export interface TourData {
   description: MultilingualContent;
   duration: string;
   price: string;
+  priceType?: string;
   categoryId: number;
   category?: CategoryData;
   createdAt: Date;
@@ -32,6 +33,7 @@ export interface CreateTourData {
   description: MultilingualContent;
   duration: string;
   price: string;
+  priceType?: string;
   categoryId: number;
 }
 

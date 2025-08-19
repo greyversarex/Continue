@@ -139,6 +139,7 @@ export class TourController {
         description,
         duration,
         price,
+        priceType: req.body.priceType || 'за человека',
         categoryId
       });
 

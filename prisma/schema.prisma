@@ -39,6 +39,7 @@ model Tour {
   shortDesc      String?          // JSON field for short description on cards
   duration       String
   price          String
+  priceType      String           @default("за человека") // "за человека" или "за группу"
   originalPrice  String?          // For discount display
   country        String?          // Страна
   city           String?          // Город

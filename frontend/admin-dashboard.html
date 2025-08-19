@@ -777,6 +777,14 @@
                                     </div>
                                     
                                     <div class="form-group">
+                                        <label class="form-label">Тип цены</label>
+                                        <select class="form-input" id="eTourPriceType" required>
+                                            <option value="за человека">За человека</option>
+                                            <option value="за группу">За группу</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
                                         <label class="form-label">Оригинальная цена (для скидки)</label>
                                         <input type="number" class="form-input" id="eTourOriginalPrice">
                                     </div>
@@ -1030,6 +1038,14 @@
                     <div class="form-group">
                         <label class="form-label">Цена (USD)</label>
                         <input type="number" class="form-input" id="tourPrice" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Тип цены</label>
+                        <select class="form-input" id="tourPriceType" required>
+                            <option value="за человека">За человека</option>
+                            <option value="за группу">За группу</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">
@@ -1569,6 +1585,7 @@
                         document.getElementById('tourDuration').value = tour.durationDays || '';
                         document.getElementById('tourFormat').value = tour.format || '';
                         document.getElementById('tourPrice').value = tour.price || '';
+                        document.getElementById('tourPriceType').value = tour.priceType || 'за человека';
                         document.getElementById('tourStartDate').value = tour.startDate || '';
                         document.getElementById('tourEndDate').value = tour.endDate || '';
                     });
@@ -1976,6 +1993,7 @@
                 durationDays: parseInt(document.getElementById('tourDuration').value),
                 format: document.getElementById('tourFormat').value,
                 price: document.getElementById('tourPrice').value,
+                priceType: document.getElementById('tourPriceType').value,
                 startDate: document.getElementById('tourStartDate').value,
                 endDate: document.getElementById('tourEndDate').value
             };
@@ -2796,6 +2814,7 @@
                     en: document.getElementById('eTourFullDesc').value
                 }),
                 price: parseFloat(document.getElementById('eTourPrice').value),
+                priceType: document.getElementById('eTourPriceType').value,
                 originalPrice: document.getElementById('eTourOriginalPrice').value ? parseFloat(document.getElementById('eTourOriginalPrice').value) : null,
                 durationDays: parseInt(document.getElementById('eTourDurationDays').value),
                 difficulty: document.getElementById('eTourDifficulty').value,
