@@ -12,6 +12,18 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Статические файлы для фронтенда
 app.use(express.static(path.join(__dirname, 'frontend')));
 
+// CORS middleware
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // Проксирование API запросов к нашему API серверу
 app.use('/api', async (req, res) => {
   try {
@@ -38,12 +50,6 @@ app.use('/api', async (req, res) => {
     });
 
     const data = await response.json();
-    
-    // Устанавливаем CORS заголовки
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    
     res.status(response.status).json(data);
   } catch (error) {
     console.error('Proxy error:', error);
