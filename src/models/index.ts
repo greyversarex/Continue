@@ -52,9 +52,16 @@ export class TourModel {
       data: {
         title: JSON.stringify(data.title),
         description: JSON.stringify(data.description),
-        duration: data.duration,
+        duration: String(data.duration), // Ensure duration is a string
         price: data.price,
-        categoryId: data.categoryId
+        categoryId: data.categoryId,
+        priceType: data.priceType,
+        tourBlockId: data.tourBlockId,
+        country: data.country,
+        city: data.city,
+        format: data.format,
+        startDate: data.startDate,
+        endDate: data.endDate
       },
       include: {
         category: true
