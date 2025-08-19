@@ -326,6 +326,182 @@ export class TourBlockModel {
   }
 }
 
+export class HotelModel {
+  /**
+   * Get all hotels
+   */
+  static async findAll() {
+    const hotels = await prisma.hotel.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    return hotels.map(hotel => ({
+      ...hotel,
+      name: typeof hotel.name === 'string' ? JSON.parse(hotel.name) : hotel.name,
+      description: hotel.description && typeof hotel.description === 'string' ? JSON.parse(hotel.description) : hotel.description,
+      images: hotel.images && typeof hotel.images === 'string' ? JSON.parse(hotel.images) : (hotel.images || []),
+      amenities: hotel.amenities && typeof hotel.amenities === 'string' ? JSON.parse(hotel.amenities) : (hotel.amenities || [])
+    }));
+  }
+
+  /**
+   * Get hotels for a specific tour
+   */
+  static async findByTourId(tourId: number) {
+    const tourHotels = await prisma.tourHotel.findMany({
+      where: { tourId },
+      include: {
+        hotel: true
+      },
+      orderBy: [
+        { isDefault: 'desc' },
+        { hotel: { name: 'asc' } }
+      ]
+    });
+
+    return tourHotels.map(th => ({
+      ...th.hotel,
+      name: typeof th.hotel.name === 'string' ? JSON.parse(th.hotel.name) : th.hotel.name,
+      description: th.hotel.description && typeof th.hotel.description === 'string' ? JSON.parse(th.hotel.description) : th.hotel.description,
+      images: th.hotel.images && typeof th.hotel.images === 'string' ? JSON.parse(th.hotel.images) : (th.hotel.images || []),
+      amenities: th.hotel.amenities && typeof th.hotel.amenities === 'string' ? JSON.parse(th.hotel.amenities) : (th.hotel.amenities || []),
+      pricePerNight: th.pricePerNight,
+      isDefault: th.isDefault
+    }));
+  }
+
+  /**
+   * Get a hotel by ID
+   */
+  static async findById(id: number) {
+    const hotel = await prisma.hotel.findUnique({
+      where: { id },
+      include: {
+        tourHotels: {
+          include: {
+            tour: {
+              select: {
+                id: true,
+                title: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!hotel) return null;
+
+    return {
+      ...hotel,
+      name: typeof hotel.name === 'string' ? JSON.parse(hotel.name) : hotel.name,
+      description: hotel.description && typeof hotel.description === 'string' ? JSON.parse(hotel.description) : hotel.description,
+      images: hotel.images && typeof hotel.images === 'string' ? JSON.parse(hotel.images) : (hotel.images || []),
+      amenities: hotel.amenities && typeof hotel.amenities === 'string' ? JSON.parse(hotel.amenities) : (hotel.amenities || []),
+      tourHotels: hotel.tourHotels.map(th => ({
+        ...th,
+        tour: {
+          ...th.tour,
+          title: typeof th.tour.title === 'string' ? JSON.parse(th.tour.title) : th.tour.title
+        }
+      }))
+    };
+  }
+
+  /**
+   * Create a new hotel
+   */
+  static async create(data: any) {
+    return await prisma.hotel.create({
+      data: {
+        name: JSON.stringify(data.name),
+        description: data.description ? JSON.stringify(data.description) : null,
+        images: data.images ? JSON.stringify(data.images) : null,
+        address: data.address,
+        rating: data.rating,
+        amenities: data.amenities ? JSON.stringify(data.amenities) : null,
+        isActive: data.isActive !== undefined ? data.isActive : true
+      }
+    });
+  }
+
+  /**
+   * Update a hotel
+   */
+  static async update(id: number, data: any) {
+    const updateData: any = {};
+    
+    if (data.name) updateData.name = JSON.stringify(data.name);
+    if (data.description) updateData.description = JSON.stringify(data.description);
+    if (data.images) updateData.images = JSON.stringify(data.images);
+    if (data.address) updateData.address = data.address;
+    if (data.rating !== undefined) updateData.rating = data.rating;
+    if (data.amenities) updateData.amenities = JSON.stringify(data.amenities);
+    if (data.isActive !== undefined) updateData.isActive = data.isActive;
+
+    const hotel = await prisma.hotel.findUnique({ where: { id } });
+    if (!hotel) return null;
+
+    return await prisma.hotel.update({
+      where: { id },
+      data: updateData
+    });
+  }
+
+  /**
+   * Delete a hotel
+   */
+  static async delete(id: number) {
+    const hotel = await prisma.hotel.findUnique({ where: { id } });
+    if (!hotel) return false;
+
+    await prisma.hotel.delete({ where: { id } });
+    return true;
+  }
+
+  /**
+   * Add hotel to tour
+   */
+  static async addToTour(tourId: number, hotelId: number, pricePerNight?: number, isDefault: boolean = false) {
+    return await prisma.tourHotel.create({
+      data: {
+        tourId,
+        hotelId,
+        pricePerNight,
+        isDefault
+      }
+    });
+  }
+
+  /**
+   * Remove hotel from tour
+   */
+  static async removeFromTour(tourId: number, hotelId: number) {
+    const tourHotel = await prisma.tourHotel.findUnique({
+      where: {
+        tourId_hotelId: {
+          tourId,
+          hotelId
+        }
+      }
+    });
+
+    if (!tourHotel) return false;
+
+    await prisma.tourHotel.delete({
+      where: {
+        tourId_hotelId: {
+          tourId,
+          hotelId
+        }
+      }
+    });
+
+    return true;
+  }
+}
+
 export class ReviewModel {
   /**
    * Get all reviews with tour information

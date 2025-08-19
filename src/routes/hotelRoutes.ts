@@ -1,16 +1,27 @@
 import { Router } from 'express';
-import * as hotelController from '../controllers/hotelController';
+import {
+  getHotels,
+  getHotel,
+  createHotel,
+  updateHotel,
+  deleteHotel,
+  addHotelToTour,
+  removeHotelFromTour
+} from '../controllers/hotelController';
 
 const router = Router();
 
 // Public routes
-router.get('/tours/:tourId/hotels', hotelController.getHotelsByTour);
+router.get('/', getHotels);
+router.get('/:id', getHotel);
 
-// Admin routes
-router.post('/', hotelController.createHotel);
-router.get('/', hotelController.getAllHotels);
-router.put('/:id', hotelController.updateHotel);
-router.delete('/:id', hotelController.deleteHotel);
-router.post('/link', hotelController.linkHotelToTour);
+// Protected admin routes (add authentication middleware when needed)
+router.post('/', createHotel);
+router.put('/:id', updateHotel);
+router.delete('/:id', deleteHotel);
+
+// Tour-Hotel association routes
+router.post('/tours/:tourId/hotels/:hotelId', addHotelToTour);
+router.delete('/tours/:tourId/hotels/:hotelId', removeHotelFromTour);
 
 export default router;
