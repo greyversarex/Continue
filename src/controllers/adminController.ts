@@ -1,0 +1,214 @@
+import { Request, Response, NextFunction } from 'express';
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { ApiResponse } from '../types';
+
+const prisma = new PrismaClient();
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
+
+export class AdminController {
+  /**
+   * Авторизация админа
+   */
+  static async login(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { username, password } = req.body;
+
+      if (!username || !password) {
+        return res.status(400).json({
+          success: false,
+          error: 'Username and password are required'
+        });
+      }
+
+      // Найти администратора по имени пользователя
+      const admin = await prisma.admin.findUnique({
+        where: { username }
+      });
+
+      if (!admin || !admin.isActive) {
+        return res.status(401).json({
+          success: false,
+          error: 'Invalid credentials'
+        });
+      }
+
+      // Проверить пароль
+      const isPasswordValid = await bcrypt.compare(password, admin.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({
+          success: false,
+          error: 'Invalid credentials'
+        });
+      }
+
+      // Создать токен
+      const token = jwt.sign(
+        {
+          adminId: admin.id,
+          username: admin.username,
+          role: admin.role
+        },
+        JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+
+      const response: ApiResponse = {
+        success: true,
+        data: {
+          token,
+          admin: {
+            id: admin.id,
+            username: admin.username,
+            fullName: admin.fullName,
+            role: admin.role
+          }
+        },
+        message: 'Login successful'
+      };
+
+      return res.status(200).json(response);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * Создание администратора (только для разработки)
+   */
+  static async createAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { username, email, password, fullName, role = 'admin' } = req.body;
+
+      if (!username || !email || !password || !fullName) {
+        return res.status(400).json({
+          success: false,
+          error: 'Missing required fields: username, email, password, fullName'
+        });
+      }
+
+      // Хэшировать пароль
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const admin = await prisma.admin.create({
+        data: {
+          username,
+          email,
+          password: hashedPassword,
+          fullName,
+          role
+        }
+      });
+
+      const response: ApiResponse = {
+        success: true,
+        data: {
+          id: admin.id,
+          username: admin.username,
+          email: admin.email,
+          fullName: admin.fullName,
+          role: admin.role
+        },
+        message: 'Admin created successfully'
+      };
+
+      return res.status(201).json(response);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * Проверка токена
+   */
+  static async verifyToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      
+      if (!token) {
+        return res.status(401).json({
+          success: false,
+          error: 'No token provided'
+        });
+      }
+
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      const admin = await prisma.admin.findUnique({
+        where: { id: decoded.adminId }
+      });
+
+      if (!admin || !admin.isActive) {
+        return res.status(401).json({
+          success: false,
+          error: 'Invalid token'
+        });
+      }
+
+      const response: ApiResponse = {
+        success: true,
+        data: {
+          admin: {
+            id: admin.id,
+            username: admin.username,
+            fullName: admin.fullName,
+            role: admin.role
+          }
+        },
+        message: 'Token is valid'
+      };
+
+      return res.status(200).json(response);
+    } catch (error) {
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid token'
+      });
+    }
+  }
+}
+
+/**
+ * Middleware для проверки аутентификации администратора
+ */
+export const adminAuthMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    
+    if (!token) {
+      res.status(401).json({
+        success: false,
+        error: 'No token provided'
+      });
+      return;
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const admin = await prisma.admin.findUnique({
+      where: { id: decoded.adminId }
+    });
+
+    if (!admin || !admin.isActive) {
+      res.status(401).json({
+        success: false,
+        error: 'Invalid token'
+      });
+      return;
+    }
+
+    // Добавить информацию об администраторе в запрос
+    (req as any).admin = {
+      id: admin.id,
+      username: admin.username,
+      role: admin.role
+    };
+
+    next();
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      error: 'Invalid token'
+    });
+    return;
+  }
+};

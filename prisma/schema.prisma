@@ -190,3 +190,84 @@ model Admin {
 
   @@map("admins")
 }
+
+// CMS модели для управления контентом сайта
+model ContentBlock {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique // уникальный ключ блока (hero_title, hero_description, etc.)
+  title       String   // JSON multilingual title
+  content     String   // JSON multilingual content
+  type        String   // text, image, html, json
+  section     String   // hero, services, tours, footer, etc.
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  metadata    String?  // JSON для дополнительных данных
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("content_blocks")
+}
+
+model SiteSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique // site_name, contact_email, logo_url, etc.
+  value     String   // JSON для мультиязычности
+  type      String   // text, email, url, json, boolean
+  group     String   // general, contact, seo, social
+  label     String   // JSON multilingual label for admin
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model Page {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique // about-us, services, contact
+  title       String   // JSON multilingual title
+  content     String   // JSON multilingual content
+  metaTitle   String?  // JSON multilingual SEO title
+  metaDesc    String?  // JSON multilingual SEO description
+  isPublished Boolean  @default(true)
+  template    String   @default("default") // default, about, contact, services
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("pages")
+}
+
+model MenuItem {
+  id        Int        @id @default(autoincrement())
+  parentId  Int?       @map("parent_id")
+  title     String     // JSON multilingual title
+  url       String     // URL или slug
+  type      String     // page, external, dropdown
+  isActive  Boolean    @default(true)
+  sortOrder Int        @default(0)
+  parent    MenuItem?  @relation("MenuItemParent", fields: [parentId], references: [id])
+  children  MenuItem[] @relation("MenuItemParent")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("menu_items")
+}
+
+model NewsPost {
+  id          Int      @id @default(autoincrement())
+  title       String   // JSON multilingual title
+  slug        String   @unique
+  excerpt     String?  // JSON multilingual excerpt
+  content     String   // JSON multilingual content
+  image       String?  // Featured image URL
+  isPublished Boolean  @default(false)
+  publishedAt DateTime?
+  metaTitle   String?  // JSON multilingual SEO title
+  metaDesc    String?  // JSON multilingual SEO description
+  tags        String?  // JSON array of tags
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("news_posts")
+}

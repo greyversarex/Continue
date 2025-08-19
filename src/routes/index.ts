@@ -7,6 +7,9 @@ import orderRoutes from './orderRoutes';
 import reviewRoutes from './reviewRoutes';
 import customerRoutes from './customerRoutes';
 import paymentRoutes from './paymentRoutes';
+import cmsRoutes from './cmsRoutes';
+import adminRoutes from './adminRoutes';
+import publicRoutes from './publicRoutes';
 
 const router = Router();
 
@@ -19,6 +22,9 @@ router.use('/orders', orderRoutes);
 router.use('/reviews', reviewRoutes);
 router.use('/customers', customerRoutes);
 router.use('/payments', paymentRoutes);
+router.use('/cms', cmsRoutes);
+router.use('/admin', adminRoutes);
+router.use('/public', publicRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
