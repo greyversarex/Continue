@@ -6,31 +6,30 @@ const prisma = new PrismaClient();
 // Get all tour blocks
 export const getTourBlocks = async (req: Request, res: Response): Promise<Response> => {
   try {
+    console.log('Fetching tour blocks...');
     const tourBlocks = await prisma.tourBlock.findMany({
-      include: {
-        tours: {
-          where: { isActive: true },
-          include: {
-            category: true,
-            reviews: true,
-            _count: {
-              select: { reviews: true }
-            }
-          }
-        }
-      },
       orderBy: { sortOrder: 'asc' }
     });
 
+    console.log('Found tour blocks:', tourBlocks.length);
+    
+    // Parse JSON fields
+    const parsedBlocks = tourBlocks.map((block: any) => ({
+      ...block,
+      title: typeof block.title === 'string' ? JSON.parse(block.title) : block.title,
+      description: block.description && typeof block.description === 'string' ? JSON.parse(block.description) : block.description
+    }));
+
     return res.json({
       success: true,
-      data: tourBlocks
+      data: parsedBlocks
     });
   } catch (error) {
     console.error('Error fetching tour blocks:', error);
     return res.status(500).json({
       success: false,
-      message: 'Error fetching tour blocks'
+      message: 'Error fetching tour blocks',
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 };

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { TourModel, CategoryModel, BookingRequestModel, ReviewModel } from '../models';
+import { TourModel, CategoryModel, BookingRequestModel, ReviewModel, TourBlockModel } from '../models';
 import { sendAdminNotification, sendCustomerConfirmation } from '../config/email';
 import { 
   CreateTourData, 

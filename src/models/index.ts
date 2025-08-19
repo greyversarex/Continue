@@ -259,6 +259,73 @@ export class BookingRequestModel {
   }
 }
 
+export class TourBlockModel {
+  /**
+   * Get all tour blocks
+   */
+  static async findAll() {
+    return await prisma.tourBlock.findMany({
+      include: {
+        tours: true
+      },
+      orderBy: {
+        sortOrder: 'asc'
+      }
+    });
+  }
+
+  /**
+   * Get a tour block by ID
+   */
+  static async findById(id: number) {
+    return await prisma.tourBlock.findUnique({
+      where: { id },
+      include: {
+        tours: true
+      }
+    });
+  }
+
+  /**
+   * Create a new tour block
+   */
+  static async create(data: any) {
+    return await prisma.tourBlock.create({
+      data: {
+        title: JSON.stringify(data.title),
+        description: JSON.stringify(data.description),
+        slug: data.slug,
+        sortOrder: data.sortOrder
+      }
+    });
+  }
+
+  /**
+   * Update a tour block
+   */
+  static async update(id: number, data: any) {
+    const updateData: any = {};
+    if (data.title) updateData.title = JSON.stringify(data.title);
+    if (data.description) updateData.description = JSON.stringify(data.description);
+    if (data.slug) updateData.slug = data.slug;
+    if (data.sortOrder) updateData.sortOrder = data.sortOrder;
+
+    return await prisma.tourBlock.update({
+      where: { id },
+      data: updateData
+    });
+  }
+
+  /**
+   * Delete a tour block
+   */
+  static async delete(id: number) {
+    return await prisma.tourBlock.delete({
+      where: { id }
+    });
+  }
+}
+
 export class ReviewModel {
   /**
    * Get all reviews with tour information
