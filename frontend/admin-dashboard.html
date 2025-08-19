@@ -1652,25 +1652,29 @@
         
         // Tours functions
         function loadTours() {
-            fetch('http://localhost:3001/api/tours')
+            fetch(`${getApiUrl()}/tours`)
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('toursTable');
-                    if (!data.tours || data.tours.length === 0) {
+                    const tours = data.data || data.tours || [];
+                    if (tours.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="9" class="text-center text-gray-500">Нет туров</td></tr>';
                         return;
                     }
                     
-                    tbody.innerHTML = data.tours.map(tour => {
-                        const title = JSON.parse(tour.title || '{}');
+                    tbody.innerHTML = tours.map(tour => {
+                        const title = typeof tour.title === 'string' ? JSON.parse(tour.title || '{}') : tour.title || {};
+                        const categoryName = tour.category ? 
+                            (typeof tour.category.name === 'string' ? JSON.parse(tour.category.name || '{}') : tour.category.name || {}) :
+                            {};
                         return `
                             <tr>
                                 <td>${tour.id}</td>
                                 <td class="font-medium">${title.ru || title.en || 'Без названия'}</td>
-                                <td>${tour.category?.name || 'Без категории'}</td>
+                                <td>${categoryName.ru || categoryName.en || 'Без категории'}</td>
                                 <td>${tour.country || '-'}</td>
                                 <td>${tour.city || '-'}</td>
-                                <td>${tour.durationDays || '-'} дней</td>
+                                <td>${tour.duration || tour.durationDays || '-'} дней</td>
                                 <td class="font-semibold">$${tour.price}</td>
                                 <td>${tour.isActive ? 
                                     '<span class="badge badge-success">Активен</span>' : 
@@ -1735,12 +1739,13 @@
         }
         
         function loadHotelsForCheckboxes() {
-            fetch('http://localhost:3001/api/hotels')
+            fetch(`${getApiUrl()}/hotels`)
                 .then(res => res.json())
                 .then(data => {
                     const container = document.getElementById('hotelCheckboxes');
-                    container.innerHTML = data.hotels.map(hotel => {
-                        const name = JSON.parse(hotel.name || '{}');
+                    const hotels = data.data || data.hotels || [];
+                    container.innerHTML = hotels.map(hotel => {
+                        const name = typeof hotel.name === 'string' ? JSON.parse(hotel.name || '{}') : hotel.name || {};
                         return `
                             <label class="checkbox-item">
                                 <input type="checkbox" value="${hotel.id}"> ${name.ru || name.en || 'Отель'}
@@ -1751,12 +1756,13 @@
         }
         
         function loadGuidesForCheckboxes() {
-            fetch('http://localhost:3001/api/guides')
+            fetch(`${getApiUrl()}/guides`)
                 .then(res => res.json())
                 .then(data => {
                     const container = document.getElementById('guideCheckboxes');
-                    container.innerHTML = data.guides.map(guide => {
-                        const name = JSON.parse(guide.name || '{}');
+                    const guides = data.data || data.guides || [];
+                    container.innerHTML = guides.map(guide => {
+                        const name = typeof guide.name === 'string' ? JSON.parse(guide.name || '{}') : guide.name || {};
                         return `
                             <label class="checkbox-item">
                                 <input type="checkbox" value="${guide.id}"> ${name.ru || name.en || 'Гид'}
@@ -3052,7 +3058,7 @@
                 }
                 
                 tbody.innerHTML = data.data.map(block => {
-                    const title = JSON.parse(block.title || '{}');
+                    const title = typeof block.title === 'string' ? JSON.parse(block.title || '{}') : block.title || {};
                     const toursCount = block.tours ? block.tours.length : 0;
                     return `
                         <tr>

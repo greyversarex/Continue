@@ -35,6 +35,12 @@ export interface CreateTourData {
   price: string;
   priceType?: string;
   categoryId: number;
+  tourBlockId?: number;
+  country?: string;
+  city?: string;
+  format?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 // API Response types

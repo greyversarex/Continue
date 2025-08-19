@@ -106,7 +106,35 @@ export class TourController {
    */
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
-      const { title, description, duration, price, categoryId }: CreateTourData = req.body;
+      console.log('Creating tour with data:', req.body);
+      let { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, priceType, startDate, endDate } = req.body;
+
+      // Parse JSON strings if needed
+      if (typeof title === 'string') {
+        try {
+          title = JSON.parse(title);
+          console.log('Parsed title:', title);
+        } catch (e) {
+          console.error('Failed to parse title:', e);
+          return res.status(400).json({
+            success: false,
+            error: 'Invalid title format'
+          });
+        }
+      }
+
+      if (typeof description === 'string') {
+        try {
+          description = JSON.parse(description);
+          console.log('Parsed description:', description);
+        } catch (e) {
+          console.error('Failed to parse description:', e);
+          return res.status(400).json({
+            success: false,
+            error: 'Invalid description format'
+          });
+        }
+      }
 
       // Validation
       if (!title || !title.en || !title.ru) {
@@ -123,7 +151,9 @@ export class TourController {
         });
       }
 
-      if (!duration) {
+      // Use durationDays if duration is not provided
+      const finalDuration = duration || durationDays;
+      if (!finalDuration) {
         return res.status(400).json({
           success: false,
           error: 'Duration is required'
@@ -147,10 +177,16 @@ export class TourController {
       const tour = await TourModel.create({
         title,
         description,
-        duration,
+        duration: String(finalDuration), // Convert to string for Prisma
         price,
-        priceType: req.body.priceType || 'за человека',
-        categoryId
+        priceType: priceType || 'за человека',
+        categoryId,
+        tourBlockId: tourBlockId || null,
+        country: country || null,
+        city: city || null,
+        format: format || null,
+        startDate: startDate || null,
+        endDate: endDate || null
       });
 
       // Parse JSON fields for response
