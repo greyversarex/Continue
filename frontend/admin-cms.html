@@ -63,10 +63,10 @@
                 return 'http://localhost:3001/api';
             }
             
-            // Для Replit - API сервер может быть на том же домене с другим портом
-            // или может быть отдельным доменом
+            // Для Replit - API доступен на том же домене через проксирование
             if (hostname.includes('replit')) {
-                return `${protocol}//${hostname.replace('-5000', '-3001')}/api`;
+                // В Replit API проксируется через основной домен
+                return `${protocol}//${hostname}/api`;
             }
             
             // Попробовать тот же хост с портом 3001
