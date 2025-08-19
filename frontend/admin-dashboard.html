@@ -1126,6 +1126,19 @@
                     </div>
                     
                     <div class="form-group">
+                        <label class="form-label">Блок тура</label>
+                        <select class="form-input" id="tourBlockId">
+                            <option value="">Выберите блок</option>
+                            <option value="1">Популярные туры</option>
+                            <option value="2">Рекомендованные туры по Центральной Азии</option>
+                            <option value="3">Туры по Таджикистану</option>
+                            <option value="4">Туры по Узбекистану</option>
+                            <option value="5">Туры по Киргизстану</option>
+                            <option value="6">Туры по Туркменистану</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
                         <label class="form-label">Страна</label>
                         <select class="form-input" id="tourCountry" required>
                             <option value="">Выберите страну</option>
@@ -2412,6 +2425,7 @@
                     en: document.getElementById('tourDescEn').value
                 }),
                 categoryId: parseInt(document.getElementById('tourCategory').value),
+                tourBlockId: document.getElementById('tourBlockId') ? parseInt(document.getElementById('tourBlockId').value) : null,
                 country: document.getElementById('tourCountry').value,
                 city: document.getElementById('tourCity').value,
                 durationDays: parseInt(document.getElementById('tourDuration').value),
@@ -2543,16 +2557,132 @@
         }
         
         function openGuideModal() {
-            alert('Функция добавления гида будет реализована');
+            const modal = `
+                <div id="guideModal" class="modal active">
+                    <div class="modal-content" style="width: 600px;">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-semibold">Добавить гида</h2>
+                            <button onclick="closeGuideModal()" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="guideForm">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label class="form-label">Имя (Русский)</label>
+                                    <input type="text" class="form-input" id="guideNameRu" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Имя (English)</label>
+                                    <input type="text" class="form-input" id="guideNameEn" required>
+                                </div>
+                                <div class="form-group col-span-2">
+                                    <label class="form-label">Описание (Русский)</label>
+                                    <textarea class="form-input" rows="3" id="guideDescRu"></textarea>
+                                </div>
+                                <div class="form-group col-span-2">
+                                    <label class="form-label">Описание (English)</label>
+                                    <textarea class="form-input" rows="3" id="guideDescEn"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Языки</label>
+                                    <input type="text" class="form-input" id="guideLanguages" placeholder="Русский, English, Тоҷикӣ">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Опыт работы (лет)</label>
+                                    <input type="number" class="form-input" id="guideExperience" min="0">
+                                </div>
+                                <div class="form-group col-span-2">
+                                    <label class="form-label">Контакты</label>
+                                    <input type="text" class="form-input" id="guideContact" placeholder="Телефон, Email">
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end gap-3 mt-6">
+                                <button type="button" onclick="closeGuideModal()" class="btn btn-secondary">Отмена</button>
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modal);
+            
+            document.getElementById('guideForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveGuide();
+            });
+        }
+        
+        function closeGuideModal() {
+            const modal = document.getElementById('guideModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        function saveGuide() {
+            const formData = {
+                name: JSON.stringify({
+                    ru: document.getElementById('guideNameRu').value,
+                    en: document.getElementById('guideNameEn').value
+                }),
+                description: JSON.stringify({
+                    ru: document.getElementById('guideDescRu').value,
+                    en: document.getElementById('guideDescEn').value
+                }),
+                languages: document.getElementById('guideLanguages').value.split(',').map(l => l.trim()).filter(l => l),
+                experience: parseInt(document.getElementById('guideExperience').value) || 0,
+                contact: document.getElementById('guideContact').value,
+                isActive: true
+            };
+            
+            fetch(`${getApiUrl()}/guides`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Гид успешно создан!');
+                    closeGuideModal();
+                    loadGuides();
+                } else {
+                    alert('Ошибка при создании гида: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Error saving guide:', err);
+                alert('Ошибка при сохранении гида');
+            });
         }
         
         function editGuide(id) {
-            alert('Функция редактирования гида будет реализована');
+            alert('Редактирование гида будет добавлено в следующем обновлении');
         }
         
         function deleteGuide(id) {
             if (confirm('Вы уверены, что хотите удалить этого гида?')) {
-                alert('Функция удаления гида будет реализована');
+                fetch(`${getApiUrl()}/guides/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Гид успешно удален');
+                        loadGuides();
+                    } else {
+                        alert('Ошибка при удалении гида: ' + (data.message || 'Неизвестная ошибка'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error deleting guide:', err);
+                    alert('Ошибка при удалении гида');
+                });
             }
         }
 

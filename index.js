@@ -32,21 +32,37 @@ app.use('/api', async (req, res) => {
     
     const fetch = await import('node-fetch').then(m => m.default);
     
-    // Подготавливаем заголовки
-    const headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    };
+    // Подготавливаем заголовки - используем оригинальные заголовки
+    const headers = {};
+    
+    // Добавляем Content-Type только если он был в оригинальном запросе
+    if (req.headers['content-type']) {
+      headers['Content-Type'] = req.headers['content-type'];
+    } else {
+      headers['Content-Type'] = 'application/json';
+    }
+    
+    headers['Accept'] = 'application/json';
     
     // Добавляем Authorization если есть
     if (req.headers.authorization) {
       headers.Authorization = req.headers.authorization;
     }
     
+    let body;
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      // Если это JSON, то stringify, иначе передаем как есть
+      if (req.headers['content-type'] && req.headers['content-type'].includes('application/json')) {
+        body = JSON.stringify(req.body);
+      } else {
+        body = req.body;
+      }
+    }
+    
     const response = await fetch(apiUrl, {
       method: req.method,
       headers,
-      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined
+      body
     });
 
     const data = await response.json();
