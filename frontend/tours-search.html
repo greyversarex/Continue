@@ -18,6 +18,195 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: #f8f9fa;
         }
+
+        /* Навигационное меню */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #2F2F2F;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+            z-index: 1000;
+            border-radius: 8px;
+            padding: 8px 0;
+            top: 100%;
+            left: 0;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: #4A4A4A;
+        }
+        .dropdown-content .dropdown-submenu {
+            position: relative;
+        }
+        .dropdown-content .dropdown-submenu .dropdown-subcontent {
+            display: none !important;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: #2F2F2F;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1001;
+        }
+        .dropdown-content .dropdown-submenu:hover > .dropdown-subcontent {
+            display: block !important;
+        }
+        
+        /* Стили для языкового селектора */
+        .language-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .lang-selector-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            min-width: 80px;
+        }
+        
+        .lang-selector-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .lang-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #2F2F2F;
+            min-width: 160px;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            margin-top: 0.5rem;
+            padding: 0.5rem 0;
+        }
+        
+        .lang-dropdown-content.show {
+            display: block;
+        }
+        
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .lang-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+        
+        .lang-option.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+        }
+        
+        .lang-option .flag {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .lang-option .lang-name {
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .selected-flag {
+            width: 24px;
+            height: 16px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .flag {
+            width: 20px;
+            height: 14px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        /* Цвета флагов */
+        .flag-ru, .selected-flag.flag-ru {
+            background: linear-gradient(to bottom, 
+                #ffffff 0%, #ffffff 33.33%, 
+                #0039a6 33.33%, #0039a6 66.66%, 
+                #d52b1e 66.66%, #d52b1e 100%);
+        }
+        .flag-us, .selected-flag.flag-us {
+            background: linear-gradient(to bottom, 
+                #b22234 0%, #b22234 7.7%, #ffffff 7.7%, #ffffff 15.4%, 
+                #b22234 15.4%, #b22234 23.1%, #ffffff 23.1%, #ffffff 30.8%,
+                #b22234 30.8%, #b22234 38.5%, #ffffff 38.5%, #ffffff 46.2%,
+                #b22234 46.2%, #b22234 53.8%, #ffffff 53.8%, #ffffff 61.5%,
+                #b22234 61.5%, #b22234 69.2%, #ffffff 69.2%, #ffffff 76.9%,
+                #b22234 76.9%, #b22234 84.6%, #ffffff 84.6%, #ffffff 92.3%,
+                #b22234 92.3%, #b22234 100%);
+            position: relative;
+        }
+        .flag-us::before, .selected-flag.flag-us::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40%;
+            height: 53.8%;
+            background: #3c3b6e;
+            border-radius: 2px 0 0 0;
+        }
+        .flag-tj, .selected-flag.flag-tj {
+            background: linear-gradient(to bottom, #d01920 33.33%, #ffffff 33.33%, #ffffff 66.66%, #00843d 66.66%);
+        }
+        .flag-ir, .selected-flag.flag-ir {
+            background: linear-gradient(to bottom, #23b848 33.33%, #ffffff 33.33%, #ffffff 66.66%, #da0000 66.66%);
+        }
+        .flag-de, .selected-flag.flag-de {
+            background: linear-gradient(to bottom, #000000 33.33%, #dd0000 33.33%, #dd0000 66.66%, #ffce00 66.66%);
+        }
+        .flag-cn, .selected-flag.flag-cn {
+            background: #de2910;
+        }
         
         .search-hero {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -249,7 +438,7 @@
         }
         
         .btn-book {
-            background: #667eea;
+            background: #3b82f6;
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
@@ -260,7 +449,37 @@
         }
         
         .btn-book:hover {
-            background: #5a67d8;
+            background: #2563eb;
+        }
+
+        .btn-search {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-search:hover {
+            background: #2563eb;
+        }
+
+        .btn-booking {
+            background: #3E3E3E;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-booking:hover {
+            background: #2a2a2a;
         }
         
         .sort-bar {
@@ -299,6 +518,8 @@
             border-radius: 8px;
             padding: 16px;
             margin-bottom: 20px;
+            max-width: 100%;
+            overflow: hidden;
         }
         
         .date-grid {
@@ -377,6 +598,7 @@
             border: 1px solid #e5e7eb;
             border-radius: 6px;
             font-size: 14px;
+            max-width: calc(50% - 6px);
         }
         
         .mobile-filter-btn {
@@ -454,33 +676,151 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <a href="index.html" class="text-2xl font-bold text-gray-800">Bunyod-Tour</a>
-                <nav class="hidden md:flex gap-6">
-                    <a href="#" class="text-gray-600 hover:text-gray-900">Туры</a>
-                    <a href="#" class="text-gray-600 hover:text-gray-900">Отели</a>
-                    <a href="#" class="text-gray-600 hover:text-gray-900">Гиды</a>
-                    <a href="#" class="text-gray-600 hover:text-gray-900">О нас</a>
-                    <a href="#" class="text-gray-600 hover:text-gray-900">Контакты</a>
+    <!-- Хедер -->
+    <header class="shadow-md sticky top-0 z-50" style="background-color: #3E3E3E;">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between h-16 px-6">
+                <!-- Логотип -->
+                <div class="flex items-center">
+                    <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour Logo" class="w-12 h-12 mr-3 rounded-full">
+                    <span class="text-xl font-bold text-white">Bunyod-Tour</span>
+                </div>
+                
+                <!-- Навигационное меню -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="index.html" class="text-white hover:text-gray-300 transition-colors">О нас</a>
+                    
+                    <!-- Услуги (с выпадающим меню) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
+                        <div class="dropdown-content">
+                            <div class="dropdown-submenu">
+                                <a href="#">Туры</a>
+                                <div class="dropdown-subcontent" style="width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px;">
+                                    <a href="#" style="padding: 8px;">Однодневные</a>
+                                    <a href="#" style="padding: 8px;">Многодневные</a>
+                                    <a href="#" style="padding: 8px;">Экскурсии</a>
+                                    <a href="#" style="padding: 8px;">Городские туры</a>
+                                    <a href="#" style="padding: 8px;">Природа/экологические туры</a>
+                                    <a href="#" style="padding: 8px;">Культурно познавательные туры</a>
+                                    <a href="#" style="padding: 8px;">Исторические туры</a>
+                                    <a href="#" style="padding: 8px;">Походы/трекинги</a>
+                                    <a href="#" style="padding: 8px;">Горные ландшафты</a>
+                                    <a href="#" style="padding: 8px;">Озерные ландшафты</a>
+                                    <a href="#" style="padding: 8px;">Приключенческие туры</a>
+                                    <a href="#" style="padding: 8px;">Гастрономические туры</a>
+                                    <a href="#" style="padding: 8px;">Автотуры/сафари/джип-туры</a>
+                                    <a href="#" style="padding: 8px;">Агротуры</a>
+                                    <a href="#" style="padding: 8px;">VIP туры</a>
+                                    <a href="#" style="padding: 8px;"></a>
+                                </div>
+                            </div>
+                            <a href="#">Тургиды</a>
+                            <a href="#" >Трансфер</a>
+                            <a href="#">Заказ тура</a>
+                            <a href="#">Визовая поддержка</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Туристам (с выпадающим меню) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туристам</a>
+                        <div class="dropdown-content">
+                            <a href="#">Инструкция сайта</a>
+                            <a href="#">Специальные заметки</a>
+                            <a href="#">Договор оферта</a>
+                            <a href="#">Правила оплаты и возврата средств</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Акции (с выпадающим меню) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Акции</a>
+                        <div class="dropdown-content">
+                            <a href="#">Горящие туры</a>
+                            <a href="#">Скидки</a>
+                            <a href="#">Бронируй сейчас плати потом</a>
+                        </div>
+                    </div>
+                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Новости</a>
+                    
+                    <!-- Турагентам (с выпадающим меню) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Турагентам</a>
+                        <div class="dropdown-content">
+                            <a href="#">Наши турагенты</a>
+                            <a href="#">Для турагентов</a>
+                        </div>
+                    </div>
                 </nav>
+                
+                <!-- Языковой и валютный селекторы -->
+                <div class="flex items-center space-x-4">
+                    <!-- Языковой селектор -->
+                    <div class="language-dropdown">
+                        <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
+                            <span class="selected-flag flag-ru"></span>
+                            <span class="selected-lang">Русский</span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="lang-dropdown-content" id="langDropdown">
+                            <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'flag-ru', 'Русский')">
+                                <span class="flag flag-ru"></span>
+                                <span class="lang-name">Русский</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'flag-us', 'English')">
+                                <span class="flag flag-us"></span>
+                                <span class="lang-name">English</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="tj" onclick="selectLanguage('tj', 'flag-tj', 'Тоҷикӣ')">
+                                <span class="flag flag-tj"></span>
+                                <span class="lang-name">Тоҷикӣ</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="fa" onclick="selectLanguage('fa', 'flag-ir', 'فارسی')">
+                                <span class="flag flag-ir"></span>
+                                <span class="lang-name">فارسی</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', 'flag-de', 'Deutsch')">
+                                <span class="flag flag-de"></span>
+                                <span class="lang-name">Deutsch</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="zh" onclick="selectLanguage('zh', 'flag-cn', '中文')">
+                                <span class="flag flag-cn"></span>
+                                <span class="lang-name">中文</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Валютный селектор -->
+                    <div class="language-dropdown">
+                        <button class="lang-selector-btn" onclick="toggleCurrencyDropdown()">
+                            <span class="selected-currency">USD</span>
+                            <span class="currency-symbol">$</span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="lang-dropdown-content" id="currencyDropdown">
+                            <a href="#" class="lang-option active" onclick="selectCurrency('USD', '$')">
+                                <span class="currency-flag">$</span>
+                                <span class="lang-name">USD</span>
+                            </a>
+                            <a href="#" class="lang-option" onclick="selectCurrency('EUR', '€')">
+                                <span class="currency-flag">€</span>
+                                <span class="lang-name">EUR</span>
+                            </a>
+                            <a href="#" class="lang-option" onclick="selectCurrency('RUB', '₽')">
+                                <span class="currency-flag">₽</span>
+                                <span class="lang-name">RUB</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
-
-    <!-- Search Hero -->
-    <div class="search-hero">
-        <div class="max-w-7xl mx-auto px-4">
-            <h1 class="text-3xl md:text-4xl font-bold text-center mb-4">
-                Найдите идеальный тур по Центральной Азии
-            </h1>
-            <p class="text-center text-white/80 mb-8">
-                Более 500 туров по Таджикистану, Узбекистану, Казахстану и другим странам
-            </p>
-        </div>
-    </div>
 
     <!-- Search Box -->
     <div class="max-w-7xl mx-auto px-4">
@@ -507,7 +847,7 @@
                     </select>
                 </div>
                 
-                <button class="btn-book" style="padding: 12px 32px;" onclick="searchTours()">
+                <button class="btn-search" onclick="searchTours()">
                     <i class="fas fa-search mr-2"></i>
                     Найти
                 </button>
@@ -885,25 +1225,39 @@
             // Show loading spinner
             spinner.classList.add('active');
             
-            // Simulate API call
-            setTimeout(() => {
-                spinner.classList.remove('active');
-                
-                // Fetch from API or use sample data
-                fetch('http://localhost:3001/api/tours')
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.tours && data.tours.length > 0) {
-                            displayTours(data.tours);
-                        } else {
-                            displayTours(sampleTours);
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Error loading tours:', err);
+            // Get search query
+            const searchQuery = document.getElementById('searchInput').value;
+            
+            // Build API URL with search parameters
+            let apiUrl = 'http://localhost:3001/api/tours';
+            if (searchQuery) {
+                apiUrl += `/search?query=${encodeURIComponent(searchQuery)}`;
+            }
+            
+            fetch(apiUrl)
+                .then(res => res.json())
+                .then(data => {
+                    spinner.classList.remove('active');
+                    
+                    if (data.success && data.data && data.data.length > 0) {
+                        displayTours(data.data);
+                    } else if (!searchQuery) {
+                        // If no search query, show all tours
                         displayTours(sampleTours);
-                    });
-            }, 500);
+                    } else {
+                        // If search query but no results, show "nothing found"
+                        displayTours([]);
+                    }
+                })
+                .catch(err => {
+                    spinner.classList.remove('active');
+                    console.error('Error loading tours:', err);
+                    if (!searchQuery) {
+                        displayTours(sampleTours);
+                    } else {
+                        displayTours([]);
+                    }
+                });
         }
 
         // Display tours
@@ -971,8 +1325,8 @@
                                     <span class="price-amount">$${price}</span>
                                     <span class="price-label">/ чел</span>
                                 </div>
-                                <button class="btn-book" onclick="event.stopPropagation(); bookTour(${tour.id})">
-                                    Забронировать
+                                <button class="btn-booking" onclick="event.stopPropagation(); bookTour(${tour.id})">
+                                    Бронировать
                                 </button>
                             </div>
                         </div>
@@ -1151,6 +1505,147 @@
         
         document.getElementById('minPrice').addEventListener('input', searchTours);
         document.getElementById('maxPrice').addEventListener('input', searchTours);
+
+        // Functions for language selector
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('langDropdown');
+            const arrow = document.querySelector('.dropdown-arrow');
+            dropdown.classList.toggle('show');
+            arrow.classList.toggle('open');
+        }
+        
+        function selectLanguage(lang, flagClass, name) {
+            // Update selector button
+            const selectedFlag = document.querySelector('.selected-flag');
+            selectedFlag.className = `selected-flag ${flagClass}`;
+            document.querySelector('.selected-lang').textContent = name;
+            
+            // Remove active class from all options
+            document.querySelectorAll('#langDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
+            
+            // Add active class to selected option
+            document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+            
+            // Close dropdown
+            document.getElementById('langDropdown').classList.remove('show');
+            
+            console.log(`Language switched: ${lang}`);
+        }
+
+        // Functions for currency selector
+        function toggleCurrencyDropdown() {
+            const dropdown = document.getElementById('currencyDropdown');
+            dropdown.classList.toggle('show');
+        }
+        
+        function selectCurrency(currencyCode, symbol) {
+            // Update selector button
+            document.querySelector('.selected-currency').textContent = currencyCode;
+            document.querySelector('.currency-symbol').textContent = symbol;
+            
+            // Remove active class from all options
+            document.querySelectorAll('#currencyDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
+            
+            // Add active class to selected option
+            event.target.closest('.lang-option').classList.add('active');
+            
+            // Close dropdown
+            document.getElementById('currencyDropdown').classList.remove('show');
+            
+            console.log(`Currency switched: ${currencyCode}`);
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const langDropdown = document.getElementById('langDropdown');
+            const currencyDropdown = document.getElementById('currencyDropdown');
+            const langButton = document.querySelector('.lang-selector-btn');
+            const currencyButtons = document.querySelectorAll('.lang-selector-btn');
+            
+            if (!Array.from(currencyButtons).some(btn => btn.contains(event.target)) && 
+                !langDropdown.contains(event.target) && !currencyDropdown.contains(event.target)) {
+                langDropdown.classList.remove('show');
+                currencyDropdown.classList.remove('show');
+            }
+        });
     </script>
+
+    <!-- Футер -->
+    <footer class="py-12 text-white" style="background-color: #3E3E3E;">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Компания -->
+                <div>
+                    <h4 class="font-semibold mb-4">Компания:</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="#" class="hover:text-white">О нас</a></li>
+                        <li><a href="#" class="hover:text-white">Тур-агентам</a></li>
+                        <li><a href="#" class="hover:text-white">Партнеры</a></li>
+                        <li><a href="#" class="hover:text-white">Инвестиционные Проекты</a></li>
+                        <li><a href="#" class="hover:text-white">Как бронировать туры?</a></li>
+                        <li><a href="#" class="hover:text-white">Каталог туров</a></li>
+                        <li><a href="#" class="hover:text-white">Календарь групповых туров</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Социальные страницы -->
+                <div>
+                    <h4 class="font-semibold mb-4">Социальные страницы:</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/Tajikistanservice" target="_blank" class="text-gray-300 hover:text-white">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/bunyodtour.tj/" target="_blank" class="text-gray-300 hover:text-white">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/channel/UCdnjmRbMVO2R7HtXAxERBjw" target="_blank" class="text-gray-300 hover:text-white">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                        </a>
+                        <!-- WhatsApp -->
+                        <a href="https://api.whatsapp.com/send/?phone=992915123344&text&type=phone_number&app_absent=0" target="_blank" class="text-gray-300 hover:text-white">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.893 3.386"/>
+                            </svg>
+                        </a>
+                        <!-- Telegram -->
+                        <a href="https://telegram.org/" target="_blank" class="text-gray-300 hover:text-white">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="text-sm text-gray-300">
+                        Лицензия на туристическую деятельность ФС№ 0000253, от 25.10.2022 г.
+                    </p>
+                </div>
+                
+                <!-- Контакты -->
+                <div>
+                    <h4 class="font-semibold mb-4">Контакты:</h4>
+                    <div class="space-y-2 text-sm text-gray-300">
+                        <p>+992 44 625 7575; +992 93-126-1134</p>
+                        <p>+992 00-110-0087; +992 88-235-3434</p>
+                        <p>info@bunyodtour.tj</p>
+                        <p>Публичная Оферта-Договор</p>
+                        <p>Правила оплаты и возврата средств</p>
+                        <p>Политика конфиденциальности</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-600 mt-8 pt-8 text-center text-sm text-gray-300">
+                <p>Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
