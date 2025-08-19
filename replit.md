@@ -7,6 +7,7 @@ Bunyod-Tour is a comprehensive tourism booking platform focused on Central Asia.
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Development approach: Improve existing files rather than creating new ones. User prefers enhancement of existing admin-dashboard.html over creation of separate admin panels.
 
 ## System Architecture
 

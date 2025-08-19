@@ -377,6 +377,10 @@
                     <i class="fas fa-credit-card"></i>
                     <span>Платежи</span>
                 </a>
+                <a href="#" class="nav-item" data-section="cms">
+                    <i class="fas fa-edit"></i>
+                    <span>CMS - Контент</span>
+                </a>
                 <a href="#" class="nav-item" data-section="settings">
                     <i class="fas fa-cog"></i>
                     <span>Настройки</span>
@@ -640,6 +644,104 @@
                     </div>
                 </section>
 
+                <!-- CMS Section -->
+                <section id="cmsSection" style="display: none;">
+                    <div class="mb-6">
+                        <div class="flex gap-2 mb-4">
+                            <button class="tab-button active" onclick="switchCMSTab('blocks')">Блоки контента</button>
+                            <button class="tab-button" onclick="switchCMSTab('settings')">Настройки сайта</button>
+                            <button class="tab-button" onclick="switchCMSTab('homepage')">Главная страница</button>
+                        </div>
+                    </div>
+
+                    <!-- Content Blocks Tab -->
+                    <div id="cmsBlocksTab">
+                        <div class="mb-6 flex justify-between items-center">
+                            <h2 class="text-xl font-semibold">Управление блоками контента</h2>
+                            <button class="btn btn-primary" onclick="openContentBlockModal()">
+                                <i class="fas fa-plus"></i>
+                                Добавить блок
+                            </button>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm">
+                            <div class="overflow-x-auto">
+                                <table class="data-table w-full">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Тип</th>
+                                            <th>Заголовок (RU)</th>
+                                            <th>Заголовок (EN)</th>
+                                            <th>Статус</th>
+                                            <th>Последнее обновление</th>
+                                            <th>Действия</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="contentBlocksTable">
+                                        <!-- Content blocks will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Site Settings Tab -->
+                    <div id="cmsSettingsTab" style="display: none;">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold">Настройки сайта</h2>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <form id="siteSettingsForm">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Название сайта (RU)</label>
+                                        <input type="text" class="form-input" id="siteTitle_ru" name="siteTitle_ru">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Название сайта (EN)</label>
+                                        <input type="text" class="form-input" id="siteTitle_en" name="siteTitle_en">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Описание сайта (RU)</label>
+                                        <textarea class="form-input" rows="3" id="siteDescription_ru" name="siteDescription_ru"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Описание сайта (EN)</label>
+                                        <textarea class="form-input" rows="3" id="siteDescription_en" name="siteDescription_en"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-input" id="contactEmail" name="contactEmail">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Телефон</label>
+                                        <input type="text" class="form-input" id="contactPhone" name="contactPhone">
+                                    </div>
+                                </div>
+                                <div class="mt-6">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i>
+                                        Сохранить настройки
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Homepage Tab -->
+                    <div id="cmsHomepageTab" style="display: none;">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold">Контент главной страницы</h2>
+                        </div>
+                        
+                        <div id="homepageContentList" class="space-y-4">
+                            <!-- Homepage content will be loaded here -->
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Settings Section -->
                 <section id="settingsSection" style="display: none;">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -896,12 +998,179 @@
         </div>
     </div>
 
+    <!-- Content Block Modal -->
+    <div id="contentBlockModal" class="modal">
+        <div class="modal-content" style="width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold" id="contentBlockModalTitle">Добавить блок контента</h2>
+                <button onclick="closeContentBlockModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="contentBlockForm">
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Тип блока</label>
+                        <select class="form-input" id="blockType" required>
+                            <option value="">Выберите тип</option>
+                            <option value="hero_banner">Главный баннер</option>
+                            <option value="about_section">О нас</option>
+                            <option value="services_section">Услуги</option>
+                            <option value="tours_section">Туры</option>
+                            <option value="testimonials">Отзывы</option>
+                            <option value="contact_info">Контакты</option>
+                            <option value="footer_text">Текст футера</option>
+                            <option value="custom">Пользовательский</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Multilingual fields for each supported language -->
+                    <div class="form-group">
+                        <label class="form-label">Заголовок (Русский)</label>
+                        <input type="text" class="form-input" id="blockTitle_ru">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Заголовок (English)</label>
+                        <input type="text" class="form-input" id="blockTitle_en">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Заголовок (Тоҷикӣ)</label>
+                        <input type="text" class="form-input" id="blockTitle_tj">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Заголовок (فارسی)</label>
+                        <input type="text" class="form-input" id="blockTitle_fa">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Заголовок (Deutsch)</label>
+                        <input type="text" class="form-input" id="blockTitle_de">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Заголовок (中文)</label>
+                        <input type="text" class="form-input" id="blockTitle_zh">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Содержание (Русский)</label>
+                        <textarea class="form-input" rows="4" id="blockContent_ru"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Содержание (English)</label>
+                        <textarea class="form-input" rows="4" id="blockContent_en"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Содержание (Тоҷикӣ)</label>
+                        <textarea class="form-input" rows="4" id="blockContent_tj"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Содержание (فارسی)</label>
+                        <textarea class="form-input" rows="4" id="blockContent_fa"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Содержание (Deutsch)</label>
+                        <textarea class="form-input" rows="4" id="blockContent_de"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Содержание (中文)</label>
+                        <textarea class="form-input" rows="4" id="blockContent_zh"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Порядок отображения</label>
+                        <input type="number" class="form-input" id="blockOrder" min="0" value="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="blockActive" checked>
+                            Активен
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" onclick="closeContentBlockModal()" class="btn btn-secondary">
+                        Отмена
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Сохранить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Global variables
         let currentSection = 'dashboard';
         let currentBookingId = null;
         let currentTourId = null;
+        let currentContentBlockId = null;
+        
+        // API URL Configuration
+        function getApiUrl() {
+            const hostname = window.location.hostname;
+            const protocol = window.location.protocol;
+            
+            console.log('Current location:', {
+                hostname: hostname,
+                protocol: protocol,
+                port: window.location.port,
+                href: window.location.href
+            });
+            
+            // For local development
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:3001/api';
+            }
+            
+            // For Replit - API доступен на том же домене и порту
+            if (hostname.includes('replit')) {
+                // В Replit используем тот же порт что и для фронтенда  
+                const currentPort = window.location.port;
+                if (currentPort && currentPort !== '80' && currentPort !== '443') {
+                    const apiUrl = `${protocol}//${hostname}:${currentPort}/api`;
+                    console.log('Using API_BASE:', apiUrl);
+                    return apiUrl;
+                } else {
+                    const apiUrl = `${protocol}//${hostname}/api`;
+                    console.log('Using API_BASE:', apiUrl);
+                    return apiUrl;
+                }
+            }
+            
+            // Попробовать тот же хост с портом 3001
+            const apiUrl = `${protocol}//${hostname}:3001/api`;
+            console.log('Using API_BASE:', apiUrl);
+            return apiUrl;
+        }
+
+        // Authorization helper
+        function getAuthHeaders() {
+            const token = localStorage.getItem('adminToken');
+            if (token) {
+                return {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                };
+            }
+            return {
+                'Content-Type': 'application/json'
+            };
+        }
         
         // Authentication
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -909,13 +1178,31 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            if (username === 'admin' && password === 'admin123') {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminDashboard').style.display = 'block';
-                loadDashboard();
-            } else {
-                alert('Неверные учетные данные');
-            }
+            // API login using unified server
+            const apiUrl = getApiUrl();
+            
+            fetch(`${apiUrl}/admin/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('adminToken', data.data.token);
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('adminDashboard').style.display = 'block';
+                    loadDashboard();
+                } else {
+                    alert('Неверные учетные данные: ' + (data.message || 'Ошибка авторизации'));
+                }
+            })
+            .catch(err => {
+                console.error('Login error:', err);
+                alert('Ошибка соединения с сервером');
+            });
         });
         
         function logout() {
@@ -958,6 +1245,7 @@
                 customers: 'Клиенты',
                 reviews: 'Модерация отзывов',
                 payments: 'Платежи',
+                cms: 'CMS - Управление контентом',
                 settings: 'Настройки'
             };
             document.getElementById('sectionTitle').textContent = titles[section] || 'Админ-панель';
@@ -982,6 +1270,9 @@
                 case 'reviews':
                     loadReviews();
                     break;
+                case 'cms':
+                    loadCMSContentBlocks();
+                    break;
             }
         }
         
@@ -998,7 +1289,9 @@
         }
         
         function loadRecentOrders() {
-            fetch('http://localhost:3001/api/orders?limit=5')
+            fetch(`${getApiUrl()}/orders?limit=5`, {
+                headers: getAuthHeaders()
+            })
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('recentOrdersTable');
@@ -1556,15 +1849,13 @@
             };
             
             const url = currentTourId ? 
-                `http://localhost:3001/api/tours/${currentTourId}` : 
-                'http://localhost:3001/api/tours';
+                `${getApiUrl()}/tours/${currentTourId}` : 
+                `${getApiUrl()}/tours`;
             const method = currentTourId ? 'PUT' : 'POST';
             
             fetch(url, {
                 method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: getAuthHeaders(),
                 body: JSON.stringify(formData)
             })
             .then(res => res.json())
@@ -1703,6 +1994,331 @@
             if (confirm('Вы уверены, что хотите удалить этого гида?')) {
                 alert('Функция удаления гида будет реализована');
             }
+        }
+
+        // =============================================
+        // CMS FUNCTIONS
+        // =============================================
+        
+        // CMS Tab switching
+        function switchCMSTab(tab) {
+            // Hide all CMS tabs
+            document.getElementById('cmsBlocksTab').style.display = 'none';
+            document.getElementById('cmsSettingsTab').style.display = 'none';
+            document.getElementById('cmsHomepageTab').style.display = 'none';
+            
+            // Show selected tab
+            document.getElementById(`cms${tab.charAt(0).toUpperCase() + tab.slice(1)}Tab`).style.display = 'block';
+            
+            // Update tab buttons
+            document.querySelectorAll('#cmsSection .tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load data for the selected tab
+            switch(tab) {
+                case 'blocks':
+                    loadCMSContentBlocks();
+                    break;
+                case 'settings':
+                    loadCMSSettings();
+                    break;
+                case 'homepage':
+                    loadCMSHomepageContent();
+                    break;
+            }
+        }
+        
+        // Load CMS Content Blocks
+        function loadCMSContentBlocks() {
+            console.log('Loading CMS content blocks...');
+            fetch(`${getApiUrl()}/cms/content-blocks`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('CMS Content blocks response:', data);
+                const tbody = document.getElementById('contentBlocksTable');
+                
+                if (!data.success || !data.data || data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-500">Нет блоков контента</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = data.data.map(block => {
+                    const title = JSON.parse(block.title || '{}');
+                    return `
+                        <tr>
+                            <td class="font-medium">${block.id}</td>
+                            <td>${block.type}</td>
+                            <td>${title.ru || 'Не указано'}</td>
+                            <td>${title.en || 'Не указано'}</td>
+                            <td>${block.isActive ? '<span class="badge badge-success">Активен</span>' : '<span class="badge badge-warning">Неактивен</span>'}</td>
+                            <td>${formatDate(block.updatedAt)}</td>
+                            <td class="flex gap-2">
+                                <button onclick="editContentBlock(${block.id})" class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteContentBlock(${block.id})" class="text-red-600 hover:text-red-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            })
+            .catch(err => {
+                console.error('Error loading content blocks:', err);
+                const tbody = document.getElementById('contentBlocksTable');
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-red-500">Ошибка загрузки данных</td></tr>';
+            });
+        }
+        
+        // Open Content Block Modal
+        function openContentBlockModal(id = null) {
+            currentContentBlockId = id;
+            const modal = document.getElementById('contentBlockModal');
+            const title = document.getElementById('contentBlockModalTitle');
+            
+            if (id) {
+                title.textContent = 'Редактировать блок контента';
+                loadContentBlockData(id);
+            } else {
+                title.textContent = 'Добавить блок контента';
+                document.getElementById('contentBlockForm').reset();
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        // Close Content Block Modal
+        function closeContentBlockModal() {
+            document.getElementById('contentBlockModal').classList.remove('active');
+            currentContentBlockId = null;
+        }
+        
+        // Load Content Block Data for editing
+        function loadContentBlockData(id) {
+            fetch(`${getApiUrl()}/cms/content-blocks/${id}`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    const block = data.data;
+                    const title = JSON.parse(block.title || '{}');
+                    const content = JSON.parse(block.content || '{}');
+                    
+                    document.getElementById('blockType').value = block.type;
+                    document.getElementById('blockOrder').value = block.sortOrder;
+                    document.getElementById('blockActive').checked = block.isActive;
+                    
+                    // Fill multilingual fields
+                    ['ru', 'en', 'tj', 'fa', 'de', 'zh'].forEach(lang => {
+                        const titleField = document.getElementById(`blockTitle_${lang}`);
+                        const contentField = document.getElementById(`blockContent_${lang}`);
+                        if (titleField) titleField.value = title[lang] || '';
+                        if (contentField) contentField.value = content[lang] || '';
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('Error loading content block:', err);
+                alert('Ошибка загрузки блока');
+            });
+        }
+        
+        // Save Content Block
+        document.getElementById('contentBlockForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = {};
+            const content = {};
+            
+            ['ru', 'en', 'tj', 'fa', 'de', 'zh'].forEach(lang => {
+                const titleField = document.getElementById(`blockTitle_${lang}`);
+                const contentField = document.getElementById(`blockContent_${lang}`);
+                if (titleField) title[lang] = titleField.value;
+                if (contentField) content[lang] = contentField.value;
+            });
+            
+            const formData = {
+                type: document.getElementById('blockType').value,
+                title: JSON.stringify(title),
+                content: JSON.stringify(content),
+                sortOrder: parseInt(document.getElementById('blockOrder').value),
+                isActive: document.getElementById('blockActive').checked
+            };
+            
+            const url = currentContentBlockId ? 
+                `${getApiUrl()}/cms/content-blocks/${currentContentBlockId}` : 
+                `${getApiUrl()}/cms/content-blocks`;
+            const method = currentContentBlockId ? 'PUT' : 'POST';
+            
+            fetch(url, {
+                method: method,
+                headers: getAuthHeaders(),
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Блок контента успешно сохранен!');
+                    closeContentBlockModal();
+                    loadCMSContentBlocks();
+                } else {
+                    alert('Ошибка при сохранении: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Error saving content block:', err);
+                alert('Ошибка соединения с сервером');
+            });
+        });
+        
+        // Edit Content Block
+        function editContentBlock(id) {
+            openContentBlockModal(id);
+        }
+        
+        // Delete Content Block
+        function deleteContentBlock(id) {
+            if (confirm('Вы уверены, что хотите удалить этот блок контента?')) {
+                fetch(`${getApiUrl()}/cms/content-blocks/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Блок контента удален');
+                        loadCMSContentBlocks();
+                    } else {
+                        alert('Ошибка при удалении: ' + (data.message || 'Неизвестная ошибка'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error deleting content block:', err);
+                    alert('Ошибка соединения с сервером');
+                });
+            }
+        }
+        
+        // Load CMS Settings
+        function loadCMSSettings() {
+            fetch(`${getApiUrl()}/cms/settings`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    const settings = data.data;
+                    const siteTitle = JSON.parse(settings.siteTitle || '{}');
+                    const siteDescription = JSON.parse(settings.siteDescription || '{}');
+                    
+                    document.getElementById('siteTitle_ru').value = siteTitle.ru || '';
+                    document.getElementById('siteTitle_en').value = siteTitle.en || '';
+                    document.getElementById('siteDescription_ru').value = siteDescription.ru || '';
+                    document.getElementById('siteDescription_en').value = siteDescription.en || '';
+                    document.getElementById('contactEmail').value = settings.contactEmail || '';
+                    document.getElementById('contactPhone').value = settings.contactPhone || '';
+                }
+            })
+            .catch(err => {
+                console.error('Error loading CMS settings:', err);
+            });
+        }
+        
+        // Save CMS Settings
+        document.getElementById('siteSettingsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                siteTitle: JSON.stringify({
+                    ru: document.getElementById('siteTitle_ru').value,
+                    en: document.getElementById('siteTitle_en').value
+                }),
+                siteDescription: JSON.stringify({
+                    ru: document.getElementById('siteDescription_ru').value,
+                    en: document.getElementById('siteDescription_en').value
+                }),
+                contactEmail: document.getElementById('contactEmail').value,
+                contactPhone: document.getElementById('contactPhone').value
+            };
+            
+            fetch(`${getApiUrl()}/cms/settings`, {
+                method: 'PUT',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Настройки сайта успешно сохранены!');
+                } else {
+                    alert('Ошибка при сохранении настроек: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Error saving settings:', err);
+                alert('Ошибка соединения с сервером');
+            });
+        });
+        
+        // Load CMS Homepage Content
+        function loadCMSHomepageContent() {
+            fetch(`${getApiUrl()}/public/homepage?lang=ru`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('homepageContentList');
+                
+                if (!data.success || !data.data) {
+                    container.innerHTML = '<div class="text-center text-gray-500">Нет контента для главной страницы</div>';
+                    return;
+                }
+                
+                const { settings, contentBlocks } = data.data;
+                
+                let html = '<div class="bg-white rounded-xl shadow-sm p-6 mb-4">';
+                html += '<h3 class="text-lg font-semibold mb-2">Настройки сайта</h3>';
+                html += `<p><strong>Название сайта:</strong> ${settings.siteTitle || 'Не указано'}</p>`;
+                html += `<p><strong>Описание:</strong> ${settings.siteDescription || 'Не указано'}</p>`;
+                html += `<p><strong>Email:</strong> ${settings.contactEmail || 'Не указано'}</p>`;
+                html += `<p><strong>Телефон:</strong> ${settings.contactPhone || 'Не указано'}</p>`;
+                html += '</div>';
+                
+                if (contentBlocks.length > 0) {
+                    html += '<div class="bg-white rounded-xl shadow-sm p-6">';
+                    html += '<h3 class="text-lg font-semibold mb-4">Активные блоки контента</h3>';
+                    contentBlocks.forEach(block => {
+                        html += `
+                            <div class="border-b border-gray-200 pb-4 mb-4 last:border-b-0">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-medium">${block.title || 'Без названия'}</h4>
+                                        <p class="text-sm text-gray-600">${block.type}</p>
+                                        <p class="text-sm text-gray-500 mt-2">${(block.content || '').substring(0, 150)}...</p>
+                                    </div>
+                                    <button onclick="editContentBlock(${block.id})" class="btn btn-primary btn-sm">
+                                        Редактировать
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                }
+                
+                container.innerHTML = html;
+            })
+            .catch(err => {
+                console.error('Error loading homepage content:', err);
+                const container = document.getElementById('homepageContentList');
+                container.innerHTML = '<div class="text-center text-red-500">Ошибка загрузки контента</div>';
+            });
         }
     </script>
 </body>

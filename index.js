@@ -60,8 +60,13 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
+app.get('/admin-dashboard.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'admin-dashboard.html'));
+});
+
+// Backward compatibility for old admin URL
 app.get('/admin-cms.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'admin-cms.html'));
+  res.redirect('/admin-dashboard.html');
 });
 
 // Запуск API сервера в фоновом режиме
@@ -84,7 +89,7 @@ apiServer.stderr.on('data', (data) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Unified server running on port ${PORT}`);
   console.log(`📱 Frontend: http://0.0.0.0:${PORT}`);
-  console.log(`🔧 Admin: http://0.0.0.0:${PORT}/admin-cms.html`);
+  console.log(`🔧 Admin: http://0.0.0.0:${PORT}/admin-dashboard.html`);
   console.log(`🌐 API: http://0.0.0.0:${PORT}/api`);
 });
 
