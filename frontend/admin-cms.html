@@ -46,18 +46,63 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // API utilities
-        const API_BASE = 'http://localhost:3001/api';
+        // API utilities - определение правильного API URL
+        const getApiBase = () => {
+            const hostname = window.location.hostname;
+            const protocol = window.location.protocol;
+            
+            console.log('Current location:', {
+                hostname,
+                protocol,
+                port: window.location.port,
+                href: window.location.href
+            });
+            
+            // Для локального развертывания
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:3001/api';
+            }
+            
+            // Для Replit - API сервер может быть на том же домене с другим портом
+            // или может быть отдельным доменом
+            if (hostname.includes('replit')) {
+                return `${protocol}//${hostname.replace('-5000', '-3001')}/api`;
+            }
+            
+            // Попробовать тот же хост с портом 3001
+            return `${protocol}//${hostname}:3001/api`;
+        };
+        
+        const API_BASE = getApiBase();
+        console.log('Using API_BASE:', API_BASE);
 
         const api = {
             // Auth
             async login(credentials) {
-                const response = await fetch(`${API_BASE}/admin/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(credentials)
-                });
-                return response.json();
+                try {
+                    console.log('Making login request to:', `${API_BASE}/admin/login`);
+                    const response = await fetch(`${API_BASE}/admin/login`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(credentials)
+                    });
+                    
+                    console.log('Login response status:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('Login response data:', data);
+                    return data;
+                } catch (error) {
+                    console.error('Login network error:', error);
+                    throw error;
+                }
             },
 
             async verifyToken(token) {
@@ -227,7 +272,9 @@
                 setError('');
 
                 try {
+                    console.log('Attempting login to:', API_BASE + '/admin/login');
                     const result = await api.login(credentials);
+                    console.log('Login result:', result);
                     if (result.success) {
                         localStorage.setItem('admin_token', result.data.token);
                         localStorage.setItem('admin_user', JSON.stringify(result.data.admin));
@@ -236,7 +283,8 @@
                         setError(result.error || 'Ошибка входа');
                     }
                 } catch (err) {
-                    setError('Ошибка соединения');
+                    console.error('Login error:', err);
+                    setError(`Ошибка соединения с сервером: ${err.message || 'Неизвестная ошибка'}`);
                 } finally {
                     setLoading(false);
                 }
@@ -1067,8 +1115,9 @@
             );
         }
 
-        // Render the app
-        ReactDOM.render(<App />, document.getElementById('admin-root'));
+        // Render the app using React 18 API
+        const root = ReactDOM.createRoot(document.getElementById('admin-root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
