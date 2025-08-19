@@ -837,15 +837,8 @@
             const selectedDate = document.getElementById('tour-date').value;
             const tourTitle = document.querySelector('#tour-title')?.textContent || 'Неизвестный тур';
             
-            // Create booking URL with parameters
-            const params = new URLSearchParams({
-                tour: encodeURIComponent(tourTitle),
-                date: selectedDate,
-                step: '1'
-            });
-            
-            // Navigate to booking page
-            window.location.href = `booking.html?${params.toString()}`;
+            // Navigate to booking page with simple parameters
+            window.location.href = `booking.html?tour=${encodeURIComponent(tourTitle)}&date=${selectedDate}&step=1`;
         }
 
         function closeHotelModal() {
