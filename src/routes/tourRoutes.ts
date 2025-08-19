@@ -11,6 +11,7 @@ const router = Router();
 // Tour routes
 router.get('/', TourController.getAllTours);
 router.get('/search', TourController.searchTours);
+router.get('/suggestions', TourController.getSearchSuggestions);
 router.get('/:id', TourController.getTourById);
 router.post('/', TourController.createTour);
 router.put('/:id', TourController.updateTour);

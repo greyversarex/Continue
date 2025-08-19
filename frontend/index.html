@@ -595,6 +595,60 @@
             padding-right: 3rem;
         }
         
+        /* Стили для автодополнения */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .suggestion-item {
+            padding: 0.875rem 1.25rem;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #f9fafb;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-icon {
+            width: 20px;
+            height: 20px;
+            color: #6b7280;
+        }
+        
+        .suggestion-text {
+            flex: 1;
+            font-size: 0.95rem;
+            color: #374151;
+        }
+        
+        .suggestion-type {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            background: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
         @media (max-width: 768px) {
             .search-section {
                 flex-direction: column;
@@ -804,7 +858,14 @@
                 <div class="search-filter-container">
                     <!-- Поисковая строка с кнопкой фильтра -->
                     <div class="search-section">
-                        <input type="text" id="searchInput" class="search-input-compact" placeholder="Найдите идеальный тур: Памир, Искандеркуль, треккинг..." onkeypress="if(event.key==='Enter') performSearch()">
+                        <div class="search-autocomplete-container" style="position: relative; flex: 1;">
+                            <input type="text" id="searchInput" class="search-input-compact" placeholder="Найдите идеальный тур: Памир, Искандеркуль, треккинг..." 
+                                   onkeypress="if(event.key==='Enter') performSearch()" 
+                                   oninput="handleSearchInput(this.value)" 
+                                   onfocus="showSuggestions()" 
+                                   onblur="hideSuggestions()">
+                            <div id="searchSuggestions" class="search-suggestions hidden"></div>
+                        </div>
                         
                         <button onclick="toggleFilterPanel()" class="filter-toggle-btn">
                             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2438,24 +2499,156 @@
             }
         }
 
+        // Переменные для автодополнения
+        let searchTimeout;
+        let currentSuggestions = [];
+        
+        // Функция для обработки ввода в поисковую строку
+        function handleSearchInput(query) {
+            clearTimeout(searchTimeout);
+            
+            if (query.length >= 2) {
+                searchTimeout = setTimeout(() => {
+                    fetchSuggestions(query);
+                }, 300); // Задержка 300мс для избежания лишних запросов
+            } else {
+                hideSuggestions();
+            }
+        }
+        
+        // Функция для получения подсказок
+        async function fetchSuggestions(query) {
+            try {
+                const response = await fetch(`http://localhost:3001/api/tours/suggestions?query=${encodeURIComponent(query)}`);
+                const result = await response.json();
+                
+                if (result.success && result.data.length > 0) {
+                    currentSuggestions = result.data;
+                    displaySuggestions(result.data);
+                } else {
+                    // Показываем стандартные подсказки если API недоступен
+                    showDefaultSuggestions(query);
+                }
+            } catch (error) {
+                // Показываем стандартные подсказки если API недоступен
+                showDefaultSuggestions(query);
+            }
+        }
+        
+        // Функция для отображения подсказок
+        function displaySuggestions(suggestions) {
+            const container = document.getElementById('searchSuggestions');
+            
+            if (suggestions.length === 0) {
+                hideSuggestions();
+                return;
+            }
+            
+            container.innerHTML = suggestions.map(suggestion => `
+                <div class="suggestion-item" onclick="selectSuggestion('${suggestion.text}', '${suggestion.type}')">
+                    <svg class="suggestion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        ${getSuggestionIcon(suggestion.type)}
+                    </svg>
+                    <span class="suggestion-text">${suggestion.text}</span>
+                    <span class="suggestion-type">${suggestion.type}</span>
+                </div>
+            `).join('');
+            
+            container.classList.remove('hidden');
+        }
+        
+        // Функция для получения иконки подсказки
+        function getSuggestionIcon(type) {
+            switch(type) {
+                case 'тур':
+                    return '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>';
+                case 'место':
+                    return '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>';
+                case 'категория':
+                    return '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>';
+                default:
+                    return '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>';
+            }
+        }
+        
+        // Функция для отображения стандартных подсказок
+        function showDefaultSuggestions(query) {
+            const defaultSuggestions = [
+                { text: 'Памир', type: 'место' },
+                { text: 'Искандеркуль', type: 'место' },
+                { text: 'Душанбе', type: 'место' },
+                { text: 'Горные туры', type: 'категория' },
+                { text: 'Трекинг', type: 'категория' },
+                { text: 'Культурные туры', type: 'категория' }
+            ].filter(s => s.text.toLowerCase().includes(query.toLowerCase()));
+            
+            if (defaultSuggestions.length > 0) {
+                displaySuggestions(defaultSuggestions);
+            }
+        }
+        
+        // Функция для выбора подсказки
+        function selectSuggestion(text, type) {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = text;
+            hideSuggestions();
+            
+            // Автоматически запускаем поиск
+            if (type === 'тур') {
+                // Если это тур, переходим к расширенному поиску
+                window.location.href = `tours-search.html?query=${encodeURIComponent(text)}`;
+            } else {
+                // Иначе просто выполняем поиск на текущей странице
+                performSearch();
+            }
+        }
+        
+        // Функция для показа подсказок
+        function showSuggestions() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query.length >= 2 && currentSuggestions.length > 0) {
+                document.getElementById('searchSuggestions').classList.remove('hidden');
+            }
+        }
+        
+        // Функция для скрытия подсказок
+        function hideSuggestions() {
+            setTimeout(() => {
+                document.getElementById('searchSuggestions').classList.add('hidden');
+            }, 150); // Небольшая задержка для клика по подсказке
+        }
+
         // Функция для основного поиска
         function performSearch() {
             const searchInput = document.getElementById('searchInput');
             const searchQuery = searchInput.value.trim();
             
-            if (searchQuery) {
-                // Поиск по тексту
-                searchToursByText(searchQuery);
-            } else {
-                // Поиск по фильтрам
-                searchTours();
-            }
+            // Собираем параметры фильтров
+            const filters = {
+                query: searchQuery,
+                country: document.getElementById('countryFilter').value,
+                city: document.getElementById('cityFilter').value,
+                format: document.getElementById('formatFilter').value,
+                category: document.getElementById('categoryFilter').value,
+                date: document.getElementById('dateFilter').value
+            };
+            
+            // Убираем пустые значения
+            const queryParams = new URLSearchParams();
+            Object.entries(filters).forEach(([key, value]) => {
+                if (value) {
+                    queryParams.append(key, value);
+                }
+            });
+            
+            // Переходим на страницу расширенного поиска с параметрами
+            window.location.href = `tours-search.html?${queryParams.toString()}`;
         }
 
         // Функция для поиска по тексту
         async function searchToursByText(query) {
             try {
-                const response = await fetch(`http://0.0.0.0:5000/api/tours/search?query=${encodeURIComponent(query)}`);
+                const response = await fetch(`http://localhost:3001/api/tours/search?query=${encodeURIComponent(query)}`);
                 const result = await response.json();
                 
                 if (result.success) {
@@ -2491,7 +2684,7 @@
                     }
                 });
 
-                const response = await fetch(`http://0.0.0.0:5000/api/tours/search?${queryParams}`);
+                const response = await fetch(`http://localhost:3001/api/tours/search?${queryParams}`);
                 const result = await response.json();
                 
                 if (result.success) {

@@ -373,6 +373,107 @@ export class TourController {
       next(error);
     }
   }
+
+  /**
+   * Get search suggestions for tour search autocomplete
+   * GET /api/tours/suggestions
+   */
+  static async getSearchSuggestions(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { query } = req.query;
+      
+      if (!query || typeof query !== 'string') {
+        return res.status(400).json({
+          success: false,
+          error: 'Query parameter is required'
+        });
+      }
+
+      const searchQuery = query.toLowerCase().trim();
+      
+      if (searchQuery.length < 2) {
+        return res.status(200).json({
+          success: true,
+          data: [],
+          message: 'Query too short'
+        });
+      }
+
+      // Get tours with titles matching the query
+      const tours = await TourModel.findAll();
+      
+      const suggestions: Array<{text: string, type: string}> = [];
+      
+      // Add tour suggestions
+      tours.forEach(tour => {
+        const title = JSON.parse(tour.title) as MultilingualContent;
+        
+        // Check Russian title
+        if (title.ru && title.ru.toLowerCase().includes(searchQuery)) {
+          suggestions.push({
+            text: title.ru,
+            type: 'тур'
+          });
+        }
+        
+        // Check English title
+        if (title.en && title.en.toLowerCase().includes(searchQuery)) {
+          suggestions.push({
+            text: title.en,
+            type: 'тур'
+          });
+        }
+      });
+
+      // Add location suggestions
+      const locations = [
+        'Памир', 'Искандеркуль', 'Душанбе', 'Худжанд', 'Файзабад', 
+        'Хорог', 'Калаи-Хумб', 'Мургаб', 'Каракуль', 'Ваханский коридор'
+      ];
+      
+      locations.forEach(location => {
+        if (location.toLowerCase().includes(searchQuery)) {
+          suggestions.push({
+            text: location,
+            type: 'место'
+          });
+        }
+      });
+
+      // Add category suggestions
+      const categories = [
+        'Горные туры', 'Трекинг', 'Культурные туры', 'Исторические туры',
+        'Природные туры', 'Приключенческие туры', 'Гастрономические туры',
+        'Однодневные', 'Многодневные', 'VIP туры'
+      ];
+      
+      categories.forEach(category => {
+        if (category.toLowerCase().includes(searchQuery)) {
+          suggestions.push({
+            text: category,
+            type: 'категория'
+          });
+        }
+      });
+
+      // Remove duplicates and limit to 6 suggestions
+      const uniqueSuggestions = suggestions
+        .filter((suggestion, index, self) => 
+          index === self.findIndex(s => s.text === suggestion.text)
+        )
+        .slice(0, 6);
+
+      const response: ApiResponse = {
+        success: true,
+        data: uniqueSuggestions,
+        message: 'Search suggestions retrieved successfully'
+      };
+
+      return res.status(200).json(response);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
 
 export class CategoryController {
