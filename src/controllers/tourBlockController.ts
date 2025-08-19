@@ -78,33 +78,22 @@ export const getTourBlock = async (req: Request, res: Response): Promise<Respons
 // Create tour block
 export const createTourBlock = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { title, description, slug, isActive, sortOrder } = req.body;
-
-    // Check if slug already exists
-    const existingBlock = await prisma.tourBlock.findUnique({
-      where: { slug }
-    });
-
-    if (existingBlock) {
-      return res.status(400).json({
-        success: false,
-        message: 'Tour block with this slug already exists'
-      });
-    }
+    const { title, description, slug, isActive = true, sortOrder = 0 } = req.body;
 
     const tourBlock = await prisma.tourBlock.create({
       data: {
-        title,
-        description,
+        title: typeof title === 'string' ? title : JSON.stringify(title),
+        description: description ? (typeof description === 'string' ? description : JSON.stringify(description)) : null,
         slug,
-        isActive: isActive ?? true,
-        sortOrder: sortOrder ?? 0
+        isActive,
+        sortOrder
       }
     });
 
-    return res.json({
+    return res.status(201).json({
       success: true,
-      data: tourBlock
+      data: tourBlock,
+      message: 'Tour block created successfully'
     });
   } catch (error) {
     console.error('Error creating tour block:', error);
@@ -121,37 +110,32 @@ export const updateTourBlock = async (req: Request, res: Response): Promise<Resp
     const { id } = req.params;
     const { title, description, slug, isActive, sortOrder } = req.body;
 
-    // Check if new slug conflicts with existing blocks (excluding current one)
-    if (slug) {
-      const existingBlock = await prisma.tourBlock.findFirst({
-        where: {
-          slug,
-          id: { not: parseInt(id) }
-        }
-      });
+    const existingBlock = await prisma.tourBlock.findUnique({
+      where: { id: parseInt(id) }
+    });
 
-      if (existingBlock) {
-        return res.status(400).json({
-          success: false,
-          message: 'Tour block with this slug already exists'
-        });
-      }
+    if (!existingBlock) {
+      return res.status(404).json({
+        success: false,
+        message: 'Tour block not found'
+      });
     }
 
     const tourBlock = await prisma.tourBlock.update({
       where: { id: parseInt(id) },
       data: {
-        title,
-        description,
-        slug,
-        isActive,
-        sortOrder
+        ...(title && { title: typeof title === 'string' ? title : JSON.stringify(title) }),
+        ...(description !== undefined && { description: description ? (typeof description === 'string' ? description : JSON.stringify(description)) : null }),
+        ...(slug && { slug }),
+        ...(isActive !== undefined && { isActive }),
+        ...(sortOrder !== undefined && { sortOrder })
       }
     });
 
     return res.json({
       success: true,
-      data: tourBlock
+      data: tourBlock,
+      message: 'Tour block updated successfully'
     });
   } catch (error) {
     console.error('Error updating tour block:', error);
@@ -167,25 +151,23 @@ export const deleteTourBlock = async (req: Request, res: Response): Promise<Resp
   try {
     const { id } = req.params;
 
-    // Check if tour block has tours
-    const tourBlock = await prisma.tourBlock.findUnique({
+    const existingBlock = await prisma.tourBlock.findUnique({
       where: { id: parseInt(id) },
-      include: {
-        tours: true
-      }
+      include: { tours: true }
     });
 
-    if (!tourBlock) {
+    if (!existingBlock) {
       return res.status(404).json({
         success: false,
         message: 'Tour block not found'
       });
     }
 
-    if (tourBlock.tours.length > 0) {
+    // Check if tours are assigned to this block
+    if (existingBlock.tours.length > 0) {
       return res.status(400).json({
         success: false,
-        message: 'Cannot delete tour block that contains tours. Please reassign tours first.'
+        message: 'Cannot delete tour block with assigned tours'
       });
     }
 
@@ -206,61 +188,39 @@ export const deleteTourBlock = async (req: Request, res: Response): Promise<Resp
   }
 };
 
-// Add tours to block
-export const addToursToBlock = async (req: Request, res: Response): Promise<Response> => {
+// Add tour to block
+export const addTourToBlock = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { id } = req.params;
-    const { tourIds } = req.body;
+    const { blockId, tourId } = req.params;
 
-    if (!Array.isArray(tourIds) || tourIds.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Tour IDs array is required'
-      });
-    }
-
-    // Update tours to belong to this block
-    await prisma.tour.updateMany({
-      where: {
-        id: { in: tourIds }
-      },
+    const tour = await prisma.tour.update({
+      where: { id: parseInt(tourId) },
       data: {
-        tourBlockId: parseInt(id)
+        tourBlockId: parseInt(blockId)
       }
     });
 
     return res.json({
       success: true,
-      message: 'Tours added to block successfully'
+      data: tour,
+      message: 'Tour added to block successfully'
     });
   } catch (error) {
-    console.error('Error adding tours to block:', error);
+    console.error('Error adding tour to block:', error);
     return res.status(500).json({
       success: false,
-      message: 'Error adding tours to block'
+      message: 'Error adding tour to block'
     });
   }
 };
 
-// Remove tours from block
-export const removeToursFromBlock = async (req: Request, res: Response): Promise<Response> => {
+// Remove tour from block
+export const removeTourFromBlock = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { id } = req.params;
-    const { tourIds } = req.body;
+    const { tourId } = req.params;
 
-    if (!Array.isArray(tourIds) || tourIds.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Tour IDs array is required'
-      });
-    }
-
-    // Remove tours from this block
-    await prisma.tour.updateMany({
-      where: {
-        id: { in: tourIds },
-        tourBlockId: parseInt(id)
-      },
+    const tour = await prisma.tour.update({
+      where: { id: parseInt(tourId) },
       data: {
         tourBlockId: null
       }
@@ -268,13 +228,14 @@ export const removeToursFromBlock = async (req: Request, res: Response): Promise
 
     return res.json({
       success: true,
-      message: 'Tours removed from block successfully'
+      data: tour,
+      message: 'Tour removed from block successfully'
     });
   } catch (error) {
-    console.error('Error removing tours from block:', error);
+    console.error('Error removing tour from block:', error);
     return res.status(500).json({
       success: false,
-      message: 'Error removing tours from block'
+      message: 'Error removing tour from block'
     });
   }
 };

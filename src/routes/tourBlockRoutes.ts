@@ -5,8 +5,8 @@ import {
   createTourBlock,
   updateTourBlock,
   deleteTourBlock,
-  addToursToBlock,
-  removeToursFromBlock
+  addTourToBlock,
+  removeTourFromBlock
 } from '../controllers/tourBlockController';
 import { authenticateJWT } from '../middleware/auth';
 
@@ -20,7 +20,7 @@ router.get('/:id', getTourBlock);
 router.post('/', authenticateJWT, createTourBlock);
 router.put('/:id', authenticateJWT, updateTourBlock);
 router.delete('/:id', authenticateJWT, deleteTourBlock);
-router.post('/:id/tours', authenticateJWT, addToursToBlock);
-router.delete('/:id/tours', authenticateJWT, removeToursFromBlock);
+router.post('/:blockId/tours/:tourId', authenticateJWT, addTourToBlock);
+router.delete('/tours/:tourId', authenticateJWT, removeTourFromBlock);
 
 export default router;
