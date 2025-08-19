@@ -858,12 +858,13 @@
                 <div class="search-filter-container">
                     <!-- Поисковая строка с кнопкой фильтра -->
                     <div class="search-section">
-                        <div class="search-autocomplete-container" style="position: relative; flex: 1;">
+                        <div class="search-autocomplete-container" style="position: relative; flex: 1; width: 100%;">
                             <input type="text" id="searchInput" class="search-input-compact" placeholder="Найдите идеальный тур: Памир, Искандеркуль, треккинг..." 
                                    onkeypress="if(event.key==='Enter') performSearch()" 
                                    oninput="handleSearchInput(this.value)" 
                                    onfocus="showSuggestions()" 
-                                   onblur="hideSuggestions()">
+                                   onblur="hideSuggestions()"
+                                   style="width: 100%;">
                             <div id="searchSuggestions" class="search-suggestions hidden"></div>
                         </div>
                         

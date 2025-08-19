@@ -285,17 +285,61 @@ export class TourController {
   static async searchTours(req: Request, res: Response, next: NextFunction) {
     try {
       const { 
+        query,
         country, 
         city, 
         format, 
         duration, 
         theme, 
+        category,
+        date,
         dateFrom, 
         dateTo 
       } = req.query;
 
       // Build filter conditions
       const filters: any[] = [];
+
+      // Text search across multiple fields
+      if (query && typeof query === 'string') {
+        const searchQuery = (query as string).toLowerCase().trim();
+        const allTours = await TourModel.findAll();
+        
+        // Filter tours that match the search query
+        const matchingTours = allTours.filter(tour => {
+          const title = JSON.parse(tour.title) as MultilingualContent;
+          const description = JSON.parse(tour.description) as MultilingualContent;
+          
+          // Check in Russian content
+          const titleRu = title.ru?.toLowerCase() || '';
+          const descRu = description.ru?.toLowerCase() || '';
+          const cityRu = tour.city?.toLowerCase() || '';
+          const countryRu = tour.country?.toLowerCase() || '';
+          
+          // Check in English content  
+          const titleEn = title.en?.toLowerCase() || '';
+          const descEn = description.en?.toLowerCase() || '';
+          
+          return titleRu.includes(searchQuery) || 
+                 descRu.includes(searchQuery) ||
+                 titleEn.includes(searchQuery) ||
+                 descEn.includes(searchQuery) ||
+                 cityRu.includes(searchQuery) ||
+                 countryRu.includes(searchQuery);
+        });
+        
+        if (matchingTours.length > 0) {
+          filters.push({ id: { in: matchingTours.map(t => t.id) } });
+        } else {
+          // No matches found, return empty result
+          const response: ApiResponse = {
+            success: true,
+            data: [],
+            message: 'No tours found matching the search criteria'
+          };
+          return res.status(200).json(response);
+        }
+      }
 
       if (country) {
         filters.push({ country: country as string });
@@ -308,6 +352,11 @@ export class TourController {
       if (format) {
         const formats = (format as string).split(',');
         filters.push({ format: { in: formats } });
+      }
+
+      if (category) {
+        const categories = (category as string).split(',');
+        filters.push({ theme: { in: categories } });
       }
 
       if (duration) {
@@ -333,6 +382,10 @@ export class TourController {
       if (theme) {
         const themes = (theme as string).split(',');
         filters.push({ theme: { in: themes } });
+      }
+
+      if (date) {
+        filters.push({ startDate: { gte: date as string } });
       }
 
       if (dateFrom || dateTo) {
@@ -368,9 +421,9 @@ export class TourController {
         message: 'Tours searched successfully'
       };
 
-      res.status(200).json(response);
+      return res.status(200).json(response);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -428,7 +481,8 @@ export class TourController {
       // Add location suggestions
       const locations = [
         'Памир', 'Искандеркуль', 'Душанбе', 'Худжанд', 'Файзабад', 
-        'Хорог', 'Калаи-Хумб', 'Мургаб', 'Каракуль', 'Ваханский коридор'
+        'Хорог', 'Калаи-Хумб', 'Мургаб', 'Каракуль', 'Ваханский коридор',
+        'Самарканд', 'Ташкент', 'Бишкек', 'Алматы'
       ];
       
       locations.forEach(location => {
