@@ -11,6 +11,7 @@ import cmsRoutes from './cmsRoutes';
 import adminRoutes from './adminRoutes';
 import publicRoutes from './publicRoutes';
 import tourBlockRoutes from './tourBlockRoutes';
+import translationRoutes from './translationRoutes';
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.use('/cms', cmsRoutes);
 router.use('/admin', adminRoutes);
 router.use('/public', publicRoutes);
 router.use('/tour-blocks', tourBlockRoutes);
+router.use('/translate', translationRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {

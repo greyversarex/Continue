@@ -381,6 +381,10 @@
                     <i class="fas fa-edit"></i>
                     <span>CMS - Контент</span>
                 </a>
+                <a href="#" class="nav-item" data-section="translations">
+                    <i class="fas fa-language"></i>
+                    <span>Переводы</span>
+                </a>
                 <a href="#" class="nav-item" data-section="settings">
                     <i class="fas fa-cog"></i>
                     <span>Настройки</span>
@@ -894,6 +898,168 @@
                                 </div>
                             </form>
                         </div>
+                    </div>
+                </section>
+
+                <!-- Translations Section -->
+                <section id="translationsSection" style="display: none;">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Автоматический перевод туров</h2>
+                        <p class="text-gray-600">Используйте искусственный интеллект для автоматического перевода содержания туров на поддерживаемые языки</p>
+                    </div>
+                    
+                    <!-- Translation Statistics -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-language text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800" id="supportedLanguagesCount">6</h3>
+                            <p class="text-gray-600 text-sm mt-1">Поддерживаемых языков</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800" id="translatedToursCount">0</h3>
+                            <p class="text-gray-600 text-sm mt-1">Полностью переведенных туров</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-clock text-orange-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800" id="pendingTranslationsCount">0</h3>
+                            <p class="text-gray-600 text-sm mt-1">Требует перевода</p>
+                        </div>
+                    </div>
+
+                    <!-- Translation Tools -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <!-- Single Tour Translation -->
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold mb-4">
+                                <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
+                                Перевести один тур
+                            </h3>
+                            <p class="text-gray-600 mb-6 text-sm">Выберите конкретный тур для автоматического перевода на недостающие языки</p>
+                            
+                            <form id="singleTranslationForm">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Выберите тур</label>
+                                    <select class="form-input" id="translationTourSelect" required>
+                                        <option value="">-- Выберите тур --</option>
+                                    </select>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-full" id="translateSingleBtn">
+                                    <i class="fas fa-language mr-2"></i>
+                                    Перевести тур
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Batch Translation -->
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold mb-4">
+                                <i class="fas fa-globe text-green-600 mr-2"></i>
+                                Массовый перевод
+                            </h3>
+                            <p class="text-gray-600 mb-6 text-sm">Переведите все туры или выбранные туры одновременно</p>
+                            
+                            <div class="space-y-4">
+                                <button class="btn btn-success w-full" onclick="batchTranslateAllTours()">
+                                    <i class="fas fa-rocket mr-2"></i>
+                                    Перевести все туры
+                                </button>
+                                
+                                <button class="btn btn-outline w-full" onclick="showBatchTranslationModal()">
+                                    <i class="fas fa-check-square mr-2"></i>
+                                    Выбрать туры для перевода
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manual Text Translation -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+                        <h3 class="text-lg font-semibold mb-4">
+                            <i class="fas fa-edit text-purple-600 mr-2"></i>
+                            Ручной перевод текста
+                        </h3>
+                        <p class="text-gray-600 mb-6 text-sm">Переведите любой текст с одного языка на другой</p>
+                        
+                        <form id="manualTranslationForm" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div>
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Исходный язык</label>
+                                    <select class="form-input" id="sourceLanguage" required>
+                                        <option value="ru">Русский</option>
+                                        <option value="en">English</option>
+                                        <option value="tj">Тоҷикӣ (Tajik)</option>
+                                        <option value="fa">فارسی (Farsi)</option>
+                                        <option value="de">Deutsch</option>
+                                        <option value="zh">中文 (Chinese)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Исходный текст</label>
+                                    <textarea class="form-input" id="sourceText" rows="8" placeholder="Введите текст для перевода..." required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Целевой язык</label>
+                                    <select class="form-input" id="targetLanguage" required>
+                                        <option value="en">English</option>
+                                        <option value="ru">Русский</option>
+                                        <option value="tj">Тоҷикӣ (Tajik)</option>
+                                        <option value="fa">فارسی (Farsi)</option>
+                                        <option value="de">Deutsch</option>
+                                        <option value="zh">中文 (Chinese)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Переведенный текст</label>
+                                    <textarea class="form-input" id="translatedText" rows="8" placeholder="Переведенный текст появится здесь..." readonly></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="lg:col-span-2">
+                                <button type="submit" class="btn btn-primary" id="manualTranslateBtn">
+                                    <i class="fas fa-arrow-right mr-2"></i>
+                                    Перевести текст
+                                </button>
+                                
+                                <button type="button" class="btn btn-outline ml-4" onclick="copyTranslation()">
+                                    <i class="fas fa-copy mr-2"></i>
+                                    Копировать перевод
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Translation Progress -->
+                    <div class="bg-white rounded-xl shadow-sm p-6" id="translationProgress" style="display: none;">
+                        <h3 class="text-lg font-semibold mb-4">
+                            <i class="fas fa-spinner fa-spin text-blue-600 mr-2"></i>
+                            Прогресс перевода
+                        </h3>
+                        <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                            <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" id="progressBar" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-600" id="progressText">Подготовка к переводу...</p>
+                        <div id="translationResults" class="mt-4 space-y-2"></div>
                     </div>
                 </section>
 
@@ -3400,6 +3566,295 @@
                 alert('Ошибка соединения с сервером');
             });
         }
+
+        // ===== TRANSLATION FUNCTIONALITY =====
+        
+        // Show translations section
+        function showTranslations() {
+            showSection('translations');
+            loadTranslationData();
+        }
+
+        // Load translation-related data
+        function loadTranslationData() {
+            loadTourSelectOptions();
+            loadTranslationStatistics();
+        }
+
+        // Load tour options for translation dropdown
+        function loadTourSelectOptions() {
+            fetch(`${getApiUrl()}/tours`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                const select = document.getElementById('translationTourSelect');
+                if (select && data.success && data.data) {
+                    select.innerHTML = '<option value="">-- Выберите тур --</option>' +
+                        data.data.map(tour => {
+                            const title = JSON.parse(tour.title || '{}');
+                            return `<option value="${tour.id}">${title.ru || title.en || `Тур ${tour.id}`}</option>`;
+                        }).join('');
+                }
+            })
+            .catch(err => console.error('Error loading tours for translation:', err));
+        }
+
+        // Load translation statistics
+        function loadTranslationStatistics() {
+            fetch(`${getApiUrl()}/tours`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    const tours = data.data;
+                    let translatedCount = 0;
+                    let pendingCount = 0;
+                    
+                    tours.forEach(tour => {
+                        const title = JSON.parse(tour.title || '{}');
+                        const description = JSON.parse(tour.description || '{}');
+                        
+                        // Check if all 6 languages are present
+                        const supportedLanguages = ['ru', 'en', 'tj', 'fa', 'de', 'zh'];
+                        const titleComplete = supportedLanguages.every(lang => title[lang] && title[lang].trim());
+                        const descComplete = supportedLanguages.every(lang => description[lang] && description[lang].trim());
+                        
+                        if (titleComplete && descComplete) {
+                            translatedCount++;
+                        } else {
+                            pendingCount++;
+                        }
+                    });
+                    
+                    document.getElementById('translatedToursCount').textContent = translatedCount;
+                    document.getElementById('pendingTranslationsCount').textContent = pendingCount;
+                }
+            })
+            .catch(err => console.error('Error loading translation statistics:', err));
+        }
+
+        // Single tour translation form handler
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const singleForm = document.getElementById('singleTranslationForm');
+                if (singleForm) {
+                    singleForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        translateSingleTour();
+                    });
+                }
+                
+                const manualForm = document.getElementById('manualTranslationForm');
+                if (manualForm) {
+                    manualForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        translateManualText();
+                    });
+                }
+            }, 200);
+        });
+
+        // Translate single tour
+        function translateSingleTour() {
+            const tourId = document.getElementById('translationTourSelect').value;
+            if (!tourId) {
+                alert('Пожалуйста, выберите тур для перевода');
+                return;
+            }
+            
+            const btn = document.getElementById('translateSingleBtn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Переводится...';
+            
+            fetch(`${getApiUrl()}/translate/tour/${tourId}`, {
+                method: 'POST',
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Тур успешно переведен на все языки!');
+                    loadTranslationStatistics(); // Refresh stats
+                } else {
+                    alert('Ошибка перевода: ' + (data.error || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Translation error:', err);
+                alert('Ошибка соединения с сервером');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
+        }
+
+        // Batch translate all tours
+        function batchTranslateAllTours() {
+            if (!confirm('Это может занять несколько минут. Продолжить перевод всех туров?')) {
+                return;
+            }
+            
+            showTranslationProgress();
+            
+            fetch(`${getApiUrl()}/tours`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    const tourIds = data.data.map(tour => tour.id);
+                    return batchTranslateTours(tourIds);
+                } else {
+                    throw new Error('Не удалось загрузить список туров');
+                }
+            })
+            .catch(err => {
+                console.error('Batch translation error:', err);
+                alert('Ошибка: ' + err.message);
+                hideTranslationProgress();
+            });
+        }
+
+        // Batch translate selected tours
+        function batchTranslateTours(tourIds) {
+            return fetch(`${getApiUrl()}/translate/tours/batch`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ tourIds })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    updateProgressBar(100);
+                    document.getElementById('progressText').textContent = 
+                        `Завершено! ${data.data.successCount} туров переведено успешно, ${data.data.errorCount} ошибок`;
+                    
+                    // Show results
+                    const results = document.getElementById('translationResults');
+                    results.innerHTML = `
+                        <div class="text-green-600 font-medium">✅ Успешно переведено: ${data.data.successCount} туров</div>
+                        ${data.data.errors.length > 0 ? 
+                            `<div class="text-red-600 font-medium">❌ Ошибки: ${data.data.errors.join(', ')}</div>` : ''
+                        }
+                    `;
+                    
+                    loadTranslationStatistics(); // Refresh stats
+                    
+                    setTimeout(() => {
+                        hideTranslationProgress();
+                    }, 5000);
+                } else {
+                    throw new Error(data.error || 'Batch translation failed');
+                }
+            })
+            .catch(err => {
+                console.error('Batch translation error:', err);
+                alert('Ошибка массового перевода: ' + err.message);
+                hideTranslationProgress();
+            });
+        }
+
+        // Manual text translation
+        function translateManualText() {
+            const sourceText = document.getElementById('sourceText').value;
+            const sourceLanguage = document.getElementById('sourceLanguage').value;
+            const targetLanguage = document.getElementById('targetLanguage').value;
+            
+            if (!sourceText.trim()) {
+                alert('Пожалуйста, введите текст для перевода');
+                return;
+            }
+            
+            if (sourceLanguage === targetLanguage) {
+                alert('Исходный и целевой языки должны отличаться');
+                return;
+            }
+            
+            const btn = document.getElementById('manualTranslateBtn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Переводится...';
+            
+            fetch(`${getApiUrl()}/translate/text`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({
+                    text: sourceText,
+                    fromLanguage: sourceLanguage,
+                    toLanguage: targetLanguage,
+                    context: 'tour_description'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('translatedText').value = data.data.translatedText;
+                } else {
+                    alert('Ошибка перевода: ' + (data.error || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Manual translation error:', err);
+                alert('Ошибка соединения с сервером');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
+        }
+
+        // Copy translation to clipboard
+        function copyTranslation() {
+            const text = document.getElementById('translatedText').value;
+            if (!text) {
+                alert('Нет текста для копирования');
+                return;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Перевод скопирован в буфер обмена!');
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                alert('Не удалось скопировать текст');
+            });
+        }
+
+        // Show batch translation modal (placeholder)
+        function showBatchTranslationModal() {
+            alert('Функция выборочного перевода туров будет реализована в следующей версии');
+        }
+
+        // Show/hide translation progress
+        function showTranslationProgress() {
+            document.getElementById('translationProgress').style.display = 'block';
+            updateProgressBar(0);
+            document.getElementById('progressText').textContent = 'Подготовка к переводу...';
+            document.getElementById('translationResults').innerHTML = '';
+        }
+
+        function hideTranslationProgress() {
+            document.getElementById('translationProgress').style.display = 'none';
+        }
+
+        function updateProgressBar(percent) {
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        // Update navigation to handle translations section
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handler for translations navigation
+            const navItems = document.querySelectorAll('[data-section="translations"]');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showTranslations();
+                });
+            });
+        });
     </script>
 </body>
 </html>
