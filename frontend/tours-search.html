@@ -452,19 +452,21 @@
             background: #2563eb;
         }
 
-        .btn-search {
-            background: #3b82f6;
+        .btn-search-main {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 12px 32px;
             border-radius: 8px;
             font-weight: 500;
             border: none;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
         
-        .btn-search:hover {
-            background: #2563eb;
+        .btn-search-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         .btn-booking {
@@ -519,7 +521,7 @@
             padding: 16px;
             margin-bottom: 20px;
             max-width: 100%;
-            overflow: hidden;
+            overflow: visible;
         }
         
         .date-grid {
@@ -532,14 +534,14 @@
         .date-cell {
             aspect-ratio: 1;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
             border: 1px solid #e5e7eb;
-            font-size: 12px;
+            font-size: 14px;
+            font-weight: 500;
         }
         
         .date-cell:hover {
@@ -558,10 +560,7 @@
             border-color: #667eea;
         }
         
-        .date-price {
-            font-size: 10px;
-            margin-top: 2px;
-        }
+
         
         .price-slider {
             margin-top: 12px;
@@ -823,7 +822,7 @@
     </header>
 
     <!-- Search Box -->
-    <div class="max-w-7xl mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-4" style="margin-top: 20px;">
         <div class="search-box">
             <div class="search-input-group">
                 <div class="search-field" style="flex: 2;">
@@ -847,7 +846,7 @@
                     </select>
                 </div>
                 
-                <button class="btn-search" onclick="searchTours()">
+                <button class="btn-search-main" onclick="searchTours()">
                     <i class="fas fa-search mr-2"></i>
                     Найти
                 </button>
@@ -1366,11 +1365,7 @@
                 // Random availability
                 if (Math.random() > 0.3) {
                     cell.classList.add('available');
-                    const price = Math.floor(Math.random() * 500) + 500;
-                    cell.innerHTML = `
-                        <span>${day}</span>
-                        <span class="date-price">$${price}</span>
-                    `;
+                    cell.innerHTML = `<span>${day}</span>`;
                     cell.onclick = () => selectDate(day);
                 } else {
                     cell.innerHTML = `<span>${day}</span>`;
