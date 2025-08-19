@@ -871,8 +871,7 @@
             const touristId = Date.now(); // Unique ID
             const tourist = {
                 id: touristId,
-                fullName: fullName,
-                birthDate: ''
+                fullName: fullName
             };
             
             touristsList.push(tourist);
@@ -895,37 +894,21 @@
             if (count === 0) {
                 container.innerHTML = '<div class="text-gray-500 text-center py-8">Нет добавленных туристов</div>';
             } else {
-                container.innerHTML = touristsList.map(tourist => `
-                    <div class="tourist-card relative">
+                container.innerHTML = touristsList.map((tourist, index) => `
+                    <div class="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg mb-2">
+                        <div class="flex items-center">
+                            <span class="font-medium text-gray-700 mr-3">${index + 1}.</span>
+                            <span class="text-gray-900">${tourist.fullName}</span>
+                        </div>
                         <button type="button" onclick="removeTourist(${tourist.id})" 
-                                class="absolute top-2 right-2 text-red-500 hover:text-red-700">
+                                class="text-red-500 hover:text-red-700 p-1">
                             <i class="fas fa-times"></i>
                         </button>
-                        <h4 class="font-medium mb-3">${tourist.fullName}</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="form-label text-sm">ФИО</label>
-                                <input type="text" class="form-input bg-gray-50" value="${tourist.fullName}" readonly>
-                            </div>
-                            <div>
-                                <label class="form-label text-sm">Дата рождения *</label>
-                                <input type="date" class="form-input" id="tourist${tourist.id}Birth" 
-                                       value="${tourist.birthDate}" 
-                                       onchange="updateTouristBirthDate(${tourist.id}, this.value)" required>
-                            </div>
-                        </div>
                     </div>
                 `).join('');
             }
             
             document.getElementById('touristCountDisplay').textContent = count;
-        }
-        
-        function updateTouristBirthDate(touristId, birthDate) {
-            const tourist = touristsList.find(t => t.id === touristId);
-            if (tourist) {
-                tourist.birthDate = birthDate;
-            }
         }
         
         // Calculate total price
