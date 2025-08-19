@@ -51,14 +51,30 @@ if (process.env.NODE_ENV === 'development') {
 // Routes
 app.use('/api', routes);
 
-// Root endpoint
+// Root endpoint - redirect to frontend
 app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Welcome to Tajik Trails API',
-    version: '1.0.0',
-    documentation: '/api/health'
-  });
+  // If request comes from browser, redirect to frontend
+  const userAgent = req.get('User-Agent') || '';
+  const isBrowser = userAgent.includes('Mozilla') || userAgent.includes('Chrome') || userAgent.includes('Safari');
+  
+  if (isBrowser) {
+    // Get the current host and replace port 3001 with 5000
+    const protocol = req.secure ? 'https' : 'http';
+    const host = req.get('host') || 'localhost:3001';
+    const frontendHost = host.replace(':3001', ':5000').replace(':80', ':5000');
+    const frontendUrl = `${protocol}://${frontendHost}`;
+    
+    res.redirect(302, frontendUrl);
+  } else {
+    // For API clients, return JSON
+    res.json({
+      success: true,
+      message: 'Welcome to Tajik Trails API',
+      version: '1.0.0',
+      documentation: '/api/health',
+      frontend: 'Redirect your browser to port 5000 for the website'
+    });
+  }
 });
 
 // Error handling middleware
