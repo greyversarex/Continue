@@ -32,6 +32,9 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [step, setStep] = useState<'hotel' | 'booking' | 'payment'>('hotel');
+  
+  // Отладочная информация
+  console.log('Current step in render:', step);
   const [tour, setTour] = useState<Tour | null>(null);
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [guides, setGuides] = useState<Guide[]>([]);
@@ -195,8 +198,13 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                     <div
                       key={hotel.id}
                       onClick={() => {
-                        console.log('Hotel selected:', hotel);
-                        setFormData(prev => ({ ...prev, selectedHotel: hotel }));
+                        console.log('Hotel clicked:', hotel.id, hotel.name);
+                        console.log('Previous selected hotel:', formData.selectedHotel?.id);
+                        setFormData(prev => {
+                          const newData = { ...prev, selectedHotel: hotel };
+                          console.log('New form data:', newData);
+                          return newData;
+                        });
                       }}
                       className={`border rounded-lg p-4 cursor-pointer transition-colors ${
                         formData.selectedHotel?.id === hotel.id
@@ -230,9 +238,16 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                   onClick={() => {
                     if (formData.selectedHotel) {
                       console.log('Continue button clicked, selected hotel:', formData.selectedHotel);
-                      console.log('Current step:', step);
+                      console.log('Current step before change:', step);
                       setStep('booking');
-                      console.log('Step changed to booking');
+                      console.log('setStep called with booking');
+                      
+                      // Дополнительная проверка через setTimeout
+                      setTimeout(() => {
+                        console.log('Step after timeout:', step);
+                      }, 100);
+                    } else {
+                      console.log('No hotel selected, button should be disabled');
                     }
                   }}
                   disabled={!formData.selectedHotel}
@@ -245,6 +260,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
           )}
 
           {/* Booking Details Step */}
+          {console.log('Rendering booking step check. Step is:', step, 'Should show booking?', step === 'booking')}
           {step === 'booking' && (
             <div className="space-y-6">
               {/* Customer Information */}
