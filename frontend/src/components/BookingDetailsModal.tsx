@@ -194,7 +194,13 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                   {hotels.map((hotel) => (
                     <div
                       key={hotel.id}
-                      onClick={() => setFormData(prev => ({ ...prev, selectedHotel: hotel }))}
+                      onClick={() => {
+                        console.log('Hotel selected:', hotel);
+                        setFormData(prev => ({ ...prev, selectedHotel: hotel }));
+                        // Показать пользователю, что отель выбран
+                        const hotelName = typeof hotel.name === 'object' ? hotel.name.ru : hotel.name;
+                        alert(`Отель "${hotelName}" выбран! Теперь нажмите "Продолжить"`);
+                      }}
                       className={`border rounded-lg p-4 cursor-pointer transition-colors ${
                         formData.selectedHotel?.id === hotel.id
                           ? 'border-blue-500 bg-blue-50'
@@ -205,7 +211,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                         {typeof hotel.name === 'object' ? hotel.name.ru : hotel.name}
                       </h5>
                       <p className="text-sm text-gray-600 mt-1">
-                        {typeof hotel.description === 'object' ? hotel.description.ru : hotel.description}
+                        {typeof hotel.description === 'object' ? hotel.description?.ru : hotel.description || ''}
                       </p>
                       <p className="text-sm font-medium text-blue-600 mt-2">
                         {hotel.rating}⭐ • {hotel.location}
@@ -217,7 +223,12 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
               <div className="flex justify-end">
                 <button
-                  onClick={() => setStep('booking')}
+                  onClick={() => {
+                    console.log('Continue button clicked, selected hotel:', formData.selectedHotel);
+                    console.log('Current step:', step);
+                    setStep('booking');
+                    console.log('Step changed to booking');
+                  }}
                   disabled={!formData.selectedHotel}
                   className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white px-6 py-2 rounded-lg font-medium"
                 >
