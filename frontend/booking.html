@@ -21,6 +21,7 @@
             min-width: 100%;
             height: 240px;
             object-fit: cover;
+            display: block;
         }
         
         .carousel-dots {
@@ -300,7 +301,7 @@
                     <!-- Image Carousel -->
                     <div class="hotel-carousel" data-hotel-id="${hotel.id}">
                         <div class="hotel-images" id="images-${hotel.id}">
-                            ${hotel.images.map(img => `<img src="${img}" alt="${hotel.name}">`).join('')}
+                            ${hotel.images.map(img => `<img src="${img}" alt="${hotel.name}" loading="lazy">`).join('')}
                         </div>
                         
                         <!-- Navigation buttons -->
@@ -354,6 +355,11 @@
                     </div>
                 </div>
             `).join('');
+            
+            // Initialize carousel for all hotels after creating HTML
+            hotelData.forEach(hotel => {
+                updateCarousel(hotel.id);
+            });
         }
 
         // Carousel functionality
