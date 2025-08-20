@@ -251,7 +251,11 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                     }
                   }}
                   disabled={!formData.selectedHotel}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white px-6 py-2 rounded-lg font-medium"
+                  className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                    formData.selectedHotel 
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
                 >
                   Продолжить
                 </button>
@@ -260,7 +264,10 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
           )}
 
           {/* Booking Details Step */}
-          {console.log('Rendering booking step check. Step is:', step, 'Should show booking?', step === 'booking')}
+          {(() => {
+            console.log('Rendering booking step check. Step is:', step, 'Should show booking?', step === 'booking');
+            return null;
+          })()}
           {step === 'booking' && (
             <div className="space-y-6">
               {/* Customer Information */}
