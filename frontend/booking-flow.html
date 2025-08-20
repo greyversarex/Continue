@@ -618,9 +618,64 @@
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Get tour ID from URL parameters
+            // Get parameters from URL
             const urlParams = new URLSearchParams(window.location.search);
             selectedTourId = urlParams.get('tourId') || 1; // Default to tour 1 for testing
+            
+            // Check if we should skip to a specific step
+            const step = urlParams.get('step');
+            const tour = urlParams.get('tour');
+            const date = urlParams.get('date');
+            const hotel = urlParams.get('hotel');
+            const price = urlParams.get('price');
+            
+            // If coming from booking.html with selected hotel, skip to step 2
+            if (step === '2' && tour && date && hotel) {
+                console.log('Skipping to step 2 with hotel selection');
+                
+                // Pre-fill data from URL parameters
+                selectedHotel = {
+                    name: decodeURIComponent(hotel),
+                    price: parseFloat(price) || 0
+                };
+                
+                // Set tour title if available
+                if (tour) {
+                    const tourSummary = document.getElementById('tourSummary');
+                    if (tourSummary) {
+                        tourSummary.innerHTML = `
+                            <div class="space-y-3">
+                                <h4 class="font-semibold">${decodeURIComponent(tour)}</h4>
+                                <div class="text-sm text-gray-600">
+                                    <div class="mb-2">
+                                        <i class="fas fa-calendar mr-2"></i>
+                                        ${date}
+                                    </div>
+                                    <div class="mb-2">
+                                        <i class="fas fa-bed mr-2"></i>
+                                        ${decodeURIComponent(hotel)}
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-users mr-2"></i>
+                                        <span id="touristCountDisplay">1</span> человек
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Set hotel price
+                basePrice = parseFloat(price) || 0;
+                document.getElementById('basePrice').textContent = basePrice;
+                
+                // Skip to step 2
+                showStep(2);
+                updateTouristFields();
+                calculatePrice();
+                
+                return; // Don't run the rest of initialization
+            }
             
             // Set minimum date to tomorrow
             const tomorrow = new Date();
