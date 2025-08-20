@@ -346,7 +346,8 @@
                                 <span class="text-2xl font-bold text-green-600">$${hotel.price}</span>
                                 <span class="text-gray-500 text-sm">за ночь</span>
                             </div>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors" 
+                                    onclick="event.stopPropagation(); selectHotel(${hotel.id})">
                                 Выбрать
                             </button>
                         </div>
@@ -419,7 +420,7 @@
             // Auto proceed to next step after selection
             setTimeout(() => {
                 goToNextStep();
-            }, 1000);
+            }, 500);
         }
 
         function goToNextStep() {
@@ -434,7 +435,13 @@
                 return;
             }
             
-            alert(`Переход к следующему шагу:\nОтель: ${selectedHotel.name}\nДата: ${selectedDate}\nЦена: $${selectedHotel.price}`);
+            // Переход на страницу с данными туристов
+            const urlParams = new URLSearchParams(window.location.search);
+            const tourName = urlParams.get('tour');
+            
+            // Перенаправляем на booking-flow.html с параметрами
+            const newUrl = `booking-flow.html?tour=${encodeURIComponent(tourName)}&date=${selectedDate}&hotel=${selectedHotel.name}&price=${selectedHotel.price}&step=2`;
+            window.location.href = newUrl;
         }
 
         function goBack() {
