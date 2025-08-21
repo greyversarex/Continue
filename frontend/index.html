@@ -215,6 +215,11 @@
             color: #2563EB;
             filter: drop-shadow(0 4px 12px rgba(37, 99, 235, 0.4));
         }
+        
+        .service-card:hover .car-icon {
+            color: #2563EB;
+            transform: scale(1.1);
+        }
         @keyframes drive {
             0% { transform: translateX(0); }
             100% { transform: translateX(15px); }
@@ -224,6 +229,7 @@
             animation: wave 1.2s ease-in-out infinite;
             color: #059669;
             filter: drop-shadow(0 4px 12px rgba(5, 150, 105, 0.4));
+            transform: scale(1.1);
         }
         @keyframes wave {
             0%, 100% { transform: rotate(0deg); }
@@ -235,6 +241,7 @@
             animation: bounce 1s ease-in-out infinite;
             color: #DC2626;
             filter: drop-shadow(0 4px 12px rgba(220, 38, 38, 0.4));
+            transform: scale(1.1);
         }
         @keyframes bounce {
             0%, 100% { transform: translateY(0) scale(1); }
@@ -245,6 +252,7 @@
             animation: rotate 2s linear infinite;
             color: #7C3AED;
             filter: drop-shadow(0 4px 12px rgba(124, 58, 237, 0.4));
+            transform: scale(1.1);
         }
         @keyframes rotate {
             0% { transform: rotate(0deg) scale(1); }
@@ -2204,13 +2212,16 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 car-icon">
-                                <!-- Feather Icons truck (professional transportation icon) -->
-                                <rect x="1" y="3" width="15" height="13"></rect>
-                                <polygon points="16,8 20,8 23,11 23,16 16,16 16,8"></polygon>
-                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                            </svg>
+                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:bg-blue-50 transition-all duration-300">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 car-icon">
+                                    <!-- Modern truck icon for transfer service -->
+                                    <rect x="1" y="6" width="15" height="9" rx="2"></rect>
+                                    <polygon points="16,8 20,8 22,11 22,15 16,15"></polygon>
+                                    <circle cx="6" cy="19" r="2"></circle>
+                                    <circle cx="18" cy="19" r="2"></circle>
+                                    <path d="M8 19h8"></path>
+                                </svg>
+                            </div>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">ТРАНСФЕР</h3>
                     </div>
@@ -2229,11 +2240,13 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 guide-icon">
-                                <!-- Feather Icons flag (professional guide/tour icon) -->
-                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                                <line x1="4" y1="22" x2="4" y2="15"></line>
-                            </svg>
+                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:bg-green-50 transition-all duration-300">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 guide-icon">
+                                    <!-- Modern flag icon for guide service -->
+                                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                    <line x1="4" y1="22" x2="4" y2="15"></line>
+                                </svg>
+                            </div>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">ТУР-ГИДЫ</h3>
                     </div>
@@ -2252,11 +2265,13 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 agency-icon">
-                                <!-- Security/Shield icon for agency services -->
-                                <path d="M12 2l3 1.5v6.5c0 5.25-3 7-3 7s-3-1.75-3-7V3.5L12 2z"></path>
-                                <path d="M9 12l2 2 4-4"></path>
-                            </svg>
+                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:bg-red-50 transition-all duration-300">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 agency-icon">
+                                    <!-- Modern shield icon for agency service -->
+                                    <path d="M12 2l3 1.5v6.5c0 5.25-3 7-3 7s-3-1.75-3-7V3.5L12 2z"></path>
+                                    <path d="M9 12l2 2 4-4"></path>
+                                </svg>
+                            </div>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">АГЕНТСКИЙ СЕРВИС</h3>
                     </div>
@@ -2275,12 +2290,14 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 class-icon">
-                                <!-- Feather Icons globe (professional world/custom tour icon) -->
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="2" y1="12" x2="22" y2="12"></line>
-                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                            </svg>
+                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:bg-purple-50 transition-all duration-300">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 class-icon">
+                                    <!-- Modern globe icon for custom tour service -->
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                </svg>
+                            </div>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">СОБСТВЕННЫЙ ТУР</h3>
                     </div>
