@@ -112,6 +112,96 @@
             transform: scale(1.1) rotate(5deg);
         }
         
+        /* Tour Block Carousel Styles */
+        .tour-block-container {
+            position: relative;
+        }
+        
+        .tour-carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            gap: 1.5rem;
+            padding: 0 60px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .tour-carousel::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tour-card {
+            min-width: 280px;
+            max-width: 280px;
+            flex-shrink: 0;
+        }
+        
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+        
+        .carousel-button:hover {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .carousel-button:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        
+        .carousel-button.prev {
+            left: 10px;
+        }
+        
+        .carousel-button.next {
+            right: 10px;
+        }
+        
+        .carousel-button svg {
+            width: 24px;
+            height: 24px;
+            color: #3e3e3e;
+        }
+        
+        .carousel-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: translateY(-50%) scale(0.9);
+        }
+        
+        @media (max-width: 768px) {
+            .tour-carousel {
+                padding: 0 20px;
+            }
+            
+            .carousel-button {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .carousel-button svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+        
         /* Анимированные иконки услуг */
         .car-icon, .guide-icon, .agency-icon, .class-icon {
             font-size: 3rem;
@@ -3027,7 +3117,7 @@
         
         async function loadToursForBlock(block) {
             try {
-                const response = await fetch(`${API_BASE_URL}/tours?blockId=${block.id}&limit=4`);
+                const response = await fetch(`${API_BASE_URL}/tours?blockId=${block.id}&limit=12`);
                 const result = await response.json();
                 
                 if (result.success && result.data.length > 0) {
@@ -3041,6 +3131,7 @@
         function renderTourBlock(block, tours) {
             const blockTitle = JSON.parse(block.title);
             const blockId = `tour-block-${block.id}`;
+            const carouselId = `carousel-${block.id}`;
             
             // Найдем место для вставки или создадим новую секцию
             let existingSection = document.getElementById(blockId);
@@ -3063,11 +3154,28 @@
                             ${blockTitle.ru}
                         </h2>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            ${tours.map(tour => renderTourCard(tour)).join('')}
+                        <div class="tour-block-container">
+                            <button class="carousel-button prev" onclick="scrollCarousel('${carouselId}', -1)" id="prev-${carouselId}">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            
+                            <div class="tour-carousel" id="${carouselId}" onscroll="updateCarouselButtons('${carouselId}')">
+                                ${tours.map(tour => renderTourCard(tour)).join('')}
+                            </div>
+                            
+                            <button class="carousel-button next" onclick="scrollCarousel('${carouselId}', 1)" id="next-${carouselId}">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 `;
+                
+                // Initialize carousel buttons state
+                setTimeout(() => updateCarouselButtons(carouselId), 100);
             }
         }
         
@@ -3077,7 +3185,7 @@
             const shortDesc = tour.shortDesc ? JSON.parse(tour.shortDesc) : null;
             
             return `
-                <div class="group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full"
+                <div class="tour-card group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full"
                      onclick="window.location.href='tour-template-viator.html?tour=${tour.id}'">
                     <div class="relative overflow-hidden rounded-t-lg">
                         <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
@@ -3125,6 +3233,49 @@
                     </div>
                 </div>
             `;
+        }
+        
+        // Carousel Navigation Functions
+        function scrollCarousel(carouselId, direction) {
+            const carousel = document.getElementById(carouselId);
+            if (!carousel) return;
+            
+            const cardWidth = 280 + 24; // card width + gap
+            const scrollAmount = cardWidth * 3; // scroll 3 cards at a time
+            
+            carousel.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+        
+        function updateCarouselButtons(carouselId) {
+            const carousel = document.getElementById(carouselId);
+            const prevBtn = document.getElementById(`prev-${carouselId}`);
+            const nextBtn = document.getElementById(`next-${carouselId}`);
+            
+            if (!carousel || !prevBtn || !nextBtn) return;
+            
+            const scrollLeft = carousel.scrollLeft;
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            
+            // Update previous button
+            if (scrollLeft <= 10) {
+                prevBtn.disabled = true;
+                prevBtn.style.opacity = '0.5';
+            } else {
+                prevBtn.disabled = false;
+                prevBtn.style.opacity = '1';
+            }
+            
+            // Update next button
+            if (scrollLeft >= maxScroll - 10) {
+                nextBtn.disabled = true;
+                nextBtn.style.opacity = '0.5';
+            } else {
+                nextBtn.disabled = false;
+                nextBtn.style.opacity = '1';
+            }
         }
         
         // Загружаем туры при загрузке страницы
