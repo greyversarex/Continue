@@ -3174,8 +3174,11 @@
                     </div>
                 `;
                 
-                // Initialize carousel buttons state
-                setTimeout(() => updateCarouselButtons(carouselId), 100);
+                // Initialize carousel buttons state  
+                setTimeout(() => {
+                    updateCarouselButtons(carouselId);
+                    toggleCarouselButtons(carouselId, tours.length);
+                }, 100);
             }
         }
         
@@ -3247,6 +3250,18 @@
                 left: direction * scrollAmount,
                 behavior: 'smooth'
             });
+        }
+        
+        function toggleCarouselButtons(carouselId, totalTours) {
+            const prevBtn = document.getElementById(`prev-${carouselId}`);
+            const nextBtn = document.getElementById(`next-${carouselId}`);
+            
+            if (!prevBtn || !nextBtn) return;
+            
+            // Show buttons only if there are more than 4 tours
+            const showButtons = totalTours > 4;
+            prevBtn.style.display = showButtons ? 'flex' : 'none';
+            nextBtn.style.display = showButtons ? 'flex' : 'none';
         }
         
         function updateCarouselButtons(carouselId) {
