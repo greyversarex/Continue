@@ -207,10 +207,13 @@
             font-size: 3rem;
             transition: all 0.4s ease;
             display: inline-block;
+            color: #3E3E3E;
         }
         
         .service-card:hover .car-icon {
             animation: drive 1.5s ease-in-out infinite alternate;
+            color: #2563EB;
+            filter: drop-shadow(0 4px 12px rgba(37, 99, 235, 0.4));
         }
         @keyframes drive {
             0% { transform: translateX(0); }
@@ -219,6 +222,8 @@
         
         .service-card:hover .guide-icon {
             animation: wave 1.2s ease-in-out infinite;
+            color: #059669;
+            filter: drop-shadow(0 4px 12px rgba(5, 150, 105, 0.4));
         }
         @keyframes wave {
             0%, 100% { transform: rotate(0deg); }
@@ -228,6 +233,8 @@
         
         .service-card:hover .agency-icon {
             animation: bounce 1s ease-in-out infinite;
+            color: #DC2626;
+            filter: drop-shadow(0 4px 12px rgba(220, 38, 38, 0.4));
         }
         @keyframes bounce {
             0%, 100% { transform: translateY(0) scale(1); }
@@ -236,6 +243,8 @@
         
         .service-card:hover .class-icon {
             animation: rotate 2s linear infinite;
+            color: #7C3AED;
+            filter: drop-shadow(0 4px 12px rgba(124, 58, 237, 0.4));
         }
         @keyframes rotate {
             0% { transform: rotate(0deg) scale(1); }
@@ -2195,7 +2204,7 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 car-icon">
                                 <!-- Feather Icons truck (professional transportation icon) -->
                                 <rect x="1" y="3" width="15" height="13"></rect>
                                 <polygon points="16,8 20,8 23,11 23,16 16,16 16,8"></polygon>
@@ -2220,7 +2229,7 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 guide-icon">
                                 <!-- Feather Icons flag (professional guide/tour icon) -->
                                 <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
                                 <line x1="4" y1="22" x2="4" y2="15"></line>
@@ -2243,11 +2252,10 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700">
-                                <!-- Feather Icons briefcase (professional business/agency icon) -->
-                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                                <path d="m16 21v-5a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v5"></path>
-                                <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 agency-icon">
+                                <!-- Security/Shield icon for agency services -->
+                                <path d="M12 2l3 1.5v6.5c0 5.25-3 7-3 7s-3-1.75-3-7V3.5L12 2z"></path>
+                                <path d="M9 12l2 2 4-4"></path>
                             </svg>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">АГЕНТСКИЙ СЕРВИС</h3>
@@ -2267,7 +2275,7 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 class-icon">
                                 <!-- Feather Icons globe (professional world/custom tour icon) -->
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <line x1="2" y1="12" x2="22" y2="12"></line>
