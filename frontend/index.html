@@ -2212,27 +2212,24 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:bg-blue-50 transition-all duration-300">
-                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" class="text-gray-700 car-icon">
-                                    <defs>
-                                        <linearGradient id="carGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Modern luxury car silhouette -->
-                                    <path d="M4 14h16c1.1 0 2-.9 2-2v-2c0-1.1-.9-2-2-2h-2l-1.5-3h-9L6 8H4c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2z" fill="url(#carGradient)"/>
-                                    <path d="M5 14v3c0 .6.4 1 1 1h1c.6 0 1-.4 1-1v-1h8v1c0 .6.4 1 1 1h1c.6 0 1-.4 1-1v-3" fill="currentColor" opacity="0.7"/>
-                                    <circle cx="7" cy="17" r="2" fill="#1F2937"/>
-                                    <circle cx="17" cy="17" r="2" fill="#1F2937"/>
-                                    <circle cx="7" cy="17" r="1" fill="#F59E0B"/>
-                                    <circle cx="17" cy="17" r="1" fill="#F59E0B"/>
-                                    <path d="M8 8h8l1 2H7z" fill="currentColor" opacity="0.3"/>
-                                    <rect x="9" y="10" width="6" height="1" rx="0.5" fill="rgba(255,255,255,0.8)"/>
-                                    <path d="M2 12l2-1v2l-2-1z" fill="#10B981"/>
-                                    <path d="M22 12l-2-1v2l2-1z" fill="#10B981"/>
-                                </svg>
-                            </div>
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" class="car-icon">
+                                <defs>
+                                    <linearGradient id="transferGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#3B82F6"/>
+                                        <stop offset="100%" style="stop-color:#1D4ED8"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="32" cy="32" r="30" fill="url(#transferGradient)" opacity="0.1"/>
+                                <path d="M16 28h32c2 0 4 2 4 4v8c0 2-2 4-4 4H16c-2 0-4-2-4-4v-8c0-2 2-4 4-4z" fill="url(#transferGradient)"/>
+                                <circle cx="22" cy="44" r="4" fill="#1F2937"/>
+                                <circle cx="42" cy="44" r="4" fill="#1F2937"/>
+                                <circle cx="22" cy="44" r="2" fill="#F3F4F6"/>
+                                <circle cx="42" cy="44" r="2" fill="#F3F4F6"/>
+                                <rect x="20" y="20" width="24" height="8" rx="2" fill="url(#transferGradient)" opacity="0.6"/>
+                                <rect x="24" y="32" width="16" height="4" rx="1" fill="#FFFFFF" opacity="0.8"/>
+                                <path d="M8 32l4-2v4l-4-2z" fill="url(#transferGradient)"/>
+                                <path d="M56 32l-4-2v4l4-2z" fill="url(#transferGradient)"/>
+                            </svg>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">ТРАНСФЕР</h3>
                     </div>
@@ -2251,38 +2248,22 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:bg-green-50 transition-all duration-300">
-                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" class="text-gray-700 guide-icon">
-                                    <defs>
-                                        <linearGradient id="compassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" />
-                                        </linearGradient>
-                                        <radialGradient id="compassCenter" cx="50%" cy="50%" r="50%">
-                                            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#f3f4f6;stop-opacity:1" />
-                                        </radialGradient>
-                                    </defs>
-                                    <!-- Professional compass for guide service -->
-                                    <circle cx="12" cy="12" r="10" fill="url(#compassGradient)" opacity="0.2"/>
-                                    <circle cx="12" cy="12" r="9" stroke="url(#compassGradient)" stroke-width="2" fill="none"/>
-                                    <circle cx="12" cy="12" r="6" fill="url(#compassCenter)" stroke="#374151" stroke-width="1"/>
-                                    <!-- North pointer -->
-                                    <path d="M12 4l-1.5 7h3L12 4z" fill="#DC2626"/>
-                                    <!-- South pointer -->
-                                    <path d="M12 20l-1.5-7h3L12 20z" fill="#374151"/>
-                                    <!-- East pointer -->
-                                    <path d="M20 12l-7-1.5v3L20 12z" fill="#374151"/>
-                                    <!-- West pointer -->
-                                    <path d="M4 12l7-1.5v3L4 12z" fill="#374151"/>
-                                    <circle cx="12" cy="12" r="1.5" fill="#1F2937"/>
-                                    <!-- Cardinal directions -->
-                                    <text x="12" y="6" text-anchor="middle" fill="#DC2626" font-family="Arial" font-size="4" font-weight="bold">N</text>
-                                    <text x="12" y="19" text-anchor="middle" fill="#374151" font-family="Arial" font-size="3">S</text>
-                                    <text x="18" y="13" text-anchor="middle" fill="#374151" font-family="Arial" font-size="3">E</text>
-                                    <text x="6" y="13" text-anchor="middle" fill="#374151" font-family="Arial" font-size="3">W</text>
-                                </svg>
-                            </div>
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" class="guide-icon">
+                                <defs>
+                                    <linearGradient id="guideGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#10B981"/>
+                                        <stop offset="100%" style="stop-color:#059669"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="32" cy="32" r="30" fill="url(#guideGradient)" opacity="0.1"/>
+                                <path d="M32 8L20 24h24L32 8z" fill="url(#guideGradient)"/>
+                                <rect x="30" y="24" width="4" height="32" fill="url(#guideGradient)"/>
+                                <path d="M28 24h8v4c0 2-1.8 4-4 4s-4-2-4-4v-4z" fill="url(#guideGradient)" opacity="0.7"/>
+                                <circle cx="32" cy="16" r="3" fill="#FFFFFF"/>
+                                <path d="M32 14v4M30 16h4" stroke="url(#guideGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M16 32l8-4v8l-8-4z" fill="url(#guideGradient)" opacity="0.6"/>
+                                <path d="M48 32l-8-4v8l8-4z" fill="url(#guideGradient)" opacity="0.6"/>
+                            </svg>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">ТУР-ГИДЫ</h3>
                     </div>
@@ -2301,38 +2282,23 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:bg-red-50 transition-all duration-300">
-                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" class="text-gray-700 agency-icon">
-                                    <defs>
-                                        <linearGradient id="briefcaseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#DC2626;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
-                                        </linearGradient>
-                                        <linearGradient id="briefcaseHandle" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#92400E;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#D97706;stop-opacity:1" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Professional briefcase for agency service -->
-                                    <rect x="4" y="9" width="16" height="10" rx="2" fill="url(#briefcaseGradient)"/>
-                                    <rect x="4" y="9" width="16" height="10" rx="2" stroke="#991B1B" stroke-width="0.5" fill="none"/>
-                                    <path d="M8 9V7c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2" stroke="url(#briefcaseHandle)" stroke-width="2" fill="none"/>
-                                    <rect x="8" y="6" width="8" height="1" rx="0.5" fill="url(#briefcaseHandle)"/>
-                                    <!-- Lock mechanism -->
-                                    <circle cx="12" cy="14" r="1.5" fill="#FBBF24"/>
-                                    <rect x="11.5" y="15" width="1" height="2" fill="#D97706"/>
-                                    <!-- Side details -->
-                                    <rect x="4" y="12" width="16" height="0.5" fill="rgba(153,27,27,0.3)"/>
-                                    <rect x="4" y="16" width="16" height="0.5" fill="rgba(153,27,27,0.3)"/>
-                                    <!-- Corner reinforcements -->
-                                    <circle cx="6" cy="11" r="0.5" fill="#991B1B"/>
-                                    <circle cx="18" cy="11" r="0.5" fill="#991B1B"/>
-                                    <circle cx="6" cy="17" r="0.5" fill="#991B1B"/>
-                                    <circle cx="18" cy="17" r="0.5" fill="#991B1B"/>
-                                    <!-- Handle -->
-                                    <rect x="10" y="4" width="4" height="1" rx="0.5" fill="url(#briefcaseHandle)"/>
-                                </svg>
-                            </div>
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" class="agency-icon">
+                                <defs>
+                                    <linearGradient id="agencyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#EF4444"/>
+                                        <stop offset="100%" style="stop-color:#DC2626"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="32" cy="32" r="30" fill="url(#agencyGradient)" opacity="0.1"/>
+                                <path d="M32 8L44 20L32 32L20 20L32 8z" fill="url(#agencyGradient)"/>
+                                <circle cx="32" cy="32" r="18" stroke="url(#agencyGradient)" stroke-width="3" fill="none"/>
+                                <circle cx="32" cy="32" r="12" fill="url(#agencyGradient)" opacity="0.2"/>
+                                <path d="M26 32l4 4l8-8" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="20" cy="20" r="3" fill="url(#agencyGradient)" opacity="0.6"/>
+                                <circle cx="44" cy="20" r="3" fill="url(#agencyGradient)" opacity="0.6"/>
+                                <circle cx="20" cy="44" r="3" fill="url(#agencyGradient)" opacity="0.6"/>
+                                <circle cx="44" cy="44" r="3" fill="url(#agencyGradient)" opacity="0.6"/>
+                            </svg>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">АГЕНТСКИЙ СЕРВИС</h3>
                     </div>
@@ -2351,48 +2317,25 @@
                 <div class="service-card rounded-xl p-8 flex flex-col h-full" style="--icon-color-1: #3E3E3E; --icon-color-2: #2E2E2E; --icon-shadow: rgba(62, 62, 62, 0.3);">
                     <div class="flex flex-col items-center text-center mb-6">
                         <div class="mb-6 flex justify-center">
-                            <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:bg-purple-50 transition-all duration-300">
-                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" class="text-gray-700 class-icon">
-                                    <defs>
-                                        <linearGradient id="puzzleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#7C3AED;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#A855F7;stop-opacity:1" />
-                                        </linearGradient>
-                                        <linearGradient id="puzzleGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#6366F1;stop-opacity:1" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Puzzle pieces for custom tour planning -->
-                                    <!-- Top-left piece -->
-                                    <path d="M3 3h6v6h-2c-1 0-1-2-2-2s-1 2-2 2V3z" fill="url(#puzzleGradient)"/>
-                                    <path d="M3 3h6v6h-2c-1 0-1-2-2-2s-1 2-2 2V3z" stroke="#5B21B6" stroke-width="0.5"/>
-                                    
-                                    <!-- Top-right piece -->
-                                    <path d="M15 3h6v8h-6v-2c0-1-2-1-2-2s2-1 2-2V3z" fill="url(#puzzleGradient2)"/>
-                                    <path d="M15 3h6v8h-6v-2c0-1-2-1-2-2s2-1 2-2V3z" stroke="#1E40AF" stroke-width="0.5"/>
-                                    
-                                    <!-- Bottom-left piece -->
-                                    <path d="M3 15h8v6H3v-2c0-1 2-1 2-2s-2-1-2-2v-2z" fill="url(#puzzleGradient2)"/>
-                                    <path d="M3 15h8v6H3v-2c0-1 2-1 2-2s-2-1-2-2v-2z" stroke="#1E40AF" stroke-width="0.5"/>
-                                    
-                                    <!-- Bottom-right piece -->
-                                    <path d="M15 13h6v8h-6v-2c0-1-2-1-2-2s2-1 2-2v-2z" fill="url(#puzzleGradient)"/>
-                                    <path d="M15 13h6v8h-6v-2c0-1-2-1-2-2s2-1 2-2v-2z" stroke="#5B21B6" stroke-width="0.5"/>
-                                    
-                                    <!-- Center connecting elements -->
-                                    <circle cx="12" cy="6" r="1" fill="#FBBF24"/>
-                                    <circle cx="6" cy="12" r="1" fill="#10B981"/>
-                                    <circle cx="18" cy="12" r="1" fill="#EF4444"/>
-                                    <circle cx="12" cy="18" r="1" fill="#F97316"/>
-                                    
-                                    <!-- Small decorative elements -->
-                                    <rect x="5" y="5" width="2" height="1" rx="0.5" fill="rgba(255,255,255,0.6)"/>
-                                    <rect x="17" y="5" width="2" height="1" rx="0.5" fill="rgba(255,255,255,0.6)"/>
-                                    <rect x="5" y="17" width="2" height="1" rx="0.5" fill="rgba(255,255,255,0.6)"/>
-                                    <rect x="17" y="17" width="2" height="1" rx="0.5" fill="rgba(255,255,255,0.6)"/>
-                                </svg>
-                            </div>
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" class="class-icon">
+                                <defs>
+                                    <linearGradient id="customGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#8B5CF6"/>
+                                        <stop offset="100%" style="stop-color:#7C3AED"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="32" cy="32" r="30" fill="url(#customGradient)" opacity="0.1"/>
+                                <circle cx="32" cy="32" r="24" stroke="url(#customGradient)" stroke-width="3" fill="none"/>
+                                <circle cx="32" cy="32" r="16" fill="url(#customGradient)" opacity="0.2"/>
+                                <circle cx="32" cy="32" r="8" fill="url(#customGradient)"/>
+                                <circle cx="32" cy="32" r="4" fill="#FFFFFF"/>
+                                <path d="M32 8v8M32 48v8M8 32h8M48 32h8" stroke="url(#customGradient)" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M44.8 19.2l-5.6 5.6M24.8 44.8l-5.6 5.6M19.2 19.2l5.6 5.6M44.8 44.8l-5.6-5.6" stroke="url(#customGradient)" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="32" cy="12" r="2" fill="url(#customGradient)"/>
+                                <circle cx="32" cy="52" r="2" fill="url(#customGradient)"/>
+                                <circle cx="12" cy="32" r="2" fill="url(#customGradient)"/>
+                                <circle cx="52" cy="32" r="2" fill="url(#customGradient)"/>
+                            </svg>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">СОБСТВЕННЫЙ ТУР</h3>
                     </div>
