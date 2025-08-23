@@ -104,22 +104,19 @@
         }
         
         .lang-dropdown-content {
+            display: none;
             position: absolute;
-            top: calc(100% + 8px);
+            top: 100%;
             right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 12px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            overflow: hidden;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(47, 47, 47, 0.95);
+            backdrop-filter: blur(10px);
+            min-width: 160px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
             z-index: 1000;
-            min-width: 180px;
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            overflow: hidden;
+            margin-top: 0.5rem;
         }
         
         /* Цвета флагов */
@@ -181,22 +178,30 @@
         }
         
         .lang-dropdown-content.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .lang-option {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            color: #374151;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: white;
             text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .lang-option:last-child {
@@ -204,14 +209,13 @@
         }
         
         .lang-option:hover {
-            background: rgba(59, 130, 246, 0.1);
-            color: #1d4ed8;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
         }
         
         .lang-option.active {
-            background: rgba(59, 130, 246, 0.1);
-            color: #1d4ed8;
-            font-weight: 600;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
         }
         
         .dropdown-arrow {
@@ -401,83 +405,166 @@
         .download-button:hover .download-icon {
             transform: translateY(2px);
         }
-        /* Language & Currency Selectors */
-        .lang-selector, .currency-selector {
+        /* Стили для языкового селектора с флагами */
+        .language-dropdown {
             position: relative;
             display: inline-block;
         }
-        .lang-button, .currency-button {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 8px 12px;
+        
+        .lang-selector-btn {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 14px;
+            backdrop-filter: blur(10px);
+            min-width: 80px;
         }
-        .lang-button:hover, .currency-button:hover {
-            background: white;
-            border-color: #d1d5db;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        
+        .lang-selector-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        .dropdown {
+        
+        .selected-flag {
+            width: 24px;
+            height: 16px;
+            border-radius: 2px;
+            display: inline-block;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+        }
+        
+        .lang-dropdown-content {
+            display: none;
             position: absolute;
             top: 100%;
             right: 0;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            background: rgba(47, 47, 47, 0.95);
+            backdrop-filter: blur(10px);
             min-width: 160px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
             z-index: 1000;
+            overflow: hidden;
+            margin-top: 0.5rem;
         }
-        .dropdown.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+        
+        /* Цвета флагов */
+        .flag-ru, .selected-flag.flag-ru {
+            background: linear-gradient(to bottom, 
+                #ffffff 0%, #ffffff 33.33%, 
+                #0039a6 33.33%, #0039a6 66.66%, 
+                #d52b1e 66.66%, #d52b1e 100%);
         }
+        .flag-us, .selected-flag.flag-us {
+            background: linear-gradient(to bottom, 
+                #b22234 0%, #b22234 7.69%, 
+                #ffffff 7.69%, #ffffff 15.38%, 
+                #b22234 15.38%, #b22234 23.07%, 
+                #ffffff 23.07%, #ffffff 30.76%, 
+                #b22234 30.76%, #b22234 38.45%, 
+                #ffffff 38.45%, #ffffff 46.14%, 
+                #b22234 46.14%, #b22234 53.83%);
+            position: relative;
+        }
+        .flag-us::before, .selected-flag.flag-us::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40%;
+            height: 53.83%;
+            background: #3c3b6e;
+        }
+        .flag-tj, .selected-flag.flag-tj {
+            background: linear-gradient(to bottom, 
+                #d90000 0%, #d90000 33.33%, 
+                #ffffff 33.33%, #ffffff 66.66%, 
+                #006600 66.66%, #006600 100%);
+        }
+        .flag-ir, .selected-flag.flag-ir {
+            background: linear-gradient(to bottom, 
+                #da0000 0%, #da0000 33.33%, 
+                #ffffff 33.33%, #ffffff 66.66%, 
+                #00ca00 66.66%, #00ca00 100%);
+        }
+        .flag-de, .selected-flag.flag-de {
+            background: linear-gradient(to bottom, 
+                #000000 0%, #000000 33.33%, 
+                #ff0000 33.33%, #ff0000 66.66%, 
+                #ffce00 66.66%, #ffce00 100%);
+        }
+        .flag-cn, .selected-flag.flag-cn {
+            background: #de2910;
+            position: relative;
+        }
+        .flag-cn::before, .selected-flag.flag-cn::before {
+            content: '★';
+            position: absolute;
+            top: 20%;
+            left: 15%;
+            color: #ffde00;
+            font-size: 8px;
+        }
+        
+        .lang-dropdown-content.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         .lang-option {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            border-bottom: 1px solid #f3f4f6;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
+        
         .lang-option:last-child {
             border-bottom: none;
         }
+        
         .lang-option:hover {
-            background-color: #f9fafb;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
         }
+        
         .lang-option.active {
-            background-color: #f3f4f6;
-            font-weight: 500;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
         }
-        .flag {
-            width: 20px;
-            height: 15px;
-            border-radius: 2px;
-            background-size: cover;
-            background-position: center;
-        }
-        .flag-ru { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMTUiIHZpZXdCb3g9IjAgMCAyMCAxNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjUiIGZpbGw9IndoaXRlIi8+CjxyZWN0IHk9IjUiIHdpZHRoPSIyMCIgaGVpZ2h0PSI1IiBmaWxsPSIjMDA1MkZGIi8+CjxyZWN0IHk9IjEwIiB3aWR0aD0iMjAiIGhlaWdodD0iNSIgZmlsbD0iI0ZGMDAwMCIvPgo8L3N2Zz4K'); }
-        .flag-en { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMTUiIHZpZXdCb3g9IjAgMCAyMCAxNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjE1IiBmaWxsPSIjMDA1MkZGIi8+CjxwYXRoIGQ9Ik0wIDBoMjBMMTUgNy41IDIwIDE1SDBsNS03LjVMMCAweiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+'); }
-        .flag-tj { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMTUiIHZpZXdCb3g9IjAgMCAyMCAxNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjUiIGZpbGw9IiNGRjAwMDAiLz4KPHJlY3QgeT0iNSIgd2lkdGg9IjIwIiBoZWlnaHQ9IjUiIGZpbGw9IndoaXRlIi8+CjxyZWN0IHk9IjEwIiB3aWR0aD0iMjAiIGhlaWdodD0iNSIgZmlsbD0iIzAwQUE0NCIvPgo8L3N2Zz4K'); }
-        .chevron {
-            width: 12px;
-            height: 12px;
+        
+        .dropdown-arrow {
             transition: transform 0.3s ease;
         }
-        .dropdown.show .chevron {
+        
+        .dropdown-arrow.open {
             transform: rotate(180deg);
         }
     </style>
