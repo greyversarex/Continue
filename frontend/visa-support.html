@@ -258,14 +258,14 @@
         
         /* Стили для виз */
         .visa-section-btn {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+            background: #6B7280;
+            box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
             transition: all 0.3s ease;
         }
         .visa-section-btn:hover {
-            background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(249, 115, 22, 0.6);
+            background: #4B5563;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.4);
         }
         .visa-content {
             animation: slideDown 0.3s ease;
@@ -408,42 +408,16 @@
         </div>
     </header>
 
-    <!-- Главный баннер для визовой поддержки -->
-    <section class="hero-bg banner-height relative flex items-center justify-center text-white">
-        <div class="gradient-overlay absolute inset-0"></div>
-        <div class="relative z-10 text-center max-w-4xl mx-auto px-6">
-            <h1 class="text-6xl font-bold mb-6">
-                Визовая поддержка
-            </h1>
-            <p class="text-xl mb-8 max-w-2xl mx-auto">
-                Полная информация о визовых требованиях для посещения Таджикистана. Узнайте о безвизовом режиме, электронных визах и получении стандартных виз
-            </p>
-        </div>
-        
-        <!-- Точки карусели -->
-        <div class="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2">
-            <div class="w-2 h-2 bg-white rounded-full"></div>
-            <div class="w-2 h-2 bg-white bg-opacity-50 rounded-full"></div>
-            <div class="w-2 h-2 bg-white bg-opacity-50 rounded-full"></div>
-        </div>
-        
-        <!-- Брендинг -->
-        <div class="absolute bottom-8 right-8">
-            <div class="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg text-sm">
-                Больше с Bunyod-Tour
-            </div>
-        </div>
-    </section>
 
     <!-- Main Content -->
-    <div class="min-h-screen py-12">
+    <div class="min-h-screen py-12 bg-gray-50">
         <div class="max-w-4xl mx-auto px-6">
             <!-- Заголовок -->
             <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-orange-600 mb-4">
+                <h2 class="text-4xl font-bold text-orange-500 mb-4">
                     ВИЗА ТАДЖИКИСТАНА
                 </h2>
-                <h3 class="text-2xl font-semibold text-orange-500 mb-8">
+                <h3 class="text-xl font-medium text-black mb-8">
                     Для визита в Таджикистан выдается три вида визы:
                     <br />
                     (1) безвизовый режим; (2) электронная / упрощенная виза; (3) стандартная виза.
@@ -456,7 +430,7 @@
                     БЕЗВИЗОВЫЙ РЕЖИМ
                     <span class="dropdown-arrow">▼</span>
                 </button>
-                <div id="visa-free" class="visa-content hidden bg-white border-2 border-orange-200 rounded-b-lg p-6">
+                <div id="visa-free" class="visa-content hidden bg-white border-2 border-gray-200 rounded-b-lg p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
                         <div>
                             <div class="mb-2">1. Австралия - все виды заграничных, до 30 дней</div>
@@ -543,7 +517,7 @@
                     ЭЛЕКТРОННАЯ и УПРОЩЕННАЯ ВИЗА
                     <span class="dropdown-arrow">▼</span>
                 </button>
-                <div id="electronic-visa" class="visa-content hidden bg-white border-2 border-orange-200 rounded-b-lg p-6">
+                <div id="electronic-visa" class="visa-content hidden bg-white border-2 border-gray-200 rounded-b-lg p-6">
                     <div class="mb-4 p-4 bg-yellow-50 border-l-4 border-yellow-400">
                         <p class="text-sm text-gray-700 italic">
                             <strong>ВНИМАНИЕ!</strong> - «электронная система оформления виз» не связана с системой «электронной визы».
@@ -699,7 +673,7 @@
                     СТАНДАРТНАЯ ВИЗА
                     <span class="dropdown-arrow">▼</span>
                 </button>
-                <div id="standard-visa" class="visa-content hidden bg-white border-2 border-orange-200 rounded-b-lg p-6">
+                <div id="standard-visa" class="visa-content hidden bg-white border-2 border-gray-200 rounded-b-lg p-6">
                     <div class="text-gray-700 space-y-4">
                         <p>
                             Если ваша страна проживания не входит ни в один из вышеописанных списков, вы можете получить визу в Таджикистан в любой стране, где имеется посольство или консульство Республики Таджикистан.
@@ -737,7 +711,7 @@
                     ОФИЦИАЛЬНОЕ ПРИГЛАШЕНИЕ
                     <span class="dropdown-arrow">▼</span>
                 </button>
-                <div id="invitation" class="visa-content hidden bg-white border-2 border-orange-200 rounded-b-lg p-6">
+                <div id="invitation" class="visa-content hidden bg-white border-2 border-gray-200 rounded-b-lg p-6">
                     <div class="text-gray-700 space-y-4">
                         <p>
                             Наша компания может предоставить официальное приглашение, однако только своим клиентам / туристам, которым необходимо перейти на наш сайт —
@@ -757,7 +731,7 @@
                     ТРЕБОВАНИЯ К ДОКУМЕНТАМ
                     <span class="dropdown-arrow">▼</span>
                 </button>
-                <div id="requirements" class="visa-content hidden bg-white border-2 border-orange-200 rounded-b-lg p-6">
+                <div id="requirements" class="visa-content hidden bg-white border-2 border-gray-200 rounded-b-lg p-6">
                     <div class="text-gray-700 space-y-4">
                         <ul class="list-disc list-inside space-y-2">
                             <li>Подлинность данных и копии паспорта или другого документа в электронном виде, представленного иностранным гражданином и лицом без гражданства не должна вызывать сомнений.</li>
