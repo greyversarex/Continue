@@ -1,12 +1,9 @@
 import OpenAI from "openai";
 
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error('OPENAI_API_KEY is required for translation service');
-}
-
-const openai = new OpenAI({
+// Translation service is optional - if no OPENAI_API_KEY, translation features will be disabled
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-});
+}) : null;
 
 // Supported languages for the tourism platform
 export const SUPPORTED_LANGUAGES = {
@@ -49,6 +46,10 @@ export class TranslationService {
     toLanguage,
     context = 'tour_description'
   }: TranslationRequest): Promise<TranslationResponse> {
+    
+    if (!openai) {
+      throw new Error('Translation service is not available. Please configure OPENAI_API_KEY environment variable.');
+    }
     
     if (fromLanguage === toLanguage) {
       return {
@@ -164,6 +165,11 @@ Respond with only the translated text, no additional commentary.`;
    * Detect language of given text
    */
   async detectLanguage(text: string): Promise<SupportedLanguage> {
+    if (!openai) {
+      console.warn('Translation service not available - defaulting to English');
+      return 'en';
+    }
+    
     try {
       const response = await openai.chat.completions.create({
         model: "gpt-4o",

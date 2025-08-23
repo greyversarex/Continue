@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Category {
@@ -291,7 +291,7 @@ model NewsPost {
   title        String    // JSON multilingual title
   slug         String    @unique
   excerpt      String?   // JSON multilingual excerpt
-  content      String    @db.Text // JSON multilingual content
+  content      String    // JSON multilingual content
   imageUrl     String?   // Featured image URL
   category     NewsCategory
   author       String?
