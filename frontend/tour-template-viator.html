@@ -113,7 +113,7 @@
                                         </svg>
                                     </button>
                                     
-                                    <!-- Share and Wishlist buttons -->
+                                    <!-- Wishlist button only -->
                                     <div class="absolute top-4 right-4 flex space-x-2">
                                         <button id="wishlist-btn" class="bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-lg">
                                             ♡
@@ -134,33 +134,70 @@
 
                 <!-- Tour Info Strip - Directly under gallery -->
                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 -mt-4">
-                    <div class="flex flex-wrap items-center gap-6 text-sm" id="tour-info-strip">
-                        <div class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <span class="text-gray-900 font-medium" id="tour-duration">6-7 часов (прибл.)</span>
+                    <div class="flex flex-wrap items-center justify-between gap-6 text-sm" id="tour-info-strip">
+                        <!-- Left side - Tour details -->
+                        <div class="flex flex-wrap items-center gap-6">
+                            <!-- Время начала -->
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-gray-900 font-medium" id="tour-start-time">Начало: 08:00</span>
+                            </div>
+                            
+                            <!-- Длительность тура -->
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="text-gray-900 font-medium" id="tour-duration">Длительность: 6-7 часов</span>
+                            </div>
+                            
+                            <!-- Приём включен/не включен -->
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 3H4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+                                </svg>
+                                <span class="text-gray-900 font-medium" id="meals-included">Приём не включен</span>
+                            </div>
+                            
+                            <!-- Языки тура -->
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                                </svg>
+                                <span class="text-gray-900 font-medium" id="tour-languages">Языки: Русский, Английский, Таджикский</span>
+                            </div>
                         </div>
                         
+                        <!-- Right side - Share function -->
                         <div class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                            </svg>
-                            <span class="text-gray-900 font-medium">Забор из отеля предлагается</span>
-                        </div>
-                        
-                        <div class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                            </svg>
-                            <span class="text-gray-900 font-medium">Мобильный билет</span>
-                        </div>
-                        
-                        <div class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
-                            </svg>
-                            <span class="text-gray-900 font-medium">Предлагается на: Английский <span class="text-gray-600">и ещё 2</span></span>
+                            <div class="relative">
+                                <button id="share-btn" onclick="toggleShareMenu()" class="flex items-center space-x-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+                                    </svg>
+                                    <span>Поделиться</span>
+                                </button>
+                                
+                                <!-- Share menu -->
+                                <div id="share-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                                    <div class="p-2">
+                                        <button onclick="shareLink()" class="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-gray-100 rounded">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                                            </svg>
+                                            <span>Скопировать ссылку</span>
+                                        </button>
+                                        <button onclick="downloadPDF()" class="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-gray-100 rounded">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            </svg>
+                                            <span>Скачать PDF</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -290,7 +327,7 @@
                     </div>
                     
                     <!-- Date Selector -->
-                    <div class="mb-6">
+                    <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Выберите дату</label>
                         <input 
                             type="date" 
@@ -298,6 +335,35 @@
                             class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             value="2025-08-10"
                             min="2025-08-09">
+                    </div>
+                    
+                    <!-- Duration and Tourist Count -->
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Продолжительность</label>
+                            <select id="duration-select" class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="1">1 день</option>
+                                <option value="2">2 дня</option>
+                                <option value="3">3 дня</option>
+                                <option value="4">4 дня</option>
+                                <option value="5">5 дней</option>
+                                <option value="6">6 дней</option>
+                                <option value="7">7 дней</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Количество туристов</label>
+                            <select id="tourist-count" class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="1">1 турист</option>
+                                <option value="2">2 туриста</option>
+                                <option value="3">3 туриста</option>
+                                <option value="4">4 туриста</option>
+                                <option value="5">5 туристов</option>
+                                <option value="6">6 туристов</option>
+                                <option value="7">7 туристов</option>
+                                <option value="8">8+ туристов</option>
+                            </select>
+                        </div>
                     </div>
                     
                     <!-- Check Availability Button -->
@@ -1095,6 +1161,45 @@
                 loadTourData();
             });
         });
+        // Share functionality
+        function toggleShareMenu() {
+            const shareMenu = document.getElementById('share-menu');
+            shareMenu.classList.toggle('hidden');
+        }
+        
+        function shareLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Ссылка скопирована в буфер обмена!');
+            });
+            toggleShareMenu();
+        }
+        
+        function downloadPDF() {
+            // PDF generation functionality would go here
+            alert('Функция скачивания PDF в разработке');
+            toggleShareMenu();
+        }
+        
+        // Close share menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const shareBtn = document.getElementById('share-btn');
+            const shareMenu = document.getElementById('share-menu');
+            if (!shareBtn.contains(event.target) && !shareMenu.contains(event.target)) {
+                shareMenu.classList.add('hidden');
+            }
+        });
+        
+        // Update availability check with new fields
+        function goToBookingPage() {
+            const date = document.getElementById('tour-date').value;
+            const duration = document.getElementById('duration-select').value;
+            const touristCount = document.getElementById('tourist-count').value;
+            
+            // Here you would typically handle the booking process
+            // For now, just show an alert with the selected values
+            alert(`Выбрано:\nДата: ${date}\nПродолжительность: ${duration} дн.\nКоличество туристов: ${touristCount}`);
+        }
+        
     </script>
 </body>
 </html>

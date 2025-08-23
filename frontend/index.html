@@ -1028,8 +1028,9 @@
                                 <option value="VIP туры">VIP туры</option>
                             </select>
                             
-                            <select id="hotelFilter" class="filter-select">
-                                <option value="">Гостиницы</option>
+                            <!-- Hotel Brand Filter -->
+                            <select id="hotelBrandFilter" class="filter-select" onchange="updateHotelFilters()">
+                                <option value="">Бренд отеля</option>
                                 <optgroup label="Люкс сегмент">
                                     <option value="Four Seasons">Four Seasons</option>
                                     <option value="Ritz-Carlton">Ritz-Carlton</option>
@@ -1081,6 +1082,16 @@
                                     <option value="Crystal Hotels">Crystal Hotels</option>
                                     <option value="Barcelo">Barcelo</option>
                                 </optgroup>
+                            </select>
+                            
+                            <!-- Hotel Stars Filter -->
+                            <select id="hotelStarsFilter" class="filter-select">
+                                <option value="">Звезды отеля</option>
+                                <option value="5">★★★★★</option>
+                                <option value="4">★★★★</option>
+                                <option value="3">★★★</option>
+                                <option value="2">★★</option>
+                                <option value="1">★</option>
                             </select>
                             
                             <input type="date" id="dateFilter" class="filter-date" min="" placeholder="Дата">
@@ -2828,6 +2839,38 @@
                 });
             }
         }
+        
+        // Новая функция для обновления фильтров отелей на основе страны
+        function updateHotelFilters() {
+            const country = document.getElementById('countryFilter').value;
+            const hotelBrandFilter = document.getElementById('hotelBrandFilter');
+            const hotelStarsFilter = document.getElementById('hotelStarsFilter');
+            
+            // Проверяем, что элементы существуют
+            if (!hotelBrandFilter || !hotelStarsFilter) {
+                return;
+            }
+            
+            // Сбрасываем фильтры, если не выбрана страна
+            if (!country) {
+                hotelBrandFilter.disabled = false;
+                hotelStarsFilter.disabled = false;
+                return;
+            }
+            
+            // Включаем фильтры для определённых стран
+            const countriesWithHotels = ['Таджикистан', 'Узбекистан', 'Кыргызстан', 'Казахстан'];
+            
+            if (countriesWithHotels.includes(country)) {
+                hotelBrandFilter.disabled = false;
+                hotelStarsFilter.disabled = false;
+            } else {
+                hotelBrandFilter.disabled = true;
+                hotelStarsFilter.disabled = true;
+                hotelBrandFilter.value = '';
+                hotelStarsFilter.value = '';
+            }
+        }
 
         // Функция для переключения панели фильтров
         function toggleFilterPanel() {
@@ -3015,6 +3058,8 @@
                     format: document.getElementById('formatFilter').value,
                     category: document.getElementById('categoryFilter').value,
                     hotel: document.getElementById('hotelFilter').value,
+                    hotelBrand: document.getElementById('hotelBrandFilter')?.value || '',
+                    hotelStars: document.getElementById('hotelStarsFilter')?.value || '',
                     date: document.getElementById('dateFilter').value
                 };
 
@@ -3172,6 +3217,7 @@
             // Обновляем города и отели для выбранной страны
             updateCities();
             updateHotels();
+            updateHotelFilters();
             
             // Выполняем поиск
             searchTours();

@@ -48,6 +48,11 @@ model Tour {
   theme          String?          // Тематика тура
   startDate      String?          // Дата начала
   endDate        String?          // Дата окончания
+  startTime      String?          // Время начала тура
+  mealsIncluded  Boolean?         @default(false) // Приём включен/не включен
+  languages      String?          // JSON array of tour languages
+  availableMonths String?         // JSON array of available months
+  availableDays  String?          // JSON array of available weekdays
   images         String?          // JSON array of image URLs
   mainImage      String?          // Main card image
   services       String?          // JSON array of included services
@@ -87,7 +92,12 @@ model Hotel {
   images      String?     // JSON array of image URLs
   address     String?
   rating      Float?
+  stars       Int?        // Hotel stars rating (1-5)
   amenities   String?     // JSON array of amenities
+  brand       String?     // Hotel brand (Hilton, Marriott, etc.)
+  category    String?     // Luxury, Premium, Budget
+  country     String?     // Country where hotel is located
+  city        String?     // City where hotel is located
   isActive    Boolean     @default(true)
   tourHotels  TourHotel[]
   orders      Order[]

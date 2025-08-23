@@ -21,6 +21,9 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
     duration: '',
     price: '',
     categoryId: 0,
+    startTime: '',
+    mealsIncluded: false,
+    languages: [] as string[],
     availableMonths: [] as string[],
     availableDays: [] as string[]
   });
@@ -38,8 +41,11 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
         duration: tour.duration || '',
         price: tour.price || '',
         categoryId: tour.categoryId || 0,
-        availableMonths: (tour as any).availableMonths || [],
-        availableDays: (tour as any).availableDays || []
+        startTime: (tour as any).startTime || '',
+        mealsIncluded: (tour as any).mealsIncluded || false,
+        languages: (tour as any).languages ? JSON.parse((tour as any).languages) : [],
+        availableMonths: (tour as any).availableMonths ? JSON.parse((tour as any).availableMonths) : [],
+        availableDays: (tour as any).availableDays ? JSON.parse((tour as any).availableDays) : []
       });
     }
   }, [tour]);
@@ -64,7 +70,7 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
   };
   
   // Handle multiple checkbox selections
-  const handleMultipleSelection = (name: 'availableMonths' | 'availableDays', value: string) => {
+  const handleMultipleSelection = (name: 'availableMonths' | 'availableDays' | 'languages', value: string) => {
     setFormData(prev => {
       const currentValues = prev[name];
       const newValues = currentValues.includes(value)
@@ -96,8 +102,11 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
       duration: formData.duration,
       price: formData.price,
       categoryId: formData.categoryId,
-      availableMonths: formData.availableMonths,
-      availableDays: formData.availableDays
+      startTime: formData.startTime,
+      mealsIncluded: formData.mealsIncluded,
+      languages: JSON.stringify(formData.languages),
+      availableMonths: JSON.stringify(formData.availableMonths),
+      availableDays: JSON.stringify(formData.availableDays)
     };
 
     try {
@@ -126,7 +135,12 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
             description_ru: '',
             duration: '',
             price: '',
-            categoryId: 0
+            categoryId: 0,
+            startTime: '',
+            mealsIncluded: false,
+            languages: [],
+            availableMonths: [],
+            availableDays: []
           });
         }
         
@@ -299,6 +313,67 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
               </option>
             ))}
           </select>
+        </div>
+        
+        {/* Additional Tour Details */}
+        <div className="grid md:grid-cols-3 gap-4">
+          <div>
+            <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
+              Время начала тура
+            </label>
+            <input
+              type="time"
+              id="startTime"
+              name="startTime"
+              value={formData.startTime}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="08:00"
+            />
+          </div>
+          
+          <div className="flex items-center">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                name="mealsIncluded"
+                checked={formData.mealsIncluded}
+                onChange={(e) => setFormData(prev => ({ ...prev, mealsIncluded: e.target.checked }))}
+                className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              />
+              <span className="text-sm font-medium text-gray-700">Приём включен в тур</span>
+            </label>
+          </div>
+        </div>
+        
+        {/* Languages */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Языки тура (select all that apply)
+          </label>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { value: 'russian', label: 'Русский' },
+              { value: 'english', label: 'Английский' },
+              { value: 'tajik', label: 'Таджикский' },
+              { value: 'uzbek', label: 'Узбекский' },
+              { value: 'kyrgyz', label: 'Киргизский' },
+              { value: 'kazakh', label: 'Казахский' },
+              { value: 'turkmen', label: 'Туркменский' },
+              { value: 'persian', label: 'Персидский' },
+              { value: 'arabic', label: 'Арабский' }
+            ].map(language => (
+              <label key={language.value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.languages.includes(language.value)}
+                  onChange={() => handleMultipleSelection('languages', language.value)}
+                  className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                />
+                <span className="text-sm text-gray-700">{language.label}</span>
+              </label>
+            ))}
+          </div>
         </div>
         
         {/* Available Months */}
