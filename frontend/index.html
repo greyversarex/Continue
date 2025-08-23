@@ -995,7 +995,7 @@
                     <!-- Панель фильтров (скрыта по умолчанию) -->
                     <div id="filterPanel" class="filter-panel hidden">
                         <div class="filter-grid">
-                            <select id="countryFilter" class="filter-select" onchange="updateCities()">
+                            <select id="countryFilter" class="filter-select" onchange="updateCities(); updateHotels()"
                                 <option value="">Страна</option>
                                 <option value="Таджикистан">Таджикистан</option>
                                 <option value="Узбекистан">Узбекистан</option>
@@ -1033,6 +1033,61 @@
                                 <option value="Автотуры, сафари, джип-туры">Автотуры, сафари, джип-туры</option>
                                 <option value="Агротуры">Агротуры</option>
                                 <option value="VIP туры">VIP туры</option>
+                            </select>
+                            
+                            <select id="hotelFilter" class="filter-select">
+                                <option value="">Гостиницы</option>
+                                <optgroup label="Люкс сегмент">
+                                    <option value="Four Seasons">Four Seasons</option>
+                                    <option value="Ritz-Carlton">Ritz-Carlton</option>
+                                    <option value="W Hotels">W Hotels</option>
+                                    <option value="St. Regis">St. Regis</option>
+                                    <option value="Waldorf Astoria">Waldorf Astoria</option>
+                                    <option value="Conrad">Conrad</option>
+                                    <option value="Peninsula">Peninsula</option>
+                                    <option value="Aman">Aman</option>
+                                    <option value="Rosewood">Rosewood</option>
+                                </optgroup>
+                                <optgroup label="Премиум сегмент">
+                                    <option value="Hilton">Hilton Hotels & Resorts</option>
+                                    <option value="Marriott">Marriott Hotels</option>
+                                    <option value="Sheraton">Sheraton</option>
+                                    <option value="Westin">Westin</option>
+                                    <option value="Hyatt">Hyatt</option>
+                                    <option value="InterContinental">InterContinental</option>
+                                    <option value="Crowne Plaza">Crowne Plaza</option>
+                                    <option value="DoubleTree">DoubleTree</option>
+                                    <option value="Renaissance">Renaissance Hotels</option>
+                                    <option value="Fairmont">Fairmont</option>
+                                    <option value="Sofitel">Sofitel</option>
+                                    <option value="Pullman">Pullman</option>
+                                </optgroup>
+                                <optgroup label="Средний сегмент">
+                                    <option value="Holiday Inn">Holiday Inn</option>
+                                    <option value="Courtyard">Courtyard by Marriott</option>
+                                    <option value="Hampton Inn">Hampton Inn</option>
+                                    <option value="Residence Inn">Residence Inn</option>
+                                    <option value="Hotel Indigo">Hotel Indigo</option>
+                                    <option value="Cambria">Cambria Hotels</option>
+                                    <option value="Radisson">Radisson</option>
+                                    <option value="Novotel">Novotel</option>
+                                    <option value="Ibis">Ibis</option>
+                                </optgroup>
+                                <optgroup label="Бюджетный сегмент">
+                                    <option value="Holiday Inn Express">Holiday Inn Express</option>
+                                    <option value="Days Inn">Days Inn</option>
+                                    <option value="Super 8">Super 8</option>
+                                    <option value="Ramada">Ramada</option>
+                                    <option value="Comfort Inn">Comfort Inn</option>
+                                    <option value="Best Western">Best Western</option>
+                                </optgroup>
+                                <optgroup label="Местные и региональные">
+                                    <option value="Serena Hotels">Serena Hotels</option>
+                                    <option value="Golden Tulip">Golden Tulip</option>
+                                    <option value="Maritim">Maritim</option>
+                                    <option value="Crystal Hotels">Crystal Hotels</option>
+                                    <option value="Barcelo">Barcelo</option>
+                                </optgroup>
                             </select>
                             
                             <input type="date" id="dateFilter" class="filter-date" min="" placeholder="Дата">
@@ -2702,6 +2757,40 @@
             'Туркменистан': ['Ашхабад', 'Туркменабад', 'Дашогуз', 'Мары', 'Балканабад']
         };
 
+        // Данные отелей по странам
+        const hotelsByCountry = {
+            'Таджикистан': [
+                {group: 'Люкс сегмент', hotels: ['Serena Hotels', 'Crystal Hotels']},
+                {group: 'Премиум сегмент', hotels: ['Hilton', 'Marriott', 'InterContinental', 'Hyatt']},
+                {group: 'Средний сегмент', hotels: ['Holiday Inn', 'Radisson', 'Novotel']},
+                {group: 'Местные и региональные', hotels: ['Golden Tulip', 'Maritim']}
+            ],
+            'Узбекистан': [
+                {group: 'Люкс сегмент', hotels: ['Four Seasons', 'Ritz-Carlton', 'St. Regis']},
+                {group: 'Премиум сегмент', hotels: ['Hilton', 'Marriott', 'Hyatt', 'InterContinental', 'Sheraton', 'Westin']},
+                {group: 'Средний сегмент', hotels: ['Holiday Inn', 'Courtyard', 'Radisson', 'Novotel', 'Ibis']},
+                {group: 'Местные и региональные', hotels: ['Serena Hotels', 'Golden Tulip', 'Barcelo']}
+            ],
+            'Казахстан': [
+                {group: 'Люкс сегмент', hotels: ['Ritz-Carlton', 'St. Regis', 'Four Seasons']},
+                {group: 'Премиум сегмент', hotels: ['Marriott', 'Hilton', 'InterContinental', 'Hyatt', 'Sheraton']},
+                {group: 'Средний сегмент', hotels: ['Holiday Inn', 'Radisson', 'Courtyard', 'Hampton Inn']},
+                {group: 'Бюджетный сегмент', hotels: ['Holiday Inn Express', 'Comfort Inn', 'Best Western']}
+            ],
+            'Кыргызстан': [
+                {group: 'Премиум сегмент', hotels: ['Hyatt', 'Sheraton']},
+                {group: 'Средний сегмент', hotels: ['Radisson', 'Novotel', 'Holiday Inn']},
+                {group: 'Бюджетный сегмент', hotels: ['Best Western', 'Comfort Inn']},
+                {group: 'Местные и региональные', hotels: ['Golden Tulip', 'Crystal Hotels']}
+            ],
+            'Туркменистан': [
+                {group: 'Люкс сегмент', hotels: ['Aman']},
+                {group: 'Премиум сегмент', hotels: ['Sheraton', 'Sofitel']},
+                {group: 'Средний сегмент', hotels: ['Radisson', 'Holiday Inn']},
+                {group: 'Местные и региональные', hotels: ['Golden Tulip', 'Maritim']}
+            ]
+        };
+
         // Функция для обновления списка городов
         function updateCities() {
             const countrySelect = document.getElementById('countryFilter');
@@ -2717,6 +2806,32 @@
                     option.value = city;
                     option.textContent = city;
                     citySelect.appendChild(option);
+                });
+            }
+        }
+
+        // Функция для обновления списка отелей
+        function updateHotels() {
+            const countrySelect = document.getElementById('countryFilter');
+            const hotelSelect = document.getElementById('hotelFilter');
+            
+            // Очищаем список отелей
+            hotelSelect.innerHTML = '<option value="">Гостиницы</option>';
+            
+            const selectedCountry = countrySelect.value;
+            if (selectedCountry && hotelsByCountry[selectedCountry]) {
+                hotelsByCountry[selectedCountry].forEach(group => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = group.group;
+                    
+                    group.hotels.forEach(hotel => {
+                        const option = document.createElement('option');
+                        option.value = hotel;
+                        option.textContent = hotel;
+                        optgroup.appendChild(option);
+                    });
+                    
+                    hotelSelect.appendChild(optgroup);
                 });
             }
         }
@@ -2862,6 +2977,7 @@
                 city: document.getElementById('cityFilter').value,
                 format: document.getElementById('formatFilter').value,
                 category: document.getElementById('categoryFilter').value,
+                hotel: document.getElementById('hotelFilter').value,
                 date: document.getElementById('dateFilter').value
             };
             
@@ -2905,6 +3021,7 @@
                     city: document.getElementById('cityFilter').value,
                     format: document.getElementById('formatFilter').value,
                     category: document.getElementById('categoryFilter').value,
+                    hotel: document.getElementById('hotelFilter').value,
                     date: document.getElementById('dateFilter').value
                 };
 
@@ -3036,13 +3153,15 @@
             document.getElementById('cityFilter').value = '';
             document.getElementById('formatFilter').value = '';
             document.getElementById('categoryFilter').value = '';
+            document.getElementById('hotelFilter').value = '';
             document.getElementById('dateFilter').value = '';
             
             // Скрыть панель фильтров
             document.getElementById('filterPanel').classList.add('hidden');
             
-            // Обновляем список городов
+            // Обновляем список городов и отелей
             updateCities();
+            updateHotels();
         }
 
         // Функция для фильтрации по стране из карточек
@@ -3057,8 +3176,9 @@
                 document.getElementById('themeFilter').value = '';
             }
             
-            // Обновляем города для выбранной страны
+            // Обновляем города и отели для выбранной страны
             updateCities();
+            updateHotels();
             
             // Выполняем поиск
             searchTours();

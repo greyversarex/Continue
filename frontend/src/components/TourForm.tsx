@@ -20,7 +20,9 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
     description_ru: '',
     duration: '',
     price: '',
-    categoryId: 0
+    categoryId: 0,
+    availableMonths: [] as string[],
+    availableDays: [] as string[]
   });
 
   useEffect(() => {
@@ -35,7 +37,9 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
         description_ru: tour.description.ru || '',
         duration: tour.duration || '',
         price: tour.price || '',
-        categoryId: tour.categoryId || 0
+        categoryId: tour.categoryId || 0,
+        availableMonths: (tour as any).availableMonths || [],
+        availableDays: (tour as any).availableDays || []
       });
     }
   }, [tour]);
@@ -58,6 +62,21 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
       [name]: name === 'categoryId' ? parseInt(value) || 0 : value
     }));
   };
+  
+  // Handle multiple checkbox selections
+  const handleMultipleSelection = (name: 'availableMonths' | 'availableDays', value: string) => {
+    setFormData(prev => {
+      const currentValues = prev[name];
+      const newValues = currentValues.includes(value)
+        ? currentValues.filter(item => item !== value)
+        : [...currentValues, value];
+      
+      return {
+        ...prev,
+        [name]: newValues
+      };
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +95,9 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
       },
       duration: formData.duration,
       price: formData.price,
-      categoryId: formData.categoryId
+      categoryId: formData.categoryId,
+      availableMonths: formData.availableMonths,
+      availableDays: formData.availableDays
     };
 
     try {
@@ -278,6 +299,67 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
               </option>
             ))}
           </select>
+        </div>
+        
+        {/* Available Months */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Available Months (select all that apply)
+          </label>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { value: 'january', label: 'Январь' },
+              { value: 'february', label: 'Февраль' },
+              { value: 'march', label: 'Март' },
+              { value: 'april', label: 'Апрель' },
+              { value: 'may', label: 'Май' },
+              { value: 'june', label: 'Июнь' },
+              { value: 'july', label: 'Июль' },
+              { value: 'august', label: 'Август' },
+              { value: 'september', label: 'Сентябрь' },
+              { value: 'october', label: 'Октябрь' },
+              { value: 'november', label: 'Ноябрь' },
+              { value: 'december', label: 'Декабрь' }
+            ].map(month => (
+              <label key={month.value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.availableMonths.includes(month.value)}
+                  onChange={() => handleMultipleSelection('availableMonths', month.value)}
+                  className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                />
+                <span className="text-sm text-gray-700">{month.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+        
+        {/* Available Days of Week */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Available Days of Week (select all that apply)
+          </label>
+          <div className="grid grid-cols-4 gap-3">
+            {[
+              { value: 'monday', label: 'Понедельник' },
+              { value: 'tuesday', label: 'Вторник' },
+              { value: 'wednesday', label: 'Среда' },
+              { value: 'thursday', label: 'Четверг' },
+              { value: 'friday', label: 'Пятница' },
+              { value: 'saturday', label: 'Суббота' },
+              { value: 'sunday', label: 'Воскресенье' }
+            ].map(day => (
+              <label key={day.value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.availableDays.includes(day.value)}
+                  onChange={() => handleMultipleSelection('availableDays', day.value)}
+                  className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                />
+                <span className="text-sm text-gray-700">{day.label}</span>
+              </label>
+            ))}
+          </div>
         </div>
 
         {/* Action Buttons */}

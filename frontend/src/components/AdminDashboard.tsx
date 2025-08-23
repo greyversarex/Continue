@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import TourForm from './TourForm';
+import HotelForm from './HotelForm';
 import BookingsTable from './BookingsTable';
 import ReviewsTable from './ReviewsTable';
 import { Tour, Category, BookingRequest, Review } from '../types';
@@ -15,7 +16,7 @@ interface AdminStats {
 
 const AdminDashboard: React.FC = () => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'overview' | 'tours' | 'bookings' | 'reviews' | 'categories'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'tours' | 'hotels' | 'bookings' | 'reviews' | 'categories'>('overview');
   const [stats, setStats] = useState<AdminStats>({
     totalTours: 0,
     totalBookings: 0,
@@ -23,9 +24,12 @@ const AdminDashboard: React.FC = () => {
     pendingReviews: 0
   });
   const [tours, setTours] = useState<Tour[]>([]);
+  const [hotels, setHotels] = useState<any[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedTour, setSelectedTour] = useState<Tour | null>(null);
   const [showTourForm, setShowTourForm] = useState(false);
+  const [selectedHotel, setSelectedHotel] = useState<any | null>(null);
+  const [showHotelForm, setShowHotelForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -34,8 +38,9 @@ const AdminDashboard: React.FC = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [toursRes, categoriesRes, bookingsRes, reviewsRes] = await Promise.all([
+      const [toursRes, hotelsRes, categoriesRes, bookingsRes, reviewsRes] = await Promise.all([
         axios.get('http://localhost:3001/api/tours'),
+        axios.get('http://localhost:3001/api/hotels'),
         axios.get('http://localhost:3001/api/categories'),
         axios.get('http://localhost:3001/api/tours/booking-requests'),
         axios.get('http://localhost:3001/api/tours/reviews')
@@ -43,6 +48,10 @@ const AdminDashboard: React.FC = () => {
 
       if (toursRes.data.success) {
         setTours(toursRes.data.data);
+      }
+
+      if (hotelsRes.data.success) {
+        setHotels(hotelsRes.data.data);
       }
 
       if (categoriesRes.data.success) {
@@ -96,6 +105,31 @@ const AdminDashboard: React.FC = () => {
     fetchDashboardData();
   };
 
+  const handleEditHotel = (hotel: any) => {
+    setSelectedHotel(hotel);
+    setShowHotelForm(true);
+  };
+
+  const handleDeleteHotel = async (hotelId: number) => {
+    if (window.confirm('Вы уверены, что хотите удалить этот отель?')) {
+      try {
+        const response = await axios.delete(`http://localhost:3001/api/hotels/${hotelId}`);
+        if (response.data.success) {
+          setHotels(hotels.filter(hotel => hotel.id !== hotelId));
+        }
+      } catch (error) {
+        console.error('Error deleting hotel:', error);
+        alert('Ошибка при удалении отеля');
+      }
+    }
+  };
+
+  const handleHotelFormClose = () => {
+    setShowHotelForm(false);
+    setSelectedHotel(null);
+    fetchDashboardData();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -130,6 +164,7 @@ const AdminDashboard: React.FC = () => {
             {[
               { key: 'overview', label: 'Обзор', icon: '📊' },
               { key: 'tours', label: 'Туры', icon: '🏔️' },
+              { key: 'hotels', label: 'Отели', icon: '🏨' },
               { key: 'bookings', label: 'Заказы', icon: '📋' },
               { key: 'reviews', label: 'Отзывы', icon: '⭐' },
               { key: 'categories', label: 'Категории', icon: '📁' }
@@ -305,6 +340,89 @@ const AdminDashboard: React.FC = () => {
           </div>
         )}
 
+        {activeTab === 'hotels' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-900">Управление отелями</h2>
+              <button
+                onClick={() => setShowHotelForm(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
+              >
+                Добавить отель
+              </button>
+            </div>
+
+            <div className="bg-white shadow rounded-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Отель
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Расположение
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Рейтинг
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Статус
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Действия
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {hotels.map((hotel) => (
+                      <tr key={hotel.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {typeof hotel.name === 'object' ? hotel.name.ru || hotel.name.en : hotel.name}
+                            </div>
+                            <div className="text-sm text-gray-500">{hotel.brand || 'Независимый отель'}</div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {hotel.city}, {hotel.country}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {hotel.rating ? `${hotel.rating} звезд` : 'Не указан'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            hotel.isActive 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-red-100 text-red-800'
+                          }`}>
+                            {hotel.isActive ? 'Активен' : 'Неактивен'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button
+                            onClick={() => handleEditHotel(hotel)}
+                            className="text-indigo-600 hover:text-indigo-900 mr-4"
+                          >
+                            Редактировать
+                          </button>
+                          <button
+                            onClick={() => handleDeleteHotel(hotel.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Удалить
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeTab === 'bookings' && <BookingsTable />}
         {activeTab === 'reviews' && <ReviewsTable />}
         
@@ -351,7 +469,29 @@ const AdminDashboard: React.FC = () => {
                   ✕
                 </button>
               </div>
-              <TourForm tour={selectedTour} onClose={handleTourFormClose} />
+              <TourForm tour={selectedTour} onSuccess={handleTourFormClose} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hotel Form Modal */}
+      {showHotelForm && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium text-gray-900">
+                  {selectedHotel ? 'Редактировать отель' : 'Добавить новый отель'}
+                </h3>
+                <button
+                  onClick={handleHotelFormClose}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+              </div>
+              <HotelForm hotel={selectedHotel} onSuccess={handleHotelFormClose} />
             </div>
           </div>
         </div>
