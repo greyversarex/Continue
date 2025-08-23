@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import TourForm from './TourForm';
 import HotelForm from './HotelForm';
+import NewsForm from './NewsForm';
 import BookingsTable from './BookingsTable';
 import ReviewsTable from './ReviewsTable';
 import { Tour, Category, BookingRequest, Review } from '../types';
@@ -16,7 +17,7 @@ interface AdminStats {
 
 const AdminDashboard: React.FC = () => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'overview' | 'tours' | 'hotels' | 'bookings' | 'reviews' | 'categories'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'tours' | 'hotels' | 'bookings' | 'reviews' | 'categories' | 'news'>('overview');
   const [stats, setStats] = useState<AdminStats>({
     totalTours: 0,
     totalBookings: 0,
@@ -26,6 +27,9 @@ const AdminDashboard: React.FC = () => {
   const [tours, setTours] = useState<Tour[]>([]);
   const [hotels, setHotels] = useState<any[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [news, setNews] = useState<any[]>([]);
+  const [selectedNews, setSelectedNews] = useState<any | null>(null);
+  const [showNewsForm, setShowNewsForm] = useState(false);
   const [selectedTour, setSelectedTour] = useState<Tour | null>(null);
   const [showTourForm, setShowTourForm] = useState(false);
   const [selectedHotel, setSelectedHotel] = useState<any | null>(null);
@@ -38,12 +42,13 @@ const AdminDashboard: React.FC = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [toursRes, hotelsRes, categoriesRes, bookingsRes, reviewsRes] = await Promise.all([
+      const [toursRes, hotelsRes, categoriesRes, bookingsRes, reviewsRes, newsRes] = await Promise.all([
         axios.get('http://localhost:3001/api/tours'),
         axios.get('http://localhost:3001/api/hotels'),
         axios.get('http://localhost:3001/api/categories'),
         axios.get('http://localhost:3001/api/tours/booking-requests'),
-        axios.get('http://localhost:3001/api/tours/reviews')
+        axios.get('http://localhost:3001/api/tours/reviews'),
+        axios.get('http://localhost:3001/api/news/admin/all')
       ]);
 
       if (toursRes.data.success) {
@@ -56,6 +61,10 @@ const AdminDashboard: React.FC = () => {
 
       if (categoriesRes.data.success) {
         setCategories(categoriesRes.data.data);
+      }
+
+      if (newsRes.data.success) {
+        setNews(newsRes.data.data.news);
       }
 
       // Calculate stats
@@ -124,6 +133,27 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  // News management functions
+  const handleDeleteNews = async (newsId: number) => {
+    if (window.confirm('Вы уверены, что хотите удалить эту новость?')) {
+      try {
+        const response = await axios.delete(`http://localhost:3001/api/news/admin/${newsId}`);
+        if (response.data.success) {
+          setNews(news.filter(article => article.id !== newsId));
+        }
+      } catch (error) {
+        console.error('Error deleting news:', error);
+        alert('Ошибка при удалении новости');
+      }
+    }
+  };
+
+  const handleNewsFormClose = () => {
+    setShowNewsForm(false);
+    setSelectedNews(null);
+    fetchDashboardData(); // Refresh data
+  };
+
   const handleHotelFormClose = () => {
     setShowHotelForm(false);
     setSelectedHotel(null);
@@ -167,7 +197,8 @@ const AdminDashboard: React.FC = () => {
               { key: 'hotels', label: 'Отели', icon: '🏨' },
               { key: 'bookings', label: 'Заказы', icon: '📋' },
               { key: 'reviews', label: 'Отзывы', icon: '⭐' },
-              { key: 'categories', label: 'Категории', icon: '📁' }
+              { key: 'categories', label: 'Категории', icon: '📁' },
+              { key: 'news', label: 'Новости', icon: '📰' }
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -451,6 +482,135 @@ const AdminDashboard: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Раздел новостей */}
+        {activeTab === 'news' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-900">Управление новостями</h2>
+              <button
+                onClick={() => {
+                  setSelectedNews(null);
+                  setShowNewsForm(true);
+                }}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Добавить новость
+              </button>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Заголовок
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Категория
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Статус
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Дата
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Просмотры
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Действия
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {news.map((article) => {
+                      const title = typeof article.title === 'string' 
+                        ? (function() {
+                            try {
+                              return JSON.parse(article.title).ru || article.title;
+                            } catch {
+                              return article.title;
+                            }
+                          })()
+                        : article.title;
+                      
+                      return (
+                        <tr key={article.id}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              {article.image && (
+                                <img 
+                                  src={article.image} 
+                                  alt={title} 
+                                  className="w-10 h-10 rounded-lg mr-3 object-cover"
+                                />
+                              )}
+                              <div>
+                                <div className="text-sm font-medium text-gray-900 truncate max-w-xs">
+                                  {title}
+                                </div>
+                                {article.isFeatured && (
+                                  <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                                    Рекомендуемое
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                              {article.category}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              article.isPublished 
+                                ? 'bg-green-100 text-green-800' 
+                                : 'bg-red-100 text-red-800'
+                            }`}>
+                              {article.isPublished ? 'Опубликовано' : 'Черновик'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {new Date(article.publishedAt).toLocaleDateString('ru-RU')}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {article.views || 0}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button 
+                              onClick={() => {
+                                setSelectedNews(article);
+                                setShowNewsForm(true);
+                              }}
+                              className="text-indigo-600 hover:text-indigo-900 mr-4"
+                            >
+                              Редактировать
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteNews(article.id)}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              Удалить
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                
+                {news.length === 0 && (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">Новостей пока нет</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tour Form Modal */}
@@ -492,6 +652,28 @@ const AdminDashboard: React.FC = () => {
                 </button>
               </div>
               <HotelForm hotel={selectedHotel} onSuccess={handleHotelFormClose} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* News Form Modal */}
+      {showNewsForm && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-6xl shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium text-gray-900">
+                  {selectedNews ? 'Редактировать новость' : 'Добавить новую новость'}
+                </h3>
+                <button
+                  onClick={handleNewsFormClose}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+              </div>
+              <NewsForm news={selectedNews} onSuccess={handleNewsFormClose} />
             </div>
           </div>
         </div>

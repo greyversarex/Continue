@@ -223,6 +223,30 @@ model Admin {
   @@map("admins")
 }
 
+model News {
+  id           Int      @id @default(autoincrement())
+  title        String   // JSON field for multilingual content
+  content      String   // JSON field for multilingual content
+  excerpt      String?  // JSON field for short description
+  category     String   // Category: "Новости компании", "Туризм", "События", "Пресс-релиз"
+  image        String?  // Main image URL
+  images       String?  // JSON array of additional image URLs
+  tags         String?  // JSON array of tags
+  author       String   @default("Bunyod-Tour")
+  isPublished  Boolean  @default(true) @map("is_published")
+  isFeatured   Boolean  @default(false) @map("is_featured")
+  publishedAt  DateTime @default(now()) @map("published_at")
+  slug         String   @unique // URL slug for SEO
+  metaTitle    String?  @map("meta_title") // JSON field for SEO title
+  metaDescription String? @map("meta_description") // JSON field for SEO description
+  views        Int      @default(0) // View counter
+  readTime     Int?     @map("read_time") // Estimated read time in minutes
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("news")
+}
+
 // CMS модели для управления контентом сайта
 model ContentBlock {
   id          Int      @id @default(autoincrement())

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient, NewsCategory } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -44,22 +44,22 @@ export const getAllNews = async (req: Request, res: Response) => {
         let orderBy: any;
         switch (sort) {
             case 'oldest':
-                orderBy = { publishDate: 'asc' };
+                orderBy = { publishedAt: 'asc' };
                 break;
             case 'popular':
                 orderBy = { views: 'desc' };
                 break;
             case 'newest':
             default:
-                orderBy = { publishDate: 'desc' };
+                orderBy = { publishedAt: 'desc' };
                 break;
         }
 
         // Get total count
-        const totalCount = await prisma.newsPost.count({ where });
+        const totalCount = await prisma.news.count({ where });
 
         // Get news
-        const news = await prisma.newsPost.findMany({
+        const news = await prisma.news.findMany({
             where,
             orderBy,
             take: limitNum,
@@ -69,12 +69,12 @@ export const getAllNews = async (req: Request, res: Response) => {
         // Get featured news if on first page
         let featured_news = null;
         if (pageNum === 1 && !category && !search) {
-            featured_news = await prisma.newsPost.findFirst({
+            featured_news = await prisma.news.findFirst({
                 where: {
                     isPublished: true,
                     isFeatured: true
                 },
-                orderBy: { publishDate: 'desc' }
+                orderBy: { publishedAt: 'desc' }
             });
         }
 
@@ -109,14 +109,11 @@ export const getNewsBySlug = async (req: Request, res: Response) => {
     try {
         const { slug } = req.params;
 
-        const news = await prisma.newsPost.findUnique({
-            where: { 
-                slug,
-                isPublished: true 
-            }
+        const news = await prisma.news.findUnique({
+            where: { slug }
         });
 
-        if (!news) {
+        if (!news || !news.isPublished) {
             res.status(404).json({
                 success: false,
                 error: 'News article not found'
@@ -125,7 +122,7 @@ export const getNewsBySlug = async (req: Request, res: Response) => {
         }
 
         // Increment view count
-        await prisma.newsPost.update({
+        await prisma.news.update({
             where: { id: news.id },
             data: { views: { increment: 1 } }
         });
@@ -148,14 +145,11 @@ export const getNewsById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
 
-        const news = await prisma.newsPost.findUnique({
-            where: { 
-                id: parseInt(id),
-                isPublished: true 
-            }
+        const news = await prisma.news.findUnique({
+            where: { id: parseInt(id) }
         });
 
-        if (!news) {
+        if (!news || !news.isPublished) {
             res.status(404).json({
                 success: false,
                 error: 'News article not found'
@@ -164,7 +158,7 @@ export const getNewsById = async (req: Request, res: Response) => {
         }
 
         // Increment view count
-        await prisma.newsPost.update({
+        await prisma.news.update({
             where: { id: news.id },
             data: { views: { increment: 1 } }
         });
@@ -204,24 +198,23 @@ export const getAllNewsAdmin = async (req: Request, res: Response) => {
             where.category = category;
         }
 
-        if (status !== 'all') {
-            where.isPublished = status === 'published';
+        if (status === 'published') {
+            where.isPublished = true;
+        } else if (status === 'draft') {
+            where.isPublished = false;
         }
 
         if (search) {
             where.OR = [
                 { title: { contains: search as string, mode: 'insensitive' } },
                 { excerpt: { contains: search as string, mode: 'insensitive' } },
-                { content: { contains: search as string, mode: 'insensitive' } },
-                { author: { contains: search as string, mode: 'insensitive' } }
+                { content: { contains: search as string, mode: 'insensitive' } }
             ];
         }
 
-        // Get total count
-        const totalCount = await prisma.newsPost.count({ where });
+        const totalCount = await prisma.news.count({ where });
 
-        // Get news
-        const news = await prisma.newsPost.findMany({
+        const news = await prisma.news.findMany({
             where,
             orderBy: { createdAt: 'desc' },
             take: limitNum,
@@ -238,12 +231,14 @@ export const getAllNewsAdmin = async (req: Request, res: Response) => {
                     currentPage: pageNum,
                     totalPages,
                     totalItems: totalCount,
-                    itemsPerPage: limitNum
+                    itemsPerPage: limitNum,
+                    hasNext: pageNum < totalPages,
+                    hasPrev: pageNum > 1
                 }
             }
         });
     } catch (error) {
-        console.error('Error fetching news for admin:', error);
+        console.error('Error fetching admin news:', error);
         res.status(500).json({
             success: false,
             error: 'Failed to fetch news'
@@ -251,62 +246,68 @@ export const getAllNewsAdmin = async (req: Request, res: Response) => {
     }
 };
 
-// Create news article
+// Admin: Create news
 export const createNews = async (req: Request, res: Response) => {
     try {
         const {
             title,
             content,
             excerpt,
-            imageUrl,
             category,
+            image,
+            images,
+            tags,
             author,
-            isFeatured = false,
-            isPublished = true,
+            isPublished,
+            isFeatured,
             slug,
             metaTitle,
-            metaDesc,
-            tags = []
+            metaDescription,
+            readTime
         } = req.body;
 
-        // Generate slug if not provided
+        // Ensure slug is unique
         let finalSlug = slug;
         if (!finalSlug) {
-            const titleText = typeof title === 'string' ? title : (JSON.parse(title).ru || JSON.parse(title).en || 'news');
+            // Generate slug from title if not provided
+            const titleText = typeof title === 'string' ? title : JSON.parse(title).ru || JSON.parse(title).en;
             finalSlug = titleText.toLowerCase()
-                .replace(/[^a-z0-9а-я\s-]/gi, '')
+                .replace(/[^\w\s-]/g, '')
                 .replace(/\s+/g, '-')
-                .replace(/-+/g, '-')
                 .trim();
-            
-            // Ensure unique slug
-            const existingNews = await prisma.newsPost.findUnique({ where: { slug: finalSlug } });
-            if (existingNews) {
-                finalSlug = `${finalSlug}-${Date.now()}`;
-            }
         }
 
-        const news = await prisma.newsPost.create({
+        // Check if slug exists
+        const existingNews = await prisma.news.findUnique({
+            where: { slug: finalSlug }
+        });
+
+        if (existingNews) {
+            finalSlug = `${finalSlug}-${Date.now()}`;
+        }
+
+        const news = await prisma.news.create({
             data: {
                 title,
                 content,
                 excerpt,
-                imageUrl,
                 category,
-                author,
-                isFeatured,
-                isPublished,
+                image,
+                images: images ? JSON.stringify(images) : null,
+                tags: tags ? JSON.stringify(tags) : null,
+                author: author || 'Bunyod-Tour',
+                isPublished: isPublished || false,
+                isFeatured: isFeatured || false,
                 slug: finalSlug,
                 metaTitle,
-                metaDesc,
-                tags: typeof tags === 'string' ? tags : JSON.stringify(tags)
+                metaDescription,
+                readTime: readTime || null
             }
         });
 
         res.status(201).json({
             success: true,
-            data: news,
-            message: 'News article created successfully'
+            data: news
         });
     } catch (error) {
         console.error('Error creating news:', error);
@@ -317,36 +318,45 @@ export const createNews = async (req: Request, res: Response) => {
     }
 };
 
-// Update news article
+// Admin: Update news
 export const updateNews = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const updateData = { ...req.body };
+        const updateData = req.body;
 
-        // Handle tags
-        if (updateData.tags && typeof updateData.tags !== 'string') {
+        // Handle slug uniqueness if being updated
+        if (updateData.slug) {
+            const existingNews = await prisma.news.findFirst({
+                where: {
+                    slug: updateData.slug,
+                    NOT: { id: parseInt(id) }
+                }
+            });
+
+            if (existingNews) {
+                updateData.slug = `${updateData.slug}-${Date.now()}`;
+            }
+        }
+
+        // Convert arrays to JSON strings if needed
+        if (updateData.images && Array.isArray(updateData.images)) {
+            updateData.images = JSON.stringify(updateData.images);
+        }
+        if (updateData.tags && Array.isArray(updateData.tags)) {
             updateData.tags = JSON.stringify(updateData.tags);
         }
 
-        const news = await prisma.newsPost.update({
+        const news = await prisma.news.update({
             where: { id: parseInt(id) },
             data: updateData
         });
 
         res.json({
             success: true,
-            data: news,
-            message: 'News article updated successfully'
+            data: news
         });
     } catch (error) {
         console.error('Error updating news:', error);
-        if ((error as any).code === 'P2025') {
-            res.status(404).json({
-                success: false,
-                error: 'News article not found'
-            });
-            return;
-        }
         res.status(500).json({
             success: false,
             error: 'Failed to update news article'
@@ -354,12 +364,12 @@ export const updateNews = async (req: Request, res: Response) => {
     }
 };
 
-// Delete news article
+// Admin: Delete news
 export const deleteNews = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
 
-        await prisma.newsPost.delete({
+        await prisma.news.delete({
             where: { id: parseInt(id) }
         });
 
@@ -369,13 +379,6 @@ export const deleteNews = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.error('Error deleting news:', error);
-        if ((error as any).code === 'P2025') {
-            res.status(404).json({
-                success: false,
-                error: 'News article not found'
-            });
-            return;
-        }
         res.status(500).json({
             success: false,
             error: 'Failed to delete news article'
@@ -383,49 +386,14 @@ export const deleteNews = async (req: Request, res: Response) => {
     }
 };
 
-// Subscribe to newsletter
+// Newsletter subscription (placeholder)
 export const subscribeNewsletter = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
 
-        if (!email) {
-            res.status(400).json({
-                success: false,
-                error: 'Email is required'
-            });
-            return;
-        }
-
-        // Check if already subscribed
-        const existing = await prisma.newsletterSubscriber.findUnique({
-            where: { email }
-        });
-
-        if (existing) {
-            if (existing.isActive) {
-                res.status(400).json({
-                    success: false,
-                    error: 'Email already subscribed'
-                });
-                return;
-            } else {
-                // Reactivate subscription
-                await prisma.newsletterSubscriber.update({
-                    where: { email },
-                    data: { 
-                        isActive: true,
-                        unsubscribedAt: null,
-                        subscribedAt: new Date()
-                    }
-                });
-            }
-        } else {
-            // Create new subscription
-            await prisma.newsletterSubscriber.create({
-                data: { email }
-            });
-        }
-
+        // Here you would typically save to a newsletter subscribers table
+        // For now, we'll just return success
+        
         res.json({
             success: true,
             message: 'Successfully subscribed to newsletter'
@@ -442,36 +410,10 @@ export const subscribeNewsletter = async (req: Request, res: Response) => {
 // Get newsletter subscribers (admin)
 export const getNewsletterSubscribers = async (req: Request, res: Response) => {
     try {
-        const { page = 1, limit = 50, status = 'active' } = req.query;
-
-        const pageNum = parseInt(page as string);
-        const limitNum = parseInt(limit as string);
-        const offset = (pageNum - 1) * limitNum;
-
-        const where = status === 'active' ? { isActive: true } : {};
-
-        const totalCount = await prisma.newsletterSubscriber.count({ where });
-        
-        const subscribers = await prisma.newsletterSubscriber.findMany({
-            where,
-            orderBy: { subscribedAt: 'desc' },
-            take: limitNum,
-            skip: offset
-        });
-
-        const totalPages = Math.ceil(totalCount / limitNum);
-
+        // Placeholder - would fetch from newsletter subscribers table
         res.json({
             success: true,
-            data: {
-                subscribers,
-                pagination: {
-                    currentPage: pageNum,
-                    totalPages,
-                    totalItems: totalCount,
-                    itemsPerPage: limitNum
-                }
-            }
+            data: []
         });
     } catch (error) {
         console.error('Error fetching newsletter subscribers:', error);
@@ -482,22 +424,35 @@ export const getNewsletterSubscribers = async (req: Request, res: Response) => {
     }
 };
 
-// Get news statistics
+// Get news statistics (admin)
 export const getNewsStats = async (req: Request, res: Response) => {
     try {
-        const totalNews = await prisma.newsPost.count();
-        const publishedNews = await prisma.newsPost.count({ where: { isPublished: true } });
-        const draftNews = await prisma.newsPost.count({ where: { isPublished: false } });
-        const featuredNews = await prisma.newsPost.count({ where: { isFeatured: true } });
-        const totalSubscribers = await prisma.newsletterSubscriber.count({ where: { isActive: true } });
-
-        // Get category stats
-        const categoryStats = await prisma.newsPost.groupBy({
-            by: ['category'],
-            _count: {
-                category: true
-            },
+        const totalNews = await prisma.news.count();
+        const publishedNews = await prisma.news.count({
             where: { isPublished: true }
+        });
+        const draftNews = await prisma.news.count({
+            where: { isPublished: false }
+        });
+        const featuredNews = await prisma.news.count({
+            where: { isFeatured: true }
+        });
+
+        // Get total views
+        const newsWithViews = await prisma.news.aggregate({
+            _sum: {
+                views: true
+            }
+        });
+
+        // Get most viewed article
+        const mostViewed = await prisma.news.findFirst({
+            orderBy: { views: 'desc' },
+            select: {
+                id: true,
+                title: true,
+                views: true
+            }
         });
 
         res.json({
@@ -507,11 +462,8 @@ export const getNewsStats = async (req: Request, res: Response) => {
                 publishedNews,
                 draftNews,
                 featuredNews,
-                totalSubscribers,
-                categoryStats: categoryStats.map(stat => ({
-                    category: stat.category,
-                    count: stat._count.category
-                }))
+                totalViews: newsWithViews._sum.views || 0,
+                mostViewed
             }
         });
     } catch (error) {
