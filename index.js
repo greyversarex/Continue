@@ -91,6 +91,11 @@ app.get('/admin-cms.html', (req, res) => {
   res.redirect('/admin-dashboard.html');
 });
 
+// Visa support page
+app.get('/visa-support.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'visa-support.html'));
+});
+
 // Запуск API сервера в фоновом режиме
 console.log('Starting backend API server...');
 const apiServer = exec('npx ts-node src/server.ts', (error, stdout, stderr) => {
