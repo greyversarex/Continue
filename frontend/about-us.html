@@ -256,27 +256,272 @@
             flex: 1;
         }
 
+        /* Keyframes для анимаций */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
+        /* Базовые стили */
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .animate-slideInLeft {
+            animation: slideInLeft 0.8s ease-out;
+        }
+        
+        .animate-slideInRight {
+            animation: slideInRight 0.8s ease-out;
+        }
+        
         /* Стили для якорной навигации */
         .sticky-nav {
             position: sticky;
             top: 0;
             z-index: 40;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
         
         .nav-link {
-            transition: all 0.3s ease;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #f97316, #ea580c);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .nav-link:hover {
+            transform: translateY(-2px);
             color: #f97316;
+        }
+        
+        .nav-link:hover::before {
+            width: 100%;
         }
         
         .nav-link.active {
             color: #f97316;
             font-weight: 600;
+        }
+        
+        .nav-link.active::before {
+            width: 100%;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #f97316;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-hover:hover::before {
+            left: 100%;
+        }
+        
+        /* Improved section styles */
+        .section-container {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            position: relative;
+        }
+        
+        .section-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(249, 115, 22, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(107, 114, 128, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .enhanced-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f9fafb 100%);
+            border: 1px solid rgba(229, 231, 235, 0.6);
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.08),
+                0 4px 10px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        
+        .enhanced-title {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+        
+        .enhanced-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #f97316, #ea580c);
+            border-radius: 2px;
+        }
+        
+        .team-avatar {
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .team-avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .modern-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .modern-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.6rem;
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .modern-list li:hover {
+            transform: translateX(5px);
+            color: #374151;
+        }
+        
+        .modern-list li:hover::before {
+            transform: scale(1.3);
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.4);
+        }
+        
+        /* Scroll animations */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .scroll-animate.in-view {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -435,37 +680,36 @@
     <!-- Main Content -->
     <div class="min-h-screen bg-gray-50">
         <!-- О нас -->
-        <section id="about" class="py-16">
+        <section id="about" class="py-16 section-container">
             <div class="max-w-6xl mx-auto px-6">
-                <div class="bg-white rounded-2xl shadow-xl p-8 mb-12">
-                    <h1 class="text-5xl font-bold text-gray-900 text-center mb-8">О НАС</h1>
-                    <div class="w-20 h-1 bg-gradient-to-r from-gray-600 to-gray-800 mx-auto mb-8"></div>
+                <div class="enhanced-card rounded-3xl p-8 mb-12 scroll-animate">
+                    <h1 class="text-6xl font-black enhanced-title text-center mb-8">О НАС</h1>
                     
                     <div class="space-y-8">
                         <!-- Основная информация -->
-                        <div class="text-center">
-                            <p class="text-lg text-gray-700 leading-relaxed max-w-4xl mx-auto">
-                                Туристическая компания "Бунёд-Тур" была создана в 2017 году и является одним из лидеров туристической индустрии в Республике Таджикистан. 
+                        <div class="text-center scroll-animate">
+                            <p class="text-xl text-gray-700 leading-relaxed max-w-4xl mx-auto font-medium">
+                                Туристическая компания <span class="gradient-text font-bold">"Бунёд-Тур"</span> была создана в 2017 году и является одним из лидеров туристической индустрии в Республике Таджикистан. 
                                 Компания специализируется на организации туров по всему Таджикистану и странам Центральной Азии.
                             </p>
                         </div>
                         
                         <!-- Секция с изображением компании -->
-                        <div class="bg-gray-50 rounded-xl p-8">
+                        <div class="enhanced-card rounded-2xl p-8 scroll-animate">
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                                <div>
-                                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Наша компания</h3>
-                                    <p class="text-gray-700 leading-relaxed mb-4">
-                                        "Бунёд-Тур" предлагает широкий спектр туристических услуг, включая организацию индивидуальных и групповых туров, 
+                                <div class="animate-slideInLeft">
+                                    <h3 class="text-3xl font-bold gradient-text mb-6">Наша компания</h3>
+                                    <p class="text-gray-700 leading-relaxed mb-6 text-lg">
+                                        <span class="gradient-text font-semibold">"Бунёд-Тур"</span> предлагает широкий спектр туристических услуг, включая организацию индивидуальных и групповых туров, 
                                         экскурсий, трансферов, бронирование отелей и визовую поддержку.
                                     </p>
-                                    <p class="text-gray-700 leading-relaxed">
+                                    <p class="text-gray-700 leading-relaxed text-lg">
                                         Мы гордимся тем, что являемся надежным партнером для туристов со всего мира, желающих познакомиться с 
                                         уникальной культурой и природными красотами Таджикистана.
                                     </p>
                                 </div>
-                                <div class="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
-                                    <span class="text-gray-500">Изображение офиса компании</span>
+                                <div class="glass-effect rounded-2xl h-64 flex items-center justify-center animate-slideInRight">
+                                    <span class="text-gray-600 font-medium">Изображение офиса компании</span>
                                 </div>
                             </div>
                         </div>
@@ -475,11 +719,10 @@
         </section>
 
         <!-- Миссия -->
-        <section id="mission" class="py-16 bg-white">
+        <section id="mission" class="py-16 bg-white section-container">
             <div class="max-w-6xl mx-auto px-6">
-                <div class="bg-white rounded-2xl shadow-xl p-8">
-                    <h2 class="text-4xl font-bold text-gray-900 text-center mb-8">МИССИЯ</h2>
-                    <div class="w-20 h-1 bg-gradient-to-r from-orange-400 to-orange-600 mx-auto mb-8"></div>
+                <div class="enhanced-card rounded-3xl p-8 scroll-animate">
+                    <h2 class="text-5xl font-black enhanced-title text-center mb-8">МИССИЯ</h2>
                     
                     <div class="bg-gray-50 rounded-xl p-8">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -503,11 +746,10 @@
         </section>
 
         <!-- Потенциал -->
-        <section id="potential" class="py-16">
+        <section id="potential" class="py-16 section-container">
             <div class="max-w-6xl mx-auto px-6">
-                <div class="bg-white rounded-2xl shadow-xl p-8">
-                    <h2 class="text-4xl font-bold text-gray-900 text-center mb-8">ПОТЕНЦИАЛ</h2>
-                    <div class="w-20 h-1 bg-gradient-to-r from-gray-600 to-gray-800 mx-auto mb-8"></div>
+                <div class="enhanced-card rounded-3xl p-8 scroll-animate">
+                    <h2 class="text-5xl font-black enhanced-title text-center mb-8">ПОТЕНЦИАЛ</h2>
                     
                     <div class="bg-gray-50 rounded-xl p-8">
                         <p class="text-lg text-gray-700 leading-relaxed mb-6">
@@ -743,13 +985,13 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <!-- Миралиева Ситорамо -->
-                        <div class="bg-gray-50 rounded-xl p-6">
+                        <div class="enhanced-card rounded-xl p-6 card-hover">
                             <div class="flex items-start gap-4">
-                                <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div class="team-avatar w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0">
                                     <span class="text-gray-600 font-bold text-sm">МС</span>
                                 </div>
                                 <div class="flex-1">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2">МИРАЛИЕВА СИТОРАМО</h3>
+                                    <h3 class="text-lg font-bold gradient-text mb-2">МИРАЛИЕВА СИТОРАМО</h3>
                                     <p class="text-gray-600 text-sm font-semibold mb-2">Руководитель проекта</p>
                                     <p class="text-gray-700 text-sm leading-relaxed">
                                         Опыт работы в сфере туризма и деловых отношений более 15 лет. Владеет персидским, таджикским и русским языками. Является руководителем туристической компании «Бунёд-Тур» с 2017 года.
@@ -759,13 +1001,13 @@
                         </div>
                         
                         <!-- Курбонов Сухроб -->
-                        <div class="bg-gray-50 rounded-xl p-6">
+                        <div class="enhanced-card rounded-xl p-6 card-hover">
                             <div class="flex items-start gap-4">
-                                <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div class="team-avatar w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0">
                                     <span class="text-gray-600 font-bold text-sm">КС</span>
                                 </div>
                                 <div class="flex-1">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2">КУРБОНОВ СУХРОБ</h3>
+                                    <h3 class="text-lg font-bold gradient-text mb-2">КУРБОНОВ СУХРОБ</h3>
                                     <p class="text-gray-600 text-sm font-semibold mb-2">Технический директор</p>
                                     <p class="text-gray-700 text-sm leading-relaxed">
                                         Образование высшее профессиональное, экономист. Опыт работы в сфере туризма, логистики и управления большими объемами более 12 лет. Владеет персидским, английским и русским языками. Опытный организатор, аналитик.
@@ -775,13 +1017,13 @@
                         </div>
                         
                         <!-- Ходжиев Сиршо -->
-                        <div class="bg-gray-50 rounded-xl p-6">
+                        <div class="enhanced-card rounded-xl p-6 card-hover">
                             <div class="flex items-start gap-4">
-                                <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div class="team-avatar w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0">
                                     <span class="text-gray-600 font-bold text-sm">ХС</span>
                                 </div>
                                 <div class="flex-1">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2">ХОДЖИЕВ СИРШО</h3>
+                                    <h3 class="text-lg font-bold gradient-text mb-2">ХОДЖИЕВ СИРШО</h3>
                                     <p class="text-gray-600 text-sm font-semibold mb-2">SMS-специалист</p>
                                     <p class="text-gray-700 text-sm leading-relaxed">
                                         Образование высшее профессиональное, лингвист. Опыт работы с персидским, английским, арабским, персидским и русским языками более 5 лет. Автор нескольких программ.
@@ -791,13 +1033,13 @@
                         </div>
                         
                         <!-- Таиров Сиджшо -->
-                        <div class="bg-gray-50 rounded-xl p-6">
+                        <div class="enhanced-card rounded-xl p-6 card-hover">
                             <div class="flex items-start gap-4">
-                                <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                <div class="team-avatar w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0">
                                     <span class="text-gray-600 font-bold text-sm">ТС</span>
                                 </div>
                                 <div class="flex-1">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2">ТАИРОВ СИДЖШО</h3>
+                                    <h3 class="text-lg font-bold gradient-text mb-2">ТАИРОВ СИДЖШО</h3>
                                     <p class="text-gray-600 text-sm font-semibold mb-2">Менеджер по информационным технологиям</p>
                                     <p class="text-gray-700 text-sm leading-relaxed">
                                         Образование высшее профессиональное, техник. Опыт работы в сфере информационных технологий и сервиса более 5 лет. Владеет персидским и русским языками. Автор нескольких программ.
@@ -1025,6 +1267,20 @@
             });
         });
 
+        // Scroll animations
+        function handleScrollAnimations() {
+            const animatedElements = document.querySelectorAll('.scroll-animate');
+            
+            animatedElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    el.classList.add('in-view');
+                }
+            });
+        }
+
         // Активация пунктов навигации при прокрутке
         window.addEventListener('scroll', function() {
             const sections = document.querySelectorAll('section[id]');
@@ -1044,6 +1300,20 @@
                 if (link.getAttribute('href') === '#' + current) {
                     link.classList.add('active');
                 }
+            });
+
+            // Обновляем анимации при прокрутке
+            handleScrollAnimations();
+        });
+
+        // Initialize animations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            handleScrollAnimations();
+            
+            // Add staggered animation to team cards
+            const teamCards = document.querySelectorAll('.card-hover');
+            teamCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
             });
         });
     </script>
