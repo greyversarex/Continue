@@ -45,6 +45,12 @@ const Navigation: React.FC = () => {
             >
               {t('navigation.contact', 'Contact')}
             </Link>
+            <Link 
+              to="/visa-support" 
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+            >
+              {t('navigation.visa_support', 'Визовая поддержка')}
+            </Link>
             <LanguageSwitcher />
             
             {/* CTA Button */}
@@ -101,6 +107,13 @@ const Navigation: React.FC = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('navigation.contact', 'Contact')}
+              </Link>
+              <Link
+                to="/visa-support"
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('navigation.visa_support', 'Визовая поддержка')}
               </Link>
               <Link
                 to="/tours"
