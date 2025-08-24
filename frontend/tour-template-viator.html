@@ -1194,10 +1194,40 @@
             const date = document.getElementById('tour-date').value;
             const duration = document.getElementById('duration-select').value;
             const touristCount = document.getElementById('tourist-count').value;
+            const tourTitle = document.querySelector('#tour-title')?.textContent || 'Неизвестный тур';
             
-            // Here you would typically handle the booking process
-            // For now, just show an alert with the selected values
-            alert(`Выбрано:\nДата: ${date}\nПродолжительность: ${duration} дн.\nКоличество туристов: ${touristCount}`);
+            // Validate required fields
+            if (!date) {
+                alert('Пожалуйста, выберите дату');
+                return;
+            }
+            
+            if (!duration) {
+                alert('Пожалуйста, выберите продолжительность');
+                return;
+            }
+            
+            if (!touristCount) {
+                alert('Пожалуйста, укажите количество туристов');
+                return;
+            }
+            
+            // Show confirmation and redirect to booking steps
+            const confirmation = confirm(`Выбрано:\nТур: ${tourTitle}\nДата: ${date}\nПродолжительность: ${duration} дн.\nКоличество туристов: ${touristCount}\n\nПерейти к этапам бронирования?`);
+            
+            if (confirmation) {
+                // Create booking parameters
+                const bookingParams = new URLSearchParams({
+                    tour: tourTitle,
+                    date: date,
+                    duration: duration,
+                    tourists: touristCount,
+                    step: '1'
+                });
+                
+                // Redirect to booking page
+                window.location.href = `booking.html?${bookingParams.toString()}`;
+            }
         }
         
     </script>
