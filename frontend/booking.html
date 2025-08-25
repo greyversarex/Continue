@@ -632,38 +632,14 @@
             // Данные уже сохранены в localStorage через updateOrderDetails()
             console.log('Полные данные заказа:', orderDetails);
             
-            // Показываем итоговую информацию пользователю
-            const summary = `Детали заказа:
+            // Прямой переход без уведомлений
+            // Данные уже сохранены в localStorage через updateOrderDetails()
+            console.log('Полные данные заказа сохранены:', orderDetails);
             
-Тур: ${orderDetails.tour.name}
-Дата: ${orderDetails.tour.date}  
-Тип тура: ${orderDetails.tour.type}
-Количество туристов: ${orderDetails.tour.tourists}
-Продолжительность: ${orderDetails.tour.days} дн.
-
-Отель: ${orderDetails.hotel.name}
-Номера: ${orderDetails.hotel.rooms.map(r => `${r.name} (${r.count} ном.)`).join(', ')}
-Питание: ${orderDetails.hotel.pension === 'none' ? 'Не включено' : orderDetails.hotel.pension === 'half' ? 'Полупансион' : 'Полный пансион'}
-
-Стоимость тура: $${orderDetails.pricing.tourPrice}
-Стоимость отеля: $${orderDetails.pricing.hotelPrice}
-ИТОГО: $${orderDetails.pricing.totalPrice}
-
-Данные сохранены. Переход на следующий этап...`;
+            // Переход на следующий этап
+            const nextStepUrl = `booking-flow.html?tour=${encodeURIComponent(orderDetails.tour.name)}&date=${orderDetails.tour.date}&tourists=${orderDetails.tour.tourists}&hotelName=${encodeURIComponent(orderDetails.hotel.name)}&totalPrice=${orderDetails.pricing.totalPrice}&step=2`;
             
-            // Используем подтверждение вместо простого alert
-            const userConfirmed = confirm(summary + '\n\nПерейти к следующему этапу?');
-            
-            if (userConfirmed) {
-                // Переход на следующий этап с данными в URL для совместимости
-                const nextStepUrl = `booking-step2.html?tour=${encodeURIComponent(orderDetails.tour.name)}&date=${orderDetails.tour.date}&tourists=${orderDetails.tour.tourists}&hotelName=${encodeURIComponent(orderDetails.hotel.name)}&totalPrice=${orderDetails.pricing.totalPrice}`;
-                
-                console.log('Переходим на:', nextStepUrl);
-                // window.location.href = nextStepUrl; // Раскомментировать когда будет готова следующая страница
-                
-                // Временно показываем уведомление о готовности
-                alert('Система готова к переходу!\nДанные сохранены в localStorage.\nСледующий этап: ' + nextStepUrl);
-            }
+            window.location.href = nextStepUrl;
         }
 
         function goBack() {
