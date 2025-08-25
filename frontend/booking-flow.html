@@ -381,7 +381,7 @@
                 </div>
 
                 <!-- Step 2: Tourist Information -->
-                <div id="step2Content" style="display: none;">
+                <div id="step2Content">
                     <h2 class="text-2xl font-semibold mb-6">Информация о туристах</h2>
                     
                     <!-- Contact Information -->
@@ -453,7 +453,7 @@
                     </div>
                     
                     <div class="flex justify-between">
-                        <button class="btn btn-secondary" onclick="goToStep1()">
+                        <button class="btn btn-secondary" onclick="goBackToBooking()">
                             <i class="fas fa-arrow-left"></i>
                             Назад
                         </button>
@@ -528,7 +528,7 @@
                     </div>
                     
                     <div class="flex justify-between">
-                        <button class="btn btn-secondary" onclick="goToStep2()">
+                        <button class="btn btn-secondary" onclick="goBackToStep2()">
                             <i class="fas fa-arrow-left"></i>
                             Назад
                         </button>
@@ -620,6 +620,7 @@
             
             // If coming from booking.html with selected hotel, skip to step 2
             if (step === '2' && tour && date && (hotel || hotelName)) {
+                console.log('=== ПЕРЕХОД НА ЭТАП 2 ===')
                 console.log('Skipping to step 2 with hotel selection');
                 
                 // Загружаем данные из localStorage если есть
@@ -707,8 +708,18 @@
                     totalPrice = totalOrderPrice;
                 }
                 
-                // Skip to step 2
-                showStep(2);
+                // Принудительно показать второй этап
+                console.log('Показываем второй этап');
+                document.getElementById('step1Content').style.display = 'none';
+                document.getElementById('step2Content').style.display = 'block';
+                document.getElementById('step3Content').style.display = 'none';
+                
+                // Обновить индикаторы этапов
+                document.querySelectorAll('.step').forEach(s => s.classList.remove('active', 'completed'));
+                document.getElementById('step1').classList.add('completed');
+                document.getElementById('step2').classList.add('active');
+                
+                currentStep = 2;
                 updateTouristFields();
                 
                 return; // Don't run the rest of initialization
@@ -725,8 +736,14 @@
                 // Load tour data
                 loadTourData();
                 
-                // Show step 1
-                showStep(1);
+                // Принудительно показать первый этап
+                document.getElementById('step1Content').style.display = 'block';
+                document.getElementById('step2Content').style.display = 'none';
+                document.getElementById('step3Content').style.display = 'none';
+                
+                document.querySelectorAll('.step').forEach(s => s.classList.remove('active', 'completed'));
+                document.getElementById('step1').classList.add('active');
+                currentStep = 1;
             }
             
             // Initialize tourist fields
@@ -1026,8 +1043,14 @@
         }
         
         // Navigation functions
-        function goToStep1() {
-            showStep(1);
+        // Navigation functions
+        function goBackToBooking() {
+            // Возврат на первую страницу бронирования
+            window.location.href = '/booking.html';
+        }
+        
+        function goBackToStep2() {
+            showStep(2);
         }
         
         function goToStep2() {
@@ -1074,6 +1097,8 @@
         }
         
         function showStep(step) {
+            console.log(`Переключение на этап ${step}`);
+            
             // Hide all steps
             document.getElementById('step1Content').style.display = 'none';
             document.getElementById('step2Content').style.display = 'none';
@@ -1085,12 +1110,25 @@
             });
             
             // Show selected step
-            document.getElementById(`step${step}Content`).style.display = 'block';
-            document.getElementById(`step${step}`).classList.add('active');
+            const stepContent = document.getElementById(`step${step}Content`);
+            if (stepContent) {
+                stepContent.style.display = 'block';
+                console.log(`Этап ${step} отображен`);
+            } else {
+                console.error(`Не найден элемент step${step}Content`);
+            }
+            
+            const stepIndicator = document.getElementById(`step${step}`);
+            if (stepIndicator) {
+                stepIndicator.classList.add('active');
+            }
             
             // Mark previous steps as completed
             for (let i = 1; i < step; i++) {
-                document.getElementById(`step${i}`).classList.add('completed');
+                const prevStep = document.getElementById(`step${i}`);
+                if (prevStep) {
+                    prevStep.classList.add('completed');
+                }
             }
             
             currentStep = step;
