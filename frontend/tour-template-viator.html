@@ -366,6 +366,29 @@
                         </div>
                     </div>
                     
+                    <!-- Tour Type Selection -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Вид тура</label>
+                        <select id="tour-type-select" class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Выберите вид тура</option>
+                            <option value="Однодневные туры">Однодневные туры</option>
+                            <option value="Многодневные туры">Многодневные туры</option>
+                            <option value="Экскурсии">Экскурсии</option>
+                            <option value="Городские туры">Городские туры</option>
+                            <option value="Природные/Эко туры">Природные/Эко туры</option>
+                            <option value="Культурно-образовательные туры">Культурно-образовательные туры</option>
+                            <option value="Исторические туры">Исторические туры</option>
+                            <option value="Пешие походы/Трекинг">Пешие походы/Трекинг</option>
+                            <option value="Горные ландшафты">Горные ландшафты</option>
+                            <option value="Озёрные ландшафты">Озёрные ландшафты</option>
+                            <option value="Приключенческие туры">Приключенческие туры</option>
+                            <option value="Гастрономические туры">Гастрономические туры</option>
+                            <option value="Авто туры/Сафари/Джип туры">Авто туры/Сафари/Джип туры</option>
+                            <option value="Агро туры">Агро туры</option>
+                            <option value="VIP туры">VIP туры</option>
+                        </select>
+                    </div>
+                    
                     <!-- Check Availability Button -->
                     <button onclick="goToBookingPage()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium mb-4 transition-colors">
                         Проверить наличие
@@ -1194,6 +1217,7 @@
             const date = document.getElementById('tour-date').value;
             const duration = document.getElementById('duration-select').value;
             const touristCount = document.getElementById('tourist-count').value;
+            const tourType = document.getElementById('tour-type-select').value;
             const tourTitle = document.querySelector('#tour-title')?.textContent || 'Неизвестный тур';
             
             // Validate required fields
@@ -1212,22 +1236,23 @@
                 return;
             }
             
-            // Show confirmation and redirect to booking steps
-            const confirmation = confirm(`Выбрано:\nТур: ${tourTitle}\nДата: ${date}\nПродолжительность: ${duration} дн.\nКоличество туристов: ${touristCount}\n\nПерейти к этапам бронирования?`);
-            
-            if (confirmation) {
-                // Create booking parameters
-                const bookingParams = new URLSearchParams({
-                    tour: tourTitle,
-                    date: date,
-                    duration: duration,
-                    tourists: touristCount,
-                    step: '1'
-                });
-                
-                // Redirect to booking page
-                window.location.href = `booking.html?${bookingParams.toString()}`;
+            if (!tourType) {
+                alert('Пожалуйста, выберите вид тура');
+                return;
             }
+            
+            // Create booking parameters and redirect directly
+            const bookingParams = new URLSearchParams({
+                tour: tourTitle,
+                date: date,
+                duration: duration,
+                tourists: touristCount,
+                tourType: tourType,
+                step: '1'
+            });
+            
+            // Direct redirect to booking page - no confirmation needed
+            window.location.href = `booking.html?${bookingParams.toString()}`;
         }
         
     </script>

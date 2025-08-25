@@ -237,6 +237,11 @@
                 price: 120,
                 description: "Роскошный отель в центре Душанбе",
                 amenities: ["Wi-Fi", "Бассейн", "Спа", "Ресторан"],
+                roomTypes: [
+                    { id: 'twn', name: 'TWN-двухместный', price: 120, count: 0 },
+                    { id: 'dbl', name: 'DBL-двухкреватный', price: 140, count: 0 },
+                    { id: 'sgl', name: 'SGL-одноместный', price: 90, count: 0 }
+                ],
                 images: [
                     "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=240&fit=crop",
                     "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=240&fit=crop",
@@ -250,6 +255,11 @@
                 price: 150,
                 description: "Современный отель международного класса",
                 amenities: ["Wi-Fi", "Фитнес", "Ресторан", "Бар"],
+                roomTypes: [
+                    { id: 'twn', name: 'TWN-двухместный', price: 150, count: 0 },
+                    { id: 'dbl', name: 'DBL-двухкреватный', price: 170, count: 0 },
+                    { id: 'sgl', name: 'SGL-одноместный', price: 120, count: 0 }
+                ],
                 images: [
                     "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=240&fit=crop",
                     "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=240&fit=crop",
@@ -263,6 +273,11 @@
                 price: 80,
                 description: "Комфортабельный отель с хорошим расположением",
                 amenities: ["Wi-Fi", "Ресторан", "Парковка"],
+                roomTypes: [
+                    { id: 'twn', name: 'TWN-двухместный', price: 80, count: 0 },
+                    { id: 'dbl', name: 'DBL-двухкреватный', price: 95, count: 0 },
+                    { id: 'sgl', name: 'SGL-одноместный', price: 65, count: 0 }
+                ],
                 images: [
                     "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=240&fit=crop",
                     "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=240&fit=crop",
@@ -342,10 +357,36 @@
                             `).join('')}
                         </div>
                         
+                        <!-- Room Categories -->
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-3">Категории номеров</h4>
+                            <div class="space-y-2">
+                                ${hotel.roomTypes.map(room => `
+                                    <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                                        <div class="flex-1">
+                                            <div class="text-sm font-medium text-gray-800">${room.name}</div>
+                                            <div class="text-xs text-gray-600">$${room.price} за ночь</div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <button class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 font-bold"
+                                                    onclick="event.stopPropagation(); changeRoomCount(${hotel.id}, '${room.id}', -1)">
+                                                −
+                                            </button>
+                                            <span class="w-8 text-center font-medium" id="room-count-${hotel.id}-${room.id}">${room.count}</span>
+                                            <button class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 font-bold"
+                                                    onclick="event.stopPropagation(); changeRoomCount(${hotel.id}, '${room.id}', 1)">
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
                         <div class="flex justify-between items-center">
                             <div>
                                 <span class="text-2xl font-bold text-green-600">$${hotel.price}</span>
-                                <span class="text-gray-500 text-sm">за ночь</span>
+                                <span class="text-gray-500 text-sm">от</span>
                             </div>
                             <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors" 
                                     onclick="event.stopPropagation(); selectHotel(${hotel.id})">
@@ -452,6 +493,38 @@
 
         function goBack() {
             window.history.back();
+        }
+        
+        // Room counter functionality
+        function changeRoomCount(hotelId, roomTypeId, change) {
+            const hotel = hotelData.find(h => h.id === hotelId);
+            const roomType = hotel.roomTypes.find(r => r.id === roomTypeId);
+            
+            // Update count with bounds checking
+            const newCount = Math.max(0, Math.min(10, roomType.count + change));
+            roomType.count = newCount;
+            
+            // Update display
+            const countElement = document.getElementById(`room-count-${hotelId}-${roomTypeId}`);
+            if (countElement) {
+                countElement.textContent = newCount;
+            }
+            
+            // Optional: Update total price or selection state based on room counts
+            updateHotelSelection(hotelId);
+        }
+        
+        function updateHotelSelection(hotelId) {
+            const hotel = hotelData.find(h => h.id === hotelId);
+            const hasSelectedRooms = hotel.roomTypes.some(room => room.count > 0);
+            
+            // Optional: Visual feedback for hotels with selected rooms
+            const hotelCard = document.querySelector(`[data-hotel-id="${hotelId}"]`);
+            if (hasSelectedRooms) {
+                hotelCard.classList.add('border-blue-300', 'bg-blue-50');
+            } else {
+                hotelCard.classList.remove('border-blue-300', 'bg-blue-50');
+            }
         }
     </script>
 </body>
