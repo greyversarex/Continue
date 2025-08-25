@@ -121,23 +121,7 @@
             <!-- Left Column: Hotel Selection -->
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Выберите дату и отель</h2>
-                    
-                    <!-- Tour Date -->
-                    <div class="mb-6">
-                        <div class="flex items-center space-x-2 text-sm text-gray-600 mb-4">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span>Дата начала тура</span>
-                        </div>
-                        <input 
-                            type="date" 
-                            id="booking-date" 
-                            class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            value="2025-08-20"
-                            min="2025-08-20">
-                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Выберите отель</h2>
 
                     <!-- Available Hotels -->
                     <div class="mb-6">
@@ -187,13 +171,25 @@
                     <div class="border-t border-gray-200 mt-6 pt-6">
                         <h4 class="font-semibold text-gray-900 mb-4">Стоимость</h4>
                         <div class="space-y-2 text-sm">
+                            <!-- Tour Price -->
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Базовая цена</span>
-                                <span class="font-medium" id="base-price">$1200</span>
+                                <span class="text-gray-600">Цена за тур</span>
+                                <span class="font-medium" id="tour-price">$300</span>
                             </div>
-                            <div class="flex justify-between text-lg font-bold">
-                                <span>Итого</span>
-                                <span id="total-price">$1200</span>
+                            
+                            <!-- Hotel Price Breakdown -->
+                            <div id="hotel-price-breakdown" style="display: none;">
+                                <div class="text-gray-600 text-xs mb-1">Цена за отель:</div>
+                                <div id="room-prices-list" class="space-y-1 text-xs text-gray-500 mb-2"></div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Итого за отель</span>
+                                    <span id="hotel-total-price" class="font-medium">$0</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between text-lg font-bold border-t pt-2">
+                                <span>Общая сумма</span>
+                                <span id="total-price" class="text-green-600">$300</span>
                             </div>
                         </div>
                     </div>
@@ -292,6 +288,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadTourDetails();
             displayHotels();
+            updatePricing(); // Initialize pricing display
         });
 
         function loadTourDetails() {
@@ -311,8 +308,8 @@
             const hotelsGrid = document.getElementById('hotels-grid');
             
             hotelsGrid.innerHTML = hotelData.map(hotel => `
-                <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer hotel-card" 
-                     data-hotel-id="${hotel.id}" onclick="selectHotel(${hotel.id})">
+                <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow hotel-card" 
+                     data-hotel-id="${hotel.id}">
                     <!-- Image Carousel -->
                     <div class="hotel-carousel" data-hotel-id="${hotel.id}">
                         <div class="hotel-images" id="images-${hotel.id}">
@@ -390,7 +387,7 @@
                             </div>
                             <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors" 
                                     onclick="event.stopPropagation(); selectHotel(${hotel.id})">
-                                Выбрать
+                                Продолжить
                             </button>
                         </div>
                     </div>
@@ -449,25 +446,19 @@
         }
 
         function selectHotel(hotelId) {
-            // Remove previous selection
-            document.querySelectorAll('.hotel-card').forEach(card => {
-                card.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
-            });
+            const hotel = hotelData.find(h => h.id === hotelId);
             
-            // Add selection to clicked hotel
-            const selectedCard = document.querySelector(`[data-hotel-id="${hotelId}"]`);
-            selectedCard.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+            // Check if any rooms are selected
+            const hasSelectedRooms = hotel.roomTypes.some(room => room.count > 0);
+            if (!hasSelectedRooms) {
+                alert('Пожалуйста, выберите категории номеров');
+                return;
+            }
             
-            selectedHotel = hotelData.find(h => h.id === hotelId);
+            selectedHotel = hotel;
             
-            // Update price in summary
-            document.getElementById('base-price').textContent = `$${selectedHotel.price}`;
-            document.getElementById('total-price').textContent = `$${selectedHotel.price}`;
-            
-            // Auto proceed to next step after selection
-            setTimeout(() => {
-                goToNextStep();
-            }, 500);
+            // Proceed to next step
+            goToNextStep();
         }
 
         function goToNextStep() {
@@ -476,23 +467,39 @@
                 return;
             }
             
-            const selectedDate = document.getElementById('booking-date').value;
-            if (!selectedDate) {
-                alert('Пожалуйста, выберите дату');
-                return;
-            }
-            
-            // Переход на страницу с данными туристов
+            // Get selected date from URL params (passed from tour page)
             const urlParams = new URLSearchParams(window.location.search);
+            const selectedDate = urlParams.get('date') || '2025-08-26';
             const tourName = urlParams.get('tour');
             
-            // Перенаправляем на booking-flow.html с параметрами
-            const newUrl = `booking-flow.html?tour=${encodeURIComponent(tourName)}&date=${selectedDate}&hotel=${selectedHotel.name}&price=${selectedHotel.price}&step=2`;
+            // Get selected rooms data
+            const selectedRooms = selectedHotel.roomTypes.filter(room => room.count > 0);
+            const roomsData = selectedRooms.map(room => `${room.id}:${room.count}`).join(',');
+            
+            // Calculate total hotel price
+            const hotelTotalPrice = selectedRooms.reduce((sum, room) => sum + (room.price * room.count), 0);
+            
+            // Redirect to next step with all booking data
+            const newUrl = `booking-flow.html?tour=${encodeURIComponent(tourName)}&date=${selectedDate}&hotel=${selectedHotel.name}&rooms=${roomsData}&hotelPrice=${hotelTotalPrice}&step=2`;
             window.location.href = newUrl;
         }
 
         function goBack() {
             window.history.back();
+        }
+        
+        // Room selection toggle functionality  
+        function toggleRoomSelection(hotelId) {
+            const roomOptions = document.querySelector(`.room-options-${hotelId}`);
+            const arrow = document.querySelector(`.room-arrow-${hotelId}`);
+            
+            if (roomOptions.style.display === 'none') {
+                roomOptions.style.display = 'block';
+                arrow.classList.add('rotate-180');
+            } else {
+                roomOptions.style.display = 'none';
+                arrow.classList.remove('rotate-180');
+            }
         }
         
         // Room counter functionality
@@ -510,21 +517,70 @@
                 countElement.textContent = newCount;
             }
             
-            // Optional: Update total price or selection state based on room counts
-            updateHotelSelection(hotelId);
+            // Update room summary and pricing
+            updateRoomSummary(hotelId);
+            updatePricing();
         }
         
-        function updateHotelSelection(hotelId) {
+        function updateRoomSummary(hotelId) {
             const hotel = hotelData.find(h => h.id === hotelId);
-            const hasSelectedRooms = hotel.roomTypes.some(room => room.count > 0);
+            const summaryElement = document.querySelector(`.room-summary-${hotelId}`);
             
-            // Optional: Visual feedback for hotels with selected rooms
+            const selectedRooms = hotel.roomTypes.filter(room => room.count > 0);
+            
+            if (selectedRooms.length === 0) {
+                summaryElement.textContent = 'Нажмите для выбора номеров';
+            } else {
+                const roomText = selectedRooms.map(room => 
+                    `${room.name}: ${room.count} шт.`
+                ).join(', ');
+                summaryElement.textContent = roomText;
+            }
+            
+            // Update hotel card visual feedback
             const hotelCard = document.querySelector(`[data-hotel-id="${hotelId}"]`);
-            if (hasSelectedRooms) {
+            if (selectedRooms.length > 0) {
                 hotelCard.classList.add('border-blue-300', 'bg-blue-50');
             } else {
                 hotelCard.classList.remove('border-blue-300', 'bg-blue-50');
             }
+        }
+        
+        function updatePricing() {
+            const tourPrice = 300; // Base tour price
+            let hotelTotalPrice = 0;
+            
+            // Calculate hotel prices for all selected rooms across all hotels
+            const roomPricesList = document.getElementById('room-prices-list');
+            const hotelPriceBreakdown = document.getElementById('hotel-price-breakdown');
+            
+            let hasSelectedRooms = false;
+            let roomPricesHTML = '';
+            
+            hotelData.forEach(hotel => {
+                hotel.roomTypes.forEach(room => {
+                    if (room.count > 0) {
+                        hasSelectedRooms = true;
+                        const roomTotal = room.price * room.count;
+                        hotelTotalPrice += roomTotal;
+                        roomPricesHTML += `<div>${room.name} x${room.count}: $${roomTotal}</div>`;
+                    }
+                });
+            });
+            
+            // Update display
+            document.getElementById('tour-price').textContent = `$${tourPrice}`;
+            
+            if (hasSelectedRooms) {
+                hotelPriceBreakdown.style.display = 'block';
+                roomPricesList.innerHTML = roomPricesHTML;
+                document.getElementById('hotel-total-price').textContent = `$${hotelTotalPrice}`;
+            } else {
+                hotelPriceBreakdown.style.display = 'none';
+            }
+            
+            const totalPrice = tourPrice + hotelTotalPrice;
+            document.getElementById('total-price').textContent = `$${totalPrice}`;
         }
     </script>
 </body>
