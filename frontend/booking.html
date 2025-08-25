@@ -231,6 +231,7 @@
                 price: 120,
                 description: "Роскошный отель в центре Душанбе",
                 amenities: ["Wi-Fi", "Бассейн", "Спа", "Ресторан"],
+                pension: "half", // "none", "half", "full"
                 roomTypes: [
                     { id: 'twn', name: 'TWN-двухместный', price: 120, count: 0 },
                     { id: 'dbl', name: 'DBL-двухкреватный', price: 140, count: 0 },
@@ -249,6 +250,7 @@
                 price: 150,
                 description: "Современный отель международного класса",
                 amenities: ["Wi-Fi", "Фитнес", "Ресторан", "Бар"],
+                pension: "full", // "none", "half", "full"
                 roomTypes: [
                     { id: 'twn', name: 'TWN-двухместный', price: 150, count: 0 },
                     { id: 'dbl', name: 'DBL-двухкреватный', price: 170, count: 0 },
@@ -267,6 +269,7 @@
                 price: 80,
                 description: "Комфортабельный отель с хорошим расположением",
                 amenities: ["Wi-Fi", "Ресторан", "Парковка"],
+                pension: "none", // "none", "half", "full"
                 roomTypes: [
                     { id: 'twn', name: 'TWN-двухместный', price: 80, count: 0 },
                     { id: 'dbl', name: 'DBL-двухкреватный', price: 95, count: 0 },
@@ -281,6 +284,12 @@
         ];
 
         let selectedHotel = null;
+        
+        // Initialize days for each hotel
+        let hotelDays = {};
+        hotelData.forEach(hotel => {
+            hotelDays[hotel.id] = 1;
+        });
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
@@ -391,10 +400,22 @@
                             </div>
                         </div>
                         
+                        <!-- Pension Info -->
+                        <div class="mb-4">
+                            <div class="text-xs text-gray-600">
+                                Питание: 
+                                <span class="font-medium">
+                                    ${hotel.pension === 'none' ? 'Не включено' : 
+                                      hotel.pension === 'half' ? 'Полупансион (завтрак)' : 
+                                      'Полный пансион (завтрак + обед)'}
+                                </span>
+                            </div>
+                        </div>
+                        
                         <div class="flex justify-between items-center">
                             <div>
-                                <span class="text-2xl font-bold text-green-600">$${hotel.price}</span>
-                                <span class="text-gray-500 text-sm">от</span>
+                                <div class="text-2xl font-bold text-green-600 hotel-total-price-${hotel.id}">$0</div>
+                                <div class="text-xs text-gray-500 hotel-calculation-${hotel.id}">Выберите номера</div>
                             </div>
                             <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors" 
                                     onclick="event.stopPropagation(); selectHotel(${hotel.id})">
@@ -409,6 +430,7 @@
             console.log('Hotels HTML created, initializing carousels...');
             hotelData.forEach(hotel => {
                 updateCarousel(hotel.id);
+                updateHotelPricing(hotel.id); // Initialize pricing
             });
             console.log('Hotels display completed');
         }
@@ -515,6 +537,22 @@
             }
         }
         
+        // Days counter functionality
+        function changeDays(hotelId, change) {
+            const newDays = Math.max(1, Math.min(30, hotelDays[hotelId] + change));
+            hotelDays[hotelId] = newDays;
+            
+            // Update display
+            const daysElement = document.getElementById(`days-count-${hotelId}`);
+            if (daysElement) {
+                daysElement.textContent = newDays;
+            }
+            
+            // Update pricing
+            updateHotelPricing(hotelId);
+            updatePricing();
+        }
+        
         // Room counter functionality
         function changeRoomCount(hotelId, roomTypeId, change) {
             const hotel = hotelData.find(h => h.id === hotelId);
@@ -532,6 +570,7 @@
             
             // Update room summary and pricing
             updateRoomSummary(hotelId);
+            updateHotelPricing(hotelId);
             updatePricing();
         }
         
@@ -558,7 +597,8 @@
                 hotelCard.classList.remove('border-blue-300', 'bg-blue-50');
             }
             
-            // Update booking details section
+            // Update hotel pricing and booking details
+            updateHotelPricing(hotelId);
             updateBookingDetails();
         }
         
@@ -599,16 +639,55 @@
             document.getElementById('total-price').textContent = `$${totalPrice}`;
         }
         
+        function updateHotelPricing(hotelId) {
+            const hotel = hotelData.find(h => h.id === hotelId);
+            const days = hotelDays[hotelId] || 1;
+            
+            // Calculate total price for selected rooms * days
+            let totalPrice = 0;
+            let calculationText = '';
+            const selectedRooms = hotel.roomTypes.filter(room => room.count > 0);
+            
+            if (selectedRooms.length > 0) {
+                selectedRooms.forEach(room => {
+                    const roomTotal = room.price * room.count * days;
+                    totalPrice += roomTotal;
+                });
+                
+                if (selectedRooms.length === 1) {
+                    const room = selectedRooms[0];
+                    calculationText = `${room.count} ном. × ${days} дн.`;
+                } else {
+                    calculationText = `${selectedRooms.reduce((sum, r) => sum + r.count, 0)} ном. × ${days} дн.`;
+                }
+            } else {
+                calculationText = 'Выберите номера';
+            }
+            
+            // Update hotel card pricing
+            const priceElement = document.querySelector(`.hotel-total-price-${hotelId}`);
+            const calculationElement = document.querySelector(`.hotel-calculation-${hotelId}`);
+            
+            if (priceElement) {
+                priceElement.textContent = `$${totalPrice}`;
+            }
+            if (calculationElement) {
+                calculationElement.textContent = calculationText;
+            }
+        }
+        
         function updateBookingDetails() {
             // Find the hotel with selected rooms
             let selectedHotelWithRooms = null;
             let selectedRooms = [];
+            let selectedDays = 1;
             
             hotelData.forEach(hotel => {
                 const rooms = hotel.roomTypes.filter(room => room.count > 0);
                 if (rooms.length > 0) {
                     selectedHotelWithRooms = hotel;
                     selectedRooms = rooms;
+                    selectedDays = hotelDays[hotel.id] || 1;
                 }
             });
             
@@ -620,11 +699,19 @@
             if (selectedHotelWithRooms && selectedRooms.length > 0) {
                 hotelNameElement.textContent = selectedHotelWithRooms.name;
                 
-                // Show selected rooms
+                // Show selected rooms with pension info
                 roomsInfoElement.style.display = 'block';
-                roomsListElement.innerHTML = selectedRooms.map(room => 
-                    `<div>${room.name}: ${room.count} ном.</div>`
+                let roomsHTML = selectedRooms.map(room => 
+                    `<div>${room.name}: ${room.count} ном. × ${selectedDays} дн.</div>`
                 ).join('');
+                
+                // Add pension info
+                const pensionText = selectedHotelWithRooms.pension === 'none' ? 'Не включено' : 
+                                  selectedHotelWithRooms.pension === 'half' ? 'Полупансион' : 
+                                  'Полный пансион';
+                roomsHTML += `<div class="mt-1 text-blue-600">Питание: ${pensionText}</div>`;
+                
+                roomsListElement.innerHTML = roomsHTML;
             } else {
                 hotelNameElement.textContent = 'Отель не выбран';
                 roomsInfoElement.style.display = 'none';
