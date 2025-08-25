@@ -706,7 +706,7 @@
             const tourPrice = 300; // Base tour price
             let hotelTotalPrice = 0;
             
-            // Calculate hotel prices for all selected rooms across all hotels
+            // Calculate hotel prices for all selected rooms across all hotels WITH DAYS
             const roomPricesList = document.getElementById('room-prices-list');
             const hotelPriceBreakdown = document.getElementById('hotel-price-breakdown');
             
@@ -717,9 +717,10 @@
                 hotel.roomTypes.forEach(room => {
                     if (room.count > 0) {
                         hasSelectedRooms = true;
-                        const roomTotal = room.price * room.count;
+                        // Include days in calculation for pricing display
+                        const roomTotal = room.price * room.count * globalDays;
                         hotelTotalPrice += roomTotal;
-                        roomPricesHTML += `<div>${room.name} x${room.count}: $${roomTotal}</div>`;
+                        roomPricesHTML += `<div>${room.name} x${room.count} x${globalDays} дн.: $${roomTotal}</div>`;
                     }
                 });
             });
