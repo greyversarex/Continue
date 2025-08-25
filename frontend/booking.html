@@ -150,21 +150,19 @@
                         </div>
                         <div class="flex items-center text-gray-600">
                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
                             </svg>
-                            <span id="tour-location">Таджикистан, Хорог</span>
+                            <span id="tour-date">Не выбрана</span>
                         </div>
                         <div class="flex items-center text-gray-600">
                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"></path>
                             </svg>
-                            <span id="tour-duration">7 дней</span>
+                            <span id="selected-hotel-name">Отель не выбран</span>
                         </div>
-                        <div class="flex items-center text-gray-600">
-                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
-                            </svg>
-                            <span id="tour-people">1 человек</span>
+                        <div id="selected-rooms-info" style="display: none;">
+                            <div class="text-xs text-gray-600 mb-1">Выбранные номера:</div>
+                            <div id="selected-rooms-list" class="text-xs text-gray-700"></div>
                         </div>
                     </div>
 
@@ -286,9 +284,11 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing...');
             loadTourDetails();
             displayHotels();
             updatePricing(); // Initialize pricing display
+            console.log('Page initialization completed');
         });
 
         function loadTourDetails() {
@@ -300,13 +300,24 @@
                 document.getElementById('tour-title').textContent = decodeURIComponent(tourName);
             }
             if (date) {
-                document.getElementById('booking-date').value = date;
+                document.getElementById('tour-date').textContent = new Date(date).toLocaleDateString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long', 
+                    day: 'numeric'
+                });
             }
         }
 
         function displayHotels() {
+            console.log('Starting to display hotels...', hotelData);
             const hotelsGrid = document.getElementById('hotels-grid');
             
+            if (!hotelsGrid) {
+                console.error('Hotels grid element not found!');
+                return;
+            }
+            
+            console.log('Hotels grid found, rendering hotels...');
             hotelsGrid.innerHTML = hotelData.map(hotel => `
                 <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow hotel-card" 
                      data-hotel-id="${hotel.id}">
@@ -395,9 +406,11 @@
             `).join('');
             
             // Initialize carousel for all hotels after creating HTML
+            console.log('Hotels HTML created, initializing carousels...');
             hotelData.forEach(hotel => {
                 updateCarousel(hotel.id);
             });
+            console.log('Hotels display completed');
         }
 
         // Carousel functionality
@@ -544,6 +557,9 @@
             } else {
                 hotelCard.classList.remove('border-blue-300', 'bg-blue-50');
             }
+            
+            // Update booking details section
+            updateBookingDetails();
         }
         
         function updatePricing() {
@@ -581,6 +597,38 @@
             
             const totalPrice = tourPrice + hotelTotalPrice;
             document.getElementById('total-price').textContent = `$${totalPrice}`;
+        }
+        
+        function updateBookingDetails() {
+            // Find the hotel with selected rooms
+            let selectedHotelWithRooms = null;
+            let selectedRooms = [];
+            
+            hotelData.forEach(hotel => {
+                const rooms = hotel.roomTypes.filter(room => room.count > 0);
+                if (rooms.length > 0) {
+                    selectedHotelWithRooms = hotel;
+                    selectedRooms = rooms;
+                }
+            });
+            
+            // Update hotel name display
+            const hotelNameElement = document.getElementById('selected-hotel-name');
+            const roomsInfoElement = document.getElementById('selected-rooms-info');
+            const roomsListElement = document.getElementById('selected-rooms-list');
+            
+            if (selectedHotelWithRooms && selectedRooms.length > 0) {
+                hotelNameElement.textContent = selectedHotelWithRooms.name;
+                
+                // Show selected rooms
+                roomsInfoElement.style.display = 'block';
+                roomsListElement.innerHTML = selectedRooms.map(room => 
+                    `<div>${room.name}: ${room.count} ном.</div>`
+                ).join('');
+            } else {
+                hotelNameElement.textContent = 'Отель не выбран';
+                roomsInfoElement.style.display = 'none';
+            }
         }
     </script>
 </body>
