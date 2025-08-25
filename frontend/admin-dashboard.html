@@ -1184,6 +1184,15 @@
                     </div>
                     
                     <div class="form-group">
+                        <label class="form-label">Тип питания</label>
+                        <select class="form-input" id="hotelPension">
+                            <option value="none">Не включено</option>
+                            <option value="half">Полупансион (завтрак)</option>
+                            <option value="full">Полный пансион (завтрак + обед)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
                         <label class="form-label">Фотографии отеля</label>
                         <input type="file" class="form-input" id="hotelImages" multiple accept="image/*">
                         <div id="hotelImagePreview" class="mt-2"></div>
@@ -2072,6 +2081,7 @@
                     document.getElementById('hotelDescTj').value = description.tj || '';
                     document.getElementById('hotelAddress').value = hotel.address || '';
                     document.getElementById('hotelRating').value = hotel.rating || '';
+                    document.getElementById('hotelPension').value = hotel.pension || 'none';
                     document.getElementById('hotelActive').checked = hotel.isActive;
                     
                     // Set amenities
@@ -2177,6 +2187,7 @@
                 description: JSON.stringify(description),
                 address: document.getElementById('hotelAddress').value,
                 rating: parseFloat(document.getElementById('hotelRating').value) || null,
+                pension: document.getElementById('hotelPension').value,
                 amenities: JSON.stringify(amenities),
                 isActive: document.getElementById('hotelActive').checked,
                 images: JSON.stringify([]) // For now, we'll handle images separately

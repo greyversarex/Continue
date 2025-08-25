@@ -98,6 +98,7 @@ model Hotel {
   category    String?     // Luxury, Premium, Budget
   country     String?     // Country where hotel is located
   city        String?     // City where hotel is located
+  pension     String?     @default("none") // Pension type: "none", "half", "full"
   isActive    Boolean     @default(true)
   tourHotels  TourHotel[]
   orders      Order[]
