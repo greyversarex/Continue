@@ -6,6 +6,125 @@
     <title>Поиск туров - Bunyod-Tour</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Dropdown styles from main page */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #2F2F2F;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+            z-index: 1000;
+            border-radius: 8px;
+            padding: 8px 0;
+            top: 100%;
+            left: 0;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: #4A4A4A;
+        }
+        .dropdown-content .dropdown-submenu {
+            position: relative;
+        }
+        .dropdown-content .dropdown-submenu .dropdown-subcontent {
+            display: none !important;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: #2F2F2F;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1001;
+        }
+        .dropdown-content .dropdown-submenu:hover > .dropdown-subcontent {
+            display: block !important;
+        }
+
+        /* Language selector styles */
+        .language-dropdown {
+            position: relative;
+        }
+        .lang-selector-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            color: white;
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .lang-selector-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .lang-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: #2F2F2F;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1000;
+            margin-top: 4px;
+        }
+        .lang-dropdown-content.show {
+            display: block;
+        }
+        .lang-option {
+            color: white;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .lang-option:hover {
+            background-color: #4A4A4A;
+        }
+        .lang-option.active {
+            background-color: #4A4A4A;
+        }
+
+        /* Flag styles */
+        .flag {
+            width: 20px;
+            height: 15px;
+            background-size: cover;
+            border-radius: 2px;
+            display: inline-block;
+        }
+        .flag-ru { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiNmZmYiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDUyYjQiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIyMDAiIHk9IjQwMCIgZmlsbD0iI2QxMjczOSIvPgo8L3N2Zz4='); }
+        .flag-us { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzQxIiBoZWlnaHQ9IjM5MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9Ijc0MSIgaGVpZ2h0PSIzOTAiIGZpbGw9IiNiMjIyMzQiLz4KPHBhdGggZD0ibTAsMzBIMzYwVjBINDBINzQxdjMwSDBabTcxMCwwSDBWNjBINzQxVjMwWm0wLDYwSDBWMTIwSDc0MVY5MFptMCw2MEgwVjE4MEg3NDFWMTUwWm0wLDYwSDBWMjQwSDc0MVYyMTBabTAsNjBIMFYzMDBINzQxVjI3MFptMCw2MEgwVjM2MEg3NDFWMzMwWm0wLDYwSDBWMzkwSDc0MVYzNjAiIGZpbGw9IiNmZmYiLz4KPHJlY3Qgd2lkdGg9IjI5NiIgaGVpZ2h0PSIyMTAiIGZpbGw9IiMzYzNiNmUiLz4KPC9zdmc+'); }
+        .flag-tj { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjQ1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI0NTAiIGZpbGw9IiNkYzE0M2MiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmZmYiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIxNTAiIHk9IjMwMCIgZmlsbD0iIzAwNjIzMCIvPgo8L3N2Zz4='); }
+        .flag-ir { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjU0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI1NDAiIGZpbGw9IiNkYTE0MzQiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIzNjAiIGZpbGw9IiNmZmYiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIxODAiIHk9IjM2MCIgZmlsbD0iIzJkNmEzNyIvPgo8L3N2Zz4='); }
+        .flag-de { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjU0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI1NDAiIGZpbGw9IiNmZmNlMDAiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIzNjAiIGZpbGw9IiNkZDBiMTIiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIxODAiIGZpbGw9IiMwMDAiLz4KPC9zdmc+'); }
+        .flag-cn { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiNkZTE5MzUiLz4KPC9zdmc+'); }
+
         .filter-section {
             border: 1px solid #e5e7eb;
             border-radius: 8px;
@@ -81,15 +200,140 @@
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Заголовок -->
-    <header class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
+    <!-- Хедер -->
+    <header class="shadow-md sticky top-0 z-50" style="background-color: #3E3E3E;">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between h-16 px-6">
+                <!-- Логотип -->
                 <div class="flex items-center">
-                    <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour" class="w-10 h-10 rounded-full mr-3">
-                    <h1 class="text-2xl font-bold text-gray-900">Поиск туров</h1>
+                    <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour Logo" class="w-12 h-12 mr-3 rounded-full">
+                    <span class="text-xl font-bold text-white">Bunyod-Tour</span>
                 </div>
-                <a href="index.html" class="text-gray-600 hover:text-gray-900 font-medium">← Назад на главную</a>
+                
+                <!-- Навигационное меню -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors">О нас</a>
+                    
+                    <!-- Услуги (с выпадающим меню) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
+                        <div class="dropdown-content">
+                            <div class="dropdown-submenu">
+                                <a href="#">Туры</a>
+                                <div class="dropdown-subcontent" style="width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px;">
+                                    <a href="#" style="padding: 8px;">Однодневные</a>
+                                    <a href="#" style="padding: 8px;">Многодневные</a>
+                                    <a href="#" style="padding: 8px;">Экскурсии</a>
+                                    <a href="#" style="padding: 8px;">Городские туры</a>
+                                    <a href="#" style="padding: 8px;">Природа/экологические туры</a>
+                                    <a href="#" style="padding: 8px;">Культурно познавательные туры</a>
+                                    <a href="#" style="padding: 8px;">Исторические туры</a>
+                                    <a href="#" style="padding: 8px;">Походы/трекинги</a>
+                                    <a href="#" style="padding: 8px;">Горные ландшафты</a>
+                                    <a href="#" style="padding: 8px;">Озерные ландшафты</a>
+                                    <a href="#" style="padding: 8px;">Приключенческие туры</a>
+                                    <a href="#" style="padding: 8px;">Гастрономические туры</a>
+                                    <a href="#" style="padding: 8px;">Автотуры/сафари/джип-туры</a>
+                                    <a href="#" style="padding: 8px;">Агротуры</a>
+                                    <a href="#" style="padding: 8px;">VIP туры</a>
+                                </div>
+                            </div>
+                            <a href="#">Тургиды</a>
+                            <a href="#" >Трансфер</a>
+                            <a href="#">Заказ тура</a>
+                            <a href="visa-support.html">Визовая поддержка</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Туристам (с выпадающим меню) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туристам</a>
+                        <div class="dropdown-content">
+                            <a href="#">Инструкция сайта</a>
+                            <a href="#">Специальные заметки</a>
+                            <a href="#">Договор оферта</a>
+                            <a href="#">Правила оплаты и возврата средств</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Акции (БЕЗ выпадающего меню) -->
+                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors">Акции</a>
+                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors">Новости</a>
+                    
+                    <!-- Тур-агенты (с выпадающим меню) -->
+                    <div class="dropdown">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Тур-агенты</a>
+                        <div class="dropdown-content">
+                            <a href="#">Наши турагенты</a>
+                            <a href="tour-agents.html">Для турагентов</a>
+                        </div>
+                    </div>
+                </nav>
+                
+                <!-- Языковой и валютный селекторы -->
+                <div class="flex items-center space-x-4">
+                    <!-- Языковой селектор -->
+                    <div class="language-dropdown">
+                        <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
+                            <span class="selected-flag flag-ru"></span>
+                            <span class="selected-lang">Русский</span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="lang-dropdown-content" id="langDropdown">
+                            <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'flag-ru', 'Русский')">
+                                <span class="flag flag-ru"></span>
+                                <span class="lang-name">Русский</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'flag-us', 'English')">
+                                <span class="flag flag-us"></span>
+                                <span class="lang-name">English</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="tj" onclick="selectLanguage('tj', 'flag-tj', 'Тоҷикӣ')">
+                                <span class="flag flag-tj"></span>
+                                <span class="lang-name">Тоҷикӣ</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="fa" onclick="selectLanguage('fa', 'flag-ir', 'فارسی')">
+                                <span class="flag flag-ir"></span>
+                                <span class="lang-name">فارسی</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', 'flag-de', 'Deutsch')">
+                                <span class="flag flag-de"></span>
+                                <span class="lang-name">Deutsch</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="zh" onclick="selectLanguage('zh', 'flag-cn', '中文')">
+                                <span class="flag flag-cn"></span>
+                                <span class="lang-name">中文</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Валютный селектор -->
+                    <div class="language-dropdown">
+                        <button class="lang-selector-btn" onclick="toggleCurrencyDropdown()">
+                            <span class="selected-currency">USD</span>
+                            <span class="currency-symbol">$</span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="lang-dropdown-content" id="currencyDropdown">
+                            <a href="#" class="lang-option active" data-currency="usd" onclick="selectCurrency('USD', '$')">
+                                <span class="currency-name">USD</span>
+                                <span class="currency-symbol">$</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="tjs" onclick="selectCurrency('TJS', 'с.')">
+                                <span class="currency-name">TJS</span>
+                                <span class="currency-symbol">с.</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="eur" onclick="selectCurrency('EUR', '€')">
+                                <span class="currency-name">EUR</span>
+                                <span class="currency-symbol">€</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -857,5 +1101,50 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        // Language dropdown functions
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('langDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function selectLanguage(lang, flagClass, langName) {
+            const selectedFlag = document.querySelector('.selected-flag');
+            const selectedLang = document.querySelector('.selected-lang');
+            
+            selectedFlag.className = 'selected-flag ' + flagClass;
+            selectedLang.textContent = langName;
+            
+            // Close dropdown
+            document.getElementById('langDropdown').classList.remove('show');
+        }
+
+        // Currency dropdown functions
+        function toggleCurrencyDropdown() {
+            const dropdown = document.getElementById('currencyDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function selectCurrency(currency, symbol) {
+            const selectedCurrency = document.querySelector('.selected-currency');
+            const currencySymbol = document.querySelector('.currency-symbol');
+            
+            selectedCurrency.textContent = currency;
+            currencySymbol.textContent = symbol;
+            
+            // Close dropdown
+            document.getElementById('currencyDropdown').classList.remove('show');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.language-dropdown')) {
+                document.querySelectorAll('.lang-dropdown-content').forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

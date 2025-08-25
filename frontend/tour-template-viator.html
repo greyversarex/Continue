@@ -337,33 +337,19 @@
                             min="2025-08-09">
                     </div>
                     
-                    <!-- Duration and Tourist Count -->
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Продолжительность</label>
-                            <select id="duration-select" class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="1">1 день</option>
-                                <option value="2">2 дня</option>
-                                <option value="3">3 дня</option>
-                                <option value="4">4 дня</option>
-                                <option value="5">5 дней</option>
-                                <option value="6">6 дней</option>
-                                <option value="7">7 дней</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Количество туристов</label>
-                            <select id="tourist-count" class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="1">1 турист</option>
-                                <option value="2">2 туриста</option>
-                                <option value="3">3 туриста</option>
-                                <option value="4">4 туриста</option>
-                                <option value="5">5 туристов</option>
-                                <option value="6">6 туристов</option>
-                                <option value="7">7 туристов</option>
-                                <option value="8">8+ туристов</option>
-                            </select>
-                        </div>
+                    <!-- Tourist Count -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Количество туристов</label>
+                        <select id="tourist-count" class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="1">1 турист</option>
+                            <option value="2">2 туриста</option>
+                            <option value="3">3 туриста</option>
+                            <option value="4">4 туриста</option>
+                            <option value="5">5 туристов</option>
+                            <option value="6">6 туристов</option>
+                            <option value="7">7 туристов</option>
+                            <option value="8">8+ туристов</option>
+                        </select>
                     </div>
                     
                     <!-- Tour Type Selection -->
@@ -1212,10 +1198,9 @@
             }
         });
         
-        // Update availability check with new fields
+        // Update availability check without duration
         function goToBookingPage() {
             const date = document.getElementById('tour-date').value;
-            const duration = document.getElementById('duration-select').value;
             const touristCount = document.getElementById('tourist-count').value;
             const tourType = document.getElementById('tour-type-select').value;
             const tourTitle = document.querySelector('#tour-title')?.textContent || 'Неизвестный тур';
@@ -1223,11 +1208,6 @@
             // Validate required fields
             if (!date) {
                 alert('Пожалуйста, выберите дату');
-                return;
-            }
-            
-            if (!duration) {
-                alert('Пожалуйста, выберите продолжительность');
                 return;
             }
             
