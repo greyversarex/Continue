@@ -651,11 +651,19 @@
 
 Данные сохранены. Переход на следующий этап...`;
             
-            alert(summary);
+            // Используем подтверждение вместо простого alert
+            const userConfirmed = confirm(summary + '\n\nПерейти к следующему этапу?');
             
-            // Переход на следующий этап (пока заглушка)
-            // const newUrl = `booking-step2.html`;
-            // window.location.href = newUrl;
+            if (userConfirmed) {
+                // Переход на следующий этап с данными в URL для совместимости
+                const nextStepUrl = `booking-step2.html?tour=${encodeURIComponent(orderDetails.tour.name)}&date=${orderDetails.tour.date}&tourists=${orderDetails.tour.tourists}&hotelName=${encodeURIComponent(orderDetails.hotel.name)}&totalPrice=${orderDetails.pricing.totalPrice}`;
+                
+                console.log('Переходим на:', nextStepUrl);
+                // window.location.href = nextStepUrl; // Раскомментировать когда будет готова следующая страница
+                
+                // Временно показываем уведомление о готовности
+                alert('Система готова к переходу!\nДанные сохранены в localStorage.\nСледующий этап: ' + nextStepUrl);
+            }
         }
 
         function goBack() {
@@ -797,10 +805,10 @@
         function updateOrderDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             
-            // Обновляем данные тура
-            orderDetails.tour.name = urlParams.get('tour') || 'Тур по Памиру';
+            // Обновляем данные тура с правильным декодированием
+            orderDetails.tour.name = urlParams.get('tour') ? decodeURIComponent(urlParams.get('tour')) : 'Тур по Памиру';
             orderDetails.tour.date = urlParams.get('date') || '2024-08-01';
-            orderDetails.tour.type = urlParams.get('tourType') || 'Групповой';
+            orderDetails.tour.type = urlParams.get('tourType') ? decodeURIComponent(urlParams.get('tourType')) : 'Групповой';
             orderDetails.tour.tourists = parseInt(urlParams.get('tourists')) || 1;
             orderDetails.tour.days = globalDays;
             
@@ -946,9 +954,9 @@
                         ...parsedOrder,
                         tour: {
                             ...orderDetails.tour,
-                            name: urlParams.get('tour') || parsedOrder.tour?.name || 'Тур по Памиру',
+                            name: urlParams.get('tour') ? decodeURIComponent(urlParams.get('tour')) : (parsedOrder.tour?.name || 'Тур по Памиру'),
                             date: urlParams.get('date') || parsedOrder.tour?.date || '2024-08-01',
-                            type: urlParams.get('tourType') || parsedOrder.tour?.type || 'Групповой',
+                            type: urlParams.get('tourType') ? decodeURIComponent(urlParams.get('tourType')) : (parsedOrder.tour?.type || 'Групповой'),
                             tourists: parseInt(urlParams.get('tourists')) || parsedOrder.tour?.tourists || 1,
                             days: globalDays
                         }
@@ -958,9 +966,9 @@
                 }
             } else {
                 // Если нет сохраненных данных, инициализируем из URL
-                orderDetails.tour.name = urlParams.get('tour') || 'Тур по Памиру';
+                orderDetails.tour.name = urlParams.get('tour') ? decodeURIComponent(urlParams.get('tour')) : 'Тур по Памиру';
                 orderDetails.tour.date = urlParams.get('date') || '2024-08-01';
-                orderDetails.tour.type = urlParams.get('tourType') || 'Групповой';
+                orderDetails.tour.type = urlParams.get('tourType') ? decodeURIComponent(urlParams.get('tourType')) : 'Групповой';
                 orderDetails.tour.tourists = parseInt(urlParams.get('tourists')) || 1;
                 orderDetails.tour.days = globalDays;
             }
