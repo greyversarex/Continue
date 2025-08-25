@@ -633,16 +633,47 @@
             if (step === '2' && tour && date && hotel) {
                 console.log('Skipping to step 2 with hotel selection');
                 
-                // Pre-fill data from URL parameters
+                // Загружаем данные из localStorage если есть
+                let orderDetails = null;
+                try {
+                    const savedOrder = localStorage.getItem('orderDetails');
+                    if (savedOrder) {
+                        orderDetails = JSON.parse(savedOrder);
+                        console.log('Loaded order details from localStorage:', orderDetails);
+                    }
+                } catch (e) {
+                    console.error('Error loading order details:', e);
+                }
+                
+                // Pre-fill data from URL parameters and localStorage
+                const tourists = parseInt(urlParams.get('tourists')) || 1;
+                const hotelPrice = parseFloat(urlParams.get('hotelPrice')) || 0;
+                const tourPrice = parseFloat(urlParams.get('tourPrice')) || 300;
+                const totalOrderPrice = parseFloat(urlParams.get('totalPrice')) || (tourPrice + hotelPrice);
+                
                 selectedHotel = {
                     name: decodeURIComponent(hotel),
-                    price: parseFloat(price) || 0
+                    price: hotelPrice
                 };
                 
-                // Set tour title if available
+                // Set tour title and details
                 if (tour) {
                     const tourSummary = document.getElementById('tourSummary');
                     if (tourSummary) {
+                        // Создаем детальную информацию с номерами если есть данные из localStorage
+                        let hotelDetails = decodeURIComponent(hotel);
+                        if (orderDetails && orderDetails.hotel && orderDetails.hotel.rooms.length > 0) {
+                            const roomsText = orderDetails.hotel.rooms.map(r => 
+                                `${r.name} (${r.count} ном.)`
+                            ).join(', ');
+                            hotelDetails = `${orderDetails.hotel.name}: ${roomsText}`;
+                            
+                            const pension = orderDetails.hotel.pension === 'none' ? 'Не включено' : 
+                                          orderDetails.hotel.pension === 'half' ? 'Полупансион' : 
+                                          'Полный пансион';
+                            hotelDetails += ` - ${pension}`;
+                        }
+                        
                         tourSummary.innerHTML = `
                             <div class="space-y-3">
                                 <h4 class="font-semibold">${decodeURIComponent(tour)}</h4>
@@ -653,11 +684,11 @@
                                     </div>
                                     <div class="mb-2">
                                         <i class="fas fa-bed mr-2"></i>
-                                        ${decodeURIComponent(hotel)}
+                                        ${hotelDetails}
                                     </div>
                                     <div>
                                         <i class="fas fa-users mr-2"></i>
-                                        <span id="touristCountDisplay">1</span> человек
+                                        <span id="touristCountDisplay">${tourists}</span> ${tourists === 1 ? 'человек' : tourists < 5 ? 'человека' : 'человек'}
                                     </div>
                                 </div>
                             </div>
@@ -665,9 +696,17 @@
                     }
                 }
                 
-                // Set hotel price
-                basePrice = parseFloat(price) || 0;
-                document.getElementById('basePrice').textContent = basePrice;
+                // Set prices correctly
+                basePrice = tourPrice;
+                document.getElementById('basePrice').textContent = tourPrice;
+                document.getElementById('hotelPrice').textContent = hotelPrice;
+                document.getElementById('totalPrice').textContent = totalOrderPrice;
+                
+                // Update tourist count field
+                const touristCountInput = document.getElementById('touristCount');
+                if (touristCountInput) {
+                    touristCountInput.value = tourists;
+                }
                 
                 // Skip to step 2
                 showStep(2);
@@ -1097,27 +1136,65 @@
                 return;
             }
             
+            // Загружаем полные данные заказа из localStorage
+            let orderDetails = null;
+            try {
+                const savedOrder = localStorage.getItem('orderDetails');
+                if (savedOrder) {
+                    orderDetails = JSON.parse(savedOrder);
+                }
+            } catch (e) {
+                console.error('Error loading order details:', e);
+            }
+            
             // Prepare order data
             const tourists = touristsList.map(tourist => ({
                 fullName: tourist.fullName
             }));
             
             const orderData = {
+                // Данные тура
                 tourId: selectedTourId,
+                tourName: orderDetails?.tour?.name || 'Неизвестный тур',
+                tourType: orderDetails?.tour?.type || 'Групповой',
+                tourPrice: orderDetails?.pricing?.tourPrice || 300,
+                
+                // Данные отеля с полной информацией
                 hotelId: selectedHotel?.id,
+                hotelName: orderDetails?.hotel?.name || selectedHotel?.name,
+                hotelRooms: orderDetails?.hotel?.rooms || [],
+                hotelPension: orderDetails?.hotel?.pension,
+                hotelPrice: orderDetails?.pricing?.hotelPrice || 0,
+                
+                // Данные гида
                 guideId: selectedGuide?.id,
-                tourDate: document.getElementById('tourDate').value,
+                guidePrice: selectedGuide?.price || 0,
+                
+                // Данные бронирования
+                tourDate: orderDetails?.tour?.date || document.getElementById('tourDate').value,
+                duration: orderDetails?.tour?.days || 1,
+                touristCount: orderDetails?.tour?.tourists || tourists.length,
+                
+                // Данные клиента
                 customerName: document.getElementById('contactName').value,
                 customerPhone: document.getElementById('contactPhone').value,
                 customerEmail: document.getElementById('contactEmail').value,
                 tourists: tourists,
                 wishes: document.getElementById('specialRequests').value,
-                totalAmount: totalPrice,
-                paymentMethod: selectedPaymentMethod
+                
+                // Финансовые данные
+                totalAmount: orderDetails?.pricing?.totalPrice || totalPrice,
+                paymentMethod: selectedPaymentMethod,
+                
+                // Системная информация
+                createdAt: new Date().toISOString(),
+                status: 'pending'
             };
             
-            // Submit order
-            fetch('http://localhost:3001/api/orders', {
+            console.log('Отправляем полные данные заказа:', orderData);
+            
+            // Submit order to correct server port
+            fetch('http://localhost:5000/api/orders', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1127,13 +1204,18 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
+                    // Очищаем localStorage после успешной отправки
+                    localStorage.removeItem('orderDetails');
+                    
                     // Show success message
                     document.getElementById('successMessage').style.display = 'block';
                     document.getElementById('errorMessage').style.display = 'none';
                     
+                    console.log('Заказ успешно создан:', data);
+                    
                     // Simulate payment redirect
                     setTimeout(() => {
-                        alert(`Перенаправление на ${selectedPaymentMethod}...\nНомер заказа: ${data.orderNumber}`);
+                        alert(`Заказ успешно создан!\nНомер заказа: ${data.orderNumber || 'BT' + Date.now()}\nПеренаправление на ${selectedPaymentMethod}...`);
                         // In production, redirect to payment gateway
                         // window.location.href = data.paymentUrl;
                     }, 2000);

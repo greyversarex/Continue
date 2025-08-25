@@ -636,8 +636,8 @@
             // Данные уже сохранены в localStorage через updateOrderDetails()
             console.log('Полные данные заказа сохранены:', orderDetails);
             
-            // Переход на следующий этап
-            const nextStepUrl = `booking-flow.html?tour=${encodeURIComponent(orderDetails.tour.name)}&date=${orderDetails.tour.date}&tourists=${orderDetails.tour.tourists}&hotelName=${encodeURIComponent(orderDetails.hotel.name)}&totalPrice=${orderDetails.pricing.totalPrice}&step=2`;
+            // Переход на следующий этап с полными данными
+            const nextStepUrl = `booking-flow.html?step=2&tour=${encodeURIComponent(orderDetails.tour.name)}&date=${orderDetails.tour.date}&tourists=${orderDetails.tour.tourists}&hotelName=${encodeURIComponent(orderDetails.hotel.name)}&totalPrice=${orderDetails.pricing.totalPrice}&hotelPrice=${orderDetails.pricing.hotelPrice}&tourPrice=${orderDetails.pricing.tourPrice}`;
             
             window.location.href = nextStepUrl;
         }
