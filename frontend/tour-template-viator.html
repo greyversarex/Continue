@@ -21,6 +21,140 @@
         #share-btn:hover {
             background-color: #4B5563 !important;
         }
+        
+        /* Language and currency dropdown styles */
+        .language-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .lang-selector-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            color: white;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .lang-selector-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .flag {
+            width: 16px;
+            height: 12px;
+            display: inline-block;
+            border-radius: 2px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .flag-ru { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCAwSDE2VjEySDBWMFoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTAgMEgxNlY0SDBWMFoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTAgNEgxNlY4SDBWNFoiIGZpbGw9IiMwMDUyQjQiLz48cGF0aCBkPSJNMCA4SDE2VjEySDBWOFoiIGZpbGw9IiNEOTI5MjkiLz48L3N2Zz4='); }
+        .flag-us { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCAwSDE2VjEySDBWMFoiIGZpbGw9IiNGRkZGRkYiLz48cGF0aCBkPSJNMCAwSDE2VjAuOTIzSDBWMFoiIGZpbGw9IiNCMjIyMzQiLz48cGF0aCBkPSJNMCAxLjg0NkgxNlYyLjc2OUgwVjEuODQ2WiIgZmlsbD0iI0IyMjIzNCIvPjxwYXRoIGQ9Ik0wIDMuNjkySDEwVjQuNjE1SDBWMy42OTJaIiBmaWxsPSIjRkZGRkZGIi8+PC9zdmc+'); }
+        .flag-tj { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCAwSDE2VjEySDBWMFoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTAgMEgxNlY0SDBWMFoiIGZpbGw9IiNEOTI5MjkiLz48cGF0aCBkPSJNMCA4SDE2VjEySDBWOFoiIGZpbGw9IiMwMDk2MzkiLz48L3N2Zz4='); }
+        .flag-ir { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCAwSDE2VjEySDBWMFoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTAgMEgxNlY0SDBWMFoiIGZpbGw9IiMwMDk2MzkiLz48cGF0aCBkPSJNMCA0SDE2VjhIMFY0WiIgZmlsbD0iI0ZGRkZGRiIvPjxwYXRoIGQ9Ik0wIDhIMTZWMTJIMFY4WiIgZmlsbD0iI0Q5MjkyOSIvPjwvc3ZnPg=='); }
+        .flag-de { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCAwSDE2VjEySDBWMFoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTAgMEgxNlY0SDBWMFoiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJNMCA0SDE2VjhIMFY0WiIgZmlsbD0iI0Q5MjkyOSIvPjxwYXRoIGQ9Ik0wIDhIMTZWMTJIMFY4WiIgZmlsbD0iI0ZGRDcwMCIvPjwvc3ZnPg=='); }
+        .flag-cn { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCAwSDE2VjEySDBWMFoiIGZpbGw9IiNEOTI5MjkiLz48L3N2Zz4='); }
+        
+        .lang-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: #2F2F2F;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 1000;
+            margin-top: 4px;
+        }
+        
+        .language-dropdown.active .lang-dropdown-content {
+            display: block;
+        }
+        
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        .lang-option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .lang-option.active {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .language-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+        
+        /* Dropdown navigation styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #2F2F2F;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+            z-index: 1000;
+            border-radius: 8px;
+            top: 100%;
+            left: 0;
+            padding: 8px 0;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: #4A4A4A;
+        }
+        .dropdown-content .dropdown-submenu {
+            position: relative;
+        }
+        .dropdown-content .dropdown-submenu .dropdown-subcontent {
+            display: none !important;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: #2F2F2F;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1001;
+        }
+        .dropdown-content .dropdown-submenu:hover > .dropdown-subcontent {
+            display: block !important;
+        }
 
     </style>
 </head>
@@ -100,18 +234,74 @@
                 <!-- Языковой и валютный селекторы -->
                 <div class="flex items-center space-x-4">
                     <!-- Языковой селектор -->
-                    <select class="bg-transparent text-white border border-gray-600 rounded px-2 py-1 text-sm">
-                        <option value="ru">Русский</option>
-                        <option value="en">English</option>
-                        <option value="tj">Тоҷикӣ</option>
-                    </select>
+                    <div class="language-dropdown">
+                        <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
+                            <span class="selected-flag flag-ru"></span>
+                            <span class="selected-lang">Русский</span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="lang-dropdown-content" id="langDropdown">
+                            <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'flag-ru', 'Русский')">
+                                <span class="flag flag-ru"></span>
+                                <span class="lang-name">Русский</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'flag-us', 'English')">
+                                <span class="flag flag-us"></span>
+                                <span class="lang-name">English</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="tj" onclick="selectLanguage('tj', 'flag-tj', 'Тоҷикӣ')">
+                                <span class="flag flag-tj"></span>
+                                <span class="lang-name">Тоҷикӣ</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="fa" onclick="selectLanguage('fa', 'flag-ir', 'فارسی')">
+                                <span class="flag flag-ir"></span>
+                                <span class="lang-name">فارسی</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', 'flag-de', 'Deutsch')">
+                                <span class="flag flag-de"></span>
+                                <span class="lang-name">Deutsch</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="zh" onclick="selectLanguage('zh', 'flag-cn', '中文')">
+                                <span class="flag flag-cn"></span>
+                                <span class="lang-name">中文</span>
+                            </a>
+                        </div>
+                    </div>
 
                     <!-- Валютный селектор -->
-                    <select class="bg-transparent text-white border border-gray-600 rounded px-2 py-1 text-sm">
-                        <option value="usd">USD</option>
-                        <option value="tjs">TJS</option>
-                        <option value="eur">EUR</option>
-                    </select>
+                    <div class="language-dropdown">
+                        <button class="lang-selector-btn" onclick="toggleCurrencyDropdown()">
+                            <span class="selected-currency">USD</span>
+                            <span class="currency-symbol">$</span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="lang-dropdown-content" id="currencyDropdown">
+                            <a href="#" class="lang-option active" data-currency="usd" onclick="selectCurrency('USD', '$')">
+                                <span class="currency-name">USD</span>
+                                <span class="currency-symbol">$</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="tjs" onclick="selectCurrency('TJS', 'с.')">
+                                <span class="currency-name">TJS</span>
+                                <span class="currency-symbol">с.</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="eur" onclick="selectCurrency('EUR', '€')">
+                                <span class="currency-name">EUR</span>
+                                <span class="currency-symbol">€</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="gbp" onclick="selectCurrency('GBP', '£')">
+                                <span class="currency-name">GBP</span>
+                                <span class="currency-symbol">£</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="rub" onclick="selectCurrency('RUB', '₽')">
+                                <span class="currency-name">RUB</span>
+                                <span class="currency-symbol">₽</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -228,6 +418,14 @@
                                 <span class="text-gray-900 font-medium" id="meals-included">Приём не включен</span>
                             </div>
                             
+                            <!-- Языки тура -->
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                                </svg>
+                                <span class="text-gray-900 font-medium" id="tour-languages">Языки: Русский, Английский, Таджикский</span>
+                            </div>
+                            
                             <!-- Share function moved to same row -->
                             <div class="flex items-center space-x-2">
                                 <div class="relative">
@@ -249,7 +447,7 @@
                                             </button>
                                             <button onclick="downloadPDF()" class="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-gray-100 rounded">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                                 </svg>
                                                 <span>Скачать PDF</span>
                                             </button>
@@ -1249,12 +1447,48 @@
             toggleShareMenu();
         }
         
+        // Language dropdown functions
+        function toggleLanguageDropdown() {
+            const dropdown = document.querySelector('.language-dropdown');
+            dropdown.classList.toggle('active');
+            
+            // Close currency dropdown if open
+            document.querySelector('.language-dropdown:nth-child(2)').classList.remove('active');
+        }
+        
+        function toggleCurrencyDropdown() {
+            const currencyDropdown = document.querySelector('.language-dropdown:nth-child(2)');
+            currencyDropdown.classList.toggle('active');
+            
+            // Close language dropdown if open  
+            document.querySelector('.language-dropdown:nth-child(1)').classList.remove('active');
+        }
+        
+        function selectLanguage(lang, flagClass, langName) {
+            document.querySelector('.selected-flag').className = `selected-flag ${flagClass}`;
+            document.querySelector('.selected-lang').textContent = langName;
+            document.querySelector('.language-dropdown').classList.remove('active');
+        }
+        
+        function selectCurrency(currency, symbol) {
+            document.querySelector('.selected-currency').textContent = currency;
+            document.querySelector('.currency-symbol').textContent = symbol;
+            document.querySelector('.language-dropdown:nth-child(2)').classList.remove('active');
+        }
+        
         // Close share menu when clicking outside
         document.addEventListener('click', function(event) {
             const shareBtn = document.getElementById('share-btn');
             const shareMenu = document.getElementById('share-menu');
-            if (!shareBtn.contains(event.target) && !shareMenu.contains(event.target)) {
+            if (shareBtn && shareMenu && !shareBtn.contains(event.target) && !shareMenu.contains(event.target)) {
                 shareMenu.classList.add('hidden');
+            }
+            
+            // Close language/currency dropdowns when clicking outside
+            if (!event.target.closest('.language-dropdown')) {
+                document.querySelectorAll('.language-dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
             }
         });
         

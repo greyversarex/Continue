@@ -290,6 +290,11 @@
         function changeDays(hotelId, change) {
             globalDays = Math.max(1, globalDays + change);
             
+            // Update all hotels' days in hotelDays object
+            Object.keys(hotelDays).forEach(id => {
+                hotelDays[id] = globalDays;
+            });
+            
             // Update display for this hotel
             const daysDisplay = document.getElementById(`days-count-${hotelId}`);
             if (daysDisplay) {
@@ -309,8 +314,14 @@
                 display.textContent = globalDays;
             });
             
-            // Update pricing calculations
+            // Update pricing for all hotels
+            hotelData.forEach(hotel => {
+                updateHotelPricing(hotel.id);
+            });
+            
+            // Update booking details and overall pricing
             updateBookingDetails();
+            updatePricing();
         }
         
         // Initialize days for each hotel
@@ -638,21 +649,7 @@
             }
         }
         
-        // Days counter functionality
-        function changeDays(hotelId, change) {
-            const newDays = Math.max(1, Math.min(30, hotelDays[hotelId] + change));
-            hotelDays[hotelId] = newDays;
-            
-            // Update display
-            const daysElement = document.getElementById(`days-count-${hotelId}`);
-            if (daysElement) {
-                daysElement.textContent = newDays;
-            }
-            
-            // Update pricing
-            updateHotelPricing(hotelId);
-            updatePricing();
-        }
+        // Days counter functionality (removed duplicate)
         
         // Room counter functionality
         function changeRoomCount(hotelId, roomTypeId, change) {
@@ -780,17 +777,30 @@
         }
         
         function updateBookingDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tourName = urlParams.get('tour') || 'Тур по Памиру';
+            const tourDate = urlParams.get('date') || '2024-08-01';
+            const tourType = urlParams.get('tourType') || 'Групповой';
+            const tourists = parseInt(urlParams.get('tourists')) || 1;
+            
+            // Update tour information in booking details
+            document.getElementById('tour-name-display').textContent = tourName;
+            document.getElementById('tour-date-display').textContent = tourDate;
+            document.getElementById('tour-type-display').textContent = tourType;
+            document.getElementById('tourists-count-display').textContent = tourists;
+            
+            // Always use globalDays for consistent display
+            document.getElementById('tour-days-display').textContent = globalDays;
+            
             // Find the hotel with selected rooms
             let selectedHotelWithRooms = null;
             let selectedRooms = [];
-            let selectedDays = 1;
             
             hotelData.forEach(hotel => {
                 const rooms = hotel.roomTypes.filter(room => room.count > 0);
                 if (rooms.length > 0) {
                     selectedHotelWithRooms = hotel;
                     selectedRooms = rooms;
-                    selectedDays = hotelDays[hotel.id] || 1;
                 }
             });
             
@@ -802,10 +812,10 @@
             if (selectedHotelWithRooms && selectedRooms.length > 0) {
                 hotelNameElement.textContent = selectedHotelWithRooms.name;
                 
-                // Show selected rooms with pension info
+                // Show selected rooms with pension info - use globalDays consistently
                 roomsInfoElement.style.display = 'block';
                 let roomsHTML = selectedRooms.map(room => 
-                    `<div>${room.name}: ${room.count} ном. × ${selectedDays} дн.</div>`
+                    `<div>${room.name}: ${room.count} ном. × ${globalDays} дн.</div>`
                 ).join('');
                 
                 // Add pension info
