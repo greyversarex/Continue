@@ -286,6 +286,30 @@
         let selectedHotel = null;
         let globalDays = 1; // Global days from availability check
         
+        // Единый объект заказа для всех расчетов
+        let orderDetails = {
+            tour: {
+                name: '',
+                date: '',
+                type: '',
+                tourists: 1,
+                days: 1,
+                basePrice: 300
+            },
+            hotel: {
+                selected: null,
+                name: '',
+                rooms: [],
+                pension: '',
+                totalPrice: 0
+            },
+            pricing: {
+                tourPrice: 300,
+                hotelPrice: 0,
+                totalPrice: 300
+            }
+        };
+        
         // Function to change days count
         function changeDays(hotelId, change) {
             globalDays = Math.max(1, globalDays + change);
@@ -319,9 +343,8 @@
                 updateHotelPricing(hotel.id);
             });
             
-            // Update booking details and overall pricing
-            updateBookingDetails();
-            updatePricing();
+            // Используем единую систему обновления заказа
+            updateOrderDetails();
         }
         
         // Initialize days for each hotel
@@ -348,9 +371,12 @@
             console.log('Page loaded, initializing...');
             initializeGlobalDays(); // Load days from URL
             initializeHotelDays(); // Initialize hotel days with global days
-            loadTourDetails();
+            
+            // Используем новую систему инициализации
+            initializeOrderDetails();
+            
             displayHotels();
-            updatePricing(); // Initialize pricing display
+            updateOrderDetails(); // Используем новую систему обновления
             console.log('Page initialization completed');
         });
 
@@ -588,26 +614,42 @@
         }
 
         function goToNextStep() {
-            if (!selectedHotel) {
-                alert('Пожалуйста, выберите отель');
+            // Убедимся что все данные актуальны
+            updateOrderDetails();
+            
+            // Проверяем что выбран отель и номера
+            if (!orderDetails.hotel.selected || orderDetails.hotel.rooms.length === 0) {
+                alert('Пожалуйста, выберите отель и номера для продолжения');
                 return;
             }
             
-            // Get selected date from URL params (passed from tour page)
-            const urlParams = new URLSearchParams(window.location.search);
-            const selectedDate = urlParams.get('date') || '2025-08-26';
-            const tourName = urlParams.get('tour');
+            // Данные уже сохранены в localStorage через updateOrderDetails()
+            console.log('Полные данные заказа:', orderDetails);
             
-            // Get selected rooms data
-            const selectedRooms = selectedHotel.roomTypes.filter(room => room.count > 0);
-            const roomsData = selectedRooms.map(room => `${room.id}:${room.count}`).join(',');
+            // Показываем итоговую информацию пользователю
+            const summary = `Детали заказа:
             
-            // Calculate total hotel price
-            const hotelTotalPrice = selectedRooms.reduce((sum, room) => sum + (room.price * room.count), 0);
+Тур: ${orderDetails.tour.name}
+Дата: ${orderDetails.tour.date}  
+Тип тура: ${orderDetails.tour.type}
+Количество туристов: ${orderDetails.tour.tourists}
+Продолжительность: ${orderDetails.tour.days} дн.
+
+Отель: ${orderDetails.hotel.name}
+Номера: ${orderDetails.hotel.rooms.map(r => `${r.name} (${r.count} ном.)`).join(', ')}
+Питание: ${orderDetails.hotel.pension === 'none' ? 'Не включено' : orderDetails.hotel.pension === 'half' ? 'Полупансион' : 'Полный пансион'}
+
+Стоимость тура: $${orderDetails.pricing.tourPrice}
+Стоимость отеля: $${orderDetails.pricing.hotelPrice}
+ИТОГО: $${orderDetails.pricing.totalPrice}
+
+Данные сохранены. Переход на следующий этап...`;
             
-            // Redirect to next step with all booking data
-            const newUrl = `booking-flow.html?tour=${encodeURIComponent(tourName)}&date=${selectedDate}&hotel=${selectedHotel.name}&rooms=${roomsData}&hotelPrice=${hotelTotalPrice}&step=2`;
-            window.location.href = newUrl;
+            alert(summary);
+            
+            // Переход на следующий этап (пока заглушка)
+            // const newUrl = `booking-step2.html`;
+            // window.location.href = newUrl;
         }
 
         function goBack() {
@@ -685,8 +727,6 @@
                     `${room.name}: ${room.count} ном.`
                 ).join(', ');
                 summaryElement.textContent = roomText;
-                
-                // Keep dropdown open for better UX
             }
             
             // Update hotel card visual feedback
@@ -697,47 +737,15 @@
                 hotelCard.classList.remove('border-blue-300', 'bg-blue-50');
             }
             
-            // Update hotel pricing and booking details
+            // Update hotel pricing and use unified order system
             updateHotelPricing(hotelId);
-            updateBookingDetails();
+            updateOrderDetails();
         }
         
         function updatePricing() {
-            const tourPrice = 300; // Base tour price
-            let hotelTotalPrice = 0;
-            
-            // Calculate hotel prices for all selected rooms across all hotels WITH DAYS
-            const roomPricesList = document.getElementById('room-prices-list');
-            const hotelPriceBreakdown = document.getElementById('hotel-price-breakdown');
-            
-            let hasSelectedRooms = false;
-            let roomPricesHTML = '';
-            
-            hotelData.forEach(hotel => {
-                hotel.roomTypes.forEach(room => {
-                    if (room.count > 0) {
-                        hasSelectedRooms = true;
-                        // Include days in calculation for pricing display
-                        const roomTotal = room.price * room.count * globalDays;
-                        hotelTotalPrice += roomTotal;
-                        roomPricesHTML += `<div>${room.name} x${room.count} x${globalDays} дн.: $${roomTotal}</div>`;
-                    }
-                });
-            });
-            
-            // Update display
-            document.getElementById('tour-price').textContent = `$${tourPrice}`;
-            
-            if (hasSelectedRooms) {
-                hotelPriceBreakdown.style.display = 'block';
-                roomPricesList.innerHTML = roomPricesHTML;
-                document.getElementById('hotel-total-price').textContent = `$${hotelTotalPrice}`;
-            } else {
-                hotelPriceBreakdown.style.display = 'none';
-            }
-            
-            const totalPrice = tourPrice + hotelTotalPrice;
-            document.getElementById('total-price').textContent = `$${totalPrice}`;
+            // Эта функция теперь использует данные из orderDetails
+            // Вызываем updateOrderDetails чтобы убедиться что данные актуальны
+            updateOrderDetails();
         }
         
         function updateHotelPricing(hotelId) {
@@ -777,60 +785,207 @@
             }
         }
         
-        function updateBookingDetails() {
+        // Единая функция для обновления всех деталей заказа
+        function updateOrderDetails() {
             const urlParams = new URLSearchParams(window.location.search);
-            const tourName = urlParams.get('tour') || 'Тур по Памиру';
-            const tourDate = urlParams.get('date') || '2024-08-01';
-            const tourType = urlParams.get('tourType') || 'Групповой';
-            const tourists = parseInt(urlParams.get('tourists')) || 1;
             
-            // Update tour information in booking details
-            document.getElementById('tour-name-display').textContent = tourName;
-            document.getElementById('tour-date-display').textContent = tourDate;
-            document.getElementById('tour-type-display').textContent = tourType;
-            document.getElementById('tourists-count-display').textContent = tourists;
+            // Обновляем данные тура
+            orderDetails.tour.name = urlParams.get('tour') || 'Тур по Памиру';
+            orderDetails.tour.date = urlParams.get('date') || '2024-08-01';
+            orderDetails.tour.type = urlParams.get('tourType') || 'Групповой';
+            orderDetails.tour.tourists = parseInt(urlParams.get('tourists')) || 1;
+            orderDetails.tour.days = globalDays;
             
-            // Always use globalDays for consistent display
-            document.getElementById('tour-days-display').textContent = globalDays;
-            
-            // Find the hotel with selected rooms
+            // Найдем выбранный отель и номера
             let selectedHotelWithRooms = null;
             let selectedRooms = [];
+            let hotelTotalPrice = 0;
             
             hotelData.forEach(hotel => {
                 const rooms = hotel.roomTypes.filter(room => room.count > 0);
                 if (rooms.length > 0) {
                     selectedHotelWithRooms = hotel;
                     selectedRooms = rooms;
+                    
+                    // Рассчитываем общую стоимость отеля
+                    rooms.forEach(room => {
+                        hotelTotalPrice += room.price * room.count * globalDays;
+                    });
                 }
             });
             
-            // Update hotel name display
+            // Обновляем данные отеля в orderDetails
+            if (selectedHotelWithRooms) {
+                orderDetails.hotel.selected = selectedHotelWithRooms.id;
+                orderDetails.hotel.name = selectedHotelWithRooms.name;
+                orderDetails.hotel.rooms = selectedRooms.map(room => ({
+                    name: room.name,
+                    count: room.count,
+                    price: room.price,
+                    total: room.price * room.count * globalDays
+                }));
+                orderDetails.hotel.pension = selectedHotelWithRooms.pension;
+                orderDetails.hotel.totalPrice = hotelTotalPrice;
+            } else {
+                // Сброс данных отеля если ничего не выбрано
+                orderDetails.hotel = {
+                    selected: null,
+                    name: '',
+                    rooms: [],
+                    pension: '',
+                    totalPrice: 0
+                };
+            }
+            
+            // Обновляем общую стоимость
+            orderDetails.pricing.tourPrice = orderDetails.tour.basePrice;
+            orderDetails.pricing.hotelPrice = orderDetails.hotel.totalPrice;
+            orderDetails.pricing.totalPrice = orderDetails.pricing.tourPrice + orderDetails.pricing.hotelPrice;
+            
+            // Сохраняем данные в localStorage для передачи на следующие этапы
+            localStorage.setItem('orderDetails', JSON.stringify(orderDetails));
+            
+            // Обновляем отображение на странице
+            updateDisplayFromOrderDetails();
+        }
+        
+        // Функция для обновления отображения данных из orderDetails
+        function updateDisplayFromOrderDetails() {
+            // Обновляем информацию о туре
+            document.getElementById('tour-name-display').textContent = orderDetails.tour.name;
+            document.getElementById('tour-date-display').textContent = orderDetails.tour.date;
+            document.getElementById('tour-type-display').textContent = orderDetails.tour.type;
+            document.getElementById('tourists-count-display').textContent = orderDetails.tour.tourists;
+            document.getElementById('tour-days-display').textContent = orderDetails.tour.days;
+            
+            // Обновляем информацию об отеле
             const hotelNameElement = document.getElementById('selected-hotel-name');
             const roomsInfoElement = document.getElementById('selected-rooms-info');
             const roomsListElement = document.getElementById('selected-rooms-list');
             
-            if (selectedHotelWithRooms && selectedRooms.length > 0) {
-                hotelNameElement.textContent = selectedHotelWithRooms.name;
-                
-                // Show selected rooms with pension info - use globalDays consistently
+            if (orderDetails.hotel.selected && orderDetails.hotel.rooms.length > 0) {
+                hotelNameElement.textContent = orderDetails.hotel.name;
                 roomsInfoElement.style.display = 'block';
-                let roomsHTML = selectedRooms.map(room => 
-                    `<div>${room.name}: ${room.count} ном. × ${globalDays} дн.</div>`
+                
+                // Отображение выбранных номеров
+                let roomsHTML = orderDetails.hotel.rooms.map(room => 
+                    `<div>${room.name}: ${room.count} ном. × ${orderDetails.tour.days} дн. = $${room.total}</div>`
                 ).join('');
                 
-                // Add pension info
-                const pensionText = selectedHotelWithRooms.pension === 'none' ? 'Не включено' : 
-                                  selectedHotelWithRooms.pension === 'half' ? 'Полупансион (завтрак)' : 
+                // Добавляем информацию о питании
+                const pensionText = orderDetails.hotel.pension === 'none' ? 'Не включено' : 
+                                  orderDetails.hotel.pension === 'half' ? 'Полупансион (завтрак)' : 
                                   'Полный пансион (завтрак + обед)';
-                roomsHTML += `<div class="mt-1 text-blue-600 font-medium">Питание: ${pensionText}</div>`;
+                roomsHTML += `<div class="mt-2 text-blue-600 font-medium">Питание: ${pensionText}</div>`;
                 
                 roomsListElement.innerHTML = roomsHTML;
             } else {
                 hotelNameElement.textContent = 'Отель не выбран';
                 roomsInfoElement.style.display = 'none';
             }
+            
+            // Обновляем ценовую информацию
+            document.getElementById('tour-price').textContent = `$${orderDetails.pricing.tourPrice}`;
+            document.getElementById('total-price').textContent = `$${orderDetails.pricing.totalPrice}`;
+            
+            // Обновляем детали цен на отель если есть
+            const hotelPriceBreakdown = document.getElementById('hotel-price-breakdown');
+            const roomPricesList = document.getElementById('room-prices-list');
+            
+            if (orderDetails.hotel.totalPrice > 0) {
+                hotelPriceBreakdown.style.display = 'block';
+                let roomPricesHTML = orderDetails.hotel.rooms.map(room => 
+                    `<div>${room.name} x${room.count} x${orderDetails.tour.days} дн.: $${room.total}</div>`
+                ).join('');
+                roomPricesList.innerHTML = roomPricesHTML;
+                document.getElementById('hotel-total-price').textContent = `$${orderDetails.hotel.totalPrice}`;
+            } else {
+                hotelPriceBreakdown.style.display = 'none';
+            }
         }
+        
+        // Старая функция переименована для совместимости
+        function updateBookingDetails() {
+            updateOrderDetails();
+        }
+        
+        // Функция инициализации orderDetails
+        function initializeOrderDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Попытаемся загрузить данные из localStorage
+            const savedOrder = localStorage.getItem('orderDetails');
+            if (savedOrder) {
+                try {
+                    const parsedOrder = JSON.parse(savedOrder);
+                    // Объединяем сохраненные данные с новыми из URL
+                    orderDetails = {
+                        ...orderDetails,
+                        ...parsedOrder,
+                        tour: {
+                            ...orderDetails.tour,
+                            name: urlParams.get('tour') || parsedOrder.tour?.name || 'Тур по Памиру',
+                            date: urlParams.get('date') || parsedOrder.tour?.date || '2024-08-01',
+                            type: urlParams.get('tourType') || parsedOrder.tour?.type || 'Групповой',
+                            tourists: parseInt(urlParams.get('tourists')) || parsedOrder.tour?.tourists || 1,
+                            days: globalDays
+                        }
+                    };
+                } catch (e) {
+                    console.log('Ошибка загрузки сохраненного заказа:', e);
+                }
+            } else {
+                // Если нет сохраненных данных, инициализируем из URL
+                orderDetails.tour.name = urlParams.get('tour') || 'Тур по Памиру';
+                orderDetails.tour.date = urlParams.get('date') || '2024-08-01';
+                orderDetails.tour.type = urlParams.get('tourType') || 'Групповой';
+                orderDetails.tour.tourists = parseInt(urlParams.get('tourists')) || 1;
+                orderDetails.tour.days = globalDays;
+            }
+        }
+        
+        // Load tour details on page load  
+        function loadTourDetails() {
+            // Инициализация данных из URL или localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const daysParam = urlParams.get('days');
+            if (daysParam) {
+                globalDays = parseInt(daysParam);
+            }
+            
+            // Инициализируем единую систему заказа
+            initializeOrderDetails();
+            
+            // Загружаем данные отелей и инициализируем дни для каждого отеля
+            hotelData.forEach(hotel => {
+                hotelDays[hotel.id] = globalDays;
+            });
+            
+            // Обновляем все данные заказа
+            updateOrderDetails();
+        }
+        
+        // Функция для перехода на следующий этап с сохранением данных
+        function proceedToNextStep() {
+            // Убедимся что все данные актуальны
+            updateOrderDetails();
+            
+            // Проверяем что выбран отель
+            if (!orderDetails.hotel.selected || orderDetails.hotel.rooms.length === 0) {
+                alert('Пожалуйста, выберите отель и номера для продолжения');
+                return;
+            }
+            
+            // Переходим на следующий этап с данными в localStorage
+            // Данные уже сохранены в updateOrderDetails()
+            console.log('Данные заказа сохранены:', orderDetails);
+            alert('Переход на следующий этап... (данные сохранены в localStorage)');
+            
+            // Здесь можно добавить реальный переход на следующую страницу:
+            // window.location.href = 'booking-step2.html';
+        }
+        
+        // Удаляем дублирующееся DOMContentLoaded - оно уже есть выше
     </script>
 </body>
 </html>
