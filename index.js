@@ -9,9 +9,6 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Статические файлы для фронтенда
-app.use(express.static(path.join(__dirname, 'frontend')));
-
 // CORS middleware
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -22,6 +19,15 @@ app.use((req, res, next) => {
     return res.sendStatus(200);
   }
   next();
+});
+
+// Booking pages - explicit routes BEFORE static middleware
+app.get('/booking.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'booking.html'));
+});
+
+app.get('/booking-flow.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'booking-flow.html'));
 });
 
 // Проксирование API запросов к нашему API серверу
@@ -95,6 +101,9 @@ app.get('/admin-cms.html', (req, res) => {
 app.get('/visa-support.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'visa-support.html'));
 });
+
+// Статические файлы для фронтенда - AFTER explicit routes
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 // Запуск API сервера в фоновом режиме
 console.log('Starting backend API server...');

@@ -731,7 +731,15 @@
         
         // Load tour data
         function loadTourData() {
-            fetch(`http://localhost:3001/api/tours/${selectedTourId}`)
+            // Skip API loading when coming from step 2, data already pre-filled
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('step') === '2') {
+                console.log('Skipping tour data loading - using pre-filled data from step 1');
+                loadSampleGuides(); // Still need guides
+                return;
+            }
+            
+            fetch(`http://localhost:5000/api/tours/${selectedTourId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -953,6 +961,28 @@
         // Tourist management
         let touristsList = [];
         
+        // Initialize tourist fields based on URL parameter
+        function updateTouristFields() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const touristsCount = parseInt(urlParams.get('tourists')) || 1;
+            
+            // Clear existing tourists
+            touristsList = [];
+            
+            // Create empty tourist entries based on count
+            for (let i = 1; i <= touristsCount; i++) {
+                const tourist = {
+                    id: Date.now() + i,
+                    fullName: '' // Empty initially, user will fill
+                };
+                touristsList.push(tourist);
+            }
+            
+            updateTouristsList();
+            
+            console.log(`Initialized ${touristsCount} tourist fields`);
+        }
+        
         function addTourist() {
             const nameInput = document.getElementById('newTouristName');
             const fullName = nameInput.value.trim();
@@ -975,6 +1005,13 @@
             calculatePrice();
         }
         
+        function updateTouristName(touristId, name) {
+            const tourist = touristsList.find(t => t.id === touristId);
+            if (tourist) {
+                tourist.fullName = name.trim();
+            }
+        }
+        
         function removeTourist(touristId) {
             touristsList = touristsList.filter(t => t.id !== touristId);
             updateTouristsList();
@@ -989,15 +1026,21 @@
                 container.innerHTML = '<div class="text-gray-500 text-center py-8">Нет добавленных туристов</div>';
             } else {
                 container.innerHTML = touristsList.map((tourist, index) => `
-                    <div class="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg mb-2">
-                        <div class="flex items-center">
-                            <span class="font-medium text-gray-700 mr-3">${index + 1}.</span>
-                            <span class="text-gray-900">${tourist.fullName}</span>
+                    <div class="py-3 px-4 bg-gray-50 rounded-lg mb-2">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-gray-700">Турист ${index + 1}</span>
+                            ${touristsList.length > 1 ? `
+                                <button type="button" onclick="removeTourist(${tourist.id})" 
+                                        class="text-red-500 hover:text-red-700 p-1">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            ` : ''}
                         </div>
-                        <button type="button" onclick="removeTourist(${tourist.id})" 
-                                class="text-red-500 hover:text-red-700 p-1">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <input type="text" 
+                               placeholder="ФИО туриста" 
+                               value="${tourist.fullName || ''}"
+                               onchange="updateTouristName(${tourist.id}, this.value)"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 `).join('');
             }
