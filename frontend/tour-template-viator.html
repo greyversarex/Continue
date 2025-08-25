@@ -1058,10 +1058,21 @@
         }
 
         function selectHotel(hotelId, hotelName, price) {
-            // Store selected hotel and redirect to booking flow
-            const tourId = new URLSearchParams(window.location.search).get('tour') || 1;
-            localStorage.setItem('selectedHotel', JSON.stringify({ id: hotelId, name: hotelName, price: price }));
-            window.location.href = `booking-flow.html?tourId=${tourId}`;
+            const tourTitle = document.querySelector('#tour-title')?.textContent || 'Неизвестный тур';
+            
+            // Get search parameters
+            const checkIn = document.getElementById('checkInDate').value;
+            const checkOut = document.getElementById('checkOutDate').value;
+            const guests = document.getElementById('guestCount').value;
+            
+            // Calculate number of days
+            const checkInDate = new Date(checkIn);
+            const checkOutDate = new Date(checkOut);
+            const diffTime = Math.abs(checkOutDate - checkInDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Navigate to booking page with hotel selection and calculated days
+            window.location.href = `booking.html?tour=${encodeURIComponent(tourTitle)}&date=${checkIn}&hotel=${encodeURIComponent(hotelName)}&hotelId=${hotelId}&price=${price}&guests=${guests}&days=${diffDays}&step=1`;
         }
 
         function backToSearch() {

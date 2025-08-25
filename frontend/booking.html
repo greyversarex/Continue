@@ -284,16 +284,32 @@
         ];
 
         let selectedHotel = null;
+        let globalDays = 1; // Global days from availability check
         
         // Initialize days for each hotel
         let hotelDays = {};
-        hotelData.forEach(hotel => {
-            hotelDays[hotel.id] = 1;
-        });
+        
+        // Get days from URL parameter if available
+        function initializeGlobalDays() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const daysParam = urlParams.get('days');
+            if (daysParam) {
+                globalDays = parseInt(daysParam);
+            }
+        }
+        
+        // Initialize hotel days will be done after loading URL parameters
+        function initializeHotelDays() {
+            hotelData.forEach(hotel => {
+                hotelDays[hotel.id] = globalDays;
+            });
+        }
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Page loaded, initializing...');
+            initializeGlobalDays(); // Load days from URL
+            initializeHotelDays(); // Initialize hotel days with global days
             loadTourDetails();
             displayHotels();
             updatePricing(); // Initialize pricing display
@@ -413,16 +429,6 @@
                             </div>
                         </div>
                         
-                        <!-- Days Selection -->
-                        <div class="mb-4">
-                            <label class="text-sm font-medium text-gray-700 block mb-2">Количество дней</label>
-                            <select class="w-full border border-gray-200 rounded-lg p-2 text-sm" 
-                                    onchange="updateHotelDays(${hotel.id}, this.value)">
-                                ${Array.from({length: 30}, (_, i) => i + 1).map(day => `
-                                    <option value="${day}" ${day === 1 ? 'selected' : ''}>${day} ${day === 1 ? 'день' : day < 5 ? 'дня' : 'дней'}</option>
-                                `).join('')}
-                            </select>
-                        </div>
                         
                         <!-- Pension Info -->
                         <div class="mb-4">
@@ -561,9 +567,9 @@
             }
         }
         
-        // Update hotel days
+        // Update hotel days (now uses global days from availability check)
         function updateHotelDays(hotelId, days) {
-            hotelDays[hotelId] = parseInt(days);
+            hotelDays[hotelId] = globalDays; // Use global days instead
             updateHotelPricing(hotelId);
             updateBookingDetails();
         }
@@ -633,13 +639,7 @@
                 ).join(', ');
                 summaryElement.textContent = roomText;
                 
-                // Auto-close dropdown after selection
-                const dropdown = document.querySelector(`.room-dropdown-${hotelId}`);
-                const arrow = document.querySelector(`.room-dropdown-arrow-${hotelId}`);
-                if (dropdown && !dropdown.classList.contains('hidden')) {
-                    dropdown.classList.add('hidden');
-                    arrow.style.transform = 'rotate(0deg)';
-                }
+                // Keep dropdown open for better UX
             }
             
             // Update hotel card visual feedback
