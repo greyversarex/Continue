@@ -17,6 +17,10 @@
             opacity: 0.7;
         }
         
+        /* Additional styles for share button hover effect */
+        #share-btn:hover {
+            background-color: #4B5563 !important;
+        }
 
     </style>
 </head>
@@ -33,11 +37,82 @@
                 
                 <!-- Навигационное меню -->
                 <nav class="hidden md:flex space-x-6">
-                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Турагентам</a>
-                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Горящие туры</a>
-                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Новости</a>
-                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Пользователям</a>
+                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors">О нас</a>
+                    
+                    <!-- Услуги (с выпадающим меню) -->
+                    <div class="dropdown relative">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
+                        <div class="dropdown-content absolute top-full left-0 mt-0 bg-gray-800 min-width-200 shadow-lg z-1000 rounded-lg py-2 hidden group-hover:block">
+                            <div class="dropdown-submenu relative">
+                                <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700">Туры</a>
+                                <div class="dropdown-subcontent absolute left-full top-0 bg-gray-800 min-width-400 shadow-lg rounded-lg p-3 hidden">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Однодневные</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Многодневные</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Экскурсии</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Городские туры</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Природа/экологические туры</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Культурно познавательные туры</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Исторические туры</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Походы/трекинги</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Горные ландшафты</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Озерные ландшафты</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Приключенческие туры</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Гастрономические туры</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Автотуры/сафари/джип-туры</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">Агротуры</a>
+                                        <a href="#" class="block px-2 py-1 text-white hover:bg-gray-700 rounded">VIP туры</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700">Тургиды</a>
+                            <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700">Трансфер</a>
+                            <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700">Заказ тура</a>
+                            <a href="visa-support.html" class="block px-4 py-2 text-white hover:bg-gray-700">Визовая поддержка</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Туристам (с выпадающим меню) -->
+                    <div class="dropdown relative">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туристам</a>
+                        <div class="dropdown-content absolute top-full left-0 mt-0 bg-gray-800 min-width-200 shadow-lg z-1000 rounded-lg py-2 hidden">
+                            <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700">Инструкция сайта</a>
+                            <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700">Специальные заметки</a>
+                            <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700">Договор оферта</a>
+                            <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700">Правила оплаты и возврата средств</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Акции (БЕЗ выпадающего меню) -->
+                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors">Акции</a>
+                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors">Новости</a>
+                    
+                    <!-- Тур-агенты (с выпадающим меню) -->
+                    <div class="dropdown relative">
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Тур-агенты</a>
+                        <div class="dropdown-content absolute top-full left-0 mt-0 bg-gray-800 min-width-200 shadow-lg z-1000 rounded-lg py-2 hidden">
+                            <a href="#" class="block px-4 py-2 text-white hover:bg-gray-700">Наши турагенты</a>
+                            <a href="tour-agents.html" class="block px-4 py-2 text-white hover:bg-gray-700">Для турагентов</a>
+                        </div>
+                    </div>
                 </nav>
+                
+                <!-- Языковой и валютный селекторы -->
+                <div class="flex items-center space-x-4">
+                    <!-- Языковой селектор -->
+                    <select class="bg-transparent text-white border border-gray-600 rounded px-2 py-1 text-sm">
+                        <option value="ru">Русский</option>
+                        <option value="en">English</option>
+                        <option value="tj">Тоҷикӣ</option>
+                    </select>
+
+                    <!-- Валютный селектор -->
+                    <select class="bg-transparent text-white border border-gray-600 rounded px-2 py-1 text-sm">
+                        <option value="usd">USD</option>
+                        <option value="tjs">TJS</option>
+                        <option value="eur">EUR</option>
+                    </select>
+                </div>
             </div>
         </div>
     </header>
@@ -137,14 +212,6 @@
                     <div class="flex flex-wrap items-center justify-between gap-6 text-sm" id="tour-info-strip">
                         <!-- Left side - Tour details -->
                         <div class="flex flex-wrap items-center gap-6">
-                            <!-- Время начала -->
-                            <div class="flex items-center space-x-2">
-                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                <span class="text-gray-900 font-medium" id="tour-start-time">Начало: 08:00</span>
-                            </div>
-                            
                             <!-- Длительность тура -->
                             <div class="flex items-center space-x-2">
                                 <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,44 +228,37 @@
                                 <span class="text-gray-900 font-medium" id="meals-included">Приём не включен</span>
                             </div>
                             
-                            <!-- Языки тура -->
+                            <!-- Share function moved to same row -->
                             <div class="flex items-center space-x-2">
-                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
-                                </svg>
-                                <span class="text-gray-900 font-medium" id="tour-languages">Языки: Русский, Английский, Таджикский</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Right side - Share function -->
-                        <div class="flex items-center space-x-2">
-                            <div class="relative">
-                                <button id="share-btn" onclick="toggleShareMenu()" class="flex items-center space-x-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
-                                    </svg>
-                                    <span>Поделиться</span>
-                                </button>
-                                
-                                <!-- Share menu -->
-                                <div id="share-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                                    <div class="p-2">
-                                        <button onclick="shareLink()" class="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-gray-100 rounded">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-                                            </svg>
-                                            <span>Скопировать ссылку</span>
-                                        </button>
-                                        <button onclick="downloadPDF()" class="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-gray-100 rounded">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                            </svg>
-                                            <span>Скачать PDF</span>
-                                        </button>
+                                <div class="relative">
+                                    <button id="share-btn" onclick="toggleShareMenu()" class="flex items-center space-x-2 px-3 py-2 text-white rounded-lg transition-colors" style="background-color: #6B7280; hover:background-color: #4B5563;">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+                                        </svg>
+                                        <span>Поделиться</span>
+                                    </button>
+                                    
+                                    <!-- Share menu -->
+                                    <div id="share-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                                        <div class="p-2">
+                                            <button onclick="shareLink()" class="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-gray-100 rounded">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                                                </svg>
+                                                <span>Скопировать ссылку</span>
+                                            </button>
+                                            <button onclick="downloadPDF()" class="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-gray-100 rounded">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                                </svg>
+                                                <span>Скачать PDF</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
 
@@ -1223,9 +1283,8 @@
             
             // Create booking parameters and redirect directly
             const bookingParams = new URLSearchParams({
-                tour: tourTitle,
+                tour: encodeURIComponent(tourTitle),
                 date: date,
-                duration: duration,
                 tourists: touristCount,
                 tourType: tourType,
                 step: '1'

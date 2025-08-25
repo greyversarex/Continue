@@ -286,6 +286,33 @@
         let selectedHotel = null;
         let globalDays = 1; // Global days from availability check
         
+        // Function to change days count
+        function changeDays(hotelId, change) {
+            globalDays = Math.max(1, globalDays + change);
+            
+            // Update display for this hotel
+            const daysDisplay = document.getElementById(`days-count-${hotelId}`);
+            if (daysDisplay) {
+                daysDisplay.textContent = globalDays;
+            }
+            
+            // Update the text under days count
+            const dayText = globalDays === 1 ? 'день' : globalDays < 5 ? 'дня' : 'дней';
+            const dayTextElement = daysDisplay.parentElement.querySelector('.text-sm');
+            if (dayTextElement) {
+                dayTextElement.textContent = dayText;
+            }
+            
+            // Update all hotels' days displays
+            const allDaysDisplays = document.querySelectorAll('[id^="days-count-"]');
+            allDaysDisplays.forEach(display => {
+                display.textContent = globalDays;
+            });
+            
+            // Update pricing calculations
+            updateBookingDetails();
+        }
+        
         // Initialize days for each hotel
         let hotelDays = {};
         
