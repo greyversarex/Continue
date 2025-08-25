@@ -351,7 +351,7 @@
             <!-- Main Section -->
             <div class="main-section">
                 <!-- Step 1: Date and Hotel Selection -->
-                <div id="step1Content">
+                <div id="step1Content" style="display: none;">
                     <h2 class="text-2xl font-semibold mb-6">Выберите дату и отель</h2>
                     
                     <div class="form-group">
@@ -627,10 +627,11 @@
             const tour = urlParams.get('tour');
             const date = urlParams.get('date');
             const hotel = urlParams.get('hotel');
+            const hotelName = urlParams.get('hotelName');
             const price = urlParams.get('price');
             
             // If coming from booking.html with selected hotel, skip to step 2
-            if (step === '2' && tour && date && hotel) {
+            if (step === '2' && tour && date && (hotel || hotelName)) {
                 console.log('Skipping to step 2 with hotel selection');
                 
                 // Загружаем данные из localStorage если есть
@@ -652,7 +653,7 @@
                 const totalOrderPrice = parseFloat(urlParams.get('totalPrice')) || (tourPrice + hotelPrice);
                 
                 selectedHotel = {
-                    name: decodeURIComponent(hotel),
+                    name: decodeURIComponent(hotelName || hotel),
                     price: hotelPrice
                 };
                 
@@ -661,7 +662,7 @@
                     const tourSummary = document.getElementById('tourSummary');
                     if (tourSummary) {
                         // Создаем детальную информацию с номерами если есть данные из localStorage
-                        let hotelDetails = decodeURIComponent(hotel);
+                        let hotelDetails = decodeURIComponent(hotelName || hotel);
                         if (orderDetails && orderDetails.hotel && orderDetails.hotel.rooms.length > 0) {
                             const roomsText = orderDetails.hotel.rooms.map(r => 
                                 `${r.name} (${r.count} ном.)`
@@ -716,14 +717,20 @@
                 return; // Don't run the rest of initialization
             }
             
-            // Set minimum date to tomorrow
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            document.getElementById('tourDate').min = tomorrow.toISOString().split('T')[0];
-            document.getElementById('tourDate').value = tomorrow.toISOString().split('T')[0];
-            
-            // Load tour data
-            loadTourData();
+            // Show step 1 by default if no special parameters
+            if (!step || step !== '2') {
+                // Set minimum date to tomorrow
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                document.getElementById('tourDate').min = tomorrow.toISOString().split('T')[0];
+                document.getElementById('tourDate').value = tomorrow.toISOString().split('T')[0];
+                
+                // Load tour data
+                loadTourData();
+                
+                // Show step 1
+                showStep(1);
+            }
             
             // Initialize tourist fields
             updateTouristFields();
