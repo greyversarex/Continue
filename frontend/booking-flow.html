@@ -427,14 +427,6 @@
                         </div>
                     </div>
                     
-                    <!-- Guide Selection -->
-                    <div class="mb-8">
-                        <h3 class="text-lg font-semibold mb-4">Выбор гида</h3>
-                        <select id="guideSelect" class="form-input">
-                            <option value="">Без гида</option>
-                            <!-- Guides will be loaded here -->
-                        </select>
-                    </div>
                     
                     <!-- Special Requests -->
                     <div class="mb-8">
@@ -570,10 +562,6 @@
                             <span>Отель</span>
                             <span>$<span id="hotelPrice">0</span></span>
                         </div>
-                        <div class="price-row" id="guidePriceRow" style="display: none;">
-                            <span>Услуги гида</span>
-                            <span>$<span id="guidePrice">0</span></span>
-                        </div>
                         <div class="price-row total">
                             <span>Итого</span>
                             <span>$<span id="totalPrice">0</span></span>
@@ -697,22 +685,31 @@
                     }
                 }
                 
-                // Set prices correctly
-                basePrice = tourPrice;
-                document.getElementById('basePrice').textContent = tourPrice;
-                document.getElementById('hotelPrice').textContent = hotelPrice;
-                document.getElementById('totalPrice').textContent = totalOrderPrice;
-                
-                // Update tourist count field
+                // Update tourist count field  
                 const touristCountInput = document.getElementById('touristCount');
                 if (touristCountInput) {
                     touristCountInput.value = tourists;
                 }
                 
+                // Set prices correctly from orderDetails
+                if (orderDetails && orderDetails.pricing) {
+                    document.getElementById('basePrice').textContent = orderDetails.pricing.tourPrice;
+                    document.getElementById('hotelPrice').textContent = orderDetails.pricing.hotelPrice;
+                    document.getElementById('totalPrice').textContent = orderDetails.pricing.totalPrice;
+                    basePrice = orderDetails.pricing.tourPrice;
+                    totalPrice = orderDetails.pricing.totalPrice;
+                } else {
+                    // Fallback to URL parameters
+                    document.getElementById('basePrice').textContent = tourPrice;
+                    document.getElementById('hotelPrice').textContent = hotelPrice;
+                    document.getElementById('totalPrice').textContent = totalOrderPrice;
+                    basePrice = tourPrice;
+                    totalPrice = totalOrderPrice;
+                }
+                
                 // Skip to step 2
                 showStep(2);
                 updateTouristFields();
-                calculatePrice();
                 
                 return; // Don't run the rest of initialization
             }
@@ -742,7 +739,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('step') === '2') {
                 console.log('Skipping tour data loading - using pre-filled data from step 1');
-                loadSampleGuides(); // Still need guides
+                // Guides removed
                 return;
             }
             
@@ -888,65 +885,6 @@
             }).join('');
         }
         
-        // Load guides
-        function loadGuides() {
-            fetch(`http://localhost:3001/api/tours/${selectedTourId}/guides`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        availableGuides = data.guides;
-                        displayGuides();
-                    }
-                })
-                .catch(err => {
-                    console.error('Error loading guides:', err);
-                    loadSampleGuides();
-                });
-        }
-        
-        // Load sample guides
-        function loadSampleGuides() {
-            availableGuides = [
-                {
-                    id: 1,
-                    name: { ru: 'Алексей Иванов', en: 'Alexey Ivanov' },
-                    languages: ['Русский', 'English', 'Deutsch'],
-                    experience: 10,
-                    pricePerDay: 50
-                },
-                {
-                    id: 2,
-                    name: { ru: 'Мухаммад Каримов', en: 'Muhammad Karimov' },
-                    languages: ['Таджикский', 'Русский', 'English'],
-                    experience: 8,
-                    pricePerDay: 40
-                },
-                {
-                    id: 3,
-                    name: { ru: 'Джон Смит', en: 'John Smith' },
-                    languages: ['English', 'Русский'],
-                    experience: 5,
-                    pricePerDay: 45
-                }
-            ];
-            displayGuides();
-        }
-        
-        // Display guides in select
-        function displayGuides() {
-            const guideSelect = document.getElementById('guideSelect');
-            const options = availableGuides.map(guide => {
-                const name = guide.name?.ru || guide.name?.en || guide.name || 'Guide';
-                const languages = guide.languages?.join(', ') || '';
-                return `
-                    <option value="${guide.id}">
-                        ${name} - ${languages} ($${guide.pricePerDay || 50}/день)
-                    </option>
-                `;
-            }).join('');
-            
-            guideSelect.innerHTML = '<option value="">Без гида</option>' + options;
-        }
         
         // Select hotel
         function selectHotel(hotelId) {
@@ -1057,6 +995,14 @@
         
         // Calculate total price
         function calculatePrice() {
+            // For step 2, just use the existing calculated prices from step 1
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('step') === '2') {
+                // Don't recalculate, use saved prices
+                return;
+            }
+            
+            // Original calculation logic for step 1
             const touristCount = touristsList.length || 1;
             const days = tourData?.durationDays || 7;
             
@@ -1072,23 +1018,11 @@
                 document.getElementById('hotelPriceRow').style.display = 'none';
             }
             
-            // Add guide price
-            const guideId = document.getElementById('guideSelect')?.value;
-            if (guideId) {
-                selectedGuide = availableGuides.find(g => g.id == guideId);
-                if (selectedGuide) {
-                    const guideTotal = (selectedGuide.pricePerDay || 50) * days;
-                    document.getElementById('guidePrice').textContent = guideTotal;
-                    document.getElementById('guidePriceRow').style.display = 'flex';
-                    total += guideTotal;
-                }
-            } else {
-                document.getElementById('guidePriceRow').style.display = 'none';
-            }
-            
             totalPrice = total;
             document.getElementById('totalPrice').textContent = total;
-            document.getElementById('paymentAmount').textContent = total;
+            if (document.getElementById('paymentAmount')) {
+                document.getElementById('paymentAmount').textContent = total;
+            }
         }
         
         // Navigation functions
@@ -1161,10 +1095,6 @@
             
             currentStep = step;
             
-            // Update guide select listener when showing step 2
-            if (step === 2) {
-                document.getElementById('guideSelect').addEventListener('change', calculatePrice);
-            }
         }
         
         // Select payment method
@@ -1216,9 +1146,6 @@
                 hotelPension: orderDetails?.hotel?.pension,
                 hotelPrice: orderDetails?.pricing?.hotelPrice || 0,
                 
-                // Данные гида
-                guideId: selectedGuide?.id,
-                guidePrice: selectedGuide?.price || 0,
                 
                 // Данные бронирования
                 tourDate: orderDetails?.tour?.date || document.getElementById('tourDate').value,
