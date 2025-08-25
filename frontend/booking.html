@@ -376,7 +376,13 @@
             initializeOrderDetails();
             
             displayHotels();
-            updateOrderDetails(); // Используем новую систему обновления
+            
+            // КРИТИЧНО: Ждем загрузки HTML элементов перед обновлением
+            setTimeout(() => {
+                updateOrderDetails(); // Используем новую систему обновления
+                console.log('Order details updated after DOM ready');
+            }, 100);
+            
             console.log('Page initialization completed');
         });
 
@@ -711,7 +717,9 @@
             // Update room summary and pricing
             updateRoomSummary(hotelId);
             updateHotelPricing(hotelId);
-            updatePricing();
+            
+            // КРИТИЧНО: Обновляем единую систему заказа после изменения номеров
+            updateOrderDetails();
         }
         
         function updateRoomSummary(hotelId) {
@@ -852,11 +860,15 @@
         // Функция для обновления отображения данных из orderDetails
         function updateDisplayFromOrderDetails() {
             // Обновляем информацию о туре
-            document.getElementById('tour-name-display').textContent = orderDetails.tour.name;
-            document.getElementById('tour-date-display').textContent = orderDetails.tour.date;
-            document.getElementById('tour-type-display').textContent = orderDetails.tour.type;
-            document.getElementById('tourists-count-display').textContent = orderDetails.tour.tourists;
-            document.getElementById('tour-days-display').textContent = orderDetails.tour.days;
+            const tourTitleEl = document.getElementById('tour-title');
+            const tourDateEl = document.getElementById('tour-date');
+            
+            if (tourTitleEl) {
+                tourTitleEl.textContent = orderDetails.tour.name;
+            }
+            if (tourDateEl) {
+                tourDateEl.textContent = orderDetails.tour.date;
+            }
             
             // Обновляем информацию об отеле
             const hotelNameElement = document.getElementById('selected-hotel-name');
@@ -885,21 +897,31 @@
             }
             
             // Обновляем ценовую информацию
-            document.getElementById('tour-price').textContent = `$${orderDetails.pricing.tourPrice}`;
-            document.getElementById('total-price').textContent = `$${orderDetails.pricing.totalPrice}`;
+            const tourPriceEl = document.getElementById('tour-price');
+            const totalPriceEl = document.getElementById('total-price');
+            
+            if (tourPriceEl) {
+                tourPriceEl.textContent = `$${orderDetails.pricing.tourPrice}`;
+            }
+            if (totalPriceEl) {
+                totalPriceEl.textContent = `$${orderDetails.pricing.totalPrice}`;
+            }
             
             // Обновляем детали цен на отель если есть
             const hotelPriceBreakdown = document.getElementById('hotel-price-breakdown');
             const roomPricesList = document.getElementById('room-prices-list');
+            const hotelTotalPriceEl = document.getElementById('hotel-total-price');
             
-            if (orderDetails.hotel.totalPrice > 0) {
+            if (orderDetails.hotel.totalPrice > 0 && hotelPriceBreakdown && roomPricesList) {
                 hotelPriceBreakdown.style.display = 'block';
                 let roomPricesHTML = orderDetails.hotel.rooms.map(room => 
                     `<div>${room.name} x${room.count} x${orderDetails.tour.days} дн.: $${room.total}</div>`
                 ).join('');
                 roomPricesList.innerHTML = roomPricesHTML;
-                document.getElementById('hotel-total-price').textContent = `$${orderDetails.hotel.totalPrice}`;
-            } else {
+                if (hotelTotalPriceEl) {
+                    hotelTotalPriceEl.textContent = `$${orderDetails.hotel.totalPrice}`;
+                }
+            } else if (hotelPriceBreakdown) {
                 hotelPriceBreakdown.style.display = 'none';
             }
         }
