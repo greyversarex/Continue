@@ -1332,7 +1332,12 @@
                     
                     <div class="form-group">
                         <label class="form-label">Длительность (дней)</label>
-                        <input type="number" class="form-input" id="tourDuration" min="1" required>
+                        <input type="number" class="form-input" id="tourDurationDays" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Продолжительность (например: "6-7 часов (прибл.)")</label>
+                        <input type="text" class="form-input" id="tourDuration" placeholder="6-7 часов (прибл.)">
                     </div>
                     
                     <div class="form-group">
@@ -1367,6 +1372,19 @@
                     <div class="form-group">
                         <label class="form-label">Дата окончания</label>
                         <input type="date" class="form-input" id="tourEndDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Приём пищи</label>
+                        <select class="form-input" id="tourMealsIncluded">
+                            <option value="false">Приём не включен</option>
+                            <option value="true">Приём включен</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Языки тура (через запятую)</label>
+                        <input type="text" class="form-input" id="tourLanguages" placeholder="Русский, Английский, Таджикский">
                     </div>
                     
                     <div class="form-group col-span-2">
@@ -1897,10 +1915,24 @@
                         document.getElementById('tourCategory').value = tour.categoryId || '';
                         document.getElementById('tourCountry').value = tour.country || '';
                         document.getElementById('tourCity').value = tour.city || '';
-                        document.getElementById('tourDuration').value = tour.durationDays || '';
+                        document.getElementById('tourDurationDays').value = tour.durationDays || '';
+                        document.getElementById('tourDuration').value = tour.duration || '';
                         document.getElementById('tourFormat').value = tour.format || '';
                         document.getElementById('tourPrice').value = tour.price || '';
                         document.getElementById('tourPriceType').value = tour.priceType || 'за человека';
+                        document.getElementById('tourMealsIncluded').value = tour.mealsIncluded ? 'true' : 'false';
+                        
+                        // Обработка языков
+                        let languages = '';
+                        if (tour.languages) {
+                            try {
+                                const langArray = JSON.parse(tour.languages);
+                                languages = langArray.join(', ');
+                            } catch (e) {
+                                languages = tour.languages;
+                            }
+                        }
+                        document.getElementById('tourLanguages').value = languages;
                         document.getElementById('tourStartDate').value = tour.startDate || '';
                         document.getElementById('tourEndDate').value = tour.endDate || '';
                     });
@@ -2611,10 +2643,13 @@
                 tourBlockId: document.getElementById('tourBlockId') ? parseInt(document.getElementById('tourBlockId').value) : null,
                 country: document.getElementById('tourCountry').value,
                 city: document.getElementById('tourCity').value,
-                durationDays: parseInt(document.getElementById('tourDuration').value),
+                duration: document.getElementById('tourDuration').value,
+                durationDays: parseInt(document.getElementById('tourDurationDays').value),
                 format: document.getElementById('tourFormat').value,
                 price: document.getElementById('tourPrice').value,
                 priceType: document.getElementById('tourPriceType').value,
+                mealsIncluded: document.getElementById('tourMealsIncluded').value === 'true',
+                languages: JSON.stringify(document.getElementById('tourLanguages').value.split(',').map(l => l.trim()).filter(l => l)),
                 startDate: document.getElementById('tourStartDate').value,
                 endDate: document.getElementById('tourEndDate').value
             };

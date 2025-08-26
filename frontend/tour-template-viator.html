@@ -941,7 +941,33 @@
             document.getElementById('tour-title').textContent = tourData.title;
             document.getElementById('tour-location').textContent = tourData.location;
             document.getElementById('tour-reviews').textContent = `(${tourData.reviews_count} отзыва)`;
-            document.getElementById('tour-duration').textContent = tourData.duration + ' (прибл.)';
+            // Обновляем продолжительность
+            if (tourData.duration) {
+                document.getElementById('tour-duration').textContent = tourData.duration;
+            } else if (tourData.durationDays) {
+                document.getElementById('tour-duration').textContent = tourData.durationDays + ' дней';
+            } else {
+                document.getElementById('tour-duration').textContent = 'Длительность: уточнить';
+            }
+            
+            // Обновляем информацию о приёме пищи
+            const mealsElement = document.getElementById('meals-included');
+            if (mealsElement) {
+                mealsElement.textContent = tourData.mealsIncluded ? 'Приём включен' : 'Приём не включен';
+            }
+            
+            // Обновляем языки тура
+            const languagesElement = document.getElementById('tour-languages');
+            if (languagesElement && tourData.languages) {
+                try {
+                    const languagesArray = JSON.parse(tourData.languages);
+                    languagesElement.textContent = 'Языки: ' + languagesArray.join(', ');
+                } catch (e) {
+                    languagesElement.textContent = 'Языки: ' + tourData.languages;
+                }
+            } else if (languagesElement) {
+                languagesElement.textContent = 'Языки: Русский, Английский, Таджикский';
+            }
             
             // Set price display from database
             updatePriceDisplay();
