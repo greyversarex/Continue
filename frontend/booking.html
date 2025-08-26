@@ -155,14 +155,28 @@
                             <span id="tour-date">Не выбрана</span>
                         </div>
                         <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span id="tour-duration">Длительность: 6-7 часов</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 3H4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+                            </svg>
+                            <span id="tour-meals">Приём не включен</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                            </svg>
+                            <span id="tour-languages">Языки: Русский, Английский, Таджикский</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"></path>
                             </svg>
                             <span id="selected-hotel-name">Отель не выбран</span>
-                        </div>
-                        <div id="selected-rooms-info" style="display: none;">
-                            <div class="text-xs text-gray-600 mb-1">Выбранные номера:</div>
-                            <div id="selected-rooms-list" class="text-xs text-gray-700"></div>
                         </div>
                     </div>
 
@@ -177,6 +191,8 @@
                             
                             <!-- Hotel Price Breakdown -->
                             <div id="hotel-price-breakdown" style="display: none;">
+                                <div class="text-gray-600 text-xs mb-1">Выбранные номера:</div>
+                                <div id="selected-rooms-details" class="space-y-1 text-xs text-gray-700 mb-2"></div>
                                 <div class="text-gray-600 text-xs mb-1">Цена за отель:</div>
                                 <div id="room-prices-list" class="space-y-1 text-xs text-gray-500 mb-2"></div>
                                 <div class="flex justify-between">
@@ -294,7 +310,10 @@
                 type: '',
                 tourists: 1,
                 days: 1,
-                basePrice: 300
+                basePrice: 300,
+                duration: 'Длительность: 6-7 часов',
+                pickupInfo: 'Приём не включен',
+                languages: 'Языки: Русский, Английский, Таджикский'
             },
             hotel: {
                 selected: null,
@@ -832,30 +851,28 @@
                 tourDateEl.textContent = orderDetails.tour.date;
             }
             
+            // Обновляем информацию о туре в верхней секции
+            const tourDurationEl = document.getElementById('tour-duration');
+            const tourMealsEl = document.getElementById('tour-meals');
+            const tourLanguagesEl = document.getElementById('tour-languages');
+            
+            if (tourDurationEl) {
+                tourDurationEl.textContent = orderDetails.tour.duration || 'Длительность: уточнить';
+            }
+            if (tourMealsEl) {
+                tourMealsEl.textContent = orderDetails.tour.pickupInfo || 'Приём не включен';
+            }
+            if (tourLanguagesEl) {
+                tourLanguagesEl.textContent = orderDetails.tour.languages || 'Языки: Русский, Английский, Таджикский';
+            }
+            
             // Обновляем информацию об отеле
             const hotelNameElement = document.getElementById('selected-hotel-name');
-            const roomsInfoElement = document.getElementById('selected-rooms-info');
-            const roomsListElement = document.getElementById('selected-rooms-list');
             
-            if (orderDetails.hotel.selected && orderDetails.hotel.rooms.length > 0) {
+            if (orderDetails.hotel.selected) {
                 hotelNameElement.textContent = orderDetails.hotel.name;
-                roomsInfoElement.style.display = 'block';
-                
-                // Отображение выбранных номеров
-                let roomsHTML = orderDetails.hotel.rooms.map(room => 
-                    `<div>${room.name}: ${room.count} ном. × ${orderDetails.tour.days} дн. = $${room.total}</div>`
-                ).join('');
-                
-                // Добавляем информацию о питании
-                const pensionText = orderDetails.hotel.pension === 'none' ? 'Не включено' : 
-                                  orderDetails.hotel.pension === 'half' ? 'Полупансион (завтрак)' : 
-                                  'Полный пансион (завтрак + обед)';
-                roomsHTML += `<div class="mt-2 text-blue-600 font-medium">Питание: ${pensionText}</div>`;
-                
-                roomsListElement.innerHTML = roomsHTML;
             } else {
                 hotelNameElement.textContent = 'Отель не выбран';
-                roomsInfoElement.style.display = 'none';
             }
             
             // Обновляем ценовую информацию
@@ -871,11 +888,29 @@
             
             // Обновляем детали цен на отель если есть
             const hotelPriceBreakdown = document.getElementById('hotel-price-breakdown');
+            const selectedRoomsDetails = document.getElementById('selected-rooms-details');
             const roomPricesList = document.getElementById('room-prices-list');
             const hotelTotalPriceEl = document.getElementById('hotel-total-price');
             
             if (orderDetails.hotel.totalPrice > 0 && hotelPriceBreakdown && roomPricesList) {
                 hotelPriceBreakdown.style.display = 'block';
+                
+                // Отображение выбранных номеров в секции стоимости
+                if (selectedRoomsDetails) {
+                    let roomsHTML = orderDetails.hotel.rooms.map(room => 
+                        `<div>${room.name}: ${room.count} номер(а)</div>`
+                    ).join('');
+                    
+                    // Добавляем информацию о питании
+                    const pensionText = orderDetails.hotel.pension === 'none' ? 'Не включено' : 
+                                      orderDetails.hotel.pension === 'half' ? 'Полупансион (завтрак)' : 
+                                      'Полный пансион (завтрак + обед)';
+                    roomsHTML += `<div class="mt-1 text-blue-600 font-medium">Питание: ${pensionText}</div>`;
+                    
+                    selectedRoomsDetails.innerHTML = roomsHTML;
+                }
+                
+                // Создаем список цен на номера
                 let roomPricesHTML = orderDetails.hotel.rooms.map(room => 
                     `<div>${room.name} x${room.count} x${orderDetails.tour.days} дн.: $${room.total}</div>`
                 ).join('');
