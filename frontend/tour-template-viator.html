@@ -599,6 +599,14 @@
                     </div>
                     
                     
+                    <!-- Start Time Selection -->
+                    <div class="mb-4" id="start-time-section" style="display: none;">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Время начала тура</label>
+                        <select id="start-time-select" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            <option value="">Выберите время</option>
+                        </select>
+                    </div>
+
                     <!-- Check Availability Button -->
                     <button onclick="goToBookingPage()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium mb-4 transition-colors">
                         Проверить наличие
@@ -943,10 +951,10 @@
                 document.getElementById('tour-duration').textContent = 'Длительность: уточнить';
             }
             
-            // Обновляем информацию о приёме пищи
+            // Обновляем информацию о приёме/сборе
             const mealsElement = document.getElementById('meals-included');
             if (mealsElement) {
-                mealsElement.textContent = tourData.mealsIncluded ? 'Приём включен' : 'Приём не включен';
+                mealsElement.textContent = tourData.pickupInfo || 'Приём не включен';
             }
             
             // Обновляем языки тура
@@ -978,6 +986,9 @@
             
             // Load reviews
             loadReviews();
+            
+            // Update start time options
+            updateStartTimeOptions();
         }
         
         // Update price display (static from database)
@@ -988,6 +999,46 @@
             // Set price from tour data (static, no toggle)
             priceElement.textContent = `От ${tourData.price}`;
             priceTypeElement.textContent = tourData.priceType || 'за человека';
+        }
+        
+        // Update start time options
+        function updateStartTimeOptions() {
+            const startTimeSection = document.getElementById('start-time-section');
+            const startTimeSelect = document.getElementById('start-time-select');
+            
+            if (tourData.startTimeOptions) {
+                try {
+                    let timeOptions;
+                    if (typeof tourData.startTimeOptions === 'string') {
+                        timeOptions = JSON.parse(tourData.startTimeOptions);
+                    } else {
+                        timeOptions = tourData.startTimeOptions;
+                    }
+                    
+                    if (timeOptions && timeOptions.length > 0) {
+                        // Clear existing options except the first one
+                        startTimeSelect.innerHTML = '<option value="">Выберите время</option>';
+                        
+                        // Add time options
+                        timeOptions.forEach(time => {
+                            const option = document.createElement('option');
+                            option.value = time.trim();
+                            option.textContent = time.trim();
+                            startTimeSelect.appendChild(option);
+                        });
+                        
+                        // Show the section
+                        startTimeSection.style.display = 'block';
+                    } else {
+                        startTimeSection.style.display = 'none';
+                    }
+                } catch (e) {
+                    console.warn('Failed to parse start time options:', e);
+                    startTimeSection.style.display = 'none';
+                }
+            } else {
+                startTimeSection.style.display = 'none';
+            }
         }
 
         function loadImages() {
@@ -1375,7 +1426,9 @@
                         rating: apiTourData.rating || 4.8,
                         reviewCount: apiTourData.reviewsCount || 0,
                         maxPeople: apiTourData.maxPeople,
-                        country: apiTourData.country
+                        country: apiTourData.country,
+                        pickupInfo: apiTourData.pickupInfo,
+                        startTimeOptions: apiTourData.startTimeOptions
                     };
                     
                     // Parse optional JSON fields

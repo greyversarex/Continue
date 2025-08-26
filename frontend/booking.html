@@ -460,28 +460,6 @@
                             `).join('')}
                         </div>
                         
-                        <!-- Days Selection -->
-                        <div class="mb-4">
-                            <label class="text-sm font-medium text-gray-700 block mb-2">Количество дней</label>
-                            <div class="flex items-center space-x-3">
-                                <button type="button" onclick="changeDays(${hotel.id}, -1)" 
-                                        class="w-10 h-10 rounded-full border border-gray-300 hover:bg-gray-50 flex items-center justify-center transition-colors">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                                    </svg>
-                                </button>
-                                <div class="flex-1 text-center">
-                                    <span class="text-xl font-semibold" id="days-count-${hotel.id}">${globalDays}</span>
-                                    <div class="text-sm text-gray-500">${globalDays === 1 ? 'день' : globalDays < 5 ? 'дня' : 'дней'}</div>
-                                </div>
-                                <button type="button" onclick="changeDays(${hotel.id}, 1)" 
-                                        class="w-10 h-10 rounded-full border border-gray-300 hover:bg-gray-50 flex items-center justify-center transition-colors">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
                         
                         <!-- Room Categories Dropdown -->
                         <div class="mb-4">
@@ -542,7 +520,7 @@
                             </div>
                             <button class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-colors" 
                                     onclick="event.stopPropagation(); selectHotel(${hotel.id})">
-                                Продолжить
+                                Выбрать
                             </button>
                         </div>
                     </div>
