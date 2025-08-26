@@ -362,6 +362,26 @@
                         <input type="date" id="tourDate" class="form-input" required>
                     </div>
                     
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-clock text-gray-500 mr-2"></i>
+                            Время начала тура
+                        </label>
+                        <select id="tourTime" class="form-input" required>
+                            <option value="">Выберите время</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                        </select>
+                    </div>
+                    
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold mb-4">
                             <i class="fas fa-hotel text-gray-500 mr-2"></i>
@@ -374,7 +394,7 @@
                     
                     <div class="flex justify-end">
                         <button class="btn btn-primary" onclick="goToStep2()">
-                            Продолжить
+                            Выбрать
                             <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
@@ -1057,8 +1077,13 @@
             if (currentStep === 1) {
                 // Validate step 1
                 const tourDate = document.getElementById('tourDate').value;
+                const tourTime = document.getElementById('tourTime').value;
                 if (!tourDate) {
                     alert('Пожалуйста, выберите дату тура');
+                    return;
+                }
+                if (!tourTime) {
+                    alert('Пожалуйста, выберите время начала тура');
                     return;
                 }
                 if (!selectedHotel) {

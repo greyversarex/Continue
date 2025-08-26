@@ -107,7 +107,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, priceType, startDate, endDate } = req.body;
+      let { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, startDate, endDate } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -185,6 +185,10 @@ export class TourController {
         country: country || null,
         city: city || null,
         format: format || null,
+        tourType: tourType || null,
+        pickupInfo: pickupInfo || null,
+        startTimeOptions: startTimeOptions || null,
+        languages: languages || null,
         startDate: startDate || null,
         endDate: endDate || null
       });
@@ -233,7 +237,7 @@ export class TourController {
         });
       }
 
-      const { title, description, duration, price, categoryId } = req.body;
+      const { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, startDate, endDate } = req.body;
 
       // Validation for provided fields
       if (title && (!title.en || !title.ru)) {
@@ -253,9 +257,21 @@ export class TourController {
       const updateData: Partial<CreateTourData> = {};
       if (title) updateData.title = title;
       if (description) updateData.description = description;
-      if (duration) updateData.duration = duration;
+      if (duration) updateData.duration = String(duration);
       if (price) updateData.price = price;
       if (categoryId) updateData.categoryId = categoryId;
+      if (tourBlockId !== undefined) updateData.tourBlockId = tourBlockId;
+      if (country !== undefined) updateData.country = country;
+      if (city !== undefined) updateData.city = city;
+      if (durationDays !== undefined) updateData.durationDays = durationDays;
+      if (format !== undefined) updateData.format = format;
+      if (tourType !== undefined) updateData.tourType = tourType;
+      if (priceType !== undefined) updateData.priceType = priceType;
+      if (pickupInfo !== undefined) updateData.pickupInfo = pickupInfo;
+      if (startTimeOptions !== undefined) updateData.startTimeOptions = startTimeOptions;
+      if (languages !== undefined) updateData.languages = languages;
+      if (startDate !== undefined) updateData.startDate = startDate;
+      if (endDate !== undefined) updateData.endDate = endDate;
 
       const tour = await TourModel.update(id, updateData);
 

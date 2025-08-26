@@ -1261,6 +1261,16 @@
             <form id="tourForm">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="form-group col-span-2">
+                        <label class="form-label">Тип тура</label>
+                        <select class="form-input" id="tourType" required>
+                            <option value="">Выберите тип тура</option>
+                            <option value="Персональный">Персональный</option>
+                            <option value="Групповой персональный">Групповой персональный</option>
+                            <option value="Групповой общий">Групповой общий</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
                         <label class="form-label">Название тура (Русский)</label>
                         <input type="text" class="form-input" id="tourTitleRu" required>
                     </div>
@@ -1342,12 +1352,11 @@
                     
                     <div class="form-group">
                         <label class="form-label">Формат тура</label>
-                        <select class="form-input" id="tourFormat" required>
+                        <select class="form-input" id="tourFormat">
                             <option value="">Выберите формат</option>
-                            <option value="Персональный">Персональный</option>
-                            <option value="Групповой персональный">Групповой персональный</option>
-                            <option value="Групповой общий">Групповой общий</option>
+                            <option value="Стандартный">Стандартный</option>
                             <option value="VIP">VIP</option>
+                            <option value="Эксклюзивный">Эксклюзивный</option>
                         </select>
                     </div>
                     
@@ -1375,16 +1384,26 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Приём пищи</label>
-                        <select class="form-input" id="tourMealsIncluded">
-                            <option value="false">Приём не включен</option>
-                            <option value="true">Приём включен</option>
+                        <label class="form-label">Информация о приёме/сборе</label>
+                        <select class="form-input" id="tourPickupInfo" required>
+                            <option value="">Выберите вариант</option>
+                            <option value="Приём включён">Приём включён</option>
+                            <option value="Место сбора: отель">Место сбора: отель</option>
+                            <option value="Место сбора: аэропорт">Место сбора: аэропорт</option>
+                            <option value="Место сбора: центр города">Место сбора: центр города</option>
+                            <option value="Место сбора: индивидуальное">Место сбора: индивидуальное</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Языки тура (через запятую)</label>
                         <input type="text" class="form-input" id="tourLanguages" placeholder="Русский, Английский, Таджикский">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Время начала тура (через запятую)</label>
+                        <input type="text" class="form-input" id="tourStartTimeOptions" placeholder="09:00, 14:00, 16:00">
+                        <small class="text-gray-500">Укажите доступные времена начала тура</small>
                     </div>
                     
                     <div class="form-group col-span-2">
@@ -1908,6 +1927,7 @@
                         const title = JSON.parse(tour.title || '{}');
                         const description = JSON.parse(tour.description || '{}');
                         
+                        document.getElementById('tourType').value = tour.tourType || '';
                         document.getElementById('tourTitleRu').value = title.ru || '';
                         document.getElementById('tourTitleEn').value = title.en || '';
                         document.getElementById('tourDescRu').value = description.ru || '';
@@ -1920,7 +1940,7 @@
                         document.getElementById('tourFormat').value = tour.format || '';
                         document.getElementById('tourPrice').value = tour.price || '';
                         document.getElementById('tourPriceType').value = tour.priceType || 'за человека';
-                        document.getElementById('tourMealsIncluded').value = tour.mealsIncluded ? 'true' : 'false';
+                        document.getElementById('tourPickupInfo').value = tour.pickupInfo || '';
                         
                         // Обработка языков
                         let languages = '';
@@ -1933,6 +1953,19 @@
                             }
                         }
                         document.getElementById('tourLanguages').value = languages;
+                        
+                        // Обработка времен начала тура
+                        let startTimes = '';
+                        if (tour.startTimeOptions) {
+                            try {
+                                const timeArray = JSON.parse(tour.startTimeOptions);
+                                startTimes = timeArray.join(', ');
+                            } catch (e) {
+                                startTimes = tour.startTimeOptions;
+                            }
+                        }
+                        document.getElementById('tourStartTimeOptions').value = startTimes;
+                        
                         document.getElementById('tourStartDate').value = tour.startDate || '';
                         document.getElementById('tourEndDate').value = tour.endDate || '';
                     });
@@ -2641,6 +2674,7 @@
                 }),
                 categoryId: parseInt(document.getElementById('tourCategory').value),
                 tourBlockId: document.getElementById('tourBlockId') ? parseInt(document.getElementById('tourBlockId').value) : null,
+                tourType: document.getElementById('tourType').value,
                 country: document.getElementById('tourCountry').value,
                 city: document.getElementById('tourCity').value,
                 duration: document.getElementById('tourDuration').value,
@@ -2648,7 +2682,8 @@
                 format: document.getElementById('tourFormat').value,
                 price: document.getElementById('tourPrice').value,
                 priceType: document.getElementById('tourPriceType').value,
-                mealsIncluded: document.getElementById('tourMealsIncluded').value === 'true',
+                pickupInfo: document.getElementById('tourPickupInfo').value,
+                startTimeOptions: JSON.stringify(document.getElementById('tourStartTimeOptions').value.split(',').map(t => t.trim()).filter(t => t)),
                 languages: JSON.stringify(document.getElementById('tourLanguages').value.split(',').map(l => l.trim()).filter(l => l)),
                 startDate: document.getElementById('tourStartDate').value,
                 endDate: document.getElementById('tourEndDate').value

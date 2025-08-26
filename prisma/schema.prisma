@@ -44,12 +44,14 @@ model Tour {
   country        String?          // Страна
   city           String?          // Город
   format         String?          // Формат: Групповой, Индивидуальный, VIP
+  tourType       String?          // Тип тура: Персональный, Групповой персональный, Групповой общий
   durationDays   Int?             // Количество дней
   theme          String?          // Тематика тура
   startDate      String?          // Дата начала
   endDate        String?          // Дата окончания
-  startTime      String?          // Время начала тура
-  mealsIncluded  Boolean?         @default(false) // Приём включен/не включен
+  startTime      String?          // Время начала тура (выбранное из доступных)
+  startTimeOptions String?        // JSON array доступных времен начала тура
+  pickupInfo     String?          // Настраиваемое поле для "Приём включён" или "Место сбора"
   languages      String?          // JSON array of tour languages
   availableMonths String?         // JSON array of available months
   availableDays  String?          // JSON array of available weekdays

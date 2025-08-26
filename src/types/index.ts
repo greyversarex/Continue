@@ -38,7 +38,12 @@ export interface CreateTourData {
   tourBlockId?: number;
   country?: string;
   city?: string;
+  durationDays?: number;
   format?: string;
+  tourType?: string;
+  pickupInfo?: string;
+  startTimeOptions?: string;
+  languages?: string;
   startDate?: string;
   endDate?: string;
 }
