@@ -2246,7 +2246,7 @@
             
             if (tourId) {
                 // Load tour data for editing
-                fetch(`http://localhost:3001/api/tours/${tourId}`)
+                fetch(`${getApiUrl()}/tours/${tourId}`)
                     .then(res => res.json())
                     .then(data => {
                         const tour = data.tour;
@@ -2305,7 +2305,9 @@
         }
         
         function loadHotelsForCheckboxes() {
-            fetch(`${getApiUrl()}/hotels`)
+            fetch(`${getApiUrl()}/hotels`, {
+                headers: getAuthHeaders()
+            })
                 .then(res => res.json())
                 .then(data => {
                     const container = document.getElementById('hotelCheckboxes');
@@ -2322,7 +2324,9 @@
         }
         
         function loadGuidesForCheckboxes() {
-            fetch(`${getApiUrl()}/guides`)
+            fetch(`${getApiUrl()}/guides`, {
+                headers: getAuthHeaders()
+            })
                 .then(res => res.json())
                 .then(data => {
                     const container = document.getElementById('guideCheckboxes');
@@ -2643,12 +2647,14 @@
 
         // Bookings functions
         function loadBookings(status = 'all') {
-            let url = 'http://localhost:3001/api/orders';
+            let url = `${getApiUrl()}/orders`;
             if (status !== 'all') {
                 url += `?status=${status}`;
             }
             
-            fetch(url)
+            fetch(url, {
+                headers: getAuthHeaders()
+            })
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('bookingsTable');
@@ -2685,7 +2691,9 @@
             currentBookingId = bookingId;
             document.getElementById('bookingModal').classList.add('active');
             
-            fetch(`http://localhost:3001/api/orders/${bookingId}`)
+            fetch(`${getApiUrl()}/orders/${bookingId}`, {
+                headers: getAuthHeaders()
+            })
                 .then(res => res.json())
                 .then(data => {
                     const order = data.order;
@@ -2770,7 +2778,9 @@
         
         // Hotels functions
         function loadHotels() {
-            fetch('http://localhost:3001/api/hotels')
+            fetch(`${getApiUrl()}/hotels`, {
+                headers: getAuthHeaders()
+            })
                 .then(res => res.json())
                 .then(data => {
                     const container = document.getElementById('hotelsList');
@@ -2811,7 +2821,9 @@
         
         // Guides functions
         function loadGuides() {
-            fetch('http://localhost:3001/api/guides')
+            fetch(`${getApiUrl()}/guides`, {
+                headers: getAuthHeaders()
+            })
                 .then(res => res.json())
                 .then(data => {
                     const container = document.getElementById('guidesList');
@@ -2868,7 +2880,9 @@
         
         // Reviews functions
         function loadReviews(filter = 'all') {
-            fetch('http://localhost:3001/api/reviews')
+            fetch(`${getApiUrl()}/reviews`, {
+                headers: getAuthHeaders()
+            })
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('reviewsTable');
