@@ -157,6 +157,9 @@
         }
 
     </style>
+    
+    <!-- Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw&callback=initMap"></script>
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Header -->
@@ -749,6 +752,14 @@
                         <p><a href="payment-rules-ru.pdf" target="_blank" class="hover:text-white text-blue-300">Правила оплаты и возврата средств</a></p>
                         <p><a href="privacy-policy-ru.pdf" target="_blank" class="hover:text-white text-blue-300">Политика конфиденциальности</a></p>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Google Map Section -->
+            <div class="border-t border-gray-600 mt-8 pt-8">
+                <h4 class="font-semibold mb-4 text-white text-center">Наше местоположение:</h4>
+                <div class="w-full h-64 rounded-lg overflow-hidden shadow-lg">
+                    <div id="map" class="w-full h-full"></div>
                 </div>
             </div>
             
@@ -1508,6 +1519,158 @@
                 });
             }
         });
+        
+        // Google Maps initialization
+        function initMap() {
+            // Координаты офиса Бунёд-Тур в Душанбе, Таджикистан
+            const bunyodTourLocation = { lat: 38.5598, lng: 68.7870 };
+            
+            // Создание карты
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: bunyodTourLocation,
+                styles: [
+                    {
+                        "featureType": "all",
+                        "elementType": "geometry.fill",
+                        "stylers": [{"weight": "2.00"}]
+                    },
+                    {
+                        "featureType": "all",
+                        "elementType": "geometry.stroke",
+                        "stylers": [{"color": "#9c9c9c"}]
+                    },
+                    {
+                        "featureType": "all",
+                        "elementType": "labels.text",
+                        "stylers": [{"visibility": "on"}]
+                    },
+                    {
+                        "featureType": "landscape",
+                        "elementType": "all",
+                        "stylers": [{"color": "#f2f2f2"}]
+                    },
+                    {
+                        "featureType": "landscape",
+                        "elementType": "geometry.fill",
+                        "stylers": [{"color": "#ffffff"}]
+                    },
+                    {
+                        "featureType": "landscape.man_made",
+                        "elementType": "geometry.fill",
+                        "stylers": [{"color": "#ffffff"}]
+                    },
+                    {
+                        "featureType": "poi",
+                        "elementType": "all",
+                        "stylers": [{"visibility": "off"}]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "all",
+                        "stylers": [{"saturation": -100}, {"lightness": 45}]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "geometry.fill",
+                        "stylers": [{"color": "#eeeeee"}]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{"color": "#7b7b7b"}]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "labels.text.stroke",
+                        "stylers": [{"color": "#ffffff"}]
+                    },
+                    {
+                        "featureType": "road.highway",
+                        "elementType": "all",
+                        "stylers": [{"visibility": "simplified"}]
+                    },
+                    {
+                        "featureType": "road.arterial",
+                        "elementType": "labels.icon",
+                        "stylers": [{"visibility": "off"}]
+                    },
+                    {
+                        "featureType": "transit",
+                        "elementType": "all",
+                        "stylers": [{"visibility": "off"}]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "all",
+                        "stylers": [{"color": "#46bcec"}, {"visibility": "on"}]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "geometry.fill",
+                        "stylers": [{"color": "#c8d7d4"}]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "labels.text.fill",
+                        "stylers": [{"color": "#070707"}]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "labels.text.stroke",
+                        "stylers": [{"color": "#ffffff"}]
+                    }
+                ]
+            });
+            
+            // Создание информационного окна
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div style="padding: 10px; font-family: Arial, sans-serif;">
+                        <h3 style="margin: 0 0 8px 0; color: #3E3E3E; font-size: 16px;">Бунёд-Тур</h3>
+                        <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
+                            <strong>Адрес:</strong> г. Душанбе, Таджикистан
+                        </p>
+                        <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
+                            <strong>Телефон:</strong> +992 44 625 7575
+                        </p>
+                        <p style="margin: 0; color: #666; font-size: 14px;">
+                            <strong>Email:</strong> info@bunyodtour.tj
+                        </p>
+                    </div>
+                `
+            });
+            
+            // Создание маркера
+            const marker = new google.maps.Marker({
+                position: bunyodTourLocation,
+                map: map,
+                title: "Бунёд-Тур - Туристическое агентство",
+                animation: google.maps.Animation.BOUNCE,
+                icon: {
+                    url: 'data:image/svg+xml;base64,' + btoa(`
+                        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="20" cy="20" r="18" fill="#3E3E3E" stroke="#fff" stroke-width="2"/>
+                            <circle cx="20" cy="20" r="8" fill="#fff"/>
+                            <text x="20" y="25" text-anchor="middle" fill="#3E3E3E" font-family="Arial" font-size="10" font-weight="bold">BT</text>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(40, 40),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(20, 40)
+                }
+            });
+            
+            // Показать информационное окно при клике на маркер
+            marker.addListener("click", () => {
+                infoWindow.open(map, marker);
+            });
+            
+            // Остановить анимацию через 3 секунды
+            setTimeout(() => {
+                marker.setAnimation(null);
+            }, 3000);
+        }
         
         // Update availability check without duration
         function goToBookingPage() {
