@@ -680,7 +680,6 @@
                         <li><a href="investment-projects.html" class="hover:text-white">Инвестиционные Проекты</a></li>
                         <li><a href="booking-guide.html" class="hover:text-white">Как бронировать туры?</a></li>
                         <li><a href="tours-search.html" class="hover:text-white">Каталог туров</a></li>
-                        <li><a href="#" class="hover:text-white">Календарь групповых туров</a></li>
                     </ul>
                 </div>
                 
@@ -1570,41 +1569,6 @@
             setTimeout(initMap, 500);
         });
         
-        // Update availability check without duration
-        function goToBookingPage() {
-            const date = document.getElementById('tour-date').value;
-            const touristCount = document.getElementById('tourist-count').value;
-            const tourType = document.getElementById('tour-type-select').value;
-            const tourTitle = document.querySelector('#tour-title')?.textContent || 'Неизвестный тур';
-            
-            // Validate required fields
-            if (!date) {
-                alert('Пожалуйста, выберите дату');
-                return;
-            }
-            
-            if (!touristCount) {
-                alert('Пожалуйста, укажите количество туристов');
-                return;
-            }
-            
-            if (!tourType) {
-                alert('Пожалуйста, выберите вид тура');
-                return;
-            }
-            
-            // Create booking parameters and redirect directly
-            const bookingParams = new URLSearchParams({
-                tour: encodeURIComponent(tourTitle),
-                date: date,
-                tourists: touristCount,
-                tourType: tourType,
-                step: '1'
-            });
-            
-            // Direct redirect to booking page - no confirmation needed
-            window.location.href = `booking.html?${bookingParams.toString()}`;
-        }
         
     </script>
 </body>
