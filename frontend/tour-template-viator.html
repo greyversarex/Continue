@@ -158,8 +158,9 @@
 
     </style>
     
-    <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"></script>
+    <!-- Leaflet Map API -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Header -->
@@ -1520,162 +1521,71 @@
             }
         });
         
-        // Google Maps initialization
+        // Leaflet Maps initialization  
         function initMap() {
             // Координаты офиса Бунёд-Тур: ул. Садриддина Айни, 104, Душанбе, Таджикистан
-            const bunyodTourLocation = { lat: 38.559772, lng: 68.787038 };
+            const bunyodTourLocation = [38.559772, 68.787038];
             
             // Создание карты
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 15,
-                center: bunyodTourLocation,
-                styles: [
-                    {
-                        "featureType": "all",
-                        "elementType": "geometry.fill",
-                        "stylers": [{"weight": "2.00"}]
-                    },
-                    {
-                        "featureType": "all",
-                        "elementType": "geometry.stroke",
-                        "stylers": [{"color": "#9c9c9c"}]
-                    },
-                    {
-                        "featureType": "all",
-                        "elementType": "labels.text",
-                        "stylers": [{"visibility": "on"}]
-                    },
-                    {
-                        "featureType": "landscape",
-                        "elementType": "all",
-                        "stylers": [{"color": "#f2f2f2"}]
-                    },
-                    {
-                        "featureType": "landscape",
-                        "elementType": "geometry.fill",
-                        "stylers": [{"color": "#ffffff"}]
-                    },
-                    {
-                        "featureType": "landscape.man_made",
-                        "elementType": "geometry.fill",
-                        "stylers": [{"color": "#ffffff"}]
-                    },
-                    {
-                        "featureType": "poi",
-                        "elementType": "all",
-                        "stylers": [{"visibility": "off"}]
-                    },
-                    {
-                        "featureType": "road",
-                        "elementType": "all",
-                        "stylers": [{"saturation": -100}, {"lightness": 45}]
-                    },
-                    {
-                        "featureType": "road",
-                        "elementType": "geometry.fill",
-                        "stylers": [{"color": "#eeeeee"}]
-                    },
-                    {
-                        "featureType": "road",
-                        "elementType": "labels.text.fill",
-                        "stylers": [{"color": "#7b7b7b"}]
-                    },
-                    {
-                        "featureType": "road",
-                        "elementType": "labels.text.stroke",
-                        "stylers": [{"color": "#ffffff"}]
-                    },
-                    {
-                        "featureType": "road.highway",
-                        "elementType": "all",
-                        "stylers": [{"visibility": "simplified"}]
-                    },
-                    {
-                        "featureType": "road.arterial",
-                        "elementType": "labels.icon",
-                        "stylers": [{"visibility": "off"}]
-                    },
-                    {
-                        "featureType": "transit",
-                        "elementType": "all",
-                        "stylers": [{"visibility": "off"}]
-                    },
-                    {
-                        "featureType": "water",
-                        "elementType": "all",
-                        "stylers": [{"color": "#46bcec"}, {"visibility": "on"}]
-                    },
-                    {
-                        "featureType": "water",
-                        "elementType": "geometry.fill",
-                        "stylers": [{"color": "#c8d7d4"}]
-                    },
-                    {
-                        "featureType": "water",
-                        "elementType": "labels.text.fill",
-                        "stylers": [{"color": "#070707"}]
-                    },
-                    {
-                        "featureType": "water",
-                        "elementType": "labels.text.stroke",
-                        "stylers": [{"color": "#ffffff"}]
-                    }
-                ]
-            });
+            const map = L.map('map').setView(bunyodTourLocation, 15);
             
-            // Создание информационного окна
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-                    <div style="padding: 10px; font-family: Arial, sans-serif;">
-                        <h3 style="margin: 0 0 8px 0; color: #3E3E3E; font-size: 16px;">Бунёд-Тур</h3>
-                        <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
-                            <strong>Адрес:</strong> ул. Садриддина Айни, 104, Душанбе
-                        </p>
-                        <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
-                            <strong>Телефон:</strong> +992 44 625 7575
-                        </p>
-                        <p style="margin: 0; color: #666; font-size: 14px;">
-                            <strong>Email:</strong> info@bunyodtour.tj
-                        </p>
-                    </div>
-                `
+            // Добавление карты OSM
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            // Создание кастомной иконки маркера
+            const customIcon = L.divIcon({
+                html: `<div style="
+                    width: 40px; 
+                    height: 40px; 
+                    border-radius: 50%; 
+                    background-color: #3E3E3E; 
+                    border: 3px solid #fff; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    color: white; 
+                    font-weight: bold; 
+                    font-size: 12px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+                    transform: translate(-50%, -100%);
+                ">BT</div>`,
+                className: 'custom-div-icon',
+                iconSize: [40, 40],
+                iconAnchor: [20, 40]
             });
             
             // Создание маркера
-            const marker = new google.maps.Marker({
-                position: bunyodTourLocation,
-                map: map,
-                title: "Бунёд-Тур - Туристическое агентство",
-                animation: google.maps.Animation.BOUNCE,
-                icon: {
-                    url: 'data:image/svg+xml;base64,' + btoa(`
-                        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="20" cy="20" r="18" fill="#3E3E3E" stroke="#fff" stroke-width="2"/>
-                            <circle cx="20" cy="20" r="8" fill="#fff"/>
-                            <text x="20" y="25" text-anchor="middle" fill="#3E3E3E" font-family="Arial" font-size="10" font-weight="bold">BT</text>
-                        </svg>
-                    `),
-                    scaledSize: new google.maps.Size(40, 40),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(20, 40)
-                }
-            });
+            const marker = L.marker(bunyodTourLocation, {
+                icon: customIcon,
+                title: "Бунёд-Тур - Туристическое агентство"
+            }).addTo(map);
             
-            // Показать информационное окно при клике на маркер
-            marker.addListener("click", () => {
-                infoWindow.open(map, marker);
-            });
+            // Создание popup окна
+            const popupContent = `
+                <div style="font-family: Arial, sans-serif; min-width: 200px;">
+                    <h3 style="margin: 0 0 8px 0; color: #3E3E3E; font-size: 16px;">🏢 Бунёд-Тур</h3>
+                    <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
+                        <strong>📍 Адрес:</strong> ул. Садриддина Айни, 104, Душанбе
+                    </p>
+                    <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
+                        <strong>📞 Телефон:</strong> +992 44 625 7575
+                    </p>
+                    <p style="margin: 0; color: #666; font-size: 14px;">
+                        <strong>✉️ Email:</strong> info@bunyodtour.tj
+                    </p>
+                </div>
+            `;
             
-            // Остановить анимацию через 3 секунды
-            setTimeout(() => {
-                marker.setAnimation(null);
-            }, 3000);
+            marker.bindPopup(popupContent).openPopup();
         }
         
         // Initialize map when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            // Wait for Google Maps API to load, then initialize map
-            setTimeout(initMap, 1000);
+            // Wait for page to fully load, then initialize map
+            setTimeout(initMap, 500);
         });
         
         // Update availability check without duration
