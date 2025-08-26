@@ -353,6 +353,14 @@
                     <i class="fas fa-map-marked-alt"></i>
                     <span>Туры</span>
                 </a>
+                <a href="#" class="nav-item" data-section="price-calculator">
+                    <i class="fas fa-calculator"></i>
+                    <span>Калькулятор цен</span>
+                </a>
+                <a href="#" class="nav-item" data-section="banner-management">
+                    <i class="fas fa-images"></i>
+                    <span>Управление баннером</span>
+                </a>
                 <a href="#" class="nav-item" data-section="bookings">
                     <i class="fas fa-calendar-check"></i>
                     <span>Заказы</span>
@@ -1063,6 +1071,260 @@
                     </div>
                 </section>
 
+                <!-- Price Calculator Section -->
+                <section id="priceCalculatorSection" style="display: none;">
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+                        <h2 class="text-2xl font-semibold mb-6">
+                            <i class="fas fa-calculator text-blue-600 mr-3"></i>
+                            Автоматический калькулятор цен
+                        </h2>
+                        <p class="text-gray-600 mb-6">Главный регулятор для расчета стоимости туров в сомони (сом)</p>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full border-collapse border border-gray-300">
+                                <thead>
+                                    <tr class="bg-gray-50">
+                                        <th class="border border-gray-300 px-4 py-2 text-left">Услуга</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-center">Цена ($)</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-center">Единица</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="priceCalculatorTable">
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Транспорт: внедорожник</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="6" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">км</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Транспорт: кроссовер</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="6" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">км</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Транспорт: микроавтобус</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="2200" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">день</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Транспорт: автобус</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="4400" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">день</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Гостиница: 5*, двухместный</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="1300" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">ночь/номер</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Гостиница: 4*, двухместный</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="1100" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">ночь/номер</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Гостиница: 3*, двухместный</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="850" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">ночь/номер</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Гостиница: 2*, двухместный</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="450" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">ночь/номер</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Хостел</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="200" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">ночь/номер</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Питание: обед</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="70" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">раз</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Питание: ужин</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="65" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">раз</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Проводник: русскоговорящий</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="330" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">день</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Проводник: англоговорящий</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="650" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">день</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Входные билеты в объектах-тадж</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="11" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">раз</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Входные билеты в объектах-инт</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="33" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">раз</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Трансфер: аэропорт-дом гостиницы-тадж</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="330" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">человек</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Трансфер: аэропорт-дом гостиницы-инт</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="550" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">человек</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Разрешение на выезд в ГБАО</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="275" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">человек</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Виза-поддержка, офиц. приглашение</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="330" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">человек</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">Виза в зарубежные страны</td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" class="form-input w-20" value="1400" step="0.01">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">человек</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-6 flex gap-4">
+                            <button class="btn btn-success" onclick="savePriceCalculator()">
+                                <i class="fas fa-save mr-2"></i>
+                                Сохранить цены
+                            </button>
+                            <button class="btn btn-primary" onclick="addNewPriceRow()">
+                                <i class="fas fa-plus mr-2"></i>
+                                Добавить услугу
+                            </button>
+                            <button class="btn btn-secondary" onclick="resetPrices()">
+                                <i class="fas fa-undo mr-2"></i>
+                                Сбросить к стандартным
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Banner Management Section -->
+                <section id="bannerManagementSection" style="display: none;">
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+                        <h2 class="text-2xl font-semibold mb-6">
+                            <i class="fas fa-images text-blue-600 mr-3"></i>
+                            Управление баннером
+                        </h2>
+                        <p class="text-gray-600 mb-6">Управление слайдами баннера на главной странице</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Текущие слайды -->
+                            <div>
+                                <h3 class="text-lg font-semibold mb-4">Текущие слайды</h3>
+                                <div id="currentSlides" class="space-y-4">
+                                    <!-- Slides will be loaded here -->
+                                </div>
+                            </div>
+                            
+                            <!-- Добавить новый слайд -->
+                            <div>
+                                <h3 class="text-lg font-semibold mb-4">Добавить новый слайд</h3>
+                                <form id="bannerForm" class="space-y-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Заголовок (Русский)</label>
+                                        <input type="text" class="form-input" id="bannerTitleRu" placeholder="Заголовок слайда">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Заголовок (English)</label>
+                                        <input type="text" class="form-input" id="bannerTitleEn" placeholder="Slide title">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Описание (Русский)</label>
+                                        <textarea class="form-input" rows="3" id="bannerDescRu" placeholder="Описание слайда"></textarea>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Описание (English)</label>
+                                        <textarea class="form-input" rows="3" id="bannerDescEn" placeholder="Slide description"></textarea>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Изображение</label>
+                                        <input type="file" class="form-input" id="bannerImage" accept="image/*">
+                                        <div id="bannerImagePreview" class="mt-2"></div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Ссылка (необязательно)</label>
+                                        <input type="url" class="form-input" id="bannerLink" placeholder="https://example.com">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Порядок отображения</label>
+                                        <input type="number" class="form-input" id="bannerOrder" value="1" min="1">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" id="bannerActive" checked> Активный
+                                        </label>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary w-full">
+                                        <i class="fas fa-plus mr-2"></i>
+                                        Добавить слайд
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Settings Section -->
                 <section id="settingsSection" style="display: none;">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1398,6 +1660,76 @@
                         <label class="form-label">Время начала тура (через запятую)</label>
                         <input type="text" class="form-input" id="tourStartTimeOptions" placeholder="09:00, 14:00, 16:00">
                         <small class="text-gray-500">Укажите доступные времена начала тура</small>
+                    </div>
+                    
+                    <!-- Доступность тура -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Доступные месяцы</label>
+                        <div class="grid grid-cols-4 gap-2 mt-2">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="1" id="month-1"> Январь
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="2" id="month-2"> Февраль
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="3" id="month-3"> Март
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="4" id="month-4"> Апрель
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="5" id="month-5"> Май
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="6" id="month-6"> Июнь
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="7" id="month-7"> Июль
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="8" id="month-8"> Август
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="9" id="month-9"> Сентябрь
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="10" id="month-10"> Октябрь
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="11" id="month-11"> Ноябрь
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="12" id="month-12"> Декабрь
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Доступные дни недели</label>
+                        <div class="grid grid-cols-4 gap-2 mt-2">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="1" id="day-1"> Понедельник
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="2" id="day-2"> Вторник
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="3" id="day-3"> Среда
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="4" id="day-4"> Четверг
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="5" id="day-5"> Пятница
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="6" id="day-6"> Суббота
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="0" id="day-0"> Воскресенье
+                            </label>
+                        </div>
                     </div>
                     
                     <div class="form-group col-span-2">
@@ -2680,7 +3012,10 @@
                 startTimeOptions: JSON.stringify(document.getElementById('tourStartTimeOptions').value.split(',').map(t => t.trim()).filter(t => t)),
                 languages: JSON.stringify(document.getElementById('tourLanguages').value.split(',').map(l => l.trim()).filter(l => l)),
                 startDate: document.getElementById('tourStartDate').value,
-                endDate: document.getElementById('tourEndDate').value
+                endDate: document.getElementById('tourEndDate').value,
+                // Доступность тура
+                availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
+                availableDays: JSON.stringify(getSelectedCheckboxValues('day-'))
             };
             
             const url = currentTourId ? 
@@ -3898,6 +4233,133 @@
             });
         }
 
+        // Get selected checkbox values
+        function getSelectedCheckboxValues(prefix) {
+            const checkboxes = document.querySelectorAll(`input[id^="${prefix}"]`);
+            const selected = [];
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selected.push(checkbox.value);
+                }
+            });
+            return selected;
+        }
+
+        // Price Calculator Functions
+        function savePriceCalculator() {
+            const rows = document.querySelectorAll('#priceCalculatorTable tr');
+            const prices = [];
+            
+            rows.forEach(row => {
+                const service = row.cells[0]?.textContent;
+                const priceInput = row.querySelector('input[type="number"]');
+                const unit = row.cells[2]?.textContent;
+                
+                if (service && priceInput && unit) {
+                    prices.push({
+                        service: service,
+                        price: parseFloat(priceInput.value),
+                        unit: unit
+                    });
+                }
+            });
+            
+            // Save to localStorage for now (could be API call later)
+            localStorage.setItem('priceCalculatorData', JSON.stringify(prices));
+            alert('Цены успешно сохранены!');
+        }
+
+        function addNewPriceRow() {
+            const service = prompt('Введите название услуги:');
+            if (!service) return;
+            
+            const price = prompt('Введите цену ($):');
+            if (!price) return;
+            
+            const unit = prompt('Введите единицу измерения:');
+            if (!unit) return;
+            
+            const tbody = document.getElementById('priceCalculatorTable');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="border border-gray-300 px-4 py-2">${service}</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <input type="number" class="form-input w-20" value="${price}" step="0.01">
+                </td>
+                <td class="border border-gray-300 px-4 py-2 text-center">${unit}</td>
+            `;
+            tbody.appendChild(newRow);
+        }
+
+        function resetPrices() {
+            if (confirm('Сбросить все цены к стандартным значениям?')) {
+                location.reload();
+            }
+        }
+
+        // Banner Management Functions
+        function loadCurrentSlides() {
+            // Load current slides (placeholder for now)
+            const container = document.getElementById('currentSlides');
+            container.innerHTML = `
+                <div class="border rounded-lg p-4">
+                    <img src="/api/placeholder/300/150" alt="Slide 1" class="w-full h-32 object-cover rounded mb-2">
+                    <h4 class="font-medium">Добро пожаловать в Таджикистан</h4>
+                    <p class="text-sm text-gray-600">Откройте для себя красоту Центральной Азии</p>
+                    <div class="flex gap-2 mt-2">
+                        <button class="btn btn-sm btn-primary" onclick="editSlide(1)">Редактировать</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteSlide(1)">Удалить</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function editSlide(id) {
+            alert('Функция редактирования слайда будет реализована');
+        }
+
+        function deleteSlide(id) {
+            if (confirm('Удалить этот слайд?')) {
+                alert('Слайд удален');
+                loadCurrentSlides();
+            }
+        }
+
+        // Banner form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const bannerForm = document.getElementById('bannerForm');
+                if (bannerForm) {
+                    bannerForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        saveBannerSlide();
+                    });
+                }
+            }, 100);
+        });
+
+        function saveBannerSlide() {
+            const formData = {
+                title: JSON.stringify({
+                    ru: document.getElementById('bannerTitleRu').value,
+                    en: document.getElementById('bannerTitleEn').value
+                }),
+                description: JSON.stringify({
+                    ru: document.getElementById('bannerDescRu').value,
+                    en: document.getElementById('bannerDescEn').value
+                }),
+                link: document.getElementById('bannerLink').value,
+                order: parseInt(document.getElementById('bannerOrder').value),
+                active: document.getElementById('bannerActive').checked
+            };
+            
+            // Placeholder for API call
+            console.log('Banner slide data:', formData);
+            alert('Слайд успешно добавлен!');
+            document.getElementById('bannerForm').reset();
+            loadCurrentSlides();
+        }
+
         // Show batch translation modal (placeholder)
         function showBatchTranslationModal() {
             alert('Функция выборочного перевода туров будет реализована в следующей версии');
@@ -3919,17 +4381,109 @@
             document.getElementById('progressBar').style.width = percent + '%';
         }
 
-        // Update navigation to handle translations section
+        // Navigation handling
         document.addEventListener('DOMContentLoaded', function() {
-            // Add click handler for translations navigation
-            const navItems = document.querySelectorAll('[data-section="translations"]');
+            // Add click handlers for all navigation items
+            const navItems = document.querySelectorAll('.nav-item[data-section]');
             navItems.forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
-                    showTranslations();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                    
+                    // Update active state
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
                 });
             });
+
+            // Initialize default section
+            showSection('dashboard');
         });
+
+        // Show section function
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'reviewsSection', 'cmsSection', 'translationSection', 'settingsSection'];
+            sections.forEach(sectionId => {
+                const element = document.getElementById(sectionId);
+                if (element) element.style.display = 'none';
+            });
+
+            // Show selected section - map section names to section IDs
+            let sectionId;
+            switch(sectionName) {
+                case 'price-calculator':
+                    sectionId = 'priceCalculatorSection';
+                    break;
+                case 'banner-management':
+                    sectionId = 'bannerManagementSection';
+                    break;
+                default:
+                    sectionId = sectionName + 'Section';
+            }
+            
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
+
+            // Load section-specific data
+            switch(sectionName) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'tours':
+                    loadTours();
+                    break;
+                case 'price-calculator':
+                    loadPriceCalculator();
+                    break;
+                case 'banner-management':
+                    loadBannerManagement();
+                    break;
+                case 'bookings':
+                    loadBookings();
+                    break;
+                case 'hotels':
+                    loadHotels();
+                    break;
+                case 'guides':
+                    loadGuides();
+                    break;
+                case 'reviews':
+                    loadReviews();
+                    break;
+                case 'cms':
+                    switchCMSTab('blocks');
+                    break;
+                case 'translations':
+                    showTranslations();
+                    break;
+                case 'settings':
+                    // Load settings if needed
+                    break;
+            }
+        }
+
+        // Load functions for new sections
+        function loadPriceCalculator() {
+            // Load saved prices from localStorage if available
+            const savedPrices = localStorage.getItem('priceCalculatorData');
+            if (savedPrices) {
+                try {
+                    const prices = JSON.parse(savedPrices);
+                    // Update table with saved prices
+                    console.log('Loaded saved prices:', prices);
+                } catch (e) {
+                    console.error('Error loading saved prices:', e);
+                }
+            }
+        }
+
+        function loadBannerManagement() {
+            loadCurrentSlides();
+        }
     </script>
 </body>
 </html>
