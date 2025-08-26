@@ -131,6 +131,45 @@
             display: none;
         }
         
+        /* Hero Slider Styles */
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hero-slide.active {
+            opacity: 1;
+        }
+        
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .slider-dot.active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+        
+        .slider-dot:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
         .tour-card {
             min-width: 280px;
             max-width: 280px;
@@ -926,24 +965,36 @@
         </div>
     </header>
 
-    <!-- Главный баннер -->
-    <section class="hero-bg banner-height relative flex items-center justify-center text-white">
-        <div class="gradient-overlay absolute inset-0"></div>
-        <div class="relative z-10 text-center max-w-4xl mx-auto px-6">
-            <h1 class="text-6xl font-bold mb-6">
-                Откройте красоту Таджикистана
-            </h1>
-            <p class="text-xl mb-8 max-w-2xl mx-auto">
-                Исследуйте захватывающие горы Памира, древние города Шёлкового пути и богатую культуру этой удивительной страны
-            </p>
+    <!-- Главный баннер/слайдер -->
+    <section id="heroSlider" class="banner-height relative overflow-hidden">
+        <!-- Слайды будут загружены динамически -->
+        <div id="slidesContainer" class="h-full w-full">
+            <!-- Загрузочный плейсхолдер -->
+            <div class="hero-bg banner-height relative flex items-center justify-center text-white">
+                <div class="gradient-overlay absolute inset-0"></div>
+                <div class="relative z-10 text-center max-w-4xl mx-auto px-6">
+                    <h1 class="text-6xl font-bold mb-6">
+                        Откройте красоту Таджикистана
+                    </h1>
+                    <p class="text-xl mb-8 max-w-2xl mx-auto">
+                        Исследуйте захватывающие горы Памира, древние города Шёлкового пути и богатую культуру этой удивительной страны
+                    </p>
+                </div>
+            </div>
         </div>
         
-        <!-- Точки карусели -->
-        <div class="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2">
-            <div class="w-2 h-2 bg-white rounded-full"></div>
-            <div class="w-2 h-2 bg-white bg-opacity-50 rounded-full"></div>
-            <div class="w-2 h-2 bg-white bg-opacity-50 rounded-full"></div>
+        <!-- Навигация слайдера -->
+        <div id="sliderNavigation" class="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            <!-- Точки будут добавлены динамически -->
         </div>
+        
+        <!-- Стрелки навигации -->
+        <button id="prevSlide" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-3xl opacity-70 hover:opacity-100 transition-opacity duration-300 z-10" style="display: none;">
+            &#8249;
+        </button>
+        <button id="nextSlide" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-3xl opacity-70 hover:opacity-100 transition-opacity duration-300 z-10" style="display: none;">
+            &#8250;
+        </button>
         
         <!-- Брендинг -->
         <div class="absolute bottom-8 right-8">
@@ -3663,9 +3714,128 @@
             }
         }
         
-        // Загружаем туры при загрузке страницы
+        // Hero Slider Functions
+        let currentSlideIndex = 0;
+        let slides = [];
+        let slideInterval;
+
+        async function loadSlides() {
+            try {
+                const response = await fetch(`${window.location.origin}/api/slides`);
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    slides = data.data;
+                    renderSlides();
+                    initializeSlider();
+                } else {
+                    console.log('No slides found, using default content');
+                }
+            } catch (error) {
+                console.error('Error loading slides:', error);
+            }
+        }
+
+        function renderSlides() {
+            const container = document.getElementById('slidesContainer');
+            const navigation = document.getElementById('sliderNavigation');
+            
+            if (!container || !navigation) return;
+
+            // Создаем слайды
+            container.innerHTML = slides.map((slide, index) => {
+                const title = JSON.parse(slide.title || '{}');
+                const description = JSON.parse(slide.description || '{}');
+                const buttonText = slide.buttonText ? JSON.parse(slide.buttonText) : null;
+                
+                return `
+                    <div class="hero-slide ${index === 0 ? 'active' : ''}" data-slide="${index}"
+                         style="background-image: url('${slide.image || ''}'); ${!slide.image ? 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);' : ''}">
+                        <div class="gradient-overlay absolute inset-0"></div>
+                        <div class="relative z-10 text-center max-w-4xl mx-auto px-6 flex items-center justify-center h-full">
+                            <div>
+                                <h1 class="text-6xl font-bold mb-6 text-white">
+                                    ${title.ru || title.en || 'Откройте красоту Таджикистана'}
+                                </h1>
+                                <p class="text-xl mb-8 max-w-2xl mx-auto text-white">
+                                    ${description.ru || description.en || 'Исследуйте захватывающие горы Памира, древние города Шёлкового пути и богатую культуру этой удивительной страны'}
+                                </p>
+                                ${slide.link && buttonText ? `
+                                    <a href="${slide.link}" class="inline-block bg-white text-gray-800 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                        ${buttonText.ru || buttonText.en || 'Узнать больше'}
+                                    </a>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Создаем точки навигации
+            navigation.innerHTML = slides.map((_, index) => 
+                `<div class="slider-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></div>`
+            ).join('');
+
+            // Показываем кнопки навигации если больше одного слайда
+            const prevBtn = document.getElementById('prevSlide');
+            const nextBtn = document.getElementById('nextSlide');
+            if (slides.length > 1) {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+            }
+        }
+
+        function initializeSlider() {
+            if (slides.length <= 1) return;
+
+            // Автопрокрутка слайдов
+            slideInterval = setInterval(() => {
+                nextSlide();
+            }, 5000);
+
+            // Обработчики кнопок
+            document.getElementById('prevSlide').onclick = prevSlide;
+            document.getElementById('nextSlide').onclick = nextSlide;
+        }
+
+        function goToSlide(index) {
+            if (index === currentSlideIndex) return;
+
+            const slides = document.querySelectorAll('.hero-slide');
+            const dots = document.querySelectorAll('.slider-dot');
+
+            // Скрываем текущий слайд
+            slides[currentSlideIndex].classList.remove('active');
+            dots[currentSlideIndex].classList.remove('active');
+
+            // Показываем новый слайд
+            currentSlideIndex = index;
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
+
+            // Перезапускаем автопрокрутку
+            clearInterval(slideInterval);
+            if (slides.length > 1) {
+                slideInterval = setInterval(() => {
+                    nextSlide();
+                }, 5000);
+            }
+        }
+
+        function nextSlide() {
+            const nextIndex = (currentSlideIndex + 1) % slides.length;
+            goToSlide(nextIndex);
+        }
+
+        function prevSlide() {
+            const prevIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
+            goToSlide(prevIndex);
+        }
+
+        // Загружаем туры и слайды при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             loadTourBlocks();
+            loadSlides();
         });
 
     </script>

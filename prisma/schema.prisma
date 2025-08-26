@@ -362,3 +362,18 @@ enum NewsCategory {
   tips
   general
 }
+
+model Slide {
+  id          Int      @id @default(autoincrement())
+  title       String   // JSON field for multilingual content
+  description String   // JSON field for multilingual content
+  image       String?  // Background image URL
+  link        String?  // Call-to-action link
+  buttonText  String?  // JSON field for button text
+  order       Int      @default(0) // Display order
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("slides")
+}

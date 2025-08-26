@@ -13,6 +13,7 @@ import publicRoutes from './publicRoutes';
 import tourBlockRoutes from './tourBlockRoutes';
 import translationRoutes from './translationRoutes';
 import newsRoutes from './newsRoutes';
+import slideRoutes from './slideRoutes';
 
 const router = Router();
 
@@ -31,6 +32,7 @@ router.use('/public', publicRoutes);
 router.use('/tour-blocks', tourBlockRoutes);
 router.use('/translate', translationRoutes);
 router.use('/news', newsRoutes);
+router.use('/slides', slideRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
