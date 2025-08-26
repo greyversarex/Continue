@@ -783,7 +783,7 @@
     </style>
     
     <!-- Google Maps API -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw&callback=initMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"></script>
 </head>
 <body>
     <!-- Хедер -->
@@ -3401,8 +3401,8 @@
 
         // Google Maps initialization
         function initMap() {
-            // Координаты офиса Бунёд-Тур в Душанбе, Таджикистан
-            const bunyodTourLocation = { lat: 38.5598, lng: 68.7870 };
+            // Координаты офиса Бунёд-Тур: ул. Садриддина Айни, 104, Душанбе, Таджикистан
+            const bunyodTourLocation = { lat: 38.559772, lng: 68.787038 };
             
             // Создание карты
             const map = new google.maps.Map(document.getElementById("map"), {
@@ -3508,7 +3508,7 @@
                     <div style="padding: 10px; font-family: Arial, sans-serif;">
                         <h3 style="margin: 0 0 8px 0; color: #3E3E3E; font-size: 16px;">Бунёд-Тур</h3>
                         <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
-                            <strong>Адрес:</strong> г. Душанбе, Таджикистан
+                            <strong>Адрес:</strong> ул. Садриддина Айни, 104, Душанбе
                         </p>
                         <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
                             <strong>Телефон:</strong> +992 44 625 7575
@@ -3550,6 +3550,12 @@
                 marker.setAnimation(null);
             }, 3000);
         }
+
+        // Initialize map when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for Google Maps API to load, then initialize map
+            setTimeout(initMap, 1000);
+        });
 
         // API Configuration
         const API_BASE_URL = 'http://localhost:3000/api';
