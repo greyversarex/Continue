@@ -1294,9 +1294,18 @@
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label">Изображение</label>
-                                        <input type="file" class="form-input" id="bannerImage" accept="image/*">
-                                        <div id="bannerImagePreview" class="mt-2"></div>
+                                        <label class="form-label">URL фонового изображения</label>
+                                        <input type="url" class="form-input" id="bannerImage" placeholder="https://example.com/image.jpg">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Текст кнопки (Русский)</label>
+                                        <input type="text" class="form-input" id="bannerButtonTextRu" placeholder="Узнать больше">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Текст кнопки (English)</label>
+                                        <input type="text" class="form-input" id="bannerButtonTextEn" placeholder="Learn more">
                                     </div>
                                     
                                     <div class="form-group">
@@ -4312,30 +4321,79 @@
         }
 
         // Banner Management Functions
-        function loadCurrentSlides() {
-            // Load current slides (placeholder for now)
+        async function loadCurrentSlides() {
+            try {
+                const response = await fetch(`${getApiUrl()}/slides/admin`, {
+                    headers: getAuthHeaders()
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayCurrentSlides(result.data);
+                } else {
+                    console.error('Failed to load slides:', result.message);
+                }
+            } catch (error) {
+                console.error('Error loading slides:', error);
+            }
+        }
+
+        function displayCurrentSlides(slides) {
             const container = document.getElementById('currentSlides');
-            container.innerHTML = `
-                <div class="border rounded-lg p-4">
-                    <img src="/api/placeholder/300/150" alt="Slide 1" class="w-full h-32 object-cover rounded mb-2">
-                    <h4 class="font-medium">Добро пожаловать в Таджикистан</h4>
-                    <p class="text-sm text-gray-600">Откройте для себя красоту Центральной Азии</p>
-                    <div class="flex gap-2 mt-2">
-                        <button class="btn btn-sm btn-primary" onclick="editSlide(1)">Редактировать</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteSlide(1)">Удалить</button>
+            if (!container) return;
+
+            container.innerHTML = slides.map(slide => {
+                const title = JSON.parse(slide.title || '{}');
+                const description = JSON.parse(slide.description || '{}');
+                const buttonText = JSON.parse(slide.buttonText || '{}');
+                
+                return `
+                    <div class="border rounded-lg p-4 bg-white">
+                        ${slide.image ? `<img src="${slide.image}" alt="Slide" class="w-full h-32 object-cover rounded mb-2" onerror="this.style.display='none'">` : ''}
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-medium">${title.ru || title.en || 'Без названия'}</h4>
+                                <p class="text-sm text-gray-600">${(description.ru || description.en || '').substring(0, 80)}${(description.ru || description.en || '').length > 80 ? '...' : ''}</p>
+                            </div>
+                            <span class="px-2 py-1 text-xs rounded ${slide.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}">
+                                ${slide.isActive ? 'Активен' : 'Неактивен'}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">Порядок: ${slide.order}</span>
+                            <div class="flex gap-2">
+                                <button class="btn btn-sm btn-danger" onclick="deleteSlide(${slide.id})">Удалить</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }).join('') || '<p class="text-gray-500">Нет слайдов</p>';
         }
 
         function editSlide(id) {
             alert('Функция редактирования слайда будет реализована');
         }
 
-        function deleteSlide(id) {
-            if (confirm('Удалить этот слайд?')) {
-                alert('Слайд удален');
-                loadCurrentSlides();
+        async function deleteSlide(id) {
+            if (!confirm('Удалить этот слайд?')) return;
+
+            try {
+                const response = await fetch(`${getApiUrl()}/slides/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Слайд удален');
+                    loadCurrentSlides();
+                } else {
+                    alert('Ошибка при удалении слайда');
+                }
+            } catch (error) {
+                console.error('Error deleting slide:', error);
+                alert('Ошибка при удалении слайда');
             }
         }
 
@@ -4352,26 +4410,46 @@
             }, 100);
         });
 
-        function saveBannerSlide() {
-            const formData = {
-                title: JSON.stringify({
+        async function saveBannerSlide() {
+            const slideData = {
+                title: {
                     ru: document.getElementById('bannerTitleRu').value,
                     en: document.getElementById('bannerTitleEn').value
-                }),
-                description: JSON.stringify({
+                },
+                description: {
                     ru: document.getElementById('bannerDescRu').value,
                     en: document.getElementById('bannerDescEn').value
-                }),
-                link: document.getElementById('bannerLink').value,
-                order: parseInt(document.getElementById('bannerOrder').value),
-                active: document.getElementById('bannerActive').checked
+                },
+                image: document.getElementById('bannerImage').value || '',
+                link: document.getElementById('bannerLink').value || '',
+                buttonText: {
+                    ru: document.getElementById('bannerButtonTextRu').value || '',
+                    en: document.getElementById('bannerButtonTextEn').value || ''
+                },
+                order: parseInt(document.getElementById('bannerOrder').value) || 1,
+                isActive: document.getElementById('bannerActive').checked
             };
-            
-            // Placeholder for API call
-            console.log('Banner slide data:', formData);
-            alert('Слайд успешно добавлен!');
-            document.getElementById('bannerForm').reset();
-            loadCurrentSlides();
+
+            try {
+                const response = await fetch(`${getApiUrl()}/slides`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(slideData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Слайд успешно создан!');
+                    loadCurrentSlides();
+                    document.getElementById('bannerForm').reset();
+                } else {
+                    alert('Ошибка при создании слайда: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error creating slide:', error);
+                alert('Ошибка при создании слайда');
+            }
         }
 
         // Show batch translation modal (placeholder)
