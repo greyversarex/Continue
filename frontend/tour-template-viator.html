@@ -1392,9 +1392,13 @@
                 if (result.success && result.data) {
                     const apiTourData = result.data;
                     
-                    // Parse multilingual content
-                    const title = JSON.parse(apiTourData.title);
-                    const description = JSON.parse(apiTourData.description);
+                    // Parse multilingual content (handle both string and object formats)
+                    const title = typeof apiTourData.title === 'string' 
+                        ? JSON.parse(apiTourData.title) 
+                        : apiTourData.title;
+                    const description = typeof apiTourData.description === 'string' 
+                        ? JSON.parse(apiTourData.description) 
+                        : apiTourData.description;
                     
                     // Update global tourData
                     tourData = {
