@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bunyod-Tour Admin Panel</title>
+    
+    <!-- Material-UI and React CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Material-UI -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="https://unpkg.com/@mui/material@5.14.18/umd/material-ui.development.js"></script>
+    
+    <!-- Axios for API calls -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .app-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1200;
+        }
+        .drawer {
+            width: 240px;
+            position: fixed;
+            left: 0;
+            top: 64px;
+            bottom: 0;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .main-content {
+            margin-left: 240px;
+            margin-top: 64px;
+            padding: 24px;
+            min-height: calc(100vh - 64px);
+        }
+        .data-table {
+            width: 100%;
+            margin-top: 16px;
+        }
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 24px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stats-card {
+            padding: 24px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .login-form {
+            background: white;
+            padding: 32px;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .error-message {
+            color: #f44336;
+            margin-top: 8px;
+            font-size: 0.875rem;
+        }
+        .success-message {
+            color: #4caf50;
+            margin-top: 8px;
+            font-size: 0.875rem;
+        }
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .table-header {
+            background: #f5f5f5;
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .action-button {
+            margin: 0 4px;
+            min-width: 32px;
+            padding: 8px;
+        }
+        .dialog-content {
+            padding: 24px;
+            min-width: 400px;
+        }
+        .form-field {
+            margin-bottom: 16px;
+            width: 100%;
+        }
+        .language-selector {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1300;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+        const { 
+            AppBar, Toolbar, Typography, List, ListItem, ListItemIcon, ListItemText,
+            Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+            Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions,
+            Card, CardContent, Snackbar, Alert, Select, MenuItem, FormControl, InputLabel,
+            CircularProgress, Box
+        } = window.MaterialUI || {};
+
+        // API Configuration
+        const API_BASE = window.location.hostname.includes('replit.dev') 
+            ? `https://${window.location.hostname}:5000/api`
+            : 'http://localhost:3001/api';
+
+        // Internationalization
+        const translations = {
+            en: {
+                title: 'Bunyod-Tour Admin Panel',
+                login: 'Login',
+                logout: 'Logout',
+                dashboard: 'Dashboard',
+                tours: 'Tours',
+                bookings: 'Bookings', 
+                users: 'Users',
+                promotions: 'Promotions',
+                username: 'Username',
+                password: 'Password',
+                signIn: 'Sign In',
+                totalTours: 'Total Tours',
+                totalBookings: 'Total Bookings',
+                totalUsers: 'Total Users',
+                activePromotions: 'Active Promotions',
+                add: 'Add',
+                edit: 'Edit',
+                delete: 'Delete',
+                view: 'View',
+                save: 'Save',
+                cancel: 'Cancel',
+                confirm: 'Confirm',
+                title_field: 'Title',
+                description: 'Description',
+                country: 'Country',
+                price: 'Price',
+                category: 'Category',
+                startDate: 'Start Date',
+                endDate: 'End Date',
+                status: 'Status',
+                name: 'Name',
+                email: 'Email',
+                role: 'Role',
+                discount: 'Discount'
+            },
+            ru: {
+                title: 'Админ Панель Bunyod-Tour',
+                login: 'Вход',
+                logout: 'Выйти',
+                dashboard: 'Панель управления',
+                tours: 'Туры',
+                bookings: 'Бронирования',
+                users: 'Пользователи',
+                promotions: 'Акции',
+                username: 'Имя пользователя',
+                password: 'Пароль',
+                signIn: 'Войти',
+                totalTours: 'Всего туров',
+                totalBookings: 'Всего бронирований',
+                totalUsers: 'Всего пользователей',
+                activePromotions: 'Активные акции',
+                add: 'Добавить',
+                edit: 'Редактировать',
+                delete: 'Удалить',
+                view: 'Просмотр',
+                save: 'Сохранить',
+                cancel: 'Отмена',
+                confirm: 'Подтвердить',
+                title_field: 'Название',
+                description: 'Описание',
+                country: 'Страна',
+                price: 'Цена',
+                category: 'Категория',
+                startDate: 'Дата начала',
+                endDate: 'Дата окончания',
+                status: 'Статус',
+                name: 'Имя',
+                email: 'Email',
+                role: 'Роль',
+                discount: 'Скидка'
+            }
+        };
+
+        // Authentication service
+        const authService = {
+            login: async (username, password) => {
+                try {
+                    const response = await axios.post(`${API_BASE}/admin/login`, {
+                        username,
+                        password
+                    });
+                    if (response.data.success) {
+                        const { token, admin } = response.data.data;
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('user', JSON.stringify(admin));
+                        return { success: true, data: response.data.data };
+                    }
+                    return { success: false, error: 'Invalid credentials' };
+                } catch (error) {
+                    return { success: false, error: 'Login failed' };
+                }
+            },
+            logout: () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+            },
+            isAuthenticated: () => {
+                return !!localStorage.getItem('token');
+            },
+            getUser: () => {
+                const user = localStorage.getItem('user');
+                return user ? JSON.parse(user) : null;
+            },
+            getToken: () => {
+                return localStorage.getItem('token');
+            }
+        };
+
+        // API service
+        const apiService = {
+            makeRequest: async (method, url, data = null) => {
+                const token = authService.getToken();
+                const config = {
+                    method,
+                    url: `${API_BASE}${url}`,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (token) {
+                    config.headers.Authorization = `Bearer ${token}`;
+                }
+                
+                if (data) {
+                    config.data = data;
+                }
+                
+                try {
+                    const response = await axios(config);
+                    return { success: true, data: response.data };
+                } catch (error) {
+                    if (error.response?.status === 401) {
+                        authService.logout();
+                        window.location.reload();
+                    }
+                    return { 
+                        success: false, 
+                        error: error.response?.data?.message || error.message 
+                    };
+                }
+            },
+            
+            // Generic CRUD operations
+            getList: (resource) => apiService.makeRequest('GET', `/${resource}`),
+            getOne: (resource, id) => apiService.makeRequest('GET', `/${resource}/${id}`),
+            create: (resource, data) => apiService.makeRequest('POST', `/${resource}`, data),
+            update: (resource, id, data) => apiService.makeRequest('PUT', `/${resource}/${id}`, data),
+            delete: (resource, id) => apiService.makeRequest('DELETE', `/${resource}/${id}`),
+            
+            // Dashboard stats
+            getStats: async () => {
+                const [tours, bookings, users, promotions] = await Promise.all([
+                    apiService.makeRequest('GET', '/sqlite/tours'),
+                    apiService.makeRequest('GET', '/sqlite/bookings'),
+                    apiService.makeRequest('GET', '/sqlite/users'),
+                    apiService.makeRequest('GET', '/sqlite/promotions')
+                ]);
+                
+                return {
+                    tours: tours.success ? (tours.data.data?.length || 0) : 0,
+                    bookings: bookings.success ? (bookings.data.data?.length || 0) : 0,
+                    users: users.success ? (users.data.data?.length || 0) : 0,
+                    promotions: promotions.success ? (promotions.data.data?.length || 0) : 0
+                };
+            }
+        };
+
+        // Login Component
+        function LoginForm({ onLogin, language, onLanguageChange }) {
+            const [username, setUsername] = useState('');
+            const [password, setPassword] = useState('');
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState('');
+            
+            const t = translations[language];
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setError('');
+                
+                const result = await authService.login(username, password);
+                if (result.success) {
+                    onLogin(result.data);
+                } else {
+                    setError(result.error);
+                }
+                setLoading(false);
+            };
+
+            return (
+                <div className="login-container">
+                    <div className="language-selector">
+                        <Select
+                            value={language}
+                            onChange={(e) => onLanguageChange(e.target.value)}
+                            variant="outlined"
+                            size="small"
+                            sx={{ backgroundColor: 'white', minWidth: 80 }}
+                        >
+                            <MenuItem value="en">EN</MenuItem>
+                            <MenuItem value="ru">RU</MenuItem>
+                        </Select>
+                    </div>
+                    <form onSubmit={handleSubmit} className="login-form">
+                        <Typography variant="h4" align="center" gutterBottom color="primary">
+                            {t.title}
+                        </Typography>
+                        <TextField
+                            label={t.username}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            fullWidth
+                            margin="normal"
+                            required
+                            disabled={loading}
+                        />
+                        <TextField
+                            label={t.password}
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            fullWidth
+                            margin="normal"
+                            required
+                            disabled={loading}
+                        />
+                        {error && <div className="error-message">{error}</div>}
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                            disabled={loading}
+                        >
+                            {loading ? <CircularProgress size={24} /> : t.signIn}
+                        </Button>
+                    </form>
+                </div>
+            );
+        }
+
+        // Dashboard Component
+        function Dashboard({ language }) {
+            const [stats, setStats] = useState({ tours: 0, bookings: 0, users: 0, promotions: 0 });
+            const [loading, setLoading] = useState(true);
+            
+            const t = translations[language];
+
+            useEffect(() => {
+                const fetchStats = async () => {
+                    const data = await apiService.getStats();
+                    setStats(data);
+                    setLoading(false);
+                };
+                fetchStats();
+            }, []);
+
+            if (loading) {
+                return (
+                    <div className="loading">
+                        <CircularProgress />
+                    </div>
+                );
+            }
+
+            return (
+                <div>
+                    <Typography variant="h4" gutterBottom>
+                        {t.dashboard}
+                    </Typography>
+                    <div className="stats-grid">
+                        <div className="stats-card">
+                            <div className="stats-number" style={{ color: '#3f51b5' }}>
+                                {stats.tours}
+                            </div>
+                            <Typography variant="h6">{t.totalTours}</Typography>
+                        </div>
+                        <div className="stats-card">
+                            <div className="stats-number" style={{ color: '#4caf50' }}>
+                                {stats.bookings}
+                            </div>
+                            <Typography variant="h6">{t.totalBookings}</Typography>
+                        </div>
+                        <div className="stats-card">
+                            <div className="stats-number" style={{ color: '#ff9800' }}>
+                                {stats.users}
+                            </div>
+                            <Typography variant="h6">{t.totalUsers}</Typography>
+                        </div>
+                        <div className="stats-card">
+                            <div className="stats-number" style={{ color: '#f44336' }}>
+                                {stats.promotions}
+                            </div>
+                            <Typography variant="h6">{t.activePromotions}</Typography>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Generic Data Table Component
+        function DataTable({ resource, columns, fields, language, onRefresh }) {
+            const [data, setData] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [selectedItem, setSelectedItem] = useState(null);
+            const [dialogMode, setDialogMode] = useState(null); // 'view', 'edit', 'create'
+            const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+            const [itemToDelete, setItemToDelete] = useState(null);
+            const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+            
+            const t = translations[language];
+
+            const fetchData = async () => {
+                setLoading(true);
+                const result = await apiService.getList(`sqlite/${resource}`);
+                if (result.success) {
+                    setData(result.data.data || []);
+                }
+                setLoading(false);
+            };
+
+            useEffect(() => {
+                fetchData();
+            }, [resource]);
+
+            const handleCreate = () => {
+                setSelectedItem({});
+                setDialogMode('create');
+            };
+
+            const handleEdit = (item) => {
+                setSelectedItem(item);
+                setDialogMode('edit');
+            };
+
+            const handleView = (item) => {
+                setSelectedItem(item);
+                setDialogMode('view');
+            };
+
+            const handleDelete = (item) => {
+                setItemToDelete(item);
+                setDeleteConfirmOpen(true);
+            };
+
+            const confirmDelete = async () => {
+                if (itemToDelete) {
+                    const result = await apiService.delete(`sqlite/${resource}`, itemToDelete.id);
+                    if (result.success) {
+                        setSnackbar({ open: true, message: 'Item deleted successfully', severity: 'success' });
+                        fetchData();
+                    } else {
+                        setSnackbar({ open: true, message: 'Delete failed', severity: 'error' });
+                    }
+                }
+                setDeleteConfirmOpen(false);
+                setItemToDelete(null);
+            };
+
+            const handleSave = async (formData) => {
+                let result;
+                if (dialogMode === 'create') {
+                    result = await apiService.create(`sqlite/${resource}`, formData);
+                } else if (dialogMode === 'edit') {
+                    result = await apiService.update(`sqlite/${resource}`, selectedItem.id, formData);
+                }
+                
+                if (result.success) {
+                    setSnackbar({ open: true, message: `Item ${dialogMode}d successfully`, severity: 'success' });
+                    fetchData();
+                    setDialogMode(null);
+                    setSelectedItem(null);
+                    if (onRefresh) onRefresh();
+                } else {
+                    setSnackbar({ open: true, message: `${dialogMode} failed`, severity: 'error' });
+                }
+            };
+
+            const handleDialogClose = () => {
+                setDialogMode(null);
+                setSelectedItem(null);
+            };
+
+            if (loading) {
+                return (
+                    <div className="loading">
+                        <CircularProgress />
+                    </div>
+                );
+            }
+
+            return (
+                <div>
+                    <div className="table-container">
+                        <div className="table-header">
+                            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                                {t[resource]} ({data.length})
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                startIcon={<span className="material-icons">add</span>}
+                                onClick={handleCreate}
+                            >
+                                {t.add}
+                            </Button>
+                        </div>
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        {columns.map((column) => (
+                                            <TableCell key={column.field}>
+                                                {t[column.label] || column.label}
+                                            </TableCell>
+                                        ))}
+                                        <TableCell>Actions</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {data.map((row) => (
+                                        <TableRow key={row.id}>
+                                            {columns.map((column) => (
+                                                <TableCell key={column.field}>
+                                                    {column.render ? column.render(row[column.field]) : row[column.field]}
+                                                </TableCell>
+                                            ))}
+                                            <TableCell>
+                                                <IconButton 
+                                                    className="action-button" 
+                                                    onClick={() => handleView(row)}
+                                                    color="primary"
+                                                >
+                                                    <span className="material-icons">visibility</span>
+                                                </IconButton>
+                                                <IconButton 
+                                                    className="action-button" 
+                                                    onClick={() => handleEdit(row)}
+                                                    color="primary"
+                                                >
+                                                    <span className="material-icons">edit</span>
+                                                </IconButton>
+                                                <IconButton 
+                                                    className="action-button" 
+                                                    onClick={() => handleDelete(row)}
+                                                    color="error"
+                                                >
+                                                    <span className="material-icons">delete</span>
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
+
+                    {/* Create/Edit Dialog */}
+                    <Dialog open={dialogMode === 'create' || dialogMode === 'edit'} onClose={handleDialogClose} maxWidth="sm" fullWidth>
+                        <DialogTitle>
+                            {dialogMode === 'create' ? `${t.add} ${t[resource]}` : `${t.edit} ${t[resource]}`}
+                        </DialogTitle>
+                        <DialogContent>
+                            <EditForm
+                                item={selectedItem}
+                                fields={fields}
+                                language={language}
+                                onSave={handleSave}
+                                onCancel={handleDialogClose}
+                            />
+                        </DialogContent>
+                    </Dialog>
+
+                    {/* View Dialog */}
+                    <Dialog open={dialogMode === 'view'} onClose={handleDialogClose} maxWidth="sm" fullWidth>
+                        <DialogTitle>{t.view} {t[resource]}</DialogTitle>
+                        <DialogContent>
+                            <ViewDetails item={selectedItem} fields={fields} language={language} />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleDialogClose}>Close</Button>
+                        </DialogActions>
+                    </Dialog>
+
+                    {/* Delete Confirmation Dialog */}
+                    <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
+                        <DialogTitle>Confirm Delete</DialogTitle>
+                        <DialogContent>
+                            <Typography>Are you sure you want to delete this item?</Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setDeleteConfirmOpen(false)}>Cancel</Button>
+                            <Button onClick={confirmDelete} color="error">Delete</Button>
+                        </DialogActions>
+                    </Dialog>
+
+                    {/* Snackbar for notifications */}
+                    <Snackbar
+                        open={snackbar.open}
+                        autoHideDuration={6000}
+                        onClose={() => setSnackbar({ ...snackbar, open: false })}
+                    >
+                        <Alert severity={snackbar.severity} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+                            {snackbar.message}
+                        </Alert>
+                    </Snackbar>
+                </div>
+            );
+        }
+
+        // Edit Form Component
+        function EditForm({ item, fields, language, onSave, onCancel }) {
+            const [formData, setFormData] = useState(item || {});
+            const t = translations[language];
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                onSave(formData);
+            };
+
+            const handleChange = (field, value) => {
+                setFormData(prev => ({ ...prev, [field]: value }));
+            };
+
+            return (
+                <form onSubmit={handleSubmit}>
+                    {fields.map((field) => (
+                        <div key={field.name} className="form-field">
+                            {field.type === 'select' ? (
+                                <FormControl fullWidth>
+                                    <InputLabel>{t[field.label] || field.label}</InputLabel>
+                                    <Select
+                                        value={formData[field.name] || ''}
+                                        onChange={(e) => handleChange(field.name, e.target.value)}
+                                        label={t[field.label] || field.label}
+                                    >
+                                        {field.options.map((option) => (
+                                            <MenuItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            ) : (
+                                <TextField
+                                    fullWidth
+                                    label={t[field.label] || field.label}
+                                    type={field.type || 'text'}
+                                    value={formData[field.name] || ''}
+                                    onChange={(e) => handleChange(field.name, e.target.value)}
+                                    multiline={field.multiline}
+                                    rows={field.rows}
+                                    required={field.required}
+                                />
+                            )}
+                        </div>
+                    ))}
+                    <DialogActions>
+                        <Button onClick={onCancel}>Cancel</Button>
+                        <Button type="submit" variant="contained">Save</Button>
+                    </DialogActions>
+                </form>
+            );
+        }
+
+        // View Details Component
+        function ViewDetails({ item, fields, language }) {
+            const t = translations[language];
+            
+            if (!item) return null;
+
+            return (
+                <div>
+                    {fields.map((field) => (
+                        <div key={field.name} style={{ marginBottom: '16px' }}>
+                            <Typography variant="subtitle2" color="textSecondary">
+                                {t[field.label] || field.label}
+                            </Typography>
+                            <Typography variant="body1">
+                                {item[field.name] || '-'}
+                            </Typography>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        // Navigation Component
+        function Navigation({ currentPage, onPageChange, language }) {
+            const t = translations[language];
+            
+            const menuItems = [
+                { key: 'dashboard', label: t.dashboard, icon: 'dashboard' },
+                { key: 'tours', label: t.tours, icon: 'tour' },
+                { key: 'bookings', label: t.bookings, icon: 'book' },
+                { key: 'users', label: t.users, icon: 'people' },
+                { key: 'promotions', label: t.promotions, icon: 'local_offer' }
+            ];
+
+            return (
+                <div className="drawer">
+                    <List>
+                        {menuItems.map((item) => (
+                            <ListItem 
+                                button 
+                                key={item.key}
+                                selected={currentPage === item.key}
+                                onClick={() => onPageChange(item.key)}
+                            >
+                                <ListItemIcon>
+                                    <span className="material-icons">{item.icon}</span>
+                                </ListItemIcon>
+                                <ListItemText primary={item.label} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </div>
+            );
+        }
+
+        // Main App Component
+        function App() {
+            const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
+            const [currentPage, setCurrentPage] = useState('dashboard');
+            const [language, setLanguage] = useState('en');
+            const [user, setUser] = useState(authService.getUser());
+            
+            const t = translations[language];
+
+            const handleLogin = (userData) => {
+                setIsAuthenticated(true);
+                setUser(userData.admin);
+            };
+
+            const handleLogout = () => {
+                authService.logout();
+                setIsAuthenticated(false);
+                setUser(null);
+                setCurrentPage('dashboard');
+            };
+
+            if (!isAuthenticated) {
+                return (
+                    <LoginForm 
+                        onLogin={handleLogin}
+                        language={language}
+                        onLanguageChange={setLanguage}
+                    />
+                );
+            }
+
+            const toursColumns = [
+                { field: 'id', label: 'ID' },
+                { field: 'title', label: 'title_field' },
+                { field: 'country', label: 'country' },
+                { field: 'price', label: 'price' },
+                { field: 'category', label: 'category' }
+            ];
+
+            const toursFields = [
+                { name: 'title', label: 'title_field', required: true },
+                { name: 'description', label: 'description', multiline: true, rows: 3 },
+                { name: 'country', label: 'country' },
+                { name: 'price', label: 'price', type: 'number' },
+                { name: 'category', label: 'category' },
+                { name: 'start_date', label: 'startDate', type: 'date' },
+                { name: 'end_date', label: 'endDate', type: 'date' }
+            ];
+
+            const bookingsColumns = [
+                { field: 'id', label: 'ID' },
+                { field: 'user_id', label: 'User ID' },
+                { field: 'tour_id', label: 'Tour ID' },
+                { field: 'status', label: 'status' },
+                { field: 'booking_date', label: 'Booking Date' }
+            ];
+
+            const bookingsFields = [
+                { name: 'user_id', label: 'User ID', type: 'number', required: true },
+                { name: 'tour_id', label: 'Tour ID', type: 'number', required: true },
+                { name: 'status', label: 'status', type: 'select', options: [
+                    { value: 'pending', label: 'Pending' },
+                    { value: 'confirmed', label: 'Confirmed' },
+                    { value: 'cancelled', label: 'Cancelled' },
+                    { value: 'completed', label: 'Completed' }
+                ]},
+                { name: 'booking_date', label: 'Booking Date', type: 'date' }
+            ];
+
+            const usersColumns = [
+                { field: 'id', label: 'ID' },
+                { field: 'name', label: 'name' },
+                { field: 'email', label: 'email' },
+                { field: 'role', label: 'role' }
+            ];
+
+            const usersFields = [
+                { name: 'name', label: 'name', required: true },
+                { name: 'email', label: 'email', type: 'email', required: true },
+                { name: 'role', label: 'role', type: 'select', options: [
+                    { value: 'client', label: 'Client' },
+                    { value: 'agent', label: 'Agent' },
+                    { value: 'admin', label: 'Admin' }
+                ]}
+            ];
+
+            const promotionsColumns = [
+                { field: 'id', label: 'ID' },
+                { field: 'title', label: 'title_field' },
+                { field: 'description', label: 'description' },
+                { field: 'discount', label: 'discount' }
+            ];
+
+            const promotionsFields = [
+                { name: 'title', label: 'title_field', required: true },
+                { name: 'description', label: 'description', multiline: true, rows: 3 },
+                { name: 'discount', label: 'discount', type: 'number' },
+                { name: 'start_date', label: 'startDate', type: 'date' },
+                { name: 'end_date', label: 'endDate', type: 'date' }
+            ];
+
+            const [dashboardKey, setDashboardKey] = useState(0);
+
+            const refreshDashboard = () => {
+                setDashboardKey(prev => prev + 1);
+            };
+
+            const renderPage = () => {
+                const commonProps = {
+                    language,
+                    onRefresh: refreshDashboard
+                };
+
+                switch (currentPage) {
+                    case 'dashboard':
+                        return <Dashboard key={dashboardKey} language={language} />;
+                    case 'tours':
+                        return <DataTable resource="tours" columns={toursColumns} fields={toursFields} {...commonProps} />;
+                    case 'bookings':
+                        return <DataTable resource="bookings" columns={bookingsColumns} fields={bookingsFields} {...commonProps} />;
+                    case 'users':
+                        return <DataTable resource="users" columns={usersColumns} fields={usersFields} {...commonProps} />;
+                    case 'promotions':
+                        return <DataTable resource="promotions" columns={promotionsColumns} fields={promotionsFields} {...commonProps} />;
+                    default:
+                        return <Dashboard key={dashboardKey} language={language} />;
+                }
+            };
+
+            return (
+                <div>
+                    <AppBar position="fixed" className="app-bar">
+                        <Toolbar>
+                            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                                {t.title}
+                            </Typography>
+                            <Select
+                                value={language}
+                                onChange={(e) => setLanguage(e.target.value)}
+                                variant="outlined"
+                                size="small"
+                                sx={{ 
+                                    backgroundColor: 'rgba(255,255,255,0.1)', 
+                                    color: 'white',
+                                    marginRight: 2,
+                                    minWidth: 80
+                                }}
+                            >
+                                <MenuItem value="en">EN</MenuItem>
+                                <MenuItem value="ru">RU</MenuItem>
+                            </Select>
+                            <Typography variant="body2" sx={{ marginRight: 2 }}>
+                                {user?.fullName || user?.username}
+                            </Typography>
+                            <Button color="inherit" onClick={handleLogout}>
+                                {t.logout}
+                            </Button>
+                        </Toolbar>
+                    </AppBar>
+                    
+                    <Navigation 
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        language={language}
+                    />
+                    
+                    <main className="main-content">
+                        {renderPage()}
+                    </main>
+                </div>
+            );
+        }
+
+        // Render the app
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

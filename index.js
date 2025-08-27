@@ -31,6 +31,16 @@ app.get('/booking-flow.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'booking-flow.html'));
 });
 
+// React Admin Panel - explicit route BEFORE static middleware
+app.get('/react-admin-panel.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'react-admin-panel.html'));
+});
+
+// Simple Admin Panel - explicit route BEFORE static middleware
+app.get('/simple-admin-panel.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'simple-admin-panel.html'));
+});
+
 // Проксирование API запросов к нашему API серверу
 app.use('/api', async (req, res) => {
   try {
