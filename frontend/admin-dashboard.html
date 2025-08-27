@@ -1991,7 +1991,7 @@
 
         // Authorization helper
         function getAuthHeaders() {
-            const token = localStorage.getItem('adminToken');
+            const token = localStorage.getItem('authToken');
             if (token) {
                 return {
                     'Content-Type': 'application/json',
@@ -2022,7 +2022,8 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    localStorage.setItem('adminToken', data.data.token);
+                    localStorage.setItem('authToken', data.data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.admin));
                     document.getElementById('loginScreen').style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'block';
                     loadDashboard();
@@ -2038,6 +2039,8 @@
         
         function logout() {
             if (confirm('Вы уверены, что хотите выйти?')) {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
                 document.getElementById('loginScreen').style.display = 'flex';
                 document.getElementById('adminDashboard').style.display = 'none';
             }
@@ -2126,12 +2129,13 @@
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('recentOrdersTable');
-                    if (!data.orders || data.orders.length === 0) {
+                    const orders = data.data || data.orders || [];
+                    if (orders.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-500">Нет заказов</td></tr>';
                         return;
                     }
                     
-                    tbody.innerHTML = data.orders.map(order => `
+                    tbody.innerHTML = orders.map(order => `
                         <tr>
                             <td class="font-medium">${order.orderNumber || 'N/A'}</td>
                             <td>${order.customer?.fullName || 'Неизвестно'}</td>
@@ -2199,7 +2203,9 @@
         
         // Tours functions
         function loadTours() {
-            fetch(`${getApiUrl()}/tours`)
+            fetch(`${getApiUrl()}/tours`, {
+                headers: getAuthHeaders()
+            })
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('toursTable');
@@ -2667,12 +2673,13 @@
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('bookingsTable');
-                    if (!data.orders || data.orders.length === 0) {
+                    const orders = data.data || data.orders || [];
+                    if (orders.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="10" class="text-center text-gray-500">Нет заказов</td></tr>';
                         return;
                     }
                     
-                    tbody.innerHTML = data.orders.map(order => `
+                    tbody.innerHTML = orders.map(order => `
                         <tr>
                             <td class="font-medium">${order.orderNumber || 'N/A'}</td>
                             <td>${formatDate(order.createdAt)}</td>
@@ -2794,12 +2801,13 @@
                 .then(data => {
                     const container = document.getElementById('hotelsList');
                     
-                    if (!data.hotels || data.hotels.length === 0) {
+                    const hotels = data.data || data.hotels || [];
+                    if (hotels.length === 0) {
                         container.innerHTML = '<p class="text-gray-500">Нет отелей</p>';
                         return;
                     }
                     
-                    container.innerHTML = data.hotels.map(hotel => {
+                    container.innerHTML = hotels.map(hotel => {
                         const name = JSON.parse(hotel.name || '{}');
                         const description = JSON.parse(hotel.description || '{}');
                         const images = JSON.parse(hotel.images || '[]');
@@ -2837,12 +2845,13 @@
                 .then(data => {
                     const container = document.getElementById('guidesList');
                     
-                    if (!data.guides || data.guides.length === 0) {
+                    const guides = data.data || data.guides || [];
+                    if (guides.length === 0) {
                         container.innerHTML = '<p class="text-gray-500">Нет гидов</p>';
                         return;
                     }
                     
-                    container.innerHTML = data.guides.map(guide => {
+                    container.innerHTML = guides.map(guide => {
                         const name = JSON.parse(guide.name || '{}');
                         const languages = JSON.parse(guide.languages || '[]');
                         
@@ -2895,7 +2904,7 @@
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('reviewsTable');
-                    let reviews = data.reviews || [];
+                    let reviews = data.data || data.reviews || [];
                     
                     // Filter reviews
                     if (filter === 'pending') {
@@ -4473,8 +4482,26 @@
             document.getElementById('progressBar').style.width = percent + '%';
         }
 
+        // Check authentication on page load
+        function checkAuthOnLoad() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // Show dashboard and hide login
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                showSection('dashboard');
+            } else {
+                // Show login screen
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('adminDashboard').style.display = 'none';
+            }
+        }
+
         // Navigation handling
         document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication first
+            checkAuthOnLoad();
+            
             // Add click handlers for all navigation items
             const navItems = document.querySelectorAll('.nav-item[data-section]');
             navItems.forEach(item => {
@@ -4488,9 +4515,6 @@
                     this.classList.add('active');
                 });
             });
-
-            // Initialize default section
-            showSection('dashboard');
         });
 
         // Show section function
