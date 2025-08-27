@@ -1568,8 +1568,8 @@
                                 <option value="">Выберите категорию</option>
                                 <!-- Categories will be loaded dynamically -->
                             </select>
-                            <button type="button" onclick="openCategoryModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md flex items-center justify-center" title="Добавить новую категорию">
-                                <i class="fas fa-plus"></i>
+                            <button type="button" onclick="showCategoryList()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md flex items-center justify-center" title="Выбрать из списка категорий">
+                                <i class="fas fa-list"></i>
                             </button>
                         </div>
                     </div>
@@ -1774,42 +1774,78 @@
         </div>
     </div>
 
-    <!-- Category Modal -->
-    <div id="categoryModal" class="modal">
+    <!-- Category List Modal -->
+    <div id="categoryListModal" class="modal">
         <div class="modal-content max-w-md">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-semibold" id="categoryModalTitle">Добавить новую категорию</h2>
-                <button type="button" onclick="closeCategoryModal()" class="text-gray-500 hover:text-gray-700">
+                <h2 class="text-2xl font-semibold">Выберите категорию</h2>
+                <button type="button" onclick="closeCategoryListModal()" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="categoryForm">
-                    <div class="form-group">
-                        <label class="form-label">Название категории (Русский)</label>
-                        <input type="text" class="form-input" id="categoryNameRu" required>
+                <div class="space-y-2 max-h-96 overflow-y-auto">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Однодневные туры', 'Day Tours')">
+                        <div class="font-medium">Однодневные туры</div>
+                        <div class="text-sm text-gray-500">Day Tours</div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Название категории (English)</label>
-                        <input type="text" class="form-input" id="categoryNameEn" required>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Многодневные туры', 'Multi-day Tours')">
+                        <div class="font-medium">Многодневные туры</div>
+                        <div class="text-sm text-gray-500">Multi-day Tours</div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Название категории (Таджикский)</label>
-                        <input type="text" class="form-input" id="categoryNameTj">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Экскурсии', 'Excursions')">
+                        <div class="font-medium">Экскурсии</div>
+                        <div class="text-sm text-gray-500">Excursions</div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Описание (опционально)</label>
-                        <textarea class="form-input" rows="3" id="categoryDescription" placeholder="Краткое описание категории"></textarea>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Городские туры', 'City Tours')">
+                        <div class="font-medium">Городские туры</div>
+                        <div class="text-sm text-gray-500">City Tours</div>
                     </div>
-                    
-                    <div class="flex justify-end gap-3 mt-6">
-                        <button type="button" onclick="closeCategoryModal()" class="btn btn-secondary">Отмена</button>
-                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Природа/экологические туры', 'Nature/Eco Tours')">
+                        <div class="font-medium">Природа/экологические туры</div>
+                        <div class="text-sm text-gray-500">Nature/Eco Tours</div>
                     </div>
-                </form>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Культурно познавательные туры', 'Cultural Educational Tours')">
+                        <div class="font-medium">Культурно познавательные туры</div>
+                        <div class="text-sm text-gray-500">Cultural Educational Tours</div>
+                    </div>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Исторические туры', 'Historical Tours')">
+                        <div class="font-medium">Исторические туры</div>
+                        <div class="text-sm text-gray-500">Historical Tours</div>
+                    </div>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Походы/трекинги', 'Hiking/Trekking')">
+                        <div class="font-medium">Походы/трекинги</div>
+                        <div class="text-sm text-gray-500">Hiking/Trekking</div>
+                    </div>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Горные ландшафты', 'Mountain Landscapes')">
+                        <div class="font-medium">Горные ландшафты</div>
+                        <div class="text-sm text-gray-500">Mountain Landscapes</div>
+                    </div>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Озерные ландшафты', 'Lake Landscapes')">
+                        <div class="font-medium">Озерные ландшафты</div>
+                        <div class="text-sm text-gray-500">Lake Landscapes</div>
+                    </div>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Приключенческие туры', 'Adventure Tours')">
+                        <div class="font-medium">Приключенческие туры</div>
+                        <div class="text-sm text-gray-500">Adventure Tours</div>
+                    </div>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Гастрономические туры', 'Gastronomic Tours')">
+                        <div class="font-medium">Гастрономические туры</div>
+                        <div class="text-sm text-gray-500">Gastronomic Tours</div>
+                    </div>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Автотуры/сафари/джип-туры', 'Auto Tours/Safari/Jeep Tours')">
+                        <div class="font-medium">Автотуры/сафари/джип-туры</div>
+                        <div class="text-sm text-gray-500">Auto Tours/Safari/Jeep Tours</div>
+                    </div>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Агротуры', 'Agro Tours')">
+                        <div class="font-medium">Агротуры</div>
+                        <div class="text-sm text-gray-500">Agro Tours</div>
+                    </div>
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('VIP туры', 'VIP Tours')">
+                        <div class="font-medium">VIP туры</div>
+                        <div class="text-sm text-gray-500">VIP Tours</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2278,15 +2314,78 @@
                 });
         }
         
-        // Category modal functions
-        function openCategoryModal() {
-            document.getElementById('categoryModal').classList.add('active');
-            document.getElementById('categoryForm').reset();
+        // Category list modal functions
+        function showCategoryList() {
+            document.getElementById('categoryListModal').classList.add('active');
         }
         
-        function closeCategoryModal() {
-            document.getElementById('categoryModal').classList.remove('active');
-            document.getElementById('categoryForm').reset();
+        function closeCategoryListModal() {
+            document.getElementById('categoryListModal').classList.remove('active');
+        }
+        
+        function selectCategory(nameRu, nameEn) {
+            // Сначала нужно создать категорию в базе, если её нет
+            const categoryData = {
+                title: JSON.stringify({
+                    ru: nameRu,
+                    en: nameEn,
+                    tj: ''
+                }),
+                isActive: true
+            };
+            
+            fetch(`${getApiUrl()}/categories`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(categoryData)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log('Category creation response:', data);
+                    if (data.success) {
+                        // Категория создана, обновляем список и выбираем её
+                        loadCategories().then(() => {
+                            // Находим и выбираем созданную категорию
+                            const select = document.getElementById('tourCategory');
+                            const options = select.options;
+                            for (let i = 0; i < options.length; i++) {
+                                if (options[i].text.includes(nameRu)) {
+                                    select.selectedIndex = i;
+                                    break;
+                                }
+                            }
+                        });
+                        closeCategoryListModal();
+                    } else {
+                        // Возможно категория уже существует, просто обновляем список
+                        loadCategories().then(() => {
+                            const select = document.getElementById('tourCategory');
+                            const options = select.options;
+                            for (let i = 0; i < options.length; i++) {
+                                if (options[i].text.includes(nameRu)) {
+                                    select.selectedIndex = i;
+                                    break;
+                                }
+                            }
+                        });
+                        closeCategoryListModal();
+                    }
+                })
+                .catch(err => {
+                    console.error('Error creating/selecting category:', err);
+                    // В случае ошибки всё равно пытаемся выбрать категорию
+                    loadCategories().then(() => {
+                        const select = document.getElementById('tourCategory');
+                        const options = select.options;
+                        for (let i = 0; i < options.length; i++) {
+                            if (options[i].text.includes(nameRu)) {
+                                select.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    });
+                    closeCategoryListModal();
+                });
         }
 
         // Tours functions
@@ -4586,46 +4685,6 @@
             console.error('Global error:', event.error);
         });
 
-        // Category form submit handler
-        document.addEventListener('DOMContentLoaded', function() {
-            const categoryForm = document.getElementById('categoryForm');
-            if (categoryForm) {
-                categoryForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const formData = {
-                        title: JSON.stringify({
-                            ru: document.getElementById('categoryNameRu').value,
-                            en: document.getElementById('categoryNameEn').value,
-                            tj: document.getElementById('categoryNameTj').value || ''
-                        }),
-                        description: document.getElementById('categoryDescription').value || '',
-                        isActive: true
-                    };
-                    
-                    fetch(`${getApiUrl()}/categories`, {
-                        method: 'POST',
-                        headers: getAuthHeaders(),
-                        body: JSON.stringify(formData)
-                    })
-                        .then(res => res.json())
-                        .then(data => {
-                            console.log('Category save response:', data);
-                            if (data.success) {
-                                alert('Категория успешно создана!');
-                                closeCategoryModal();
-                                loadCategories(); // Reload categories in selects
-                            } else {
-                                alert('Ошибка при создании категории: ' + (data.error || data.message || 'Неизвестная ошибка'));
-                            }
-                        })
-                        .catch(err => {
-                            console.error('Error saving category:', err);
-                            alert('Ошибка при создании категории');
-                        });
-                });
-            }
-        });
         
         // Check authentication on page load
         function checkAuthOnLoad() {
