@@ -2964,7 +2964,7 @@
         // Функция для получения подсказок
         async function fetchSuggestions(query) {
             try {
-                const response = await fetch(`http://localhost:3001/api/tours/suggestions?query=${encodeURIComponent(query)}`);
+                const response = await fetch(`${window.location.origin}/api/tours/suggestions?query=${encodeURIComponent(query)}`);
                 const result = await response.json();
                 
                 if (result.success && result.data.length > 0) {
@@ -3094,7 +3094,7 @@
         // Функция для поиска по тексту
         async function searchToursByText(query) {
             try {
-                const response = await fetch(`http://localhost:3001/api/tours/search?query=${encodeURIComponent(query)}`);
+                const response = await fetch(`${window.location.origin}/api/tours/search?query=${encodeURIComponent(query)}`);
                 const result = await response.json();
                 
                 if (result.success) {
@@ -3133,7 +3133,7 @@
                     }
                 });
 
-                const response = await fetch(`http://localhost:3001/api/tours/search?${queryParams}`);
+                const response = await fetch(`${window.location.origin}/api/tours/search?${queryParams}`);
                 const result = await response.json();
                 
                 if (result.success) {

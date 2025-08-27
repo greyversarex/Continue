@@ -780,7 +780,7 @@
                 return;
             }
             
-            fetch(`http://localhost:5000/api/tours/${selectedTourId}`)
+            fetch(`${window.location.origin}/api/tours/${selectedTourId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -842,7 +842,7 @@
         
         // Load hotels
         function loadHotels() {
-            fetch(`http://localhost:3001/api/tours/${selectedTourId}/hotels`)
+            fetch(`${window.location.origin}/api/tours/${selectedTourId}/hotels`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -1234,7 +1234,7 @@
             console.log('Отправляем полные данные заказа:', orderData);
             
             // Submit order to correct server port
-            fetch('http://localhost:5000/api/orders', {
+            fetch(`${window.location.origin}/api/orders`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

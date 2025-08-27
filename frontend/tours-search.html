@@ -1329,7 +1329,7 @@
             const searchQuery = document.getElementById('searchInput').value;
             
             // Build API URL with search parameters
-            let apiUrl = 'http://localhost:3001/api/tours';
+            let apiUrl = `${window.location.origin}/api/tours`;
             if (searchQuery) {
                 apiUrl += `/search?query=${encodeURIComponent(searchQuery)}`;
             }

@@ -30,16 +30,31 @@ export class TourController {
       // Apply limit if specified
       const limitedTours = limit ? tours.slice(0, parseInt(limit as string)) : tours;
       
-      // Parse JSON fields for response
-      const parsedTours = limitedTours.map((tour: any) => ({
-        ...tour,
-        title: JSON.parse(tour.title) as MultilingualContent,
-        description: JSON.parse(tour.description) as MultilingualContent,
-        category: tour.category ? {
-          ...tour.category,
-          name: JSON.parse(tour.category.name) as MultilingualContent
-        } : null
-      }));
+      // Parse JSON fields for response with safe parsing
+      const parsedTours = limitedTours.map((tour: any) => {
+        try {
+          return {
+            ...tour,
+            title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
+            description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
+            category: tour.category ? {
+              ...tour.category,
+              name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+            } : null
+          };
+        } catch (jsonError) {
+          console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
+          return {
+            ...tour,
+            title: { ru: tour.title || '', en: tour.title || '' },
+            description: { ru: tour.description || '', en: tour.description || '' },
+            category: tour.category ? {
+              ...tour.category,
+              name: { ru: tour.category.name || '', en: tour.category.name || '' }
+            } : null
+          };
+        }
+      });
 
       const response: ApiResponse = {
         success: true,
@@ -77,16 +92,30 @@ export class TourController {
         });
       }
 
-      // Parse JSON fields for response
-      const parsedTour = {
-        ...tour,
-        title: JSON.parse(tour.title) as MultilingualContent,
-        description: JSON.parse(tour.description) as MultilingualContent,
-        category: tour.category ? {
-          ...tour.category,
-          name: JSON.parse(tour.category.name) as MultilingualContent
-        } : null
-      };
+      // Parse JSON fields for response with safe parsing
+      let parsedTour;
+      try {
+        parsedTour = {
+          ...tour,
+          title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
+          description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
+          category: tour.category ? {
+            ...tour.category,
+            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+          } : null
+        };
+      } catch (jsonError) {
+        console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
+        parsedTour = {
+          ...tour,
+          title: { ru: tour.title || '', en: tour.title || '' },
+          description: { ru: tour.description || '', en: tour.description || '' },
+          category: tour.category ? {
+            ...tour.category,
+            name: { ru: tour.category.name || '', en: tour.category.name || '' }
+          } : null
+        };
+      }
 
       const response: ApiResponse = {
         success: true,
@@ -193,16 +222,30 @@ export class TourController {
         endDate: endDate || null
       });
 
-      // Parse JSON fields for response
-      const parsedTour = {
-        ...tour,
-        title: JSON.parse(tour.title) as MultilingualContent,
-        description: JSON.parse(tour.description) as MultilingualContent,
-        category: tour.category ? {
-          ...tour.category,
-          name: JSON.parse(tour.category.name) as MultilingualContent
-        } : null
-      };
+      // Parse JSON fields for response with safe parsing
+      let parsedTour;
+      try {
+        parsedTour = {
+          ...tour,
+          title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
+          description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
+          category: tour.category ? {
+            ...tour.category,
+            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+          } : null
+        };
+      } catch (jsonError) {
+        console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
+        parsedTour = {
+          ...tour,
+          title: { ru: tour.title || '', en: tour.title || '' },
+          description: { ru: tour.description || '', en: tour.description || '' },
+          category: tour.category ? {
+            ...tour.category,
+            name: { ru: tour.category.name || '', en: tour.category.name || '' }
+          } : null
+        };
+      }
 
       const response: ApiResponse = {
         success: true,
@@ -275,16 +318,30 @@ export class TourController {
 
       const tour = await TourModel.update(id, updateData);
 
-      // Parse JSON fields for response
-      const parsedTour = {
-        ...tour,
-        title: JSON.parse(tour.title) as MultilingualContent,
-        description: JSON.parse(tour.description) as MultilingualContent,
-        category: tour.category ? {
-          ...tour.category,
-          name: JSON.parse(tour.category.name) as MultilingualContent
-        } : null
-      };
+      // Parse JSON fields for response with safe parsing
+      let parsedTour;
+      try {
+        parsedTour = {
+          ...tour,
+          title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
+          description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
+          category: tour.category ? {
+            ...tour.category,
+            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+          } : null
+        };
+      } catch (jsonError) {
+        console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
+        parsedTour = {
+          ...tour,
+          title: { ru: tour.title || '', en: tour.title || '' },
+          description: { ru: tour.description || '', en: tour.description || '' },
+          category: tour.category ? {
+            ...tour.category,
+            name: { ru: tour.category.name || '', en: tour.category.name || '' }
+          } : null
+        };
+      }
 
       const response: ApiResponse = {
         success: true,

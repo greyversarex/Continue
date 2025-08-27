@@ -665,7 +665,7 @@
                     }
                 });
 
-                const response = await fetch(`http://0.0.0.0:3001/api/tours/search?${queryParams}`);
+                const response = await fetch(`${window.location.origin}/api/tours/search?${queryParams}`);
                 const tours = await response.json();
                 
                 displayTours(tours);
