@@ -730,17 +730,27 @@ export class CategoryController {
    */
   static async createCategory(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name }: CreateCategoryData = req.body;
+      const { name, title }: CreateCategoryData = req.body;
+      
+      // Support both 'name' and 'title' fields for flexibility
+      const categoryName = name || title;
 
       // Validation
-      if (!name || !name.en || !name.ru) {
+      if (!categoryName || (!categoryName.en && !categoryName.ru)) {
         return res.status(400).json({
           success: false,
           error: 'Name is required in both English and Russian'
         });
       }
 
-      const category = await CategoryModel.create({ name });
+      // Ensure both languages are present
+      const finalName = {
+        en: categoryName.en || categoryName.ru || '',
+        ru: categoryName.ru || categoryName.en || '',
+        tj: categoryName.tj || ''
+      };
+
+      const category = await CategoryModel.create({ name: finalName });
 
       // Parse JSON fields for response
       const parsedCategory = {

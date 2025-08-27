@@ -2,6 +2,7 @@
 export interface MultilingualContent {
   en: string;
   ru: string;
+  tj?: string;
 }
 
 // Category types
@@ -11,7 +12,8 @@ export interface CategoryData {
 }
 
 export interface CreateCategoryData {
-  name: MultilingualContent;
+  name?: MultilingualContent;
+  title?: MultilingualContent;
 }
 
 // Tour types

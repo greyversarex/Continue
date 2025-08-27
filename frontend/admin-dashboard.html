@@ -1563,15 +1563,25 @@
                     
                     <div class="form-group">
                         <label class="form-label">Категория</label>
-                        <div class="flex items-center gap-2">
-                            <select class="form-input flex-1" id="tourCategory" required>
-                                <option value="">Выберите категорию</option>
-                                <!-- Categories will be loaded dynamically -->
-                            </select>
-                            <button type="button" onclick="showCategoryList()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md flex items-center justify-center" title="Выбрать из списка категорий">
-                                <i class="fas fa-list"></i>
-                            </button>
-                        </div>
+                        <select class="form-input" id="tourCategory" required>
+                            <option value="">Выберите категорию</option>
+                            <option value="create_day_tours">+ Однодневные туры</option>
+                            <option value="create_multi_day_tours">+ Многодневные туры</option>
+                            <option value="create_excursions">+ Экскурсии</option>
+                            <option value="create_city_tours">+ Городские туры</option>
+                            <option value="create_nature_eco_tours">+ Природа/экологические туры</option>
+                            <option value="create_cultural_tours">+ Культурно познавательные туры</option>
+                            <option value="create_historical_tours">+ Исторические туры</option>
+                            <option value="create_hiking_trekking">+ Походы/трекинги</option>
+                            <option value="create_mountain_landscapes">+ Горные ландшафты</option>
+                            <option value="create_lake_landscapes">+ Озерные ландшафты</option>
+                            <option value="create_adventure_tours">+ Приключенческие туры</option>
+                            <option value="create_gastronomic_tours">+ Гастрономические туры</option>
+                            <option value="create_auto_tours">+ Автотуры/сафари/джип-туры</option>
+                            <option value="create_agro_tours">+ Агротуры</option>
+                            <option value="create_vip_tours">+ VIP туры</option>
+                            <!-- Existing categories will be loaded dynamically -->
+                        </select>
                     </div>
                     
                     <div class="form-group">
@@ -2314,79 +2324,86 @@
                 });
         }
         
-        // Category list modal functions
-        function showCategoryList() {
-            document.getElementById('categoryListModal').classList.add('active');
-        }
-        
-        function closeCategoryListModal() {
-            document.getElementById('categoryListModal').classList.remove('active');
-        }
-        
-        function selectCategory(nameRu, nameEn) {
-            // Сначала нужно создать категорию в базе, если её нет
-            const categoryData = {
-                title: JSON.stringify({
-                    ru: nameRu,
-                    en: nameEn,
-                    tj: ''
-                }),
-                isActive: true
-            };
-            
-            fetch(`${getApiUrl()}/categories`, {
-                method: 'POST',
-                headers: getAuthHeaders(),
-                body: JSON.stringify(categoryData)
-            })
-                .then(res => res.json())
-                .then(data => {
-                    console.log('Category creation response:', data);
-                    if (data.success) {
-                        // Категория создана, обновляем список и выбираем её
-                        loadCategories().then(() => {
-                            // Находим и выбираем созданную категорию
-                            const select = document.getElementById('tourCategory');
-                            const options = select.options;
-                            for (let i = 0; i < options.length; i++) {
-                                if (options[i].text.includes(nameRu)) {
-                                    select.selectedIndex = i;
-                                    break;
+        // Category selection handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const categorySelect = document.getElementById('tourCategory');
+            if (categorySelect) {
+                categorySelect.addEventListener('change', function(e) {
+                    const value = e.target.value;
+                    if (value.startsWith('create_')) {
+                        // Create new category
+                        const categoryMap = {
+                            'create_day_tours': { ru: 'Однодневные туры', en: 'Day Tours' },
+                            'create_multi_day_tours': { ru: 'Многодневные туры', en: 'Multi-day Tours' },
+                            'create_excursions': { ru: 'Экскурсии', en: 'Excursions' },
+                            'create_city_tours': { ru: 'Городские туры', en: 'City Tours' },
+                            'create_nature_eco_tours': { ru: 'Природа/экологические туры', en: 'Nature/Eco Tours' },
+                            'create_cultural_tours': { ru: 'Культурно познавательные туры', en: 'Cultural Educational Tours' },
+                            'create_historical_tours': { ru: 'Исторические туры', en: 'Historical Tours' },
+                            'create_hiking_trekking': { ru: 'Походы/трекинги', en: 'Hiking/Trekking' },
+                            'create_mountain_landscapes': { ru: 'Горные ландшафты', en: 'Mountain Landscapes' },
+                            'create_lake_landscapes': { ru: 'Озерные ландшафты', en: 'Lake Landscapes' },
+                            'create_adventure_tours': { ru: 'Приключенческие туры', en: 'Adventure Tours' },
+                            'create_gastronomic_tours': { ru: 'Гастрономические туры', en: 'Gastronomic Tours' },
+                            'create_auto_tours': { ru: 'Автотуры/сафари/джип-туры', en: 'Auto Tours/Safari/Jeep Tours' },
+                            'create_agro_tours': { ru: 'Агротуры', en: 'Agro Tours' },
+                            'create_vip_tours': { ru: 'VIP туры', en: 'VIP Tours' }
+                        };
+                        
+                        const categoryInfo = categoryMap[value];
+                        if (categoryInfo) {
+                            const categoryData = {
+                                name: {
+                                    ru: categoryInfo.ru,
+                                    en: categoryInfo.en,
+                                    tj: ''
                                 }
-                            }
-                        });
-                        closeCategoryListModal();
-                    } else {
-                        // Возможно категория уже существует, просто обновляем список
-                        loadCategories().then(() => {
-                            const select = document.getElementById('tourCategory');
-                            const options = select.options;
-                            for (let i = 0; i < options.length; i++) {
-                                if (options[i].text.includes(nameRu)) {
-                                    select.selectedIndex = i;
-                                    break;
-                                }
-                            }
-                        });
-                        closeCategoryListModal();
-                    }
-                })
-                .catch(err => {
-                    console.error('Error creating/selecting category:', err);
-                    // В случае ошибки всё равно пытаемся выбрать категорию
-                    loadCategories().then(() => {
-                        const select = document.getElementById('tourCategory');
-                        const options = select.options;
-                        for (let i = 0; i < options.length; i++) {
-                            if (options[i].text.includes(nameRu)) {
-                                select.selectedIndex = i;
-                                break;
-                            }
+                            };
+                            
+                            fetch(`${getApiUrl()}/categories`, {
+                                method: 'POST',
+                                headers: getAuthHeaders(),
+                                body: JSON.stringify(categoryData)
+                            })
+                                .then(res => res.json())
+                                .then(data => {
+                                    console.log('Category creation response:', data);
+                                    if (data.success) {
+                                        // Категория создана, обновляем список и выбираем её
+                                        loadCategories().then(() => {
+                                            // Находим и выбираем созданную категорию
+                                            const select = document.getElementById('tourCategory');
+                                            const options = select.options;
+                                            for (let i = 0; i < options.length; i++) {
+                                                if (options[i].text.includes(categoryInfo.ru)) {
+                                                    select.selectedIndex = i;
+                                                    break;
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        // Возможно категория уже существует, просто обновляем список
+                                        loadCategories().then(() => {
+                                            const select = document.getElementById('tourCategory');
+                                            const options = select.options;
+                                            for (let i = 0; i < options.length; i++) {
+                                                if (options[i].text.includes(categoryInfo.ru)) {
+                                                    select.selectedIndex = i;
+                                                    break;
+                                                }
+                                            }
+                                        });
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error('Error creating category:', err);
+                                    alert('Ошибка при создании категории');
+                                });
                         }
-                    });
-                    closeCategoryListModal();
+                    }
                 });
-        }
+            }
+        });
 
         // Tours functions
         function loadTours() {
