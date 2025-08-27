@@ -2321,26 +2321,48 @@
                     // Update available categories select
                     const availableSelect = document.getElementById('availableCategories');
                     if (availableSelect) {
-                        availableSelect.innerHTML = '<option value="">Выберите категорию для добавления</option>' +
-                            categories.map(cat => {
-                                let categoryName;
-                                try {
-                                    if (cat.name && typeof cat.name === 'string') {
-                                        const parsed = JSON.parse(cat.name);
-                                        categoryName = parsed.ru || parsed.en || 'Безымянная категория';
-                                    } else if (cat.name && cat.name.ru) {
-                                        categoryName = cat.name.ru;
-                                    } else if (cat.title) {
-                                        const parsed = typeof cat.title === 'string' ? JSON.parse(cat.title) : cat.title;
-                                        categoryName = parsed.ru || parsed.en || 'Безымянная категория';
-                                    } else {
-                                        categoryName = 'Безымянная категория';
+                        // If no categories, add predefined ones
+                        if (categories.length === 0) {
+                            availableSelect.innerHTML = `
+                                <option value="">Выберите категорию для добавления</option>
+                                <option value="add_day_tours" data-name="Однодневные туры">Однодневные туры (создать)</option>
+                                <option value="add_multi_day_tours" data-name="Многодневные туры">Многодневные туры (создать)</option>
+                                <option value="add_excursions" data-name="Экскурсии">Экскурсии (создать)</option>
+                                <option value="add_city_tours" data-name="Городские туры">Городские туры (создать)</option>
+                                <option value="add_nature_eco_tours" data-name="Природа/экологические туры">Природа/экологические туры (создать)</option>
+                                <option value="add_cultural_tours" data-name="Культурно познавательные туры">Культурно познавательные туры (создать)</option>
+                                <option value="add_historical_tours" data-name="Исторические туры">Исторические туры (создать)</option>
+                                <option value="add_hiking_trekking" data-name="Походы/трекинги">Походы/трекинги (создать)</option>
+                                <option value="add_mountain_landscapes" data-name="Горные ландшафты">Горные ландшафты (создать)</option>
+                                <option value="add_lake_landscapes" data-name="Озерные ландшафты">Озерные ландшафты (создать)</option>
+                                <option value="add_adventure_tours" data-name="Приключенческие туры">Приключенческие туры (создать)</option>
+                                <option value="add_gastronomic_tours" data-name="Гастрономические туры">Гастрономические туры (создать)</option>
+                                <option value="add_auto_tours" data-name="Автотуры/сафари/джип-туры">Автотуры/сафари/джип-туры (создать)</option>
+                                <option value="add_agro_tours" data-name="Агротуры">Агротуры (создать)</option>
+                                <option value="add_vip_tours" data-name="VIP туры">VIP туры (создать)</option>
+                            `;
+                        } else {
+                            availableSelect.innerHTML = '<option value="">Выберите категорию для добавления</option>' +
+                                categories.map(cat => {
+                                    let categoryName;
+                                    try {
+                                        if (cat.name && typeof cat.name === 'string') {
+                                            const parsed = JSON.parse(cat.name);
+                                            categoryName = parsed.ru || parsed.en || 'Безымянная категория';
+                                        } else if (cat.name && cat.name.ru) {
+                                            categoryName = cat.name.ru;
+                                        } else if (cat.title) {
+                                            const parsed = typeof cat.title === 'string' ? JSON.parse(cat.title) : cat.title;
+                                            categoryName = parsed.ru || parsed.en || 'Безымянная категория';
+                                        } else {
+                                            categoryName = 'Безымянная категория';
+                                        }
+                                    } catch (e) {
+                                        categoryName = cat.name || cat.title || 'Безымянная категория';
                                     }
-                                } catch (e) {
-                                    categoryName = cat.name || cat.title || 'Безымянная категория';
-                                }
-                                return `<option value="${cat.id}" data-name="${categoryName}">${categoryName}</option>`;
-                            }).join('');
+                                    return `<option value="${cat.id}" data-name="${categoryName}">${categoryName}</option>`;
+                                }).join('');
+                        }
                     }
                     
                     // Update enhanced tour category select (if exists)
@@ -2382,20 +2404,84 @@
             const selectedOption = select.options[select.selectedIndex];
             
             if (selectedOption && selectedOption.value) {
-                const categoryId = selectedOption.value;
+                const categoryValue = selectedOption.value;
                 const categoryName = selectedOption.getAttribute('data-name') || selectedOption.text;
                 
-                // Check if already added
-                if (selectedCategories.find(cat => cat.id === categoryId)) {
-                    alert('Эта категория уже добавлена');
-                    return;
+                // Check if it's a category that needs to be created
+                if (categoryValue.startsWith('add_')) {
+                    // Create new category first
+                    const categoryMap = {
+                        'add_day_tours': { ru: 'Однодневные туры', en: 'Day Tours' },
+                        'add_multi_day_tours': { ru: 'Многодневные туры', en: 'Multi-day Tours' },
+                        'add_excursions': { ru: 'Экскурсии', en: 'Excursions' },
+                        'add_city_tours': { ru: 'Городские туры', en: 'City Tours' },
+                        'add_nature_eco_tours': { ru: 'Природа/экологические туры', en: 'Nature/Eco Tours' },
+                        'add_cultural_tours': { ru: 'Культурно познавательные туры', en: 'Cultural Educational Tours' },
+                        'add_historical_tours': { ru: 'Исторические туры', en: 'Historical Tours' },
+                        'add_hiking_trekking': { ru: 'Походы/трекинги', en: 'Hiking/Trekking' },
+                        'add_mountain_landscapes': { ru: 'Горные ландшафты', en: 'Mountain Landscapes' },
+                        'add_lake_landscapes': { ru: 'Озерные ландшафты', en: 'Lake Landscapes' },
+                        'add_adventure_tours': { ru: 'Приключенческие туры', en: 'Adventure Tours' },
+                        'add_gastronomic_tours': { ru: 'Гастрономические туры', en: 'Gastronomic Tours' },
+                        'add_auto_tours': { ru: 'Автотуры/сафари/джип-туры', en: 'Auto Tours/Safari/Jeep Tours' },
+                        'add_agro_tours': { ru: 'Агротуры', en: 'Agro Tours' },
+                        'add_vip_tours': { ru: 'VIP туры', en: 'VIP Tours' }
+                    };
+                    
+                    const categoryInfo = categoryMap[categoryValue];
+                    if (categoryInfo) {
+                        const categoryData = {
+                            name: {
+                                ru: categoryInfo.ru,
+                                en: categoryInfo.en,
+                                tj: ''
+                            }
+                        };
+                        
+                        fetch(`${getApiUrl()}/categories`, {
+                            method: 'POST',
+                            headers: getAuthHeaders(),
+                            body: JSON.stringify(categoryData)
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success && data.data && data.data.id) {
+                                    // Category created successfully, add to selected
+                                    const categoryId = data.data.id;
+                                    
+                                    // Check if already added
+                                    if (selectedCategories.find(cat => cat.id === categoryId)) {
+                                        alert('Эта категория уже добавлена');
+                                        return;
+                                    }
+                                    
+                                    selectedCategories.push({id: categoryId, name: categoryName});
+                                    updateSelectedCategoriesDisplay();
+                                    
+                                    // Reload categories to show the new one
+                                    loadCategories();
+                                } else {
+                                    alert('Ошибка при создании категории');
+                                }
+                            })
+                            .catch(err => {
+                                console.error('Error creating category:', err);
+                                alert('Ошибка при создании категории');
+                            });
+                    }
+                } else {
+                    // Existing category, just add it
+                    const categoryId = categoryValue;
+                    
+                    // Check if already added
+                    if (selectedCategories.find(cat => cat.id === categoryId)) {
+                        alert('Эта категория уже добавлена');
+                        return;
+                    }
+                    
+                    selectedCategories.push({id: categoryId, name: categoryName});
+                    updateSelectedCategoriesDisplay();
                 }
-                
-                // Add to selected categories
-                selectedCategories.push({id: categoryId, name: categoryName});
-                
-                // Update display
-                updateSelectedCategoriesDisplay();
                 
                 // Reset select
                 select.selectedIndex = 0;
@@ -2542,6 +2628,9 @@
             // Load hotels and guides for checkboxes
             loadHotelsForCheckboxes();
             loadGuidesForCheckboxes();
+            
+            // Load categories for tour form
+            loadCategories();
             
             if (tourId) {
                 // Load tour data for editing

@@ -80,6 +80,13 @@ async function initializeTables() {
             start_date TEXT,
             end_date TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );`,
+        
+        // Таблица категорий
+        `CREATE TABLE IF NOT EXISTS categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );`
     ];
 
