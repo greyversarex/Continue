@@ -2118,8 +2118,33 @@
         
         // Dashboard functions
         function loadDashboard() {
+            loadDashboardStats();
             loadRecentOrders();
             loadCharts();
+        }
+        
+        function loadDashboardStats() {
+            fetch(`${getApiUrl()}/sqlite/stats`, {
+                headers: getAuthHeaders()
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        const stats = data.data;
+                        
+                        // Обновить статистические карточки
+                        const statsCards = document.querySelectorAll('.stat-card h3');
+                        if (statsCards.length >= 4) {
+                            statsCards[0].textContent = stats.tours || 0;
+                            statsCards[1].textContent = stats.bookings || 0; 
+                            statsCards[2].textContent = '$' + (stats.revenue || 0);
+                            statsCards[3].textContent = stats.users || 0;
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading dashboard stats:', err);
+                });
         }
         
         function loadRecentOrders() {
@@ -2261,10 +2286,16 @@
             
             if (tourId) {
                 // Load tour data for editing
-                fetch(`${getApiUrl()}/tours/${tourId}`)
+                fetch(`${getApiUrl()}/tours/${tourId}`, {
+                    headers: getAuthHeaders()
+                })
                     .then(res => res.json())
                     .then(data => {
-                        const tour = data.tour;
+                        const tour = data.data || data.tour;
+                        if (!tour) {
+                            throw new Error('Tour data not found');
+                        }
+                        
                         const title = JSON.parse(tour.title || '{}');
                         const description = JSON.parse(tour.description || '{}');
                         
@@ -2309,6 +2340,10 @@
                         
                         document.getElementById('tourStartDate').value = tour.startDate || '';
                         document.getElementById('tourEndDate').value = tour.endDate || '';
+                    })
+                    .catch(err => {
+                        console.error('Error loading tour data:', err);
+                        alert('Ошибка загрузки данных тура');
                     });
             }
         }
@@ -4481,6 +4516,17 @@
         function updateProgressBar(percent) {
             document.getElementById('progressBar').style.width = percent + '%';
         }
+
+        // Global error handlers
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+            // Prevent the default error logging
+            event.preventDefault();
+        });
+        
+        window.addEventListener('error', function(event) {
+            console.error('Global error:', event.error);
+        });
 
         // Check authentication on page load
         function checkAuthOnLoad() {
