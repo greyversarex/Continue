@@ -1646,8 +1646,24 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Языки тура (через запятую)</label>
-                        <input type="text" class="form-input" id="tourLanguages" placeholder="Русский, Английский, Таджикский">
+                        <label class="form-label">Языки тура</label>
+                        <select class="form-input" id="tourLanguages" multiple>
+                            <option value="Русский">Русский</option>
+                            <option value="Английский">Английский</option>
+                            <option value="Таджикский">Таджикский</option>
+                            <option value="Узбекский">Узбекский</option>
+                            <option value="Киргизский">Киргизский</option>
+                            <option value="Казахский">Казахский</option>
+                            <option value="Туркменский">Туркменский</option>
+                            <option value="Персидский">Персидский</option>
+                            <option value="Арабский">Арабский</option>
+                            <option value="Китайский">Китайский</option>
+                            <option value="Французский">Французский</option>
+                            <option value="Немецкий">Немецкий</option>
+                            <option value="Испанский">Испанский</option>
+                            <option value="Итальянский">Итальянский</option>
+                        </select>
+                        <small class="text-gray-600">Удерживайте Ctrl (или Cmd) для выбора нескольких языков</small>
                     </div>
                     
                     <div class="form-group">
@@ -2299,11 +2315,42 @@
                     // Update main tour category select
                     const mainSelect = document.getElementById('tourCategory');
                     if (mainSelect) {
-                        mainSelect.innerHTML = '<option value="">Выберите категорию</option>' +
-                            categories.map(cat => {
-                                const title = JSON.parse(cat.title || '{}');
-                                return `<option value="${cat.id}">${title.ru || title.en || cat.name || 'Неизвестно'}</option>`;
-                            }).join('');
+                        mainSelect.innerHTML = `
+                            <option value="">Выберите категорию</option>
+                            <option value="create_day_tours">+ Однодневные туры</option>
+                            <option value="create_multi_day_tours">+ Многодневные туры</option>
+                            <option value="create_excursions">+ Экскурсии</option>
+                            <option value="create_city_tours">+ Городские туры</option>
+                            <option value="create_nature_eco_tours">+ Природа/экологические туры</option>
+                            <option value="create_cultural_tours">+ Культурно познавательные туры</option>
+                            <option value="create_historical_tours">+ Исторические туры</option>
+                            <option value="create_hiking_trekking">+ Походы/трекинги</option>
+                            <option value="create_mountain_landscapes">+ Горные ландшафты</option>
+                            <option value="create_lake_landscapes">+ Озерные ландшафты</option>
+                            <option value="create_adventure_tours">+ Приключенческие туры</option>
+                            <option value="create_gastronomic_tours">+ Гастрономические туры</option>
+                            <option value="create_auto_tours">+ Автотуры/сафари/джип-туры</option>
+                            <option value="create_agro_tours">+ Агротуры</option>
+                            <option value="create_vip_tours">+ VIP туры</option>
+                        ` + categories.map(cat => {
+                            let categoryName;
+                            try {
+                                if (cat.name && typeof cat.name === 'string') {
+                                    const parsed = JSON.parse(cat.name);
+                                    categoryName = parsed.ru || parsed.en || 'Безымянная категория';
+                                } else if (cat.name && cat.name.ru) {
+                                    categoryName = cat.name.ru;
+                                } else if (cat.title) {
+                                    const parsed = typeof cat.title === 'string' ? JSON.parse(cat.title) : cat.title;
+                                    categoryName = parsed.ru || parsed.en || 'Безымянная категория';
+                                } else {
+                                    categoryName = 'Безымянная категория';
+                                }
+                            } catch (e) {
+                                categoryName = cat.name || cat.title || 'Безымянная категория';
+                            }
+                            return `<option value="${cat.id}">${categoryName}</option>`;
+                        }).join('');
                     }
                     
                     // Update enhanced tour category select
@@ -2311,8 +2358,23 @@
                     if (enhancedSelect) {
                         enhancedSelect.innerHTML = '<option value="">Выберите категорию</option>' +
                             categories.map(cat => {
-                                const title = JSON.parse(cat.title || '{}');
-                                return `<option value="${cat.id}">${title.ru || title.en || cat.name || 'Неизвестно'}</option>`;
+                                let categoryName;
+                                try {
+                                    if (cat.name && typeof cat.name === 'string') {
+                                        const parsed = JSON.parse(cat.name);
+                                        categoryName = parsed.ru || parsed.en || 'Безымянная категория';
+                                    } else if (cat.name && cat.name.ru) {
+                                        categoryName = cat.name.ru;
+                                    } else if (cat.title) {
+                                        const parsed = typeof cat.title === 'string' ? JSON.parse(cat.title) : cat.title;
+                                        categoryName = parsed.ru || parsed.en || 'Безымянная категория';
+                                    } else {
+                                        categoryName = 'Безымянная категория';
+                                    }
+                                } catch (e) {
+                                    categoryName = cat.name || cat.title || 'Безымянная категория';
+                                }
+                                return `<option value="${cat.id}">${categoryName}</option>`;
                             }).join('');
                     }
                     
@@ -2368,26 +2430,18 @@
                                 .then(res => res.json())
                                 .then(data => {
                                     console.log('Category creation response:', data);
-                                    if (data.success) {
-                                        // Категория создана, обновляем список и выбираем её
-                                        loadCategories().then(() => {
-                                            // Находим и выбираем созданную категорию
-                                            const select = document.getElementById('tourCategory');
-                                            const options = select.options;
-                                            for (let i = 0; i < options.length; i++) {
-                                                if (options[i].text.includes(categoryInfo.ru)) {
-                                                    select.selectedIndex = i;
-                                                    break;
-                                                }
-                                            }
-                                        });
+                                    if (data.success && data.data && data.data.id) {
+                                        // Категория создана, выбираем её ID
+                                        const select = document.getElementById('tourCategory');
+                                        select.value = data.data.id;
+                                        loadCategories(); // Обновляем список для отображения новой категории
                                     } else {
-                                        // Возможно категория уже существует, просто обновляем список
+                                        // Возможно категория уже существует, ищем её в списке
                                         loadCategories().then(() => {
                                             const select = document.getElementById('tourCategory');
                                             const options = select.options;
                                             for (let i = 0; i < options.length; i++) {
-                                                if (options[i].text.includes(categoryInfo.ru)) {
+                                                if (options[i].text.includes(categoryInfo.ru) && !options[i].value.startsWith('create_')) {
                                                     select.selectedIndex = i;
                                                     break;
                                                 }
@@ -2502,7 +2556,22 @@
                                 languages = tour.languages;
                             }
                         }
-                        document.getElementById('tourLanguages').value = languages;
+                        // Обработка языков для multiple select
+                        const languageSelect = document.getElementById('tourLanguages');
+                        if (languageSelect) {
+                            // Очищаем все выбранные опции
+                            Array.from(languageSelect.options).forEach(option => option.selected = false);
+                            
+                            // Если есть языки, выбираем их
+                            if (languages) {
+                                const selectedLanguages = languages.split(', ');
+                                Array.from(languageSelect.options).forEach(option => {
+                                    if (selectedLanguages.includes(option.value)) {
+                                        option.selected = true;
+                                    }
+                                });
+                            }
+                        }
                         
                         // Обработка времен начала тура
                         let startTimes = '';
@@ -3252,7 +3321,7 @@
                 priceType: document.getElementById('tourPriceType').value,
                 pickupInfo: document.getElementById('tourPickupInfo').value,
                 startTimeOptions: JSON.stringify(document.getElementById('tourStartTimeOptions').value.split(',').map(t => t.trim()).filter(t => t)),
-                languages: JSON.stringify(document.getElementById('tourLanguages').value.split(',').map(l => l.trim()).filter(l => l)),
+                languages: JSON.stringify(Array.from(document.getElementById('tourLanguages').selectedOptions).map(option => option.value)),
                 // Доступность тура
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-'))
