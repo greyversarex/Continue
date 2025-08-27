@@ -3550,7 +3550,7 @@
         }
         
         function renderTourBlock(block, tours) {
-            const blockTitle = JSON.parse(block.title);
+            const blockTitle = block.title;
             const blockId = `tour-block-${block.id}`;
             const carouselId = `carousel-${block.id}`;
             
@@ -3604,9 +3604,9 @@
         }
         
         function renderTourCard(tour) {
-            const title = JSON.parse(tour.title);
-            const description = JSON.parse(tour.description);
-            const shortDesc = tour.shortDesc ? JSON.parse(tour.shortDesc) : null;
+            const title = tour.title;
+            const description = tour.description;
+            const shortDesc = tour.shortDesc || null;
             
             return `
                 <div class="tour-card group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full"
