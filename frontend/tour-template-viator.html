@@ -1195,12 +1195,7 @@
             };
         }
 
-        // Initialize page when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("DOM loaded, initializing page...");
-            loadTourData();
-            setupEventListeners();
-        });
+        // Note: DOM initialization moved to API loading section below
 
         // Direct booking page navigation
         function goToBookingPage() {
@@ -1467,19 +1462,26 @@
                     }
                     
                     console.log('Tour loaded from API:', tourData);
+                    updatePageContent();
+                    setupEventListeners();
+                    return; // Successfully loaded from API, no need to load static data
                 } else {
                     console.error('Failed to load tour from API');
                 }
             } catch (error) {
                 console.error('Error loading tour from API:', error);
             }
+            
+            // Fallback to static data if API failed
+            console.log('Falling back to static tour data');
+            loadTourData();
+            setupEventListeners();
         }
 
         // Override the DOMContentLoaded to load from API first
         document.addEventListener('DOMContentLoaded', function() {
-            loadTourFromAPI().then(() => {
-                loadTourData();
-            });
+            console.log("DOM loaded, initializing page...");
+            loadTourFromAPI();
         });
         // Share functionality
         function toggleShareMenu() {
