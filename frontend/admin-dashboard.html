@@ -1562,26 +1562,19 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Категория</label>
-                        <select class="form-input" id="tourCategory" required>
-                            <option value="">Выберите категорию</option>
-                            <option value="create_day_tours">+ Однодневные туры</option>
-                            <option value="create_multi_day_tours">+ Многодневные туры</option>
-                            <option value="create_excursions">+ Экскурсии</option>
-                            <option value="create_city_tours">+ Городские туры</option>
-                            <option value="create_nature_eco_tours">+ Природа/экологические туры</option>
-                            <option value="create_cultural_tours">+ Культурно познавательные туры</option>
-                            <option value="create_historical_tours">+ Исторические туры</option>
-                            <option value="create_hiking_trekking">+ Походы/трекинги</option>
-                            <option value="create_mountain_landscapes">+ Горные ландшафты</option>
-                            <option value="create_lake_landscapes">+ Озерные ландшафты</option>
-                            <option value="create_adventure_tours">+ Приключенческие туры</option>
-                            <option value="create_gastronomic_tours">+ Гастрономические туры</option>
-                            <option value="create_auto_tours">+ Автотуры/сафари/джип-туры</option>
-                            <option value="create_agro_tours">+ Агротуры</option>
-                            <option value="create_vip_tours">+ VIP туры</option>
-                            <!-- Existing categories will be loaded dynamically -->
-                        </select>
+                        <label class="form-label">Категории тура</label>
+                        <div class="flex gap-2 mb-2">
+                            <select class="form-input flex-1" id="availableCategories">
+                                <option value="">Выберите категорию для добавления</option>
+                            </select>
+                            <button type="button" onclick="addCategoryToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div id="selectedCategories" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                            <small class="text-gray-500">Выбранные категории появятся здесь</small>
+                        </div>
+                        <input type="hidden" id="tourCategory" required>
                     </div>
                     
                     <div class="form-group">
@@ -1647,23 +1640,32 @@
                     
                     <div class="form-group">
                         <label class="form-label">Языки тура</label>
-                        <select class="form-input" id="tourLanguages" multiple>
-                            <option value="Русский">Русский</option>
-                            <option value="Английский">Английский</option>
-                            <option value="Таджикский">Таджикский</option>
-                            <option value="Узбекский">Узбекский</option>
-                            <option value="Киргизский">Киргизский</option>
-                            <option value="Казахский">Казахский</option>
-                            <option value="Туркменский">Туркменский</option>
-                            <option value="Персидский">Персидский</option>
-                            <option value="Арабский">Арабский</option>
-                            <option value="Китайский">Китайский</option>
-                            <option value="Французский">Французский</option>
-                            <option value="Немецкий">Немецкий</option>
-                            <option value="Испанский">Испанский</option>
-                            <option value="Итальянский">Итальянский</option>
-                        </select>
-                        <small class="text-gray-600">Удерживайте Ctrl (или Cmd) для выбора нескольких языков</small>
+                        <div class="flex gap-2 mb-2">
+                            <select class="form-input flex-1" id="availableLanguages">
+                                <option value="">Выберите язык для добавления</option>
+                                <option value="Русский">Русский</option>
+                                <option value="Английский">Английский</option>
+                                <option value="Таджикский">Таджикский</option>
+                                <option value="Узбекский">Узбекский</option>
+                                <option value="Киргизский">Киргизский</option>
+                                <option value="Казахский">Казахский</option>
+                                <option value="Туркменский">Туркменский</option>
+                                <option value="Персидский">Персидский</option>
+                                <option value="Арабский">Арабский</option>
+                                <option value="Китайский">Китайский</option>
+                                <option value="Французский">Французский</option>
+                                <option value="Немецкий">Немецкий</option>
+                                <option value="Испанский">Испанский</option>
+                                <option value="Итальянский">Итальянский</option>
+                            </select>
+                            <button type="button" onclick="addLanguageToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div id="selectedLanguages" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                            <small class="text-gray-500">Выбранные языки появятся здесь</small>
+                        </div>
+                        <input type="hidden" id="tourLanguages">
                     </div>
                     
                     <div class="form-group">
@@ -2303,6 +2305,10 @@
             }
         }
         
+        // Global variables for selected items
+        let selectedCategories = [];
+        let selectedLanguages = [];
+
         // Load categories from API
         function loadCategories() {
             return fetch(`${getApiUrl()}/categories`, {
@@ -2312,48 +2318,32 @@
                 .then(data => {
                     const categories = data.data || data.categories || [];
                     
-                    // Update main tour category select
-                    const mainSelect = document.getElementById('tourCategory');
-                    if (mainSelect) {
-                        mainSelect.innerHTML = `
-                            <option value="">Выберите категорию</option>
-                            <option value="create_day_tours">+ Однодневные туры</option>
-                            <option value="create_multi_day_tours">+ Многодневные туры</option>
-                            <option value="create_excursions">+ Экскурсии</option>
-                            <option value="create_city_tours">+ Городские туры</option>
-                            <option value="create_nature_eco_tours">+ Природа/экологические туры</option>
-                            <option value="create_cultural_tours">+ Культурно познавательные туры</option>
-                            <option value="create_historical_tours">+ Исторические туры</option>
-                            <option value="create_hiking_trekking">+ Походы/трекинги</option>
-                            <option value="create_mountain_landscapes">+ Горные ландшафты</option>
-                            <option value="create_lake_landscapes">+ Озерные ландшафты</option>
-                            <option value="create_adventure_tours">+ Приключенческие туры</option>
-                            <option value="create_gastronomic_tours">+ Гастрономические туры</option>
-                            <option value="create_auto_tours">+ Автотуры/сафари/джип-туры</option>
-                            <option value="create_agro_tours">+ Агротуры</option>
-                            <option value="create_vip_tours">+ VIP туры</option>
-                        ` + categories.map(cat => {
-                            let categoryName;
-                            try {
-                                if (cat.name && typeof cat.name === 'string') {
-                                    const parsed = JSON.parse(cat.name);
-                                    categoryName = parsed.ru || parsed.en || 'Безымянная категория';
-                                } else if (cat.name && cat.name.ru) {
-                                    categoryName = cat.name.ru;
-                                } else if (cat.title) {
-                                    const parsed = typeof cat.title === 'string' ? JSON.parse(cat.title) : cat.title;
-                                    categoryName = parsed.ru || parsed.en || 'Безымянная категория';
-                                } else {
-                                    categoryName = 'Безымянная категория';
+                    // Update available categories select
+                    const availableSelect = document.getElementById('availableCategories');
+                    if (availableSelect) {
+                        availableSelect.innerHTML = '<option value="">Выберите категорию для добавления</option>' +
+                            categories.map(cat => {
+                                let categoryName;
+                                try {
+                                    if (cat.name && typeof cat.name === 'string') {
+                                        const parsed = JSON.parse(cat.name);
+                                        categoryName = parsed.ru || parsed.en || 'Безымянная категория';
+                                    } else if (cat.name && cat.name.ru) {
+                                        categoryName = cat.name.ru;
+                                    } else if (cat.title) {
+                                        const parsed = typeof cat.title === 'string' ? JSON.parse(cat.title) : cat.title;
+                                        categoryName = parsed.ru || parsed.en || 'Безымянная категория';
+                                    } else {
+                                        categoryName = 'Безымянная категория';
+                                    }
+                                } catch (e) {
+                                    categoryName = cat.name || cat.title || 'Безымянная категория';
                                 }
-                            } catch (e) {
-                                categoryName = cat.name || cat.title || 'Безымянная категория';
-                            }
-                            return `<option value="${cat.id}">${categoryName}</option>`;
-                        }).join('');
+                                return `<option value="${cat.id}" data-name="${categoryName}">${categoryName}</option>`;
+                            }).join('');
                     }
                     
-                    // Update enhanced tour category select
+                    // Update enhanced tour category select (if exists)
                     const enhancedSelect = document.getElementById('eTourCategoryId');
                     if (enhancedSelect) {
                         enhancedSelect.innerHTML = '<option value="">Выберите категорию</option>' +
@@ -2385,79 +2375,115 @@
                     return [];
                 });
         }
-        
-        // Category selection handler
-        document.addEventListener('DOMContentLoaded', function() {
-            const categorySelect = document.getElementById('tourCategory');
-            if (categorySelect) {
-                categorySelect.addEventListener('change', function(e) {
-                    const value = e.target.value;
-                    if (value.startsWith('create_')) {
-                        // Create new category
-                        const categoryMap = {
-                            'create_day_tours': { ru: 'Однодневные туры', en: 'Day Tours' },
-                            'create_multi_day_tours': { ru: 'Многодневные туры', en: 'Multi-day Tours' },
-                            'create_excursions': { ru: 'Экскурсии', en: 'Excursions' },
-                            'create_city_tours': { ru: 'Городские туры', en: 'City Tours' },
-                            'create_nature_eco_tours': { ru: 'Природа/экологические туры', en: 'Nature/Eco Tours' },
-                            'create_cultural_tours': { ru: 'Культурно познавательные туры', en: 'Cultural Educational Tours' },
-                            'create_historical_tours': { ru: 'Исторические туры', en: 'Historical Tours' },
-                            'create_hiking_trekking': { ru: 'Походы/трекинги', en: 'Hiking/Trekking' },
-                            'create_mountain_landscapes': { ru: 'Горные ландшафты', en: 'Mountain Landscapes' },
-                            'create_lake_landscapes': { ru: 'Озерные ландшафты', en: 'Lake Landscapes' },
-                            'create_adventure_tours': { ru: 'Приключенческие туры', en: 'Adventure Tours' },
-                            'create_gastronomic_tours': { ru: 'Гастрономические туры', en: 'Gastronomic Tours' },
-                            'create_auto_tours': { ru: 'Автотуры/сафари/джип-туры', en: 'Auto Tours/Safari/Jeep Tours' },
-                            'create_agro_tours': { ru: 'Агротуры', en: 'Agro Tours' },
-                            'create_vip_tours': { ru: 'VIP туры', en: 'VIP Tours' }
-                        };
-                        
-                        const categoryInfo = categoryMap[value];
-                        if (categoryInfo) {
-                            const categoryData = {
-                                name: {
-                                    ru: categoryInfo.ru,
-                                    en: categoryInfo.en,
-                                    tj: ''
-                                }
-                            };
-                            
-                            fetch(`${getApiUrl()}/categories`, {
-                                method: 'POST',
-                                headers: getAuthHeaders(),
-                                body: JSON.stringify(categoryData)
-                            })
-                                .then(res => res.json())
-                                .then(data => {
-                                    console.log('Category creation response:', data);
-                                    if (data.success && data.data && data.data.id) {
-                                        // Категория создана, выбираем её ID
-                                        const select = document.getElementById('tourCategory');
-                                        select.value = data.data.id;
-                                        loadCategories(); // Обновляем список для отображения новой категории
-                                    } else {
-                                        // Возможно категория уже существует, ищем её в списке
-                                        loadCategories().then(() => {
-                                            const select = document.getElementById('tourCategory');
-                                            const options = select.options;
-                                            for (let i = 0; i < options.length; i++) {
-                                                if (options[i].text.includes(categoryInfo.ru) && !options[i].value.startsWith('create_')) {
-                                                    select.selectedIndex = i;
-                                                    break;
-                                                }
-                                            }
-                                        });
-                                    }
-                                })
-                                .catch(err => {
-                                    console.error('Error creating category:', err);
-                                    alert('Ошибка при создании категории');
-                                });
-                        }
-                    }
-                });
+
+        // Add category to tour
+        function addCategoryToTour() {
+            const select = document.getElementById('availableCategories');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                const categoryId = selectedOption.value;
+                const categoryName = selectedOption.getAttribute('data-name') || selectedOption.text;
+                
+                // Check if already added
+                if (selectedCategories.find(cat => cat.id === categoryId)) {
+                    alert('Эта категория уже добавлена');
+                    return;
+                }
+                
+                // Add to selected categories
+                selectedCategories.push({id: categoryId, name: categoryName});
+                
+                // Update display
+                updateSelectedCategoriesDisplay();
+                
+                // Reset select
+                select.selectedIndex = 0;
             }
-        });
+        }
+
+        // Remove category from tour
+        function removeCategoryFromTour(categoryId) {
+            selectedCategories = selectedCategories.filter(cat => cat.id !== categoryId);
+            updateSelectedCategoriesDisplay();
+        }
+
+        // Update selected categories display
+        function updateSelectedCategoriesDisplay() {
+            const container = document.getElementById('selectedCategories');
+            const hiddenInput = document.getElementById('tourCategory');
+            
+            if (selectedCategories.length === 0) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные категории появятся здесь</small>';
+                hiddenInput.value = '';
+            } else {
+                container.innerHTML = selectedCategories.map(cat => 
+                    `<div class="flex justify-between items-center bg-white p-2 rounded border">
+                        <span>${cat.name}</span>
+                        <button type="button" onclick="removeCategoryFromTour('${cat.id}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>`
+                ).join('');
+                
+                // Set first category as primary (for required field)
+                hiddenInput.value = selectedCategories[0].id;
+            }
+        }
+
+        // Add language to tour
+        function addLanguageToTour() {
+            const select = document.getElementById('availableLanguages');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                const language = selectedOption.value;
+                
+                // Check if already added
+                if (selectedLanguages.includes(language)) {
+                    alert('Этот язык уже добавлен');
+                    return;
+                }
+                
+                // Add to selected languages
+                selectedLanguages.push(language);
+                
+                // Update display
+                updateSelectedLanguagesDisplay();
+                
+                // Reset select
+                select.selectedIndex = 0;
+            }
+        }
+
+        // Remove language from tour
+        function removeLanguageFromTour(language) {
+            selectedLanguages = selectedLanguages.filter(lang => lang !== language);
+            updateSelectedLanguagesDisplay();
+        }
+
+        // Update selected languages display
+        function updateSelectedLanguagesDisplay() {
+            const container = document.getElementById('selectedLanguages');
+            const hiddenInput = document.getElementById('tourLanguages');
+            
+            if (selectedLanguages.length === 0) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные языки появятся здесь</small>';
+                hiddenInput.value = '';
+            } else {
+                container.innerHTML = selectedLanguages.map(lang => 
+                    `<div class="flex justify-between items-center bg-white p-2 rounded border">
+                        <span>${lang}</span>
+                        <button type="button" onclick="removeLanguageFromTour('${lang}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>`
+                ).join('');
+                
+                hiddenInput.value = JSON.stringify(selectedLanguages);
+            }
+        }
+        
 
         // Tours functions
         function loadTours() {
@@ -3321,7 +3347,7 @@
                 priceType: document.getElementById('tourPriceType').value,
                 pickupInfo: document.getElementById('tourPickupInfo').value,
                 startTimeOptions: JSON.stringify(document.getElementById('tourStartTimeOptions').value.split(',').map(t => t.trim()).filter(t => t)),
-                languages: JSON.stringify(Array.from(document.getElementById('tourLanguages').selectedOptions).map(option => option.value)),
+                languages: document.getElementById('tourLanguages').value,
                 // Доступность тура
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-'))
