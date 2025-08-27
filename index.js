@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const { exec } = require('child_process');
+const { initializeDatabase } = require('./src/database/init');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -105,6 +106,18 @@ app.get('/visa-support.html', (req, res) => {
 // Статические файлы для фронтенда - AFTER explicit routes
 app.use(express.static(path.join(__dirname, 'frontend')));
 
+// Инициализация базы данных при запуске
+console.log('🗄️  Инициализация SQLite базы данных...');
+initializeDatabase().then((success) => {
+  if (success) {
+    console.log('✅ База данных готова к работе');
+  } else {
+    console.warn('⚠️  Предупреждение: база данных не инициализирована');
+  }
+}).catch((error) => {
+  console.error('❌ Ошибка инициализации базы данных:', error.message);
+});
+
 // Запуск API сервера в фоновом режиме
 console.log('Starting backend API server...');
 const apiServer = exec('npx ts-node src/server.ts', (error, stdout, stderr) => {
@@ -127,6 +140,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`📱 Frontend: http://0.0.0.0:${PORT}`);
   console.log(`🔧 Admin: http://0.0.0.0:${PORT}/admin-dashboard.html`);
   console.log(`🌐 API: http://0.0.0.0:${PORT}/api`);
+  console.log(`🗄️  База данных: database.db`);
 });
 
 // Graceful shutdown

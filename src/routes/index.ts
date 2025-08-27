@@ -15,6 +15,9 @@ import translationRoutes from './translationRoutes';
 import newsRoutes from './newsRoutes';
 import slideRoutes from './slideRoutes';
 
+// Import SQLite database routes  
+const databaseRoutes = require('./databaseRoutes');
+
 const router = Router();
 
 // Mount routes - proper API structure
@@ -33,6 +36,9 @@ router.use('/tour-blocks', tourBlockRoutes);
 router.use('/translate', translationRoutes);
 router.use('/news', newsRoutes);
 router.use('/slides', slideRoutes);
+
+// SQLite database routes
+router.use('/', databaseRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
