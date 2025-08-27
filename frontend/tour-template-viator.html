@@ -931,7 +931,8 @@
             document.getElementById('page-title').textContent = `${tourData.title} - Bunyod-Tour`;
             document.getElementById('tour-title').textContent = tourData.title;
             document.getElementById('tour-location').textContent = tourData.location;
-            document.getElementById('tour-reviews').textContent = `(${tourData.reviews_count} отзыва)`;
+            document.getElementById('tour-reviews').textContent = `(${tourData.reviews_count || tourData.reviewCount || 0} отзыва)`;
+            
             // Обновляем продолжительность
             if (tourData.duration) {
                 document.getElementById('tour-duration').textContent = tourData.duration;
@@ -945,6 +946,51 @@
             const mealsElement = document.getElementById('meals-included');
             if (mealsElement) {
                 mealsElement.textContent = tourData.pickupInfo || 'Приём не включен';
+            }
+            
+            // ✅ ИСПРАВЛЯЕМ: Обновляем описание тура из API
+            const descriptionElement = document.getElementById('tour-description-content');
+            if (descriptionElement && tourData.description) {
+                descriptionElement.innerHTML = `<p>${tourData.description.replace(/\n/g, '</p><p>')}</p>`;
+            }
+            
+            // ✅ ИСПРАВЛЯЕМ: Обновляем цену
+            if (tourData.price) {
+                document.getElementById('tour-price').textContent = `От ${tourData.price}₽`;
+                document.getElementById('price-type-text').textContent = tourData.priceType || 'за человека';
+            }
+            
+            // ✅ ИСПРАВЛЯЕМ: Обновляем "Что включено"
+            if (tourData.highlights && Array.isArray(tourData.highlights)) {
+                const includesElement = document.getElementById('tour-includes');
+                if (includesElement) {
+                    includesElement.innerHTML = tourData.highlights.map(highlight => `
+                        <li class="flex items-start">
+                            <span class="text-green-600 mr-3 mt-1">✓</span>
+                            <span class="text-gray-700">${highlight}</span>
+                        </li>
+                    `).join('');
+                }
+            }
+            
+            // ✅ ИСПРАВЛЯЕМ: Обновляем программу тура
+            if (tourData.itinerary && Array.isArray(tourData.itinerary)) {
+                const programElement = document.getElementById('content-program');
+                if (programElement) {
+                    programElement.innerHTML = `
+                        <div class="space-y-6">
+                            ${tourData.itinerary.map(item => `
+                                <div class="flex items-start space-x-4">
+                                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">${item.time}</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">${item.title}</h4>
+                                        <p class="text-gray-600 mt-1">${item.description}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
             }
             
             // Обновляем языки тура

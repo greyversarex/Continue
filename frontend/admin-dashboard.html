@@ -1560,6 +1560,40 @@
                         <label class="form-label">Описание (English)</label>
                         <textarea class="form-input" rows="4" id="tourDescEn" required></textarea>
                     </div>
+
+                    <!-- Что включено -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Что включено в тур</label>
+                        <div id="highlightsList" class="space-y-2 mb-3">
+                            <!-- Динамически добавляемые элементы -->
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" class="form-input flex-1" id="newHighlight" placeholder="Например: Профессиональный гид">
+                            <button type="button" onclick="addHighlight()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                                Добавить
+                            </button>
+                        </div>
+                        <small class="text-gray-500">Добавьте пункты списка "Что включено"</small>
+                    </div>
+
+                    <!-- Программа тура -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Программа тура</label>
+                        <div id="itineraryList" class="space-y-3 mb-3">
+                            <!-- Динамически добавляемые элементы -->
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded border">
+                            <div class="grid grid-cols-4 gap-3 mb-3">
+                                <input type="time" class="form-input" id="newItineraryTime" placeholder="08:00">
+                                <input type="text" class="form-input col-span-2" id="newItineraryTitle" placeholder="Встреча с гидом">
+                                <button type="button" onclick="addItinerary()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                                    Добавить
+                                </button>
+                            </div>
+                            <textarea class="form-input" rows="2" id="newItineraryDesc" placeholder="Подробное описание этапа программы"></textarea>
+                        </div>
+                        <small class="text-gray-500">Создайте расписание тура по времени</small>
+                    </div>
                     
                     <div class="form-group">
                         <label class="form-label">Категории тура</label>
@@ -2396,6 +2430,79 @@
                     console.error('Error loading categories:', err);
                     return [];
                 });
+        }
+
+        // Инициализация глобальных переменных для нового тура
+        window.tourHighlights = [];
+        window.tourItinerary = [];
+
+        // Функции управления "Что включено"
+        function addHighlight() {
+            const input = document.getElementById('newHighlight');
+            const text = input.value.trim();
+            
+            if (text) {
+                window.tourHighlights.push(text);
+                updateHighlightsList();
+                input.value = '';
+            }
+        }
+
+        function removeHighlight(index) {
+            window.tourHighlights.splice(index, 1);
+            updateHighlightsList();
+        }
+
+        function updateHighlightsList() {
+            const container = document.getElementById('highlightsList');
+            container.innerHTML = window.tourHighlights.map((highlight, index) => `
+                <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
+                    <span>✓ ${highlight}</span>
+                    <button type="button" onclick="removeHighlight(${index})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Функции управления программой тура
+        function addItinerary() {
+            const time = document.getElementById('newItineraryTime').value;
+            const title = document.getElementById('newItineraryTitle').value.trim();
+            const desc = document.getElementById('newItineraryDesc').value.trim();
+            
+            if (time && title && desc) {
+                window.tourItinerary.push({ time, title, description: desc });
+                updateItineraryList();
+                document.getElementById('newItineraryTime').value = '';
+                document.getElementById('newItineraryTitle').value = '';
+                document.getElementById('newItineraryDesc').value = '';
+            } else {
+                alert('Пожалуйста, заполните все поля программы тура');
+            }
+        }
+
+        function removeItinerary(index) {
+            window.tourItinerary.splice(index, 1);
+            updateItineraryList();
+        }
+
+        function updateItineraryList() {
+            const container = document.getElementById('itineraryList');
+            container.innerHTML = window.tourItinerary.map((item, index) => `
+                <div class="bg-gray-50 p-3 rounded border">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium">${item.time}</span>
+                            <strong>${item.title}</strong>
+                        </div>
+                        <button type="button" onclick="removeItinerary(${index})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-600 text-sm ml-16">${item.description}</p>
+                </div>
+            `).join('');
         }
 
         // Add category to tour
@@ -3439,7 +3546,10 @@
                 languages: document.getElementById('tourLanguages').value,
                 // Доступность тура
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
-                availableDays: JSON.stringify(getSelectedCheckboxValues('day-'))
+                availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
+                // Новые поля
+                highlights: JSON.stringify(window.tourHighlights || []),
+                itinerary: JSON.stringify(window.tourItinerary || [])
             };
             
             const url = currentTourId ? 
