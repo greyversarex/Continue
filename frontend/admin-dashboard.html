@@ -1563,22 +1563,15 @@
                     
                     <div class="form-group">
                         <label class="form-label">Категория</label>
-                        <select class="form-input" id="tourCategory" required>
-                            <option value="">Выберите категорию</option>
-                            <option value="1">Городские туры</option>
-                            <option value="2">Природа/экологические туры</option>
-                            <option value="3">Культурно познавательные туры</option>
-                            <option value="4">Исторические туры</option>
-                            <option value="5">Походы/трекинги</option>
-                            <option value="6">Горные ландшафты</option>
-                            <option value="7">Озерные ландшафты</option>
-                            <option value="8">Приключенческие туры</option>
-                            <option value="9">Гастрономические туры</option>
-                            <option value="10">Автотуры/сафари/джип-туры</option>
-                            <option value="11">Агротуры</option>
-                            <option value="12">VIP туры</option>
-                            <option value="13">MICE/корпоративные туры</option>
-                        </select>
+                        <div class="flex items-center gap-2">
+                            <select class="form-input flex-1" id="tourCategory" required>
+                                <option value="">Выберите категорию</option>
+                                <!-- Categories will be loaded dynamically -->
+                            </select>
+                            <button type="button" onclick="openCategoryModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md flex items-center justify-center" title="Добавить новую категорию">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -1621,15 +1614,6 @@
                         <input type="text" class="form-input" id="tourDuration" placeholder="6-7 часов (прибл.)">
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label">Формат тура</label>
-                        <select class="form-input" id="tourFormat">
-                            <option value="">Выберите формат</option>
-                            <option value="Стандартный">Стандартный</option>
-                            <option value="VIP">VIP</option>
-                            <option value="Эксклюзивный">Эксклюзивный</option>
-                        </select>
-                    </div>
                     
                     <div class="form-group">
                         <label class="form-label">Цена (USD)</label>
@@ -1644,15 +1628,6 @@
                         </select>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label">Дата начала</label>
-                        <input type="date" class="form-input" id="tourStartDate">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Дата окончания</label>
-                        <input type="date" class="form-input" id="tourEndDate">
-                    </div>
                     
                     <div class="form-group">
                         <label class="form-label">Информация о приёме/сборе</label>
@@ -1796,6 +1771,46 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content max-w-md">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold" id="categoryModalTitle">Добавить новую категорию</h2>
+                <button type="button" onclick="closeCategoryModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <div class="form-group">
+                        <label class="form-label">Название категории (Русский)</label>
+                        <input type="text" class="form-input" id="categoryNameRu" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Название категории (English)</label>
+                        <input type="text" class="form-input" id="categoryNameEn" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Название категории (Таджикский)</label>
+                        <input type="text" class="form-input" id="categoryNameTj">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Описание (опционально)</label>
+                        <textarea class="form-input" rows="3" id="categoryDescription" placeholder="Краткое описание категории"></textarea>
+                    </div>
+                    
+                    <div class="flex justify-end gap-3 mt-6">
+                        <button type="button" onclick="closeCategoryModal()" class="btn btn-secondary">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -2226,6 +2241,54 @@
             }
         }
         
+        // Load categories from API
+        function loadCategories() {
+            return fetch(`${getApiUrl()}/categories`, {
+                headers: getAuthHeaders()
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const categories = data.data || data.categories || [];
+                    
+                    // Update main tour category select
+                    const mainSelect = document.getElementById('tourCategory');
+                    if (mainSelect) {
+                        mainSelect.innerHTML = '<option value="">Выберите категорию</option>' +
+                            categories.map(cat => {
+                                const title = JSON.parse(cat.title || '{}');
+                                return `<option value="${cat.id}">${title.ru || title.en || cat.name || 'Неизвестно'}</option>`;
+                            }).join('');
+                    }
+                    
+                    // Update enhanced tour category select
+                    const enhancedSelect = document.getElementById('eTourCategoryId');
+                    if (enhancedSelect) {
+                        enhancedSelect.innerHTML = '<option value="">Выберите категорию</option>' +
+                            categories.map(cat => {
+                                const title = JSON.parse(cat.title || '{}');
+                                return `<option value="${cat.id}">${title.ru || title.en || cat.name || 'Неизвестно'}</option>`;
+                            }).join('');
+                    }
+                    
+                    return categories;
+                })
+                .catch(err => {
+                    console.error('Error loading categories:', err);
+                    return [];
+                });
+        }
+        
+        // Category modal functions
+        function openCategoryModal() {
+            document.getElementById('categoryModal').classList.add('active');
+            document.getElementById('categoryForm').reset();
+        }
+        
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.remove('active');
+            document.getElementById('categoryForm').reset();
+        }
+
         // Tours functions
         function loadTours() {
             fetch(`${getApiUrl()}/tours`, {
@@ -2309,7 +2372,6 @@
                         document.getElementById('tourCity').value = tour.city || '';
                         document.getElementById('tourDurationDays').value = tour.durationDays || '';
                         document.getElementById('tourDuration').value = tour.duration || '';
-                        document.getElementById('tourFormat').value = tour.format || '';
                         document.getElementById('tourPrice').value = tour.price || '';
                         document.getElementById('tourPriceType').value = tour.priceType || 'за человека';
                         document.getElementById('tourPickupInfo').value = tour.pickupInfo || '';
@@ -2338,8 +2400,6 @@
                         }
                         document.getElementById('tourStartTimeOptions').value = startTimes;
                         
-                        document.getElementById('tourStartDate').value = tour.startDate || '';
-                        document.getElementById('tourEndDate').value = tour.endDate || '';
                     })
                     .catch(err => {
                         console.error('Error loading tour data:', err);
@@ -3072,14 +3132,11 @@
                 city: document.getElementById('tourCity').value,
                 duration: document.getElementById('tourDuration').value,
                 durationDays: parseInt(document.getElementById('tourDurationDays').value),
-                format: document.getElementById('tourFormat').value,
                 price: document.getElementById('tourPrice').value,
                 priceType: document.getElementById('tourPriceType').value,
                 pickupInfo: document.getElementById('tourPickupInfo').value,
                 startTimeOptions: JSON.stringify(document.getElementById('tourStartTimeOptions').value.split(',').map(t => t.trim()).filter(t => t)),
                 languages: JSON.stringify(document.getElementById('tourLanguages').value.split(',').map(l => l.trim()).filter(l => l)),
-                startDate: document.getElementById('tourStartDate').value,
-                endDate: document.getElementById('tourEndDate').value,
                 // Доступность тура
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-'))
@@ -3097,12 +3154,13 @@
             })
             .then(res => res.json())
             .then(data => {
+                console.log('Tour save response:', data);
                 if (data.success) {
                     alert('Тур успешно сохранен!');
                     closeTourModal();
                     loadTours();
                 } else {
-                    alert('Ошибка при сохранении тура');
+                    alert('Ошибка при сохранении тура: ' + (data.error || data.message || 'Неизвестная ошибка'));
                 }
             })
             .catch(err => {
@@ -4528,6 +4586,47 @@
             console.error('Global error:', event.error);
         });
 
+        // Category form submit handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryForm = document.getElementById('categoryForm');
+            if (categoryForm) {
+                categoryForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = {
+                        title: JSON.stringify({
+                            ru: document.getElementById('categoryNameRu').value,
+                            en: document.getElementById('categoryNameEn').value,
+                            tj: document.getElementById('categoryNameTj').value || ''
+                        }),
+                        description: document.getElementById('categoryDescription').value || '',
+                        isActive: true
+                    };
+                    
+                    fetch(`${getApiUrl()}/categories`, {
+                        method: 'POST',
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify(formData)
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log('Category save response:', data);
+                            if (data.success) {
+                                alert('Категория успешно создана!');
+                                closeCategoryModal();
+                                loadCategories(); // Reload categories in selects
+                            } else {
+                                alert('Ошибка при создании категории: ' + (data.error || data.message || 'Неизвестная ошибка'));
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error saving category:', err);
+                            alert('Ошибка при создании категории');
+                        });
+                });
+            }
+        });
+        
         // Check authentication on page load
         function checkAuthOnLoad() {
             const token = localStorage.getItem('authToken');
