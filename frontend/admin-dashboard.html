@@ -2647,7 +2647,7 @@
                         const title = JSON.parse(tour.title || '{}');
                         const description = JSON.parse(tour.description || '{}');
                         
-                        document.getElementById('tourType').value = tour.tourType || '';
+                        document.getElementById('tourType').value = tour.format || '';
                         document.getElementById('tourTitleRu').value = title.ru || '';
                         document.getElementById('tourTitleEn').value = title.en || '';
                         document.getElementById('tourDescRu').value = description.ru || '';
@@ -3427,7 +3427,7 @@
                 }),
                 categoryId: parseInt(document.getElementById('tourCategory').value),
                 tourBlockId: document.getElementById('tourBlockId') ? parseInt(document.getElementById('tourBlockId').value) : null,
-                tourType: document.getElementById('tourType').value,
+                format: document.getElementById('tourType').value,
                 country: document.getElementById('tourCountry').value,
                 city: document.getElementById('tourCity').value,
                 duration: document.getElementById('tourDuration').value,

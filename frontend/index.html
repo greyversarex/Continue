@@ -3612,10 +3612,16 @@
                 <div class="tour-card group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full"
                      onclick="window.location.href='tour-template-viator.html?tour=${tour.id}'">
                     <div class="relative overflow-hidden rounded-t-lg">
-                        <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
                             ${tour.mainImage ? 
                                 `<img src="${tour.mainImage}" alt="${title.ru}" class="w-full h-full object-cover">` :
-                                `<span class="text-gray-500">${title.ru}</span>`
+                                `<div class="text-center p-4">
+                                    <svg class="w-12 h-12 mx-auto text-blue-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    <div class="text-sm font-medium text-blue-600">${title.ru}</div>
+                                </div>`
                             }
                         </div>
                         <button class="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
@@ -3631,6 +3637,11 @@
                             </svg>
                             ${tour.city}, ${tour.country}
                         </div>
+                        ${tour.format ? `
+                        <div class="flex items-center text-blue-600 text-xs mb-2">
+                            <span class="mr-1">🟢</span>
+                            <span class="font-medium">${tour.format}</span>
+                        </div>` : ''}
                         ${tour.rating ? `
                         <div class="flex items-center text-green-600 text-xs mb-2">
                             <span class="mr-1">★</span>
