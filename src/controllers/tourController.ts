@@ -206,7 +206,7 @@ export class TourController {
       const tour = await TourModel.create({
         title,
         description,
-        shortDesc: shortDescription || null,
+        shortDescription: shortDescription || null,
         duration: String(finalDuration), // Convert to string for Prisma
         price,
         priceType: priceType || 'за человека',
