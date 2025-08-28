@@ -1594,6 +1594,21 @@
                         </div>
                         <small class="text-gray-500">Создайте расписание тура по времени</small>
                     </div>
+
+                    <!-- Доступное время начала тура -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Доступное время начала тура</label>
+                        <div id="startTimesList" class="space-y-2 mb-3">
+                            <!-- Динамически добавляемые варианты времени -->
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="time" class="form-input flex-1" id="newStartTime" placeholder="07:30">
+                            <button type="button" onclick="addStartTime()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                                Добавить время
+                            </button>
+                        </div>
+                        <small class="text-gray-500">Добавьте возможные варианты времени начала тура</small>
+                    </div>
                     
                     <div class="form-group">
                         <label class="form-label">Категории тура</label>
@@ -2435,6 +2450,7 @@
         // Инициализация глобальных переменных для нового тура
         window.tourHighlights = [];
         window.tourItinerary = [];
+        window.tourStartTimes = [];
 
         // Функции управления "Что включено"
         function addHighlight() {
@@ -2501,6 +2517,37 @@
                         </button>
                     </div>
                     <p class="text-gray-600 text-sm ml-16">${item.description}</p>
+                </div>
+            `).join('');
+        }
+
+        // Функции управления временем начала тура
+        function addStartTime() {
+            const input = document.getElementById('newStartTime');
+            const time = input.value;
+            
+            if (time && !window.tourStartTimes.includes(time)) {
+                window.tourStartTimes.push(time);
+                updateStartTimesList();
+                input.value = '';
+            } else if (window.tourStartTimes.includes(time)) {
+                alert('Это время уже добавлено');
+            }
+        }
+
+        function removeStartTime(index) {
+            window.tourStartTimes.splice(index, 1);
+            updateStartTimesList();
+        }
+
+        function updateStartTimesList() {
+            const container = document.getElementById('startTimesList');
+            container.innerHTML = window.tourStartTimes.map((time, index) => `
+                <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
+                    <span>🕐 ${time}</span>
+                    <button type="button" onclick="removeStartTime(${index})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             `).join('');
         }
@@ -3549,7 +3596,8 @@
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
                 // Новые поля
                 highlights: JSON.stringify(window.tourHighlights || []),
-                itinerary: JSON.stringify(window.tourItinerary || [])
+                itinerary: JSON.stringify(window.tourItinerary || []),
+                startTimeOptions: JSON.stringify(window.tourStartTimes || [])
             };
             
             const url = currentTourId ? 
