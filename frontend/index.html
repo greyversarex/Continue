@@ -3580,9 +3580,9 @@
                         <div class="flex items-center justify-between mt-auto">
                             <div class="text-lg font-bold text-gray-900">
                                 ${tour.originalPrice ? `
-                                    <span class="text-sm line-through text-gray-400 mr-2">$${tour.originalPrice}</span>
+                                    <span class="text-sm line-through text-gray-400 mr-2">${tour.originalPrice}₽</span>
                                 ` : ''}
-                                от $${tour.price}
+                                ${tour.price}₽
                                 <div class="text-xs text-gray-500">${tour.priceType}</div>
                             </div>
                             <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" 
