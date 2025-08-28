@@ -3617,6 +3617,16 @@
         document.getElementById('tourForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            // Check if category is selected
+            const categoryValue = document.getElementById('tourCategory').value;
+            console.log('Category field value:', categoryValue);
+            console.log('Selected categories:', selectedCategories);
+            
+            if (!categoryValue || categoryValue === '') {
+                alert('Пожалуйста, выберите категорию тура из выпадающего списка');
+                return;
+            }
+            
             const formData = {
                 title: JSON.stringify({
                     ru: document.getElementById('tourTitleRu').value,
@@ -3626,7 +3636,7 @@
                     ru: document.getElementById('tourDescRu').value,
                     en: document.getElementById('tourDescEn').value
                 }),
-                categoryId: parseInt(document.getElementById('tourCategory').value),
+                categoryId: parseInt(categoryValue),
                 tourBlockId: document.getElementById('tourBlockId') ? parseInt(document.getElementById('tourBlockId').value) : null,
                 format: document.getElementById('tourType').value,
                 country: document.getElementById('tourCountry').value,
