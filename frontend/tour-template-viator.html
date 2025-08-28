@@ -1039,6 +1039,10 @@
 
         // Load tour data from URL parameter or use default
         function loadTourData() {
+            if (isLoaded) {
+                console.log('Tour data already loaded from API, skipping static fallback');
+                return;
+            }
             console.log("Loading tour data...");
             
             const urlParams = new URLSearchParams(window.location.search);
@@ -1558,7 +1562,7 @@
         
         async function loadTourFromAPI() {
             const urlParams = new URLSearchParams(window.location.search);
-            const tourId = urlParams.get('id') || urlParams.get('tour');
+            const tourId = urlParams.get('tour') || urlParams.get('id');
             
             if (!tourId) {
                 console.log('No tour ID provided, falling back to static data');
@@ -1661,6 +1665,7 @@
                     }
                     
                     console.log('Tour loaded from API:', tourData);
+                    isLoaded = true; // Mark as loaded
                     updatePageContent();
                     setupEventListeners();
                     return; // Successfully loaded from API, no need to load static data
@@ -1680,11 +1685,14 @@
             }
         }
 
-        // Override the DOMContentLoaded to load from API first
+        // Initialize page - API first, then fallback if needed
         document.addEventListener('DOMContentLoaded', function() {
             console.log("DOM loaded, initializing page...");
             loadTourFromAPI();
         });
+        
+        // Prevent duplicate loadTourData calls
+        let isLoaded = false;
         // Share functionality
         function toggleShareMenu() {
             const shareMenu = document.getElementById('share-menu');
