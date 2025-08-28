@@ -36,6 +36,9 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
   
   // Отладочная информация
   console.log('Current step in render:', step);
+  console.log('Step type:', typeof step);
+  console.log('Is step hotel?', step === 'hotel');
+  console.log('Is step booking?', step === 'booking');
   const [tour, setTour] = useState<Tour | null>(null);
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [guides, setGuides] = useState<Guide[]>([]);
