@@ -1571,8 +1571,10 @@
                 const response = await fetch(`${API_BASE_URL}/tours/${tourId}`);
                 const result = await response.json();
                 
+                console.log('API Response:', result);
                 if (result.success && result.data) {
                     const apiTourData = result.data;
+                    console.log('Processing API data:', apiTourData);
                     
                     // Parse multilingual content (handle both string and object formats)
                     const title = typeof apiTourData.title === 'string' 
@@ -1663,13 +1665,14 @@
                     setupEventListeners();
                     return; // Successfully loaded from API, no need to load static data
                 } else {
-                    console.error('Failed to load tour from API');
+                    console.error('Failed to load tour from API. Success:', result.success, 'Data:', result.data);
                 }
             } catch (error) {
                 console.error('Error loading tour from API:', error);
             }
             
             // Fallback to static data if API failed
+            console.log('Falling back to static tour data');
             loadTourData();
             setupEventListeners();
         }
