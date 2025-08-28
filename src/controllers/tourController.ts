@@ -136,7 +136,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, startDate, endDate } = req.body;
+      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, highlights, itinerary, included, excluded, pickupInfo, startTimeOptions, languages, isFeatured, startDate, endDate } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -206,18 +206,31 @@ export class TourController {
       const tour = await TourModel.create({
         title,
         description,
+        shortDesc: shortDescription || null,
         duration: String(finalDuration), // Convert to string for Prisma
         price,
         priceType: priceType || 'за человека',
+        originalPrice: originalPrice || null,
         categoryId,
         tourBlockId: tourBlockId || null,
         country: country || null,
         city: city || null,
         format: format || null,
         tourType: tourType || null,
+        durationDays: durationDays || null,
+        difficulty: difficulty || null,
+        maxPeople: maxPeople || null,
+        minPeople: minPeople || null,
+        mainImage: mainImage || null,
+        images: images || null,
+        highlights: highlights || null,
+        itinerary: itinerary || null,
+        included: included || null,
+        excluded: excluded || null,
         pickupInfo: pickupInfo || null,
         startTimeOptions: startTimeOptions || null,
         languages: languages || null,
+        isFeatured: isFeatured || false,
         startDate: startDate || null,
         endDate: endDate || null
       });

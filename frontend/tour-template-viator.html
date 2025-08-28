@@ -1146,36 +1146,68 @@
                 }
             }
             
-            // ✅ ИСПРАВЛЯЕМ: Обновляем "Что включено"
-            if (tourData.highlights && Array.isArray(tourData.highlights)) {
-                const includesElement = document.getElementById('tour-includes');
-                if (includesElement) {
-                    includesElement.innerHTML = tourData.highlights.map(highlight => `
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-3 mt-1">✓</span>
-                            <span class="text-gray-700">${highlight}</span>
-                        </li>
-                    `).join('');
+            // ✅ ИСПРАВЛЯЕМ: Обновляем "Что включено" - парсим JSON данные
+            if (tourData.highlights) {
+                try {
+                    let highlightsList = [];
+                    
+                    // Парсим JSON если это строка
+                    if (typeof tourData.highlights === 'string') {
+                        const parsedHighlights = JSON.parse(tourData.highlights);
+                        highlightsList = parsedHighlights.ru || parsedHighlights.en || [];
+                    } else if (Array.isArray(tourData.highlights)) {
+                        highlightsList = tourData.highlights;
+                    }
+                    
+                    if (highlightsList.length > 0) {
+                        const includesElement = document.getElementById('tour-includes');
+                        if (includesElement) {
+                            includesElement.innerHTML = highlightsList.map(highlight => `
+                                <li class="flex items-start">
+                                    <span class="text-green-600 mr-3 mt-1">✓</span>
+                                    <span class="text-gray-700">${highlight}</span>
+                                </li>
+                            `).join('');
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to parse highlights:', e);
                 }
             }
             
-            // ✅ ИСПРАВЛЯЕМ: Обновляем программу тура
-            if (tourData.itinerary && Array.isArray(tourData.itinerary)) {
-                const programElement = document.getElementById('content-program');
-                if (programElement) {
-                    programElement.innerHTML = `
-                        <div class="space-y-6">
-                            ${tourData.itinerary.map(item => `
-                                <div class="flex items-start space-x-4">
-                                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">${item.time}</div>
-                                    <div>
-                                        <h4 class="font-semibold text-gray-900">${item.title}</h4>
-                                        <p class="text-gray-600 mt-1">${item.description}</p>
-                                    </div>
+            // ✅ ИСПРАВЛЯЕМ: Обновляем программу тура - парсим JSON данные
+            if (tourData.itinerary) {
+                try {
+                    let itineraryList = [];
+                    
+                    // Парсим JSON если это строка
+                    if (typeof tourData.itinerary === 'string') {
+                        const parsedItinerary = JSON.parse(tourData.itinerary);
+                        itineraryList = parsedItinerary.ru || parsedItinerary.en || [];
+                    } else if (Array.isArray(tourData.itinerary)) {
+                        itineraryList = tourData.itinerary;
+                    }
+                    
+                    if (itineraryList.length > 0) {
+                        const programElement = document.getElementById('content-program');
+                        if (programElement) {
+                            programElement.innerHTML = `
+                                <div class="space-y-6">
+                                    ${itineraryList.map(item => `
+                                        <div class="flex items-start space-x-4">
+                                            <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">${item.time}</div>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-900">${item.title}</h4>
+                                                <p class="text-gray-600 mt-1">${item.description}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
                                 </div>
-                            `).join('')}
-                        </div>
-                    `;
+                            `;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to parse itinerary:', e);
                 }
             }
             
@@ -1248,6 +1280,12 @@
         function updateStartTimeOptions() {
             const startTimeSection = document.getElementById('start-time-section');
             const startTimeSelect = document.getElementById('start-time-select');
+            
+            // Check if elements exist to prevent null errors
+            if (!startTimeSection || !startTimeSelect) {
+                console.warn('Start time elements not found');
+                return;
+            }
             
             if (tourData.startTimeOptions) {
                 try {
