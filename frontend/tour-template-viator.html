@@ -1666,15 +1666,18 @@
                     return; // Successfully loaded from API, no need to load static data
                 } else {
                     console.error('Failed to load tour from API. Success:', result.success, 'Data:', result.data);
+                    // Fallback to static data if API response not successful
+                    console.log('Falling back to static tour data');
+                    loadTourData();
+                    setupEventListeners();
                 }
             } catch (error) {
                 console.error('Error loading tour from API:', error);
+                // Fallback to static data if API failed
+                console.log('Falling back to static tour data');
+                loadTourData();
+                setupEventListeners();
             }
-            
-            // Fallback to static data if API failed
-            console.log('Falling back to static tour data');
-            loadTourData();
-            setupEventListeners();
         }
 
         // Override the DOMContentLoaded to load from API first
