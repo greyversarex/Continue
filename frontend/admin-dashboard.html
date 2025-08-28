@@ -2108,7 +2108,7 @@
             
             // For local development
             if (hostname === 'localhost' || hostname === '127.0.0.1') {
-                return 'http://localhost:3001/api';
+                return 'http://localhost:5000/api';
             }
             
             // For Replit - API доступен на том же домене и порту
@@ -2126,8 +2126,8 @@
                 }
             }
             
-            // Попробовать тот же хост с портом 3001
-            const apiUrl = `${protocol}//${hostname}:3001/api`;
+            // Попробовать тот же хост с портом 5000  
+            const apiUrl = `${protocol}//${hostname}:5000/api`;
             console.log('Using API_BASE:', apiUrl);
             return apiUrl;
         }
