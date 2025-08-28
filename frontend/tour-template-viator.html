@@ -1098,19 +1098,52 @@
                 mealsElement.textContent = tourData.pickupInfo || 'Приём не включен';
             }
             
-            // ✅ ИСПРАВЛЯЕМ: Обновляем описание тура из API
+            // ✅ ПОЛНОЕ ОПИСАНИЕ из формы (eTourFullDesc -> tour-description-content)
             const descriptionElement = document.getElementById('tour-description-content');
             if (descriptionElement && tourData.description) {
                 descriptionElement.innerHTML = `<p>${tourData.description.replace(/\n/g, '</p><p>')}</p>`;
             }
             
-            // ✅ ИСПРАВЛЯЕМ: Обновляем цену
+            // ✅ ЦЕНА из формы (eTourPrice -> tour-price)
             if (tourData.price) {
                 const tourPrice = document.getElementById('tour-price');
                 if (tourPrice) tourPrice.textContent = `От ${tourData.price}₽`;
                 
                 const priceTypeText = document.getElementById('price-type-text');
                 if (priceTypeText) priceTypeText.textContent = tourData.priceType || 'за человека';
+            }
+            
+            // ✅ ДЛИТЕЛЬНОСТЬ из формы (eTourDurationDays -> tour-duration)
+            const durationElement = document.getElementById('tour-duration');
+            if (durationElement) {
+                if (tourData.durationDays) {
+                    durationElement.textContent = `${tourData.durationDays} дней`;
+                } else if (tourData.duration) {
+                    durationElement.textContent = tourData.duration;
+                } else {
+                    durationElement.textContent = 'Длительность уточнить';
+                }
+            }
+            
+            // ✅ СЛОЖНОСТЬ из формы (eTourDifficulty)
+            if (tourData.difficulty) {
+                const difficultyElement = document.getElementById('tour-difficulty');
+                if (difficultyElement) difficultyElement.textContent = tourData.difficulty;
+            }
+            
+            // ✅ МАКС/МИН ЛЮДЕЙ из формы (eTourMaxPeople, eTourMinPeople)
+            if (tourData.maxPeople || tourData.minPeople) {
+                const peopleElement = document.getElementById('tour-max-people');
+                if (peopleElement) {
+                    let peopleText = '';
+                    if (tourData.minPeople) peopleText += `От ${tourData.minPeople}`;
+                    if (tourData.maxPeople) {
+                        if (peopleText) peopleText += ` до ${tourData.maxPeople}`;
+                        else peopleText = `До ${tourData.maxPeople}`;
+                    }
+                    peopleText += ' человек';
+                    peopleElement.textContent = peopleText;
+                }
             }
             
             // ✅ ИСПРАВЛЯЕМ: Обновляем "Что включено"
@@ -1172,6 +1205,17 @@
             const breadcrumbElement = document.getElementById('breadcrumb-final');
             if (breadcrumbElement) {
                 breadcrumbElement.textContent = tourData.title.split(':')[1]?.trim() || tourData.title;
+            }
+            
+            // ✅ ИЗОБРАЖЕНИЯ - используем mainImage из формы
+            if (tourData.mainImage) {
+                const heroImage = document.querySelector('.hero-image img, [id*="hero"] img');
+                if (heroImage) heroImage.src = tourData.mainImage;
+                
+                // Обновляем все изображения в галерее
+                if (!tourData.images || tourData.images.length === 0) {
+                    tourData.images = [tourData.mainImage];
+                }
             }
             
             // Load images
@@ -1625,24 +1669,47 @@
                         description = { ru: apiTourData.description };
                     }
                     
-                    // Update global tourData
+                    // ✅ ПОЛНЫЙ МАППИНГ всех полей из API
                     tourData = {
                         ...tourData,
                         id: apiTourData.id,
                         title: title.ru,
                         description: description.ru,
+                        shortDesc: apiTourData.shortDesc,
+                        
+                        // Ценовые поля  
                         price: apiTourData.price,
                         priceType: apiTourData.priceType,
-                        location: `${apiTourData.city}, ${apiTourData.country}`,
+                        originalPrice: apiTourData.originalPrice,
+                        
+                        // Временные поля
                         duration: apiTourData.duration,
+                        durationDays: apiTourData.durationDays,
+                        
+                        // Локация
+                        country: apiTourData.country,
+                        city: apiTourData.city,
+                        location: `${apiTourData.city || 'Неизвестно'}, ${apiTourData.country || 'Центральная Азия'}`,
+                        
+                        // Детали тура
                         format: apiTourData.format,
                         difficulty: apiTourData.difficulty,
+                        maxPeople: apiTourData.maxPeople,
+                        minPeople: apiTourData.minPeople,
+                        
+                        // Изображения
+                        mainImage: apiTourData.mainImage,
+                        
+                        // Опции
                         rating: apiTourData.rating || 4.8,
                         reviewCount: apiTourData.reviewsCount || 0,
-                        maxPeople: apiTourData.maxPeople,
-                        country: apiTourData.country,
                         pickupInfo: apiTourData.pickupInfo,
-                        startTimeOptions: apiTourData.startTimeOptions
+                        startTimeOptions: apiTourData.startTimeOptions,
+                        languages: apiTourData.languages,
+                        
+                        // Статусы
+                        isActive: apiTourData.isActive,
+                        isFeatured: apiTourData.isFeatured
                     };
                     
                     // Parse optional JSON fields and set default images
