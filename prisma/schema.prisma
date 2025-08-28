@@ -61,6 +61,7 @@ model Tour {
   highlights     String?          // JSON array of tour highlights
   itinerary      String?          // JSON array of daily itinerary
   included       String?          // JSON array of what's included
+  includes       String?          // JSON array of services included in tour
   excluded       String?          // JSON array of what's excluded
   requirements   String?          // JSON field for requirements/restrictions
   difficulty     String?          // Easy, Medium, Hard

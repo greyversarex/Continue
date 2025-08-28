@@ -331,7 +331,7 @@
     <div class="step-indicator">
         <div class="step active" id="step1">
             <div class="step-circle">1</div>
-            <span class="step-label">Выбор даты и отеля</span>
+            <span class="step-label">Выбор даты и времени</span>
         </div>
         <div class="step-connector"></div>
         <div class="step" id="step2">
@@ -352,51 +352,88 @@
             <div class="main-section">
                 <!-- Step 1: Date and Hotel Selection -->
                 <div id="step1Content" style="display: none;">
-                    <h2 class="text-2xl font-semibold mb-6">Выберите дату и отель</h2>
+                    <h2 class="text-2xl font-semibold mb-6">Выберите дату и время</h2>
                     
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-calendar-alt text-gray-500 mr-2"></i>
-                            Дата начала тура
-                        </label>
-                        <input type="date" id="tourDate" class="form-input" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-clock text-gray-500 mr-2"></i>
-                            Время начала тура
-                        </label>
-                        <select id="tourTime" class="form-input" required>
-                            <option value="">Выберите время</option>
-                            <option value="08:00">08:00</option>
-                            <option value="09:00">09:00</option>
-                            <option value="10:00">10:00</option>
-                            <option value="11:00">11:00</option>
-                            <option value="12:00">12:00</option>
-                            <option value="13:00">13:00</option>
-                            <option value="14:00">14:00</option>
-                            <option value="15:00">15:00</option>
-                            <option value="16:00">16:00</option>
-                            <option value="17:00">17:00</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold mb-4">
-                            <i class="fas fa-hotel text-gray-500 mr-2"></i>
-                            Доступные отели
-                        </h3>
-                        <div id="hotelsList">
-                            <!-- Hotels will be loaded here -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Date and Time Selection -->
+                        <div class="space-y-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar-alt text-gray-500 mr-2"></i>
+                                    Дата начала тура
+                                </label>
+                                <input type="date" id="tourDate" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-clock text-gray-500 mr-2"></i>
+                                    Время начала тура
+                                </label>
+                                <div id="timeOptions" class="space-y-3">
+                                    <!-- Time options will be populated here -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-users text-gray-500 mr-2"></i>
+                                    Количество туристов
+                                </label>
+                                <div id="touristsInfo" class="bg-gray-50 p-4 rounded-lg border">
+                                    <!-- Will be populated from localStorage -->
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <button class="btn btn-primary" onclick="goToStep2()">
+                                    Продолжить
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="flex justify-end">
-                        <button class="btn btn-primary" onclick="goToStep2()">
-                            Выбрать
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
+                        
+                        <!-- Tour Details -->
+                        <div class="bg-white rounded-lg border shadow-sm p-6">
+                            <h3 class="text-lg font-semibold mb-4">Детали тура</h3>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-map-marker-alt text-blue-500 mt-1"></i>
+                                    <div>
+                                        <div class="font-medium" id="tourTitle">Название тура</div>
+                                        <div class="text-sm text-gray-600" id="tourLocation">Локация</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-clock text-blue-500"></i>
+                                    <span class="text-sm" id="tourDuration">Продолжительность</span>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-star text-yellow-500"></i>
+                                    <span class="text-sm" id="tourRating">Рейтинг</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 pt-6 border-t">
+                                <h4 class="font-medium mb-3">Что включено</h4>
+                                <div id="tourIncludes" class="space-y-2">
+                                    <!-- Will be populated from tour data -->
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 pt-6 border-t">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-lg font-semibold">Общая стоимость</span>
+                                    <span class="text-2xl font-bold text-blue-600" id="totalCost">0₽</span>
+                                </div>
+                                <div class="text-sm text-gray-600 mt-1" id="priceBreakdown">
+                                    <!-- Price breakdown will be shown here -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1271,9 +1308,124 @@
             });
         }
         
+        // Load booking data from localStorage and populate fields
+        function loadBookingData() {
+            try {
+                const bookingData = localStorage.getItem('bookingData');
+                if (bookingData) {
+                    const data = JSON.parse(bookingData);
+                    console.log('Загружены данные бронирования:', data);
+                    
+                    // Populate date
+                    if (data.date) {
+                        document.getElementById('tourDate').value = data.date;
+                    }
+                    
+                    // Populate time options
+                    populateTimeOptions(data.time);
+                    
+                    // Populate tourists info
+                    populateTouristsInfo(data.travelers);
+                    
+                    // Populate tour details
+                    populateTourDetails(data);
+                    
+                    // Calculate and display pricing
+                    updatePricing(data);
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки данных бронирования:', error);
+            }
+        }
+        
+        function populateTimeOptions(selectedTime) {
+            const container = document.getElementById('timeOptions');
+            const times = ['07:30', '09:00', '12:00', '13:30'];
+            
+            container.innerHTML = times.map(time => `
+                <div class="border rounded-lg p-3 cursor-pointer hover:bg-blue-50 ${time === selectedTime?.replace(' утра', '').replace(' дня', '') ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}" 
+                     onclick="selectTime('${time}', this)">
+                    <div class="flex justify-between items-center">
+                        <div class="font-medium">${time}</div>
+                        <div class="text-sm text-gray-600">Доступно</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function selectTime(time, element) {
+            // Remove selection from all options
+            document.querySelectorAll('#timeOptions > div').forEach(div => {
+                div.classList.remove('border-blue-500', 'bg-blue-50');
+                div.classList.add('border-gray-300');
+            });
+            
+            // Add selection to clicked option
+            element.classList.remove('border-gray-300');
+            element.classList.add('border-blue-500', 'bg-blue-50');
+            
+            selectedTourTime = time;
+        }
+        
+        function populateTouristsInfo(travelers) {
+            const container = document.getElementById('touristsInfo');
+            if (!travelers) return;
+            
+            let info = [];
+            if (travelers.adults > 0) info.push(`${travelers.adults} взрослых`);
+            if (travelers.children > 0) info.push(`${travelers.children} детей`);
+            if (travelers.infants > 0) info.push(`${travelers.infants} младенцев`);
+            
+            container.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="font-medium">${info.join(', ')}</span>
+                    <span class="text-sm text-gray-500">Всего: ${travelers.adults + travelers.children + travelers.infants}</span>
+                </div>
+            `;
+        }
+        
+        function populateTourDetails(data) {
+            // These would be populated from tour API data
+            document.getElementById('tourTitle').textContent = data.tourTitle || 'Название тура';
+            document.getElementById('tourLocation').textContent = data.tourLocation || 'Локация';
+            document.getElementById('tourDuration').textContent = data.tourDuration || 'Продолжительность';
+            document.getElementById('tourRating').textContent = '4.8 ★ (234 отзыва)';
+            
+            // Populate includes
+            const includesContainer = document.getElementById('tourIncludes');
+            const includes = ['Профессиональный гид', 'Транспорт', 'Входные билеты'];
+            includesContainer.innerHTML = includes.map(item => `
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-check text-green-500 text-sm"></i>
+                    <span class="text-sm">${item}</span>
+                </div>
+            `).join('');
+        }
+        
+        function updatePricing(data) {
+            const totalPriceElement = document.getElementById('totalCost');
+            const breakdownElement = document.getElementById('priceBreakdown');
+            
+            if (data.totalPrice) {
+                totalPriceElement.textContent = data.totalPrice;
+            }
+            
+            if (data.travelers) {
+                const { adults, children, infants } = data.travelers;
+                let breakdown = [];
+                if (adults > 0) breakdown.push(`${adults} взрослых`);
+                if (children > 0) breakdown.push(`${children} детей`);
+                if (infants > 0) breakdown.push(`${infants} младенцев`);
+                
+                breakdownElement.textContent = breakdown.join(', ');
+            }
+        }
+
         // Initialize page on load
         document.addEventListener('DOMContentLoaded', function() {
+            loadBookingData();
             updateTouristsList();
+            showStep(1);
         });
     </script>
 </body>

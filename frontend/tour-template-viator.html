@@ -607,7 +607,7 @@
                                     <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 12a5 5 0 100-10 5 5 0 000 10zm0-2a3 3 0 100-6 3 3 0 000 6zm6 10a1 1 0 01-1 1H5a1 1 0 01-1-1v-1a6 6 0 1112 0v1z"/>
                                     </svg>
-                                    <span id="traveler-summary">2 взрослых, 1 ребенок</span>
+                                    <span id="traveler-summary">1 взрослый</span>
                                 </div>
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -629,7 +629,7 @@
                                     <button onclick="changeTravelerCount('adults', -1)" class="w-8 h-8 rounded-full border-2 border-teal-600 text-teal-600 flex items-center justify-center hover:bg-teal-50">
                                         <span class="text-lg font-bold">−</span>
                                     </button>
-                                    <span id="adults-count" class="font-bold text-lg w-6 text-center">2</span>
+                                    <span id="adults-count" class="font-bold text-lg w-6 text-center">1</span>
                                     <button onclick="changeTravelerCount('adults', 1)" class="w-8 h-8 rounded-full border-2 border-teal-600 text-teal-600 flex items-center justify-center hover:bg-teal-50">
                                         <span class="text-lg font-bold">+</span>
                                     </button>
@@ -646,7 +646,7 @@
                                     <button onclick="changeTravelerCount('children', -1)" class="w-8 h-8 rounded-full border-2 border-teal-600 text-teal-600 flex items-center justify-center hover:bg-teal-50">
                                         <span class="text-lg font-bold">−</span>
                                     </button>
-                                    <span id="children-count" class="font-bold text-lg w-6 text-center">1</span>
+                                    <span id="children-count" class="font-bold text-lg w-6 text-center">0</span>
                                     <button onclick="changeTravelerCount('children', 1)" class="w-8 h-8 rounded-full border-2 border-teal-600 text-teal-600 flex items-center justify-center hover:bg-teal-50">
                                         <span class="text-lg font-bold">+</span>
                                     </button>
@@ -1799,8 +1799,8 @@
         
         // ============ TRAVELERS SELECTOR FUNCTIONS ============
         let travelers = {
-            adults: 2,
-            children: 1,
+            adults: 1,
+            children: 0,
             infants: 0
         };
         
@@ -1901,8 +1901,20 @@
             let availableTimes = [];
             
             // Use times from tour data if available
+            let timeOptions = null;
+            
             if (tourData.startTimeOptions && Array.isArray(tourData.startTimeOptions)) {
-                availableTimes = tourData.startTimeOptions.map(time => {
+                timeOptions = tourData.startTimeOptions;
+            } else if (tourData.startTimeOptions && typeof tourData.startTimeOptions === 'string') {
+                try {
+                    timeOptions = JSON.parse(tourData.startTimeOptions);
+                } catch (e) {
+                    console.warn('Failed to parse startTimeOptions JSON:', e);
+                }
+            }
+            
+            if (timeOptions && Array.isArray(timeOptions) && timeOptions.length > 0) {
+                availableTimes = timeOptions.map(time => {
                     // Convert 24-hour format to readable format
                     const [hours, minutes] = time.split(':');
                     const hour = parseInt(hours);
@@ -1955,13 +1967,37 @@
         function populateModalIncludes() {
             const container = document.getElementById('modal-tour-includes');
             
-            if (tourData.highlights && Array.isArray(tourData.highlights)) {
-                container.innerHTML = tourData.highlights.map(highlight => `
+            // Try to use includes field first, then highlights as fallback
+            let includesData = null;
+            
+            if (tourData.includes && Array.isArray(tourData.includes)) {
+                includesData = tourData.includes;
+            } else if (tourData.includes && typeof tourData.includes === 'string') {
+                try {
+                    includesData = JSON.parse(tourData.includes);
+                } catch (e) {
+                    console.warn('Failed to parse includes JSON:', e);
+                }
+            }
+            
+            // Fallback to highlights if includes not available
+            if (!includesData && tourData.highlights && Array.isArray(tourData.highlights)) {
+                includesData = tourData.highlights;
+            } else if (!includesData && tourData.highlights && typeof tourData.highlights === 'string') {
+                try {
+                    includesData = JSON.parse(tourData.highlights);
+                } catch (e) {
+                    console.warn('Failed to parse highlights JSON:', e);
+                }
+            }
+            
+            if (includesData && Array.isArray(includesData) && includesData.length > 0) {
+                container.innerHTML = includesData.map(item => `
                     <div class="flex items-center space-x-2">
                         <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                         </svg>
-                        <span class="text-sm">${highlight}</span>
+                        <span class="text-sm">${item}</span>
                     </div>
                 `).join('');
             } else {
