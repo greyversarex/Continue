@@ -5093,6 +5093,58 @@
         });
 
         
+        // Category selection functions
+        const categoryMapping = {
+            'Однодневные туры': 1,
+            'Многодневные туры': 2,
+            'Экскурсии': 3,
+            'Городские туры': 4,
+            'Природа/экологические туры': 5,
+            'Культурно познавательные туры': 6,
+            'Исторические туры': 7,
+            'Походы/трекинги': 8,
+            'Горные ландшафты': 9,
+            'Озерные ландшафты': 10,
+            'Приключенческие туры': 11,
+            'Гастрономические туры': 12,
+            'Автотуры/сафари/джип-туры': 13,
+            'Агротуры': 14,
+            'VIP туры': 15
+        };
+
+        function selectCategory(categoryNameRu, categoryNameEn) {
+            const categoryId = categoryMapping[categoryNameRu];
+            if (categoryId) {
+                // Set the category ID in the hidden field
+                document.getElementById('tourCategory').value = categoryId;
+                
+                // Update the category selection display
+                const categoryButton = document.querySelector('[onclick="showCategoryListModal()"]');
+                if (categoryButton) {
+                    const textElement = categoryButton.querySelector('.text-gray-600');
+                    if (textElement) {
+                        textElement.textContent = categoryNameRu;
+                        textElement.classList.remove('text-gray-600');
+                        textElement.classList.add('text-blue-600');
+                    }
+                }
+                
+                // Close the modal
+                closeCategoryListModal();
+            } else {
+                console.error('Category ID not found for:', categoryNameRu);
+                alert('Ошибка: категория не найдена');
+            }
+        }
+
+        function showCategoryListModal() {
+            document.getElementById('categoryListModal').classList.add('active');
+        }
+
+        function closeCategoryListModal() {
+            document.getElementById('categoryListModal').classList.remove('active');
+        }
+
         // Check authentication on page load
         function checkAuthOnLoad() {
             const token = localStorage.getItem('authToken');
