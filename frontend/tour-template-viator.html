@@ -1581,12 +1581,24 @@
                     console.log('Processing API data:', apiTourData);
                     
                     // Parse multilingual content (handle both string and object formats)
-                    const title = typeof apiTourData.title === 'string' 
-                        ? JSON.parse(apiTourData.title) 
-                        : apiTourData.title;
-                    const description = typeof apiTourData.description === 'string' 
-                        ? JSON.parse(apiTourData.description) 
-                        : apiTourData.description;
+                    let title, description;
+                    try {
+                        title = typeof apiTourData.title === 'string' 
+                            ? JSON.parse(apiTourData.title) 
+                            : apiTourData.title;
+                    } catch (e) {
+                        console.warn('Failed to parse title:', e);
+                        title = { ru: apiTourData.title };
+                    }
+                    
+                    try {
+                        description = typeof apiTourData.description === 'string' 
+                            ? JSON.parse(apiTourData.description) 
+                            : apiTourData.description;
+                    } catch (e) {
+                        console.warn('Failed to parse description:', e);
+                        description = { ru: apiTourData.description };
+                    }
                     
                     // Update global tourData
                     tourData = {
@@ -1666,8 +1678,14 @@
                     
                     console.log('Tour loaded from API:', tourData);
                     isLoaded = true; // Mark as loaded
-                    updatePageContent();
-                    setupEventListeners();
+                    
+                    try {
+                        updatePageContent();
+                        setupEventListeners();
+                        console.log('Successfully updated page with API data');
+                    } catch (updateError) {
+                        console.error('Error updating page content:', updateError);
+                    }
                     return; // Successfully loaded from API, no need to load static data
                 } else {
                     console.error('Failed to load tour from API. Success:', result.success, 'Data:', result.data);
