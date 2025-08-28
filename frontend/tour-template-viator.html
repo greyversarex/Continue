@@ -1065,19 +1065,29 @@
         function updatePageContent() {
             console.log("Updating page content with tour data:", tourData);
             
-            // Update title and meta
-            document.getElementById('page-title').textContent = `${tourData.title} - Bunyod-Tour`;
-            document.getElementById('tour-title').textContent = tourData.title;
-            document.getElementById('tour-location').textContent = tourData.location;
-            document.getElementById('tour-reviews').textContent = `(${tourData.reviews_count || tourData.reviewCount || 0} отзыва)`;
+            // Update title and meta - с проверкой существования элементов
+            const pageTitle = document.getElementById('page-title');
+            if (pageTitle) pageTitle.textContent = `${tourData.title} - Bunyod-Tour`;
+            
+            const tourTitle = document.getElementById('tour-title');
+            if (tourTitle) tourTitle.textContent = tourData.title;
+            
+            const tourLocation = document.getElementById('tour-location');
+            if (tourLocation) tourLocation.textContent = tourData.location;
+            
+            const tourReviews = document.getElementById('tour-reviews');
+            if (tourReviews) tourReviews.textContent = `(${tourData.reviews_count || tourData.reviewCount || 0} отзыва)`;
             
             // Обновляем продолжительность
-            if (tourData.duration) {
-                document.getElementById('tour-duration').textContent = tourData.duration;
-            } else if (tourData.durationDays) {
-                document.getElementById('tour-duration').textContent = tourData.durationDays + ' дней';
-            } else {
-                document.getElementById('tour-duration').textContent = 'Длительность: уточнить';
+            const tourDuration = document.getElementById('tour-duration');
+            if (tourDuration) {
+                if (tourData.duration) {
+                    tourDuration.textContent = tourData.duration;
+                } else if (tourData.durationDays) {
+                    tourDuration.textContent = tourData.durationDays + ' дней';
+                } else {
+                    tourDuration.textContent = 'Длительность: уточнить';
+                }
             }
             
             // Обновляем информацию о приёме/сборе
@@ -1094,8 +1104,11 @@
             
             // ✅ ИСПРАВЛЯЕМ: Обновляем цену
             if (tourData.price) {
-                document.getElementById('tour-price').textContent = `От ${tourData.price}₽`;
-                document.getElementById('price-type-text').textContent = tourData.priceType || 'за человека';
+                const tourPrice = document.getElementById('tour-price');
+                if (tourPrice) tourPrice.textContent = `От ${tourData.price}₽`;
+                
+                const priceTypeText = document.getElementById('price-type-text');
+                if (priceTypeText) priceTypeText.textContent = tourData.priceType || 'за человека';
             }
             
             // ✅ ИСПРАВЛЯЕМ: Обновляем "Что включено"
