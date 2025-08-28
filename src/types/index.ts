@@ -33,9 +33,11 @@ export interface TourData {
 export interface CreateTourData {
   title: MultilingualContent;
   description: MultilingualContent;
+  shortDescription?: MultilingualContent;
   duration: string;
   price: string;
   priceType?: string;
+  originalPrice?: string;
   categoryId: number;
   tourBlockId?: number;
   country?: string;
@@ -43,6 +45,16 @@ export interface CreateTourData {
   durationDays?: number;
   format?: string;
   tourType?: string;
+  difficulty?: string;
+  maxPeople?: number;
+  minPeople?: number;
+  mainImage?: string;
+  images?: string;
+  highlights?: string;
+  itinerary?: string;
+  included?: string;
+  excluded?: string;
+  isFeatured?: boolean;
   pickupInfo?: string;
   startTimeOptions?: string;
   languages?: string;
