@@ -7,9 +7,7 @@ import Stripe from 'stripe';
 
 const router = Router();
 const stripeKey = process.env.STRIPE_SECRET_KEY;
-const stripe = stripeKey ? new Stripe(stripeKey, {
-  apiVersion: '2024-12-18.acacia',
-}) : null;
+const stripe = stripeKey ? new Stripe(stripeKey) : null;
 
 // Create payment intent for Stripe
 router.post('/create-payment-intent', async (req: Request, res: Response) => {

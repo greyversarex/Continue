@@ -191,7 +191,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
           </div>
 
           {/* Step 1: Date and Hotel Selection */}
-          {step === 'hotel' && (
+          {(step === 'hotel' || true) && (
             <div className="space-y-6">
               <h2 className="text-2xl font-semibold mb-6">Выберите дату и отель</h2>
               
@@ -355,7 +355,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
             console.log('Rendering booking step check. Step is:', step, 'Should show booking?', step === 'booking');
             return null;
           })()}
-          {step === 'booking' && (
+          {(step === 'booking' && false) && (
             <div className="space-y-6">
               {/* Customer Information */}
               <div>
