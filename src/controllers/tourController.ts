@@ -426,7 +426,7 @@ export class TourController {
         const allTours = await TourModel.findAll();
         
         // Filter tours that match the search query
-        const matchingTours = allTours.filter(tour => {
+        const matchingTours = allTours.filter((tour: any) => {
           const title = JSON.parse(tour.title) as MultilingualContent;
           const description = JSON.parse(tour.description) as MultilingualContent;
           
@@ -449,7 +449,7 @@ export class TourController {
         });
         
         if (matchingTours.length > 0) {
-          filters.push({ id: { in: matchingTours.map(t => t.id) } });
+          filters.push({ id: { in: matchingTours.map((t: any) => t.id) } });
         } else {
           // No matches found, return empty result
           const response: ApiResponse = {
@@ -578,7 +578,7 @@ export class TourController {
       const suggestions: Array<{text: string, type: string}> = [];
       
       // Add tour suggestions
-      tours.forEach(tour => {
+      tours.forEach((tour: any) => {
         const title = JSON.parse(tour.title) as MultilingualContent;
         
         // Check Russian title
@@ -660,7 +660,7 @@ export class CategoryController {
       const categories = await CategoryModel.findAll();
       
       // Parse JSON fields for response
-      const parsedCategories = categories.map(category => ({
+      const parsedCategories = categories.map((category: any) => ({
         ...category,
         name: JSON.parse(category.name) as MultilingualContent
       }));
@@ -705,7 +705,7 @@ export class CategoryController {
       const parsedCategory = {
         ...category,
         name: JSON.parse(category.name) as MultilingualContent,
-        tours: category.tours?.map(tour => ({
+        tours: category.tours?.map((tour: any) => ({
           ...tour,
           title: JSON.parse(tour.title) as MultilingualContent,
           description: JSON.parse(tour.description) as MultilingualContent
@@ -866,7 +866,7 @@ export class BookingRequestController {
       const bookingRequests = await BookingRequestModel.findAll();
       
       // Parse JSON fields for response
-      const parsedBookingRequests = bookingRequests.map(request => ({
+      const parsedBookingRequests = bookingRequests.map((request: any) => ({
         ...request,
         tour: {
           ...request.tour,
@@ -1015,7 +1015,7 @@ export class ReviewController {
       const reviews = await ReviewModel.findAll();
       
       // Parse JSON fields for response
-      const parsedReviews = reviews.map(review => ({
+      const parsedReviews = reviews.map((review: any) => ({
         ...review,
         customer: review.customer,
         tour: review.tour ? {

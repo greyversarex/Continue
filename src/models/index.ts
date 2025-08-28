@@ -343,7 +343,7 @@ export class HotelModel {
       orderBy: { createdAt: 'desc' }
     });
 
-    return hotels.map(hotel => ({
+    return hotels.map((hotel: any) => ({
       ...hotel,
       name: typeof hotel.name === 'string' ? JSON.parse(hotel.name) : hotel.name,
       description: hotel.description && typeof hotel.description === 'string' ? JSON.parse(hotel.description) : hotel.description,
@@ -367,7 +367,7 @@ export class HotelModel {
       ]
     });
 
-    return tourHotels.map(th => ({
+    return tourHotels.map((th: any) => ({
       ...th.hotel,
       name: typeof th.hotel.name === 'string' ? JSON.parse(th.hotel.name) : th.hotel.name,
       description: th.hotel.description && typeof th.hotel.description === 'string' ? JSON.parse(th.hotel.description) : th.hotel.description,
@@ -406,7 +406,7 @@ export class HotelModel {
       description: hotel.description && typeof hotel.description === 'string' ? JSON.parse(hotel.description) : hotel.description,
       images: hotel.images && typeof hotel.images === 'string' ? JSON.parse(hotel.images) : (hotel.images || []),
       amenities: hotel.amenities && typeof hotel.amenities === 'string' ? JSON.parse(hotel.amenities) : (hotel.amenities || []),
-      tourHotels: hotel.tourHotels.map(th => ({
+      tourHotels: hotel.tourHotels.map((th: any) => ({
         ...th,
         tour: {
           ...th.tour,
