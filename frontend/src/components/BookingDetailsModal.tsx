@@ -19,6 +19,7 @@ interface BookingFormData {
   }>;
   selectedDate: string;
   selectedHotel?: Hotel;
+  selectedRoomCategory?: string;
   selectedGuide?: Guide;
   specialRequests: string;
   agreeToTerms: boolean;
@@ -191,9 +192,9 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
             <div className="space-y-6">
               <div>
                 <h4 className="text-lg font-medium text-gray-900 mb-4">
-                  Выберите отель
+                  Выберите отель и категорию номера
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   {hotels.map((hotel) => (
                     <div
                       key={hotel.id}
@@ -203,34 +204,73 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                           : 'border-gray-200'
                       }`}
                     >
-                      <h5 className="font-medium text-gray-900">
-                        {typeof hotel.name === 'object' ? hotel.name.ru : hotel.name}
-                      </h5>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {typeof hotel.description === 'object' ? hotel.description?.ru : hotel.description || ''}
-                      </p>
-                      <div className="flex justify-between items-center mt-4">
-                        <p className="text-sm font-medium text-blue-600">
-                          {hotel.rating}⭐ • {hotel.location}
-                        </p>
-                        <button
-                          onClick={() => {
-                            console.log('Hotel selected and proceeding:', hotel.id, hotel.name);
-                            setFormData(prev => ({ ...prev, selectedHotel: hotel }));
-                            setStep('booking');
-                            console.log('Moving to booking step');
-                          }}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors"
-                        >
-                          Выбрать
-                        </button>
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1">
+                          <h5 className="font-medium text-gray-900 text-lg">
+                            {typeof hotel.name === 'object' ? hotel.name.ru : hotel.name}
+                          </h5>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {typeof hotel.description === 'object' ? hotel.description?.ru : hotel.description || ''}
+                          </p>
+                          <p className="text-sm font-medium text-blue-600 mt-2">
+                            {hotel.rating}⭐ • {hotel.location}
+                          </p>
+                        </div>
                       </div>
+                      
+                      {/* Room Categories */}
+                      <div className="mt-4">
+                        <h6 className="font-medium text-gray-800 mb-3">Категории номеров:</h6>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          {['Стандарт', 'Комфорт', 'Люкс'].map((category) => (
+                            <div
+                              key={category}
+                              className={`border rounded-lg p-3 cursor-pointer transition-colors ${
+                                formData.selectedHotel?.id === hotel.id && formData.selectedRoomCategory === category
+                                  ? 'border-blue-500 bg-blue-50'
+                                  : 'border-gray-200 hover:border-gray-300'
+                              }`}
+                              onClick={() => {
+                                setFormData(prev => ({ 
+                                  ...prev, 
+                                  selectedHotel: hotel, 
+                                  selectedRoomCategory: category 
+                                }));
+                              }}
+                            >
+                              <div className="text-sm font-medium text-gray-900">{category}</div>
+                              <div className="text-xs text-gray-600 mt-1">
+                                {category === 'Стандарт' && 'Базовые удобства'}
+                                {category === 'Комфорт' && 'Улучшенные условия'}
+                                {category === 'Люкс' && 'Премиум сервис'}
+                              </div>
+                              <div className="text-sm font-medium text-blue-600 mt-2">
+                                {category === 'Стандарт' && 'от $50/ночь'}
+                                {category === 'Комфорт' && 'от $80/ночь'}
+                                {category === 'Люкс' && 'от $120/ночь'}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {formData.selectedHotel?.id === hotel.id && formData.selectedRoomCategory && (
+                        <div className="mt-4 pt-4 border-t">
+                          <button
+                            onClick={() => {
+                              console.log('Hotel and room selected:', hotel.id, formData.selectedRoomCategory);
+                              setStep('booking');
+                            }}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                          >
+                            Продолжить с {formData.selectedRoomCategory}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
-
-
             </div>
           )}
 
