@@ -1065,6 +1065,8 @@
         function updatePageContent() {
             console.log("Updating page content with tour data:", tourData);
             
+            try {
+            
             // Update title and meta - с проверкой существования элементов
             const pageTitle = document.getElementById('page-title');
             if (pageTitle) pageTitle.textContent = `${tourData.title} - Bunyod-Tour`;
@@ -1162,11 +1164,15 @@
             
             // Update rating
             const ratingElement = document.getElementById('tour-rating');
-            ratingElement.innerHTML = '★'.repeat(Math.floor(tourData.rating)) + (tourData.rating % 1 ? '☆' : '');
+            if (ratingElement) {
+                ratingElement.innerHTML = '★'.repeat(Math.floor(tourData.rating || 4.8)) + ((tourData.rating || 4.8) % 1 ? '☆' : '');
+            }
             
             // Update breadcrumb
             const breadcrumbElement = document.getElementById('breadcrumb-final');
-            breadcrumbElement.textContent = tourData.title.split(':')[1]?.trim() || tourData.title;
+            if (breadcrumbElement) {
+                breadcrumbElement.textContent = tourData.title.split(':')[1]?.trim() || tourData.title;
+            }
             
             // Load images
             loadImages();
@@ -1176,6 +1182,12 @@
             
             // Update start time options
             updateStartTimeOptions();
+            
+            } catch (error) {
+                console.error('Error in updatePageContent:', error);
+                console.error('Error stack:', error.stack);
+                throw error;
+            }
         }
         
         // Update price display (static from database)
@@ -1184,8 +1196,8 @@
             const priceTypeElement = document.getElementById('price-type-text');
             
             // Set price from tour data (static, no toggle)
-            priceElement.textContent = `От ${tourData.price}`;
-            priceTypeElement.textContent = tourData.priceType || 'за человека';
+            if (priceElement) priceElement.textContent = `От ${tourData.price}`;
+            if (priceTypeElement) priceTypeElement.textContent = tourData.priceType || 'за человека';
         }
         
         // Update start time options
@@ -1693,11 +1705,14 @@
                     isLoaded = true; // Mark as loaded
                     
                     try {
+                        console.log('Starting to update page content...');
                         updatePageContent();
+                        console.log('Page content updated successfully');
                         setupEventListeners();
                         console.log('Successfully updated page with API data');
                     } catch (updateError) {
                         console.error('Error updating page content:', updateError);
+                        console.error('Error stack:', updateError.stack);
                     }
                     return; // Successfully loaded from API, no need to load static data
                 } else {
