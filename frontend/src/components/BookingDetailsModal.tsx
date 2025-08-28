@@ -187,88 +187,161 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Hotel Selection Step */}
+          {/* Step 1: Date and Hotel Selection */}
           {step === 'hotel' && (
             <div className="space-y-6">
-              <div>
-                <h4 className="text-lg font-medium text-gray-900 mb-4">
-                  Выберите отель и категорию номера
-                </h4>
-                <div className="grid grid-cols-1 gap-4">
-                  {hotels.map((hotel) => (
-                    <div
-                      key={hotel.id}
-                      className={`border rounded-lg p-4 transition-colors ${
-                        formData.selectedHotel?.id === hotel.id
-                          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                          : 'border-gray-200'
-                      }`}
-                    >
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex-1">
-                          <h5 className="font-medium text-gray-900 text-lg">
-                            {typeof hotel.name === 'object' ? hotel.name.ru : hotel.name}
-                          </h5>
-                          <p className="text-sm text-gray-600 mt-1">
-                            {typeof hotel.description === 'object' ? hotel.description?.ru : hotel.description || ''}
-                          </p>
-                          <p className="text-sm font-medium text-blue-600 mt-2">
-                            {hotel.rating}⭐ • {hotel.location}
-                          </p>
+              <h2 className="text-2xl font-semibold mb-6">Выберите дату и отель</h2>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Date, Time and Hotel Selection */}
+                <div className="space-y-6">
+                  <div className="form-group">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <i className="fas fa-calendar-alt text-gray-500 mr-2"></i>
+                      Дата начала тура
+                    </label>
+                    <input 
+                      type="date" 
+                      value={formData.selectedDate}
+                      onChange={(e) => setFormData(prev => ({ ...prev, selectedDate: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                      required 
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <i className="fas fa-clock text-gray-500 mr-2"></i>
+                      Время начала тура
+                    </label>
+                    <div className="space-y-3">
+                      {['09:00', '14:00', '18:00'].map((time) => (
+                        <div key={time} className="flex items-center space-x-3">
+                          <input 
+                            type="radio" 
+                            id={`time-${time}`}
+                            name="tourTime" 
+                            value={time}
+                            className="w-4 h-4 text-blue-600"
+                          />
+                          <label htmlFor={`time-${time}`} className="text-sm text-gray-700">{time}</label>
                         </div>
-                      </div>
-                      
-                      {/* Room Categories */}
-                      <div className="mt-4">
-                        <h6 className="font-medium text-gray-800 mb-3">Категории номеров:</h6>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          {['Стандарт', 'Комфорт', 'Люкс'].map((category) => (
-                            <div
-                              key={category}
-                              className={`border rounded-lg p-3 cursor-pointer transition-colors ${
-                                formData.selectedHotel?.id === hotel.id && formData.selectedRoomCategory === category
-                                  ? 'border-blue-500 bg-blue-50'
-                                  : 'border-gray-200 hover:border-gray-300'
-                              }`}
-                              onClick={() => {
-                                setFormData(prev => ({ 
-                                  ...prev, 
-                                  selectedHotel: hotel, 
-                                  selectedRoomCategory: category 
-                                }));
-                              }}
-                            >
-                              <div className="text-sm font-medium text-gray-900">{category}</div>
-                              <div className="text-xs text-gray-600 mt-1">
-                                {category === 'Стандарт' && 'Базовые удобства'}
-                                {category === 'Комфорт' && 'Улучшенные условия'}
-                                {category === 'Люкс' && 'Премиум сервис'}
-                              </div>
-                              <div className="text-sm font-medium text-blue-600 mt-2">
-                                {category === 'Стандарт' && 'от $50/ночь'}
-                                {category === 'Комфорт' && 'от $80/ночь'}
-                                {category === 'Люкс' && 'от $120/ночь'}
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <i className="fas fa-users text-gray-500 mr-2"></i>
+                      Количество туристов
+                    </label>
+                    <div className="bg-gray-50 p-4 rounded-lg border text-sm text-gray-700">
+                      Туристов: {formData.participants.length}
+                    </div>
+                  </div>
+                  
+                  {/* Hotels Selection */}
+                  <div className="form-group">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <i className="fas fa-hotel text-gray-500 mr-2"></i>
+                      Доступные отели
+                    </label>
+                    <div className="space-y-4 max-h-96 overflow-y-auto">
+                      {hotels.map((hotel) => (
+                        <div
+                          key={hotel.id}
+                          className={`border-2 rounded-lg p-5 cursor-pointer transition-all ${
+                            formData.selectedHotel?.id === hotel.id
+                              ? 'border-blue-500 bg-blue-50'
+                              : 'border-gray-200 hover:border-blue-400 hover:shadow-md'
+                          }`}
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, selectedHotel: hotel }));
+                          }}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h5 className="font-semibold text-gray-900 text-lg">
+                                {typeof hotel.name === 'object' ? hotel.name.ru : hotel.name}
+                              </h5>
+                              <p className="text-sm text-gray-600 mt-1">
+                                {typeof hotel.description === 'object' ? hotel.description?.ru : hotel.description || ''}
+                              </p>
+                              <div className="flex items-center mt-2 space-x-4">
+                                <span className="text-sm font-medium text-blue-600">
+                                  {hotel.rating}⭐
+                                </span>
+                                <span className="text-sm text-gray-500">{hotel.location}</span>
                               </div>
                             </div>
-                          ))}
+                            {formData.selectedHotel?.id === hotel.id && (
+                              <div className="text-blue-500">
+                                <i className="fas fa-check-circle text-xl"></i>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      
-                      {formData.selectedHotel?.id === hotel.id && formData.selectedRoomCategory && (
-                        <div className="mt-4 pt-4 border-t">
-                          <button
-                            onClick={() => {
-                              console.log('Hotel and room selected:', hotel.id, formData.selectedRoomCategory);
-                              setStep('booking');
-                            }}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
-                          >
-                            Продолжить с {formData.selectedRoomCategory}
-                          </button>
-                        </div>
-                      )}
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <button 
+                      className={`px-6 py-3 rounded-lg font-medium flex items-center space-x-2 transition-colors ${
+                        formData.selectedHotel 
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                      onClick={() => formData.selectedHotel && setStep('booking')}
+                      disabled={!formData.selectedHotel}
+                    >
+                      <span>Продолжить</span>
+                      <i className="fas fa-arrow-right"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Tour Details Sidebar */}
+                <div className="bg-white rounded-lg border shadow-sm p-6">
+                  <h3 className="text-lg font-semibold mb-4">Детали тура</h3>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3">
+                      <i className="fas fa-map-marker-alt text-blue-500 mt-1"></i>
+                      <div>
+                        <div className="font-medium">
+                          {tour ? (typeof tour.title === 'object' ? tour.title.ru : tour.title) : 'Название тура'}
+                        </div>
+                        <div className="text-sm text-gray-600">{tour?.city || 'Локация'}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <i className="fas fa-clock text-blue-500"></i>
+                      <span className="text-sm">{tour?.duration || 'Продолжительность'}</span>
+                    </div>
+                  </div>
+                  
+                  {formData.selectedHotel && (
+                    <div className="mt-6 pt-6 border-t">
+                      <h4 className="font-medium mb-3">Выбранный отель</h4>
+                      <div className="text-sm">
+                        <div className="font-medium">
+                          {typeof formData.selectedHotel.name === 'object' ? formData.selectedHotel.name.ru : formData.selectedHotel.name}
+                        </div>
+                        <div className="text-gray-600 mt-1">{formData.selectedHotel.location}</div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="mt-6 pt-6 border-t">
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-semibold">Общая стоимость</span>
+                      <span className="text-2xl font-bold text-blue-600">
+                        {tour?.pricePerPerson ? `${tour.pricePerPerson}₽` : '0₽'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
