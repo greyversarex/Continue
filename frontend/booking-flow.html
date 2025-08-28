@@ -331,7 +331,7 @@
     <div class="step-indicator">
         <div class="step active" id="step1">
             <div class="step-circle">1</div>
-            <span class="step-label">Выбор даты и времени</span>
+            <span class="step-label">Выбор даты и отеля</span>
         </div>
         <div class="step-connector"></div>
         <div class="step" id="step2">
@@ -352,10 +352,10 @@
             <div class="main-section">
                 <!-- Step 1: Date and Hotel Selection -->
                 <div id="step1Content" style="display: none;">
-                    <h2 class="text-2xl font-semibold mb-6">Выберите дату и время</h2>
+                    <h2 class="text-2xl font-semibold mb-6">Выберите дату и отель</h2>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Date and Time Selection -->
+                        <!-- Date, Time and Hotel Selection -->
                         <div class="space-y-6">
                             <div class="form-group">
                                 <label class="form-label">
@@ -385,8 +385,19 @@
                                 </div>
                             </div>
                             
+                            <!-- Hotels Selection -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-hotel text-gray-500 mr-2"></i>
+                                    Доступные отели
+                                </label>
+                                <div id="hotelsList" class="space-y-4 max-h-96 overflow-y-auto">
+                                    <!-- Hotels will be loaded here -->
+                                </div>
+                            </div>
+                            
                             <div class="flex justify-end">
-                                <button class="btn btn-primary" onclick="goToStep2()">
+                                <button class="btn btn-primary" onclick="goToStep2()" id="continueBtn" disabled>
                                     Продолжить
                                     <i class="fas fa-arrow-right ml-2"></i>
                                 </button>
@@ -421,6 +432,13 @@
                                 <h4 class="font-medium mb-3">Что включено</h4>
                                 <div id="tourIncludes" class="space-y-2">
                                     <!-- Will be populated from tour data -->
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 pt-6 border-t">
+                                <h4 class="font-medium mb-3">Выбранный отель</h4>
+                                <div id="selectedHotelInfo" class="text-sm text-gray-500">
+                                    Отель не выбран
                                 </div>
                             </div>
                             
@@ -1420,10 +1438,193 @@
                 breakdownElement.textContent = breakdown.join(', ');
             }
         }
+        
+        // Load and display hotels
+        let selectedHotel = null;
+        
+        async function loadHotels() {
+            try {
+                const response = await fetch(`${window.location.origin}/api/hotels`);
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    displayHotels(result.data);
+                } else {
+                    displayFallbackHotels();
+                }
+            } catch (error) {
+                console.error('Error loading hotels:', error);
+                displayFallbackHotels();
+            }
+        }
+        
+        function displayHotels(hotels) {
+            const container = document.getElementById('hotelsList');
+            
+            container.innerHTML = hotels.map(hotel => {
+                const name = typeof hotel.name === 'string' ? JSON.parse(hotel.name || '{}') : hotel.name;
+                const description = typeof hotel.description === 'string' ? JSON.parse(hotel.description || '{}') : hotel.description;
+                const images = typeof hotel.images === 'string' ? JSON.parse(hotel.images || '[]') : hotel.images;
+                
+                const hotelName = name?.ru || name?.en || 'Отель';
+                const hotelDesc = description?.ru || description?.en || 'Описание недоступно';
+                const hotelImage = (images && images[0]) || "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&h=200&fit=crop";
+                const stars = Math.round(hotel.rating || 4);
+                const basePrice = Math.round(Math.random() * 100 + 50); // Temporary pricing
+                
+                return `
+                    <div class="hotel-card border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" 
+                         onclick="selectHotel(${hotel.id}, '${hotelName}', ${basePrice})">
+                        <div class="flex">
+                            <img src="${hotelImage}" alt="${hotelName}" class="w-24 h-24 object-cover">
+                            <div class="flex-1 p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="font-semibold text-lg">${hotelName}</h4>
+                                    <div class="flex items-center">
+                                        ${generateStars(stars)}
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-3">${hotelDesc}</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-right">
+                                        <span class="text-2xl font-bold text-green-600">$${basePrice}</span>
+                                        <div class="text-sm text-gray-500">за ночь</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function displayFallbackHotels() {
+            const fallbackHotels = [
+                {
+                    id: 1,
+                    name: "Serena Inn Dushanbe",
+                    description: "Роскошный отель в центре Душанбе",
+                    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&h=200&fit=crop",
+                    stars: 5,
+                    price: 120
+                },
+                {
+                    id: 2,
+                    name: "Hilton Dushanbe",
+                    description: "Современный отель международного класса",
+                    image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=300&h=200&fit=crop",
+                    stars: 4,
+                    price: 150
+                },
+                {
+                    id: 3,
+                    name: "Atlas Hotel",
+                    description: "Комфортабельный отель с хорошим расположением",
+                    image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=300&h=200&fit=crop",
+                    stars: 4,
+                    price: 80
+                }
+            ];
+            
+            const container = document.getElementById('hotelsList');
+            container.innerHTML = fallbackHotels.map(hotel => `
+                <div class="hotel-card border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" 
+                     onclick="selectHotel(${hotel.id}, '${hotel.name}', ${hotel.price})">
+                    <div class="flex">
+                        <img src="${hotel.image}" alt="${hotel.name}" class="w-24 h-24 object-cover">
+                        <div class="flex-1 p-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-semibold text-lg">${hotel.name}</h4>
+                                <div class="flex items-center">
+                                    ${generateStars(hotel.stars)}
+                                </div>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-3">${hotel.description}</p>
+                            <div class="flex justify-between items-center">
+                                <div class="text-right">
+                                    <span class="text-2xl font-bold text-green-600">$${hotel.price}</span>
+                                    <div class="text-sm text-gray-500">за ночь</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function generateStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += '<i class="fas fa-star text-yellow-500 text-sm"></i>';
+                } else {
+                    stars += '<i class="far fa-star text-gray-300 text-sm"></i>';
+                }
+            }
+            return stars;
+        }
+        
+        function selectHotel(hotelId, hotelName, hotelPrice) {
+            // Remove previous selection
+            document.querySelectorAll('.hotel-card').forEach(card => {
+                card.classList.remove('border-blue-500', 'bg-blue-50');
+                card.classList.add('border-gray-300');
+            });
+            
+            // Add selection to clicked hotel
+            event.currentTarget.classList.remove('border-gray-300');
+            event.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
+            
+            selectedHotel = {
+                id: hotelId,
+                name: hotelName,
+                price: hotelPrice
+            };
+            
+            // Update selected hotel info
+            document.getElementById('selectedHotelInfo').innerHTML = `
+                <div class="font-medium">${hotelName}</div>
+                <div class="text-green-600">$${hotelPrice} за ночь</div>
+            `;
+            
+            // Enable continue button
+            document.getElementById('continueBtn').disabled = false;
+            document.getElementById('continueBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+            
+            // Update total pricing
+            updateTotalPricing();
+        }
+        
+        function updateTotalPricing() {
+            if (!selectedHotel) return;
+            
+            const bookingData = JSON.parse(localStorage.getItem('bookingData') || '{}');
+            const travelers = bookingData.travelers || { adults: 1, children: 0, infants: 0 };
+            
+            // Calculate tour price (from localStorage)
+            const tourPriceStr = bookingData.totalPrice || '0₽';
+            const tourPrice = parseInt(tourPriceStr.replace(/[^0-9]/g, '')) || 0;
+            
+            // Calculate hotel price (assuming 1 night)
+            const hotelPrice = selectedHotel.price || 0;
+            
+            const totalPrice = tourPrice + hotelPrice;
+            
+            document.getElementById('totalCost').textContent = `${totalPrice.toLocaleString()}₽`;
+            
+            const breakdown = [];
+            if (travelers.adults > 0) breakdown.push(`${travelers.adults} взрослых`);
+            if (travelers.children > 0) breakdown.push(`${travelers.children} детей`);
+            if (travelers.infants > 0) breakdown.push(`${travelers.infants} младенцев`);
+            breakdown.push(`Отель: $${hotelPrice}`);
+            
+            document.getElementById('priceBreakdown').textContent = breakdown.join(', ');
+        }
 
         // Initialize page on load
         document.addEventListener('DOMContentLoaded', function() {
             loadBookingData();
+            loadHotels();
             updateTouristsList();
             showStep(1);
         });
