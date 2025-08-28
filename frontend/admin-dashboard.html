@@ -4591,9 +4591,9 @@
                 tourBlockId: document.getElementById('eTourBlockId').value ? parseInt(document.getElementById('eTourBlockId').value) : null,
                 isFeatured: document.getElementById('eTourIsFeatured').checked,
                 isActive: true,
-                highlights: JSON.stringify({ ru: "", en: "" }),
-                itinerary: JSON.stringify({ ru: [], en: [] }),
-                included: JSON.stringify({ ru: [], en: [] }),
+                highlights: JSON.stringify({ ru: window.tourHighlights || [], en: window.tourHighlights || [] }),
+                itinerary: JSON.stringify({ ru: window.tourItinerary || [], en: window.tourItinerary || [] }),
+                included: JSON.stringify({ ru: window.tourHighlights || [], en: window.tourHighlights || [] }),
                 excluded: JSON.stringify({ ru: [], en: [] })
             };
 
