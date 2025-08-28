@@ -1042,7 +1042,7 @@
             console.log("Loading tour data...");
             
             const urlParams = new URLSearchParams(window.location.search);
-            const tourId = urlParams.get('tour') || 'pamir_highway';
+            const tourId = urlParams.get('id') || urlParams.get('tour') || 'pamir_highway';
             
             // Use embedded data first, then try external
             if (embeddedTourData[tourId]) {
@@ -1052,6 +1052,7 @@
             } else {
                 console.log("Tour data not found for:", tourId);
                 // Fallback to default tour
+                console.log("Falling back to static tour data");
                 tourData = embeddedTourData.pamir_highway;
                 updatePageContent();
             }
@@ -1557,10 +1558,12 @@
         
         async function loadTourFromAPI() {
             const urlParams = new URLSearchParams(window.location.search);
-            const tourId = urlParams.get('tour');
+            const tourId = urlParams.get('id') || urlParams.get('tour');
             
             if (!tourId) {
-                console.log('No tour ID provided, using sample data');
+                console.log('No tour ID provided, falling back to static data');
+                loadTourData();
+                setupEventListeners();
                 return;
             }
             
@@ -1599,13 +1602,24 @@
                         startTimeOptions: apiTourData.startTimeOptions
                     };
                     
-                    // Parse optional JSON fields
+                    // Parse optional JSON fields and set default images
                     if (apiTourData.images) {
                         try {
                             tourData.images = JSON.parse(apiTourData.images);
                         } catch (e) {
                             console.warn('Failed to parse images:', e);
+                            tourData.images = [];
                         }
+                    }
+                    
+                    // Add default images if none provided
+                    if (!tourData.images || tourData.images.length === 0) {
+                        tourData.images = [
+                            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
+                            'https://images.unsplash.com/photo-1464822759844-d150b377fc24?w=400&h=300&fit=crop',
+                            'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=300&fit=crop',
+                            'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=400&h=300&fit=crop'
+                        ];
                     }
                     
                     if (apiTourData.highlights) {
@@ -1656,7 +1670,6 @@
             }
             
             // Fallback to static data if API failed
-            console.log('Falling back to static tour data');
             loadTourData();
             setupEventListeners();
         }
