@@ -2565,7 +2565,10 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    for (const block of result.data) {
+                    // Сортируем блоки по sortOrder для правильного порядка отображения
+                    const sortedBlocks = result.data.sort((a, b) => a.sortOrder - b.sortOrder);
+                    
+                    for (const block of sortedBlocks) {
                         await loadToursForBlock(block);
                     }
                 }
@@ -2592,18 +2595,28 @@
             const blockId = `tour-block-${block.id}`;
             const carouselId = `carousel-${block.id}`;
             
-            // Найдем место для вставки или создадим новую секцию
+            // Найдем контейнер для динамических блоков туров
+            const tourBlocksContainer = document.getElementById('tour-blocks-container');
+            
+            if (!tourBlocksContainer) {
+                console.error('Tour blocks container not found');
+                return;
+            }
+            
+            // Найдем существующую секцию или создадим новую
             let existingSection = document.getElementById(blockId);
             
             if (!existingSection) {
-                // Создаем новую секцию после популярных туров
-                const popularSection = document.querySelector('.py-16.bg-white');
-                if (popularSection) {
-                    existingSection = document.createElement('section');
-                    existingSection.id = blockId;
-                    existingSection.className = 'py-16 bg-white';
-                    popularSection.parentNode.insertBefore(existingSection, popularSection.nextSibling);
-                }
+                // Создаем новую секцию в контейнере
+                existingSection = document.createElement('section');
+                existingSection.id = blockId;
+                existingSection.className = 'py-16 bg-white';
+                
+                // Добавляем блоки в порядке поступления (уже отсортированы в loadTourBlocks)
+                // Просто добавляем в конец контейнера
+                
+                // Добавляем блок в конец (блоки уже приходят в правильном порядке)
+                tourBlocksContainer.appendChild(existingSection);
             }
             
             if (existingSection) {
