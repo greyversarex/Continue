@@ -66,15 +66,15 @@ const TourList: React.FC = () => {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-3">
                   <h3 className="text-xl font-semibold text-gray-800 leading-tight">
-                    {tour.title.en}
+                    {typeof tour.title === 'object' ? tour.title.en || tour.title.ru : tour.title}
                   </h3>
                   <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
-                    {tour.category.name.en}
+                    {typeof tour.category?.name === 'object' ? tour.category.name.en || tour.category.name.ru : tour.category?.name}
                   </span>
                 </div>
                 
                 <p className="text-gray-600 mb-4 line-clamp-3">
-                  {tour.description.en}
+                  {typeof tour.description === 'object' ? tour.description.en || tour.description.ru : tour.description}
                 </p>
                 
                 <div className="flex justify-between items-center">

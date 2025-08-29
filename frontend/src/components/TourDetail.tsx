@@ -67,7 +67,7 @@ const TourDetail: React.FC = () => {
         <span className="mx-2">/</span>
         <Link to="/tours" className="hover:text-blue-600">Tours</Link>
         <span className="mx-2">/</span>
-        <span>{tour.title.en}</span>
+        <span>{typeof tour.title === 'object' ? tour.title.en || tour.title.ru : tour.title}</span>
       </nav>
 
       {/* Tour Header */}
@@ -84,7 +84,7 @@ const TourDetail: React.FC = () => {
         <div className="p-8">
           <div className="flex items-center justify-between mb-4">
             <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
-              {tour.category?.name.en}
+              {typeof tour.category?.name === 'object' ? tour.category.name.en || tour.category.name.ru : tour.category?.name}
             </span>
             <div className="text-right">
               <div className="text-2xl font-bold text-green-600">{tour.price}</div>
@@ -93,7 +93,7 @@ const TourDetail: React.FC = () => {
           </div>
 
           <h1 className="text-3xl font-bold text-gray-800 mb-4">
-            {tour.title.en}
+            {typeof tour.title === 'object' ? tour.title.en || tour.title.ru : tour.title}
           </h1>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -103,14 +103,14 @@ const TourDetail: React.FC = () => {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-800 mb-2">Category</h3>
-              <p className="text-gray-600">{tour.category?.name.en}</p>
+              <p className="text-gray-600">{typeof tour.category?.name === 'object' ? tour.category.name.en || tour.category.name.ru : tour.category?.name}</p>
             </div>
           </div>
 
           <div className="mb-8">
             <h3 className="text-lg font-semibold text-gray-800 mb-3">Description</h3>
             <p className="text-gray-600 leading-relaxed">
-              {tour.description.en}
+              {typeof tour.description === 'object' ? tour.description.en || tour.description.ru : tour.description}
             </p>
           </div>
 
@@ -119,10 +119,10 @@ const TourDetail: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-800 mb-3">Русский / Russian</h3>
             <div className="bg-gray-50 rounded-lg p-4">
               <h4 className="text-xl font-bold text-gray-800 mb-2">
-                {tour.title.ru}
+                {typeof tour.title === 'object' ? tour.title.ru || tour.title.en : tour.title}
               </h4>
               <p className="text-gray-600 leading-relaxed">
-                {tour.description.ru}
+                {typeof tour.description === 'object' ? tour.description.ru || tour.description.en : tour.description}
               </p>
             </div>
           </div>
@@ -162,7 +162,7 @@ const TourDetail: React.FC = () => {
               </div>
               <BookingForm 
                 tourId={tour.id} 
-                tourTitle={tour.title.en}
+                tourTitle={typeof tour.title === 'object' ? tour.title.en || tour.title.ru : tour.title}
                 onSuccess={() => setShowBookingForm(false)}
               />
             </div>

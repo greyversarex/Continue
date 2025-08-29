@@ -341,7 +341,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-semibold">Общая стоимость</span>
                       <span className="text-2xl font-bold text-blue-600">
-                        {tour?.pricePerPerson ? `${tour.pricePerPerson}₽` : '0₽'}
+                        {tour?.price ? `${tour.price}` : '0₽'}
                       </span>
                     </div>
                   </div>

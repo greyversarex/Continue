@@ -34,10 +34,10 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
     // Pre-fill form if editing
     if (tour) {
       setFormData({
-        title_en: tour.title.en || '',
-        title_ru: tour.title.ru || '',
-        description_en: tour.description.en || '',
-        description_ru: tour.description.ru || '',
+        title_en: typeof tour.title === 'object' ? tour.title.en || '' : tour.title || '',
+        title_ru: typeof tour.title === 'object' ? tour.title.ru || '' : tour.title || '',
+        description_en: typeof tour.description === 'object' ? tour.description.en || '' : tour.description || '',
+        description_ru: typeof tour.description === 'object' ? tour.description.ru || '' : tour.description || '',
         duration: tour.duration || '',
         price: tour.price || '',
         categoryId: tour.categoryId || 0,
@@ -309,7 +309,7 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
             <option value={0}>Select a category</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
-                {category.name.en}
+                {typeof category.name === 'object' ? category.name.en || category.name.ru : category.name}
               </option>
             ))}
           </select>

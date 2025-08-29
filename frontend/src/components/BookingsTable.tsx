@@ -155,10 +155,10 @@ const BookingsTable: React.FC = () => {
                   <td className="px-6 py-4">
                     <div>
                       <div className="text-sm font-medium text-gray-900">
-                        {booking.tour.title.en}
+                        {typeof booking.tour.title === 'object' ? booking.tour.title.en || booking.tour.title.ru : booking.tour.title}
                       </div>
                       <div className="text-sm text-gray-500">
-                        {booking.tour.category.name.en} • {booking.tour.price}
+                        {typeof booking.tour.category.name === 'object' ? booking.tour.category.name.en || booking.tour.category.name.ru : booking.tour.category.name} • {booking.tour.price}
                       </div>
                     </div>
                   </td>
@@ -174,7 +174,7 @@ const BookingsTable: React.FC = () => {
                   <td className="px-6 py-4 text-sm">
                     <div className="flex space-x-2">
                       <a
-                        href={`mailto:${booking.customerEmail}?subject=Re: Tour Booking - ${booking.tour.title.en}&body=Dear ${booking.customerName},%0D%0A%0D%0AThank you for your interest in our ${booking.tour.title.en} tour.%0D%0A%0D%0ABest regards,%0D%0ATajik Trails Team`}
+                        href={`mailto:${booking.customerEmail}?subject=Re: Tour Booking - ${typeof booking.tour.title === 'object' ? booking.tour.title.en || booking.tour.title.ru : booking.tour.title}&body=Dear ${booking.customerName},%0D%0A%0D%0AThank you for your interest in our ${typeof booking.tour.title === 'object' ? booking.tour.title.en || booking.tour.title.ru : booking.tour.title} tour.%0D%0A%0D%0ABest regards,%0D%0ATajik Trails Team`}
                         className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700 transition-colors"
                       >
                         Email
@@ -185,11 +185,11 @@ const BookingsTable: React.FC = () => {
 Booking Request #${booking.id}
 Customer: ${booking.customerName}
 Email: ${booking.customerEmail}
-Tour: ${booking.tour.title.en}
+Tour: ${typeof booking.tour.title === 'object' ? booking.tour.title.en || booking.tour.title.ru : booking.tour.title}
 Preferred Date: ${formatDate(booking.preferredDate)}
 Number of People: ${booking.numberOfPeople}
 Price: ${booking.tour.price}
-Category: ${booking.tour.category.name.en}
+Category: ${typeof booking.tour.category.name === 'object' ? booking.tour.category.name.en || booking.tour.category.name.ru : booking.tour.category.name}
 Submitted: ${formatDateTime(booking.createdAt)}
                           `.trim();
                           

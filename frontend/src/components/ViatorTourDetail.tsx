@@ -79,7 +79,7 @@ const ViatorTourDetail: React.FC = () => {
             <Link to="/tours" className="text-gray-500 hover:text-gray-700">Tours</Link>
             <span className="text-gray-300">/</span>
             <span className="text-gray-900 font-medium">
-              {tour.title[i18n.language as keyof typeof tour.title] || tour.title.en}
+              {typeof tour.title === 'object' ? tour.title[i18n.language as keyof typeof tour.title] || tour.title.en || tour.title.ru : tour.title}
             </span>
           </nav>
         </div>
@@ -113,12 +113,12 @@ const ViatorTourDetail: React.FC = () => {
             <div className="bg-white rounded-lg p-6">
               <div className="mb-4">
                 <span className="text-sm text-gray-500 uppercase tracking-wide">
-                  {tour.category && (tour.category.name[i18n.language as keyof typeof tour.category.name] || tour.category.name.en)}
+                  {tour.category && (typeof tour.category.name === 'object' ? tour.category.name[i18n.language as keyof typeof tour.category.name] || tour.category.name.en || tour.category.name.ru : tour.category.name)}
                 </span>
               </div>
               
               <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                {tour.title[i18n.language as keyof typeof tour.title] || tour.title.en}
+                {typeof tour.title === 'object' ? tour.title[i18n.language as keyof typeof tour.title] || tour.title.en || tour.title.ru : tour.title}
               </h1>
               
               <div className="flex items-center mb-4">
@@ -151,7 +151,7 @@ const ViatorTourDetail: React.FC = () => {
             <div className="bg-white rounded-lg p-6">
               <h2 className="text-2xl font-bold mb-4">Overview</h2>
               <p className="text-gray-700 leading-relaxed">
-                {tour.description[i18n.language as keyof typeof tour.description] || tour.description.en}
+                {typeof tour.description === 'object' ? tour.description[i18n.language as keyof typeof tour.description] || tour.description.en || tour.description.ru : tour.description}
               </p>
             </div>
 

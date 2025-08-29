@@ -110,7 +110,7 @@ const NewsForm: React.FC<NewsFormProps> = ({ news, onSuccess }) => {
         author: formData.author,
         isPublished: formData.isPublished,
         isFeatured: formData.isFeatured,
-        slug: formData.slug || generateSlug(formData.title.ru),
+        slug: formData.slug || generateSlug(typeof formData.title === 'object' ? formData.title.ru || formData.title.en : formData.title),
         metaTitle: JSON.stringify(formData.metaTitle),
         metaDescription: JSON.stringify(formData.metaDescription),
         readTime: formData.readTime

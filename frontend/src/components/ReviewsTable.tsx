@@ -172,9 +172,9 @@ const ReviewsTable: React.FC = () => {
                     </div>
                     
                     <div className="text-sm text-gray-600 mb-2">
-                      Tour: <span className="font-medium">{review.tour.title.en}</span>
+                      Tour: <span className="font-medium">{typeof review.tour.title === 'object' ? review.tour.title.en || review.tour.title.ru : review.tour.title}</span>
                       <span className="mx-2">•</span>
-                      {review.tour.category.name.en}
+                      {typeof review.tour.category.name === 'object' ? review.tour.category.name.en || review.tour.category.name.ru : review.tour.category.name}
                     </div>
                     
                     <p className="text-gray-800 mb-4">
@@ -249,9 +249,9 @@ const ReviewsTable: React.FC = () => {
                     </div>
                     
                     <div className="text-sm text-gray-600 mb-2">
-                      Tour: <span className="font-medium">{review.tour.title.en}</span>
+                      Tour: <span className="font-medium">{typeof review.tour.title === 'object' ? review.tour.title.en || review.tour.title.ru : review.tour.title}</span>
                       <span className="mx-2">•</span>
-                      {review.tour.category.name.en}
+                      {typeof review.tour.category.name === 'object' ? review.tour.category.name.en || review.tour.category.name.ru : review.tour.category.name}
                     </div>
                     
                     <p className="text-gray-800">

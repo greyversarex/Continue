@@ -1,1 +1,399 @@
-import React, { useState, useEffect } from 'react';\nimport axios from 'axios';\n\ninterface Hotel {\n  id?: number;\n  name: {\n    en: string;\n    ru: string;\n  };\n  description: {\n    en: string;\n    ru: string;\n  };\n  brand?: string;\n  country: string;\n  city: string;\n  address?: string;\n  rating?: number;\n  priceRange?: string;\n  amenities?: string[];\n  images?: string[];\n  isActive?: boolean;\n}\n\ninterface HotelFormProps {\n  hotel: Hotel | null;\n  onSuccess: () => void;\n}\n\ninterface ApiResponse {\n  success: boolean;\n  data?: any;\n  error?: string;\n}\n\ninterface Message {\n  type: 'success' | 'error';\n  text: string;\n}\n\nconst HotelForm: React.FC<HotelFormProps> = ({ hotel, onSuccess }) => {\n  const [formData, setFormData] = useState({\n    name_en: '',\n    name_ru: '',\n    description_en: '',\n    description_ru: '',\n    brand: '',\n    country: '',\n    city: '',\n    address: '',\n    rating: 0,\n    priceRange: '',\n    amenities: [] as string[],\n    images: [] as string[]\n  });\n\n  const [loading, setLoading] = useState(false);\n  const [message, setMessage] = useState<Message | null>(null);\n  const [newAmenity, setNewAmenity] = useState('');\n  const [newImage, setNewImage] = useState('');\n\n  // Countries data for dropdown\n  const countries = [\n    'Таджикистан',\n    'Узбекистан',\n    'Кыргызстан',\n    'Казахстан',\n    'Туркменистан'\n  ];\n\n  // Hotel brands data\n  const hotelBrands = [\n    'Four Seasons',\n    'Ritz-Carlton',\n    'W Hotels',\n    'St. Regis',\n    'Waldorf Astoria',\n    'Conrad',\n    'Peninsula',\n    'Aman',\n    'Rosewood',\n    'Hilton',\n    'Marriott',\n    'Sheraton',\n    'Westin',\n    'Hyatt',\n    'InterContinental',\n    'Crowne Plaza',\n    'DoubleTree',\n    'Renaissance Hotels',\n    'Fairmont',\n    'Sofitel',\n    'Pullman',\n    'Holiday Inn',\n    'Courtyard',\n    'Hampton Inn',\n    'Residence Inn',\n    'Hotel Indigo',\n    'Cambria Hotels',\n    'Radisson',\n    'Novotel',\n    'Ibis',\n    'Holiday Inn Express',\n    'Days Inn',\n    'Super 8',\n    'Ramada',\n    'Comfort Inn',\n    'Best Western',\n    'Serena Hotels',\n    'Golden Tulip',\n    'Maritim',\n    'Crystal Hotels',\n    'Barcelo',\n    'Независимый отель'\n  ];\n\n  // Load hotel data when editing\n  useEffect(() => {\n    if (hotel) {\n      setFormData({\n        name_en: typeof hotel.name === 'object' ? hotel.name.en : '',\n        name_ru: typeof hotel.name === 'object' ? hotel.name.ru : hotel.name?.toString() || '',\n        description_en: typeof hotel.description === 'object' ? hotel.description.en : '',\n        description_ru: typeof hotel.description === 'object' ? hotel.description.ru : hotel.description?.toString() || '',\n        brand: hotel.brand || '',\n        country: hotel.country || '',\n        city: hotel.city || '',\n        address: hotel.address || '',\n        rating: hotel.rating || 0,\n        priceRange: hotel.priceRange || '',\n        amenities: hotel.amenities || [],\n        images: hotel.images || []\n      });\n    }\n  }, [hotel]);\n\n  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {\n    const { name, value } = e.target;\n    setFormData(prev => ({\n      ...prev,\n      [name]: value\n    }));\n  };\n\n  const addAmenity = () => {\n    if (newAmenity.trim()) {\n      setFormData(prev => ({\n        ...prev,\n        amenities: [...prev.amenities, newAmenity.trim()]\n      }));\n      setNewAmenity('');\n    }\n  };\n\n  const removeAmenity = (index: number) => {\n    setFormData(prev => ({\n      ...prev,\n      amenities: prev.amenities.filter((_, i) => i !== index)\n    }));\n  };\n\n  const addImage = () => {\n    if (newImage.trim()) {\n      setFormData(prev => ({\n        ...prev,\n        images: [...prev.images, newImage.trim()]\n      }));\n      setNewImage('');\n    }\n  };\n\n  const removeImage = (index: number) => {\n    setFormData(prev => ({\n      ...prev,\n      images: prev.images.filter((_, i) => i !== index)\n    }));\n  };\n\n  const handleSubmit = async (e: React.FormEvent) => {\n    e.preventDefault();\n    setLoading(true);\n    setMessage(null);\n\n    // Package multilingual data\n    const hotelData = {\n      name: {\n        en: formData.name_en,\n        ru: formData.name_ru\n      },\n      description: {\n        en: formData.description_en,\n        ru: formData.description_ru\n      },\n      brand: formData.brand,\n      country: formData.country,\n      city: formData.city,\n      address: formData.address,\n      rating: parseInt(formData.rating.toString()) || 0,\n      priceRange: formData.priceRange,\n      amenities: formData.amenities,\n      images: formData.images\n    };\n\n    try {\n      let response;\n      \n      if (hotel) {\n        // Update existing hotel\n        response = await axios.put<ApiResponse>(`http://localhost:5000/api/hotels/${hotel.id}`, hotelData);\n      } else {\n        // Create new hotel\n        response = await axios.post<ApiResponse>('http://localhost:5000/api/hotels', hotelData);\n      }\n\n      if (response.data.success) {\n        setMessage({ \n          type: 'success', \n          text: hotel ? 'Hotel updated successfully!' : 'Hotel created successfully!' \n        });\n        \n        // Reset form if creating new\n        if (!hotel) {\n          setFormData({\n            name_en: '',\n            name_ru: '',\n            description_en: '',\n            description_ru: '',\n            brand: '',\n            country: '',\n            city: '',\n            address: '',\n            rating: 0,\n            priceRange: '',\n            amenities: [],\n            images: []\n          });\n        }\n        \n        setTimeout(() => {\n          onSuccess();\n        }, 1500);\n      }\n    } catch (err: any) {\n      console.error('Hotel form error:', err);\n      \n      let errorMessage = 'Failed to save hotel. Please try again.';\n      if (err.response?.data?.error) {\n        errorMessage = err.response.data.error;\n      }\n      \n      setMessage({ type: 'error', text: errorMessage });\n    } finally {\n      setLoading(false);\n    }\n  };\n\n  return (\n    <div className=\"hotel-form\">\n      {/* Message Display */}\n      {message && (\n        <div className={`mb-4 p-3 rounded-lg ${\n          message.type === 'success' \n            ? 'bg-green-100 border border-green-400 text-green-700'\n            : 'bg-red-100 border border-red-400 text-red-700'\n        }`}>\n          {message.text}\n        </div>\n      )}\n\n      <form onSubmit={handleSubmit} className=\"space-y-6\">\n        {/* English Fields */}\n        <div className=\"border border-gray-200 rounded-lg p-4\">\n          <h4 className=\"text-lg font-semibold text-gray-800 mb-4 flex items-center\">\n            <span className=\"mr-2\">🇺🇸</span>\n            English Content\n          </h4>\n          \n          <div className=\"space-y-4\">\n            <div>\n              <label htmlFor=\"name_en\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n                Hotel Name (English) *\n              </label>\n              <input\n                type=\"text\"\n                id=\"name_en\"\n                name=\"name_en\"\n                value={formData.name_en}\n                onChange={handleChange}\n                required\n                className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n                placeholder=\"Enter hotel name in English\"\n              />\n            </div>\n\n            <div>\n              <label htmlFor=\"description_en\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n                Description (English) *\n              </label>\n              <textarea\n                id=\"description_en\"\n                name=\"description_en\"\n                value={formData.description_en}\n                onChange={handleChange}\n                required\n                rows={4}\n                className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n                placeholder=\"Enter detailed description in English\"\n              />\n            </div>\n          </div>\n        </div>\n\n        {/* Russian Fields */}\n        <div className=\"border border-gray-200 rounded-lg p-4\">\n          <h4 className=\"text-lg font-semibold text-gray-800 mb-4 flex items-center\">\n            <span className=\"mr-2\">🇷🇺</span>\n            Russian Content\n          </h4>\n          \n          <div className=\"space-y-4\">\n            <div>\n              <label htmlFor=\"name_ru\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n                Hotel Name (Russian) *\n              </label>\n              <input\n                type=\"text\"\n                id=\"name_ru\"\n                name=\"name_ru\"\n                value={formData.name_ru}\n                onChange={handleChange}\n                required\n                className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n                placeholder=\"Введите название отеля на русском\"\n              />\n            </div>\n\n            <div>\n              <label htmlFor=\"description_ru\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n                Description (Russian) *\n              </label>\n              <textarea\n                id=\"description_ru\"\n                name=\"description_ru\"\n                value={formData.description_ru}\n                onChange={handleChange}\n                required\n                rows={4}\n                className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n                placeholder=\"Введите подробное описание на русском языке\"\n              />\n            </div>\n          </div>\n        </div>\n\n        {/* Hotel Details */}\n        <div className=\"grid md:grid-cols-2 gap-4\">\n          <div>\n            <label htmlFor=\"brand\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n              Hotel Brand\n            </label>\n            <select\n              id=\"brand\"\n              name=\"brand\"\n              value={formData.brand}\n              onChange={handleChange}\n              className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n            >\n              <option value=\"\">Select Brand</option>\n              {hotelBrands.map(brand => (\n                <option key={brand} value={brand}>{brand}</option>\n              ))}\n            </select>\n          </div>\n\n          <div>\n            <label htmlFor=\"country\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n              Country *\n            </label>\n            <select\n              id=\"country\"\n              name=\"country\"\n              value={formData.country}\n              onChange={handleChange}\n              required\n              className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n            >\n              <option value=\"\">Select Country</option>\n              {countries.map(country => (\n                <option key={country} value={country}>{country}</option>\n              ))}\n            </select>\n          </div>\n\n          <div>\n            <label htmlFor=\"city\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n              City *\n            </label>\n            <input\n              type=\"text\"\n              id=\"city\"\n              name=\"city\"\n              value={formData.city}\n              onChange={handleChange}\n              required\n              className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n              placeholder=\"Enter city\"\n            />\n          </div>\n\n          <div>\n            <label htmlFor=\"rating\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n              Star Rating\n            </label>\n            <select\n              id=\"rating\"\n              name=\"rating\"\n              value={formData.rating}\n              onChange={handleChange}\n              className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n            >\n              <option value={0}>No Rating</option>\n              <option value={1}>1 Star</option>\n              <option value={2}>2 Stars</option>\n              <option value={3}>3 Stars</option>\n              <option value={4}>4 Stars</option>\n              <option value={5}>5 Stars</option>\n            </select>\n          </div>\n        </div>\n\n        <div>\n          <label htmlFor=\"address\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n            Address\n          </label>\n          <input\n            type=\"text\"\n            id=\"address\"\n            name=\"address\"\n            value={formData.address}\n            onChange={handleChange}\n            className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n            placeholder=\"Enter full address\"\n          />\n        </div>\n\n        <div>\n          <label htmlFor=\"priceRange\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n            Price Range\n          </label>\n          <input\n            type=\"text\"\n            id=\"priceRange\"\n            name=\"priceRange\"\n            value={formData.priceRange}\n            onChange={handleChange}\n            className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n            placeholder=\"e.g. $100-200 per night\"\n          />\n        </div>\n\n        {/* Amenities */}\n        <div>\n          <label className=\"block text-sm font-medium text-gray-700 mb-1\">\n            Amenities\n          </label>\n          <div className=\"flex space-x-2 mb-2\">\n            <input\n              type=\"text\"\n              value={newAmenity}\n              onChange={(e) => setNewAmenity(e.target.value)}\n              className=\"flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n              placeholder=\"Add amenity (e.g., WiFi, Pool, Gym)\"\n            />\n            <button\n              type=\"button\"\n              onClick={addAmenity}\n              className=\"bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg\"\n            >\n              Add\n            </button>\n          </div>\n          <div className=\"flex flex-wrap gap-2\">\n            {formData.amenities.map((amenity, index) => (\n              <span key={index} className=\"bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center\">\n                {amenity}\n                <button\n                  type=\"button\"\n                  onClick={() => removeAmenity(index)}\n                  className=\"ml-2 text-blue-600 hover:text-blue-800\"\n                >\n                  ×\n                </button>\n              </span>\n            ))}\n          </div>\n        </div>\n\n        {/* Images */}\n        <div>\n          <label className=\"block text-sm font-medium text-gray-700 mb-1\">\n            Images URLs\n          </label>\n          <div className=\"flex space-x-2 mb-2\">\n            <input\n              type=\"url\"\n              value={newImage}\n              onChange={(e) => setNewImage(e.target.value)}\n              className=\"flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n              placeholder=\"Add image URL\"\n            />\n            <button\n              type=\"button\"\n              onClick={addImage}\n              className=\"bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg\"\n            >\n              Add\n            </button>\n          </div>\n          <div className=\"space-y-2\">\n            {formData.images.map((image, index) => (\n              <div key={index} className=\"flex items-center space-x-2\">\n                <img src={image} alt={`Preview ${index + 1}`} className=\"w-16 h-16 object-cover rounded\" />\n                <span className=\"flex-1 text-sm text-gray-600 truncate\">{image}</span>\n                <button\n                  type=\"button\"\n                  onClick={() => removeImage(index)}\n                  className=\"text-red-600 hover:text-red-800\"\n                >\n                  Remove\n                </button>\n              </div>\n            ))}\n          </div>\n        </div>\n\n        {/* Submit Button */}\n        <div className=\"flex justify-end\">\n          <button\n            type=\"submit\"\n            disabled={loading}\n            className={`px-6 py-3 rounded-lg font-medium transition-colors ${\n              loading \n                ? 'bg-gray-400 text-gray-700 cursor-not-allowed'\n                : 'bg-blue-600 hover:bg-blue-700 text-white'\n            }`}\n          >\n            {loading ? 'Saving...' : (hotel ? 'Update Hotel' : 'Create Hotel')}\n          </button>\n        </div>\n      </form>\n    </div>\n  );\n};\n\nexport default HotelForm;
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+interface Hotel {
+  id?: number;
+  name: {
+    en: string;
+    ru: string;
+  };
+  description: {
+    en: string;
+    ru: string;
+  };
+  brand?: string;
+  country: string;
+  city: string;
+  address?: string;
+  rating?: number;
+  priceRange?: string;
+  amenities?: string[];
+  images?: string[];
+  isActive?: boolean;
+}
+
+interface HotelFormProps {
+  hotel: Hotel | null;
+  onSuccess: () => void;
+  onCancel: () => void;
+}
+
+interface ApiResponse {
+  success: boolean;
+  data?: any;
+  error?: string;
+}
+
+interface Message {
+  type: 'success' | 'error';
+  text: string;
+}
+
+const HotelForm: React.FC<HotelFormProps> = ({ hotel, onSuccess, onCancel }) => {
+  const [formData, setFormData] = useState({
+    name_en: '',
+    name_ru: '',
+    description_en: '',
+    description_ru: '',
+    brand: '',
+    country: '',
+    city: '',
+    address: '',
+    rating: 0,
+    priceRange: '',
+    amenities: [] as string[],
+    images: [] as string[]
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<Message | null>(null);
+  const [newAmenity, setNewAmenity] = useState('');
+  const [newImage, setNewImage] = useState('');
+
+  // Countries data for dropdown
+  const countries = [
+    'Таджикистан',
+    'Узбекистан', 
+    'Кыргызстан',
+    'Казахстан',
+    'Туркменистан'
+  ];
+
+  // Hotel brands data
+  const hotelBrands = [
+    'Four Seasons',
+    'Hilton',
+    'Marriott',
+    'Hyatt',
+    'InterContinental',
+    'Radisson',
+    'Sheraton',
+    'Other'
+  ];
+
+  useEffect(() => {
+    if (hotel) {
+      setFormData({
+        name_en: typeof hotel.name === 'object' ? hotel.name.en || '' : hotel.name || '',
+        name_ru: typeof hotel.name === 'object' ? hotel.name.ru || '' : hotel.name || '',
+        description_en: typeof hotel.description === 'object' ? hotel.description.en || '' : hotel.description || '',
+        description_ru: typeof hotel.description === 'object' ? hotel.description.ru || '' : hotel.description || '',
+        brand: hotel.brand || '',
+        country: hotel.country || '',
+        city: hotel.city || '',
+        address: hotel.address || '',
+        rating: hotel.rating || 0,
+        priceRange: hotel.priceRange || '',
+        amenities: hotel.amenities || [],
+        images: hotel.images || []
+      });
+    }
+  }, [hotel]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const hotelData = {
+        name: {
+          en: formData.name_en,
+          ru: formData.name_ru
+        },
+        description: {
+          en: formData.description_en,
+          ru: formData.description_ru
+        },
+        brand: formData.brand,
+        country: formData.country,
+        city: formData.city,
+        address: formData.address,
+        rating: formData.rating,
+        priceRange: formData.priceRange,
+        amenities: formData.amenities,
+        images: formData.images
+      };
+
+      const response = await axios({
+        method: hotel ? 'PUT' : 'POST',
+        url: hotel 
+          ? `http://localhost:5000/api/hotels/${hotel.id}`
+          : 'http://localhost:5000/api/hotels',
+        data: hotelData
+      });
+
+      if (response.data.success) {
+        setMessage({ type: 'success', text: hotel ? 'Hotel updated successfully!' : 'Hotel created successfully!' });
+        onSuccess();
+      } else {
+        setMessage({ type: 'error', text: response.data.error || 'Failed to save hotel' });
+      }
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.response?.data?.error || 'An error occurred' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addAmenity = () => {
+    if (newAmenity.trim() && !formData.amenities.includes(newAmenity.trim())) {
+      setFormData({
+        ...formData,
+        amenities: [...formData.amenities, newAmenity.trim()]
+      });
+      setNewAmenity('');
+    }
+  };
+
+  const removeAmenity = (index: number) => {
+    setFormData({
+      ...formData,
+      amenities: formData.amenities.filter((_, i) => i !== index)
+    });
+  };
+
+  const addImage = () => {
+    if (newImage.trim() && !formData.images.includes(newImage.trim())) {
+      setFormData({
+        ...formData,
+        images: [...formData.images, newImage.trim()]
+      });
+      setNewImage('');
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData({
+      ...formData,
+      images: formData.images.filter((_, i) => i !== index)
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 my-8 max-h-screen overflow-y-auto">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h2 className="text-2xl font-bold text-gray-800">
+            {hotel ? 'Edit Hotel' : 'Add New Hotel'}
+          </h2>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {message && (
+            <div className={`p-4 rounded ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              {message.text}
+            </div>
+          )}
+
+          {/* Basic Information */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Hotel Name (English)
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.name_en}
+                onChange={(e) => setFormData({...formData, name_en: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Hotel Name (Russian)
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.name_ru}
+                onChange={(e) => setFormData({...formData, name_ru: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Description (English)
+              </label>
+              <textarea
+                required
+                rows={4}
+                value={formData.description_en}
+                onChange={(e) => setFormData({...formData, description_en: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Description (Russian)
+              </label>
+              <textarea
+                required
+                rows={4}
+                value={formData.description_ru}
+                onChange={(e) => setFormData({...formData, description_ru: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          {/* Location & Brand */}
+          <div className="grid md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Country
+              </label>
+              <select
+                required
+                value={formData.country}
+                onChange={(e) => setFormData({...formData, country: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Country</option>
+                {countries.map((country) => (
+                  <option key={country} value={country}>{country}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                City
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.city}
+                onChange={(e) => setFormData({...formData, city: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Brand
+              </label>
+              <select
+                value={formData.brand}
+                onChange={(e) => setFormData({...formData, brand: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Brand</option>
+                {hotelBrands.map((brand) => (
+                  <option key={brand} value={brand}>{brand}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Address & Rating */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Address
+              </label>
+              <input
+                type="text"
+                value={formData.address}
+                onChange={(e) => setFormData({...formData, address: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Rating (0-5)
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="5"
+                step="0.1"
+                value={formData.rating}
+                onChange={(e) => setFormData({...formData, rating: parseFloat(e.target.value) || 0})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          {/* Amenities */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Amenities
+            </label>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={newAmenity}
+                onChange={(e) => setNewAmenity(e.target.value)}
+                placeholder="Add amenity"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="button"
+                onClick={addAmenity}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {formData.amenities.map((amenity, index) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                >
+                  {amenity}
+                  <button
+                    type="button"
+                    onClick={() => removeAmenity(index)}
+                    className="ml-2 text-blue-600 hover:text-blue-800"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+            >
+              {loading ? 'Saving...' : (hotel ? 'Update Hotel' : 'Create Hotel')}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default HotelForm;

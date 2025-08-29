@@ -140,11 +140,11 @@ const ViatorInspiredHome: React.FC = () => {
                 
                 <div className="p-4">
                   <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors">
-                    {tour.title[i18n.language as keyof typeof tour.title] || tour.title.en}
+                    {typeof tour.title === 'object' ? tour.title[i18n.language as keyof typeof tour.title] || tour.title.en || tour.title.ru : tour.title}
                   </h3>
                   
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {tour.description[i18n.language as keyof typeof tour.description] || tour.description.en}
+                    {typeof tour.description === 'object' ? tour.description[i18n.language as keyof typeof tour.description] || tour.description.en || tour.description.ru : tour.description}
                   </p>
                   
                   <div className="flex items-center justify-between">
@@ -184,7 +184,7 @@ const ViatorInspiredHome: React.FC = () => {
                   <div className="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-40 transition-all"></div>
                   <div className="absolute bottom-6 left-6 text-white">
                     <h3 className="text-2xl font-bold mb-2">
-                      {category.name[i18n.language as keyof typeof category.name] || category.name.en}
+                      {typeof category.name === 'object' ? category.name[i18n.language as keyof typeof category.name] || category.name.en || category.name.ru : category.name}
                     </h3>
                     <p className="text-sm opacity-90">
                       {category._count?.tours || 0} {t('home.categories.tours', 'tours available')}
