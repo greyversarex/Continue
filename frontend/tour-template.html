@@ -67,7 +67,35 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-6 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Loading State -->
+        <div id="loading-state" class="text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <p class="mt-4 text-lg text-gray-600">Загружаем информацию о туре...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" class="text-center py-20" style="display: none;">
+            <div class="max-w-md mx-auto">
+                <svg class="mx-auto h-16 w-16 text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Ошибка загрузки</h2>
+                <p id="error-message" class="text-gray-600 mb-6">Произошла ошибка при загрузке тура</p>
+                <div class="space-y-2">
+                    <button onclick="window.location.reload()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Попробовать снова
+                    </button>
+                    <br>
+                    <a href="tours.html" class="text-blue-600 hover:text-blue-800 text-sm">← Вернуться к списку туров</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tour Content (shown when data loads successfully) -->
+        <div id="tour-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8" style="display: none;">
             <!-- Left Content (2/3) -->
             <div class="lg:col-span-2 space-y-8">
                 <!-- Tour Header -->
@@ -394,6 +422,8 @@
                 </div>
             </div>
         </div>
+        
+        </div> <!-- End of tour-content -->
     </main>
 
     <!-- Footer -->
@@ -470,133 +500,91 @@
             return urlParams.get('id');
         }
 
+        // Global tour data - will be populated from API
+        let tourData = null;
+
         // Function to load tour data from API
         async function loadTourData(tourId) {
             if (!tourId) {
-                console.log('No tour ID provided, using sample data');
-                return;
+                showError('Не указан ID тура. Пожалуйста, перейдите на страницу тура через каталог.');
+                return false;
             }
+
+            showLoading();
 
             try {
                 const response = await fetch(`${API_BASE}/tours/${tourId}`);
+                if (response.status === 404) {
+                    showError('Тур не найден. Возможно, он был удален или ID указан неверно.');
+                    return false;
+                }
+                
                 if (!response.ok) {
-                    throw new Error(`Failed to load tour: ${response.status}`);
+                    throw new Error(`HTTP Error: ${response.status}`);
                 }
                 
                 const result = await response.json();
                 if (result.success && result.data) {
-                    // Update tourData with API response
                     const apiTour = result.data;
                     
-                    // Convert API data to our tourData format
+                    // Convert API data to our format
                     tourData = {
-                        ...tourData, // Keep sample data as fallback
-                        title: apiTour.title?.ru || apiTour.title || tourData.title,
-                        location: `${apiTour.city || ''}, ${apiTour.country || ''}`.replace(/^, |, $/, ''),
-                        price_from: parseInt(apiTour.price) || tourData.price_from,
-                        duration: `${apiTour.durationDays || 1} ${apiTour.durationDays === 1 ? 'день' : 'дня'}`,
-                        overview: apiTour.description?.ru || apiTour.description || tourData.overview,
-                        rating: apiTour.rating || tourData.rating,
-                        reviews_count: apiTour.reviewsCount || tourData.reviews_count,
+                        title: apiTour.title?.ru || apiTour.title || 'Название тура',
+                        location: `${apiTour.city || ''}, ${apiTour.country || ''}`.replace(/^, |, $/, '') || 'Локация',
+                        price_from: parseInt(apiTour.price) || 0,
+                        currency: apiTour.priceType === 'за группу' ? 'за группу' : '$',
+                        duration: apiTour.duration || `${apiTour.durationDays || 1} ${(apiTour.durationDays || 1) === 1 ? 'день' : 'дня'}`,
+                        overview: apiTour.description?.ru || apiTour.description || '',
+                        rating: apiTour.rating || 0,
+                        reviews_count: apiTour.reviewsCount || 0,
+                        pickup: apiTour.pickupInfo !== 'Приёма нет',
+                        mobile_ticket: true, // Default for all tours
+                        languages: apiTour.languages ? (typeof apiTour.languages === 'string' ? JSON.parse(apiTour.languages) : apiTour.languages) : [],
                         
                         // Parse JSON fields safely
-                        images: apiTour.images ? (typeof apiTour.images === 'string' ? JSON.parse(apiTour.images) : apiTour.images) : tourData.images,
-                        highlights: apiTour.highlights ? (typeof apiTour.highlights === 'string' ? JSON.parse(apiTour.highlights) : apiTour.highlights) : tourData.highlights,
+                        images: apiTour.images ? (typeof apiTour.images === 'string' ? JSON.parse(apiTour.images) : apiTour.images) : [],
+                        highlights: apiTour.highlights ? (typeof apiTour.highlights === 'string' ? JSON.parse(apiTour.highlights) : apiTour.highlights) : [],
                         
                         // Calendar restrictions
                         availableMonths: apiTour.availableMonths ? (typeof apiTour.availableMonths === 'string' ? JSON.parse(apiTour.availableMonths) : apiTour.availableMonths) : [],
-                        availableDays: apiTour.availableDays ? (typeof apiTour.availableDays === 'string' ? JSON.parse(apiTour.availableDays) : apiTour.availableDays) : []
+                        availableDays: apiTour.availableDays ? (typeof apiTour.availableDays === 'string' ? JSON.parse(apiTour.availableDays) : apiTour.availableDays) : [],
+                        
+                        // Static reviews for now (TODO: implement review system)
+                        reviews: [],
+                        related_tours: []
                     };
                     
-                    console.log('Tour data loaded from API:', tourData);
+                    console.log('✅ Tour data loaded from API:', tourData);
+                    return true;
                 } else {
-                    throw new Error(result.message || 'Failed to load tour data');
+                    throw new Error(result.message || 'API returned unsuccessful response');
                 }
             } catch (error) {
-                console.error('Error loading tour data:', error);
-                console.log('Using sample data as fallback');
+                console.error('❌ Error loading tour data:', error);
+                showError('Ошибка загрузки тура. Проверьте подключение к интернету и попробуйте позже.');
+                return false;
             }
         }
 
-        // Default tour data - will be used as fallback if API call fails
-        let tourData = {
-            "title": "Полный день: Памирское шоссе, горы и озёра",
-            "location": "Памирские горы, Таджикистан",
-            "rating": 4.8,
-            "reviews_count": 234,
-            "images": [
-                "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
-                "https://images.unsplash.com/photo-1464822759844-d150b377fc24?w=600&h=400&fit=crop",
-                "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=600&h=400&fit=crop",
-                "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
-                "https://images.unsplash.com/photo-1464822759844-d150b377fc24?w=600&h=400&fit=crop",
-                "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=600&h=400&fit=crop"
-            ],
-            "price_from": 120,
-            "currency": "$",
-            "duration": "6-7 часов",
-            "pickup": true,
-            "mobile_ticket": true,
-            "languages": ["Русский", "Английский", "Таджикский"],
-            "free_cancellation": "За 24 часа до начала тура",
-            "reserve_now_pay_later": true,
-            "advance_booking_days": 1,
-            "overview": "Откройте для себя величественную красоту Памирских гор в этом незабываемом однодневном туре. Путешествуйте по знаменитому Памирскому шоссе, одной из самых высоких автомобильных дорог в мире, и насладитесь потрясающими видами высокогорных озёр, ледников и традиционных памирских деревень. Этот тур идеально подходит для любителей природы и фотографии.",
-            "highlights": [
-                "Проезд по легендарному Памирскому шоссе",
-                "Посещение высокогорных озёр с кристально чистой водой",
-                "Панорамные виды на вершины свыше 7000 метров",
-                "Знакомство с культурой и бытом памирских народов",
-                "Остановки для фотосессий в самых живописных местах",
-                "Обед с традиционными блюдами в горах"
-            ],
-            "reviews": [
-                {
-                    "name": "Анна Петрова",
-                    "date": "Январь 2025",
-                    "rating": 5,
-                    "text": "Невероятный тур! Виды просто захватывают дух. Гид очень знающий и дружелюбный. Обязательно вернусь ещё раз!"
-                },
-                {
-                    "name": "Дмитрий Иванов",
-                    "date": "Декабрь 2024",
-                    "rating": 5,
-                    "text": "Потрясающие пейзажи и отлично организованный тур. Памирское шоссе действительно уникальное место на земле."
-                },
-                {
-                    "name": "Мария Сидорова",
-                    "date": "Ноябрь 2024",
-                    "rating": 4,
-                    "text": "Очень красивые места, но дорога довольно сложная. Для любителей экстрима и природы - идеально!"
-                }
-            ],
-            "related_tours": [
-                {
-                    "title": "Треккинг к озёрам семи цветов",
-                    "price": 95,
-                    "rating": 4.9,
-                    "image": "https://images.unsplash.com/photo-1464822759844-d150b377fc24?w=300&h=200&fit=crop"
-                },
-                {
-                    "title": "Культурный тур по столице Таджикистана",
-                    "price": 75,
-                    "rating": 4.7,
-                    "image": "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=300&h=200&fit=crop"
-                },
-                {
-                    "title": "Приключение в Бадахшане и горячие источники",
-                    "price": 180,
-                    "rating": 4.6,
-                    "image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop"
-                },
-                {
-                    "title": "Экспедиция к базовому лагерю пика Сомони",
-                    "price": 450,
-                    "rating": 4.8,
-                    "image": "https://images.unsplash.com/photo-1464822759844-d150b377fc24?w=300&h=200&fit=crop"
-                }
-            ]
-        };
+        // Page state management functions
+        function showLoading() {
+            document.getElementById('loading-state').style.display = 'block';
+            document.getElementById('tour-content').style.display = 'none';
+            document.getElementById('error-state').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('tour-content').style.display = 'none';
+            document.getElementById('error-state').style.display = 'block';
+            document.getElementById('error-message').textContent = message;
+        }
+
+        function showTour() {
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('tour-content').style.display = 'block';
+            document.getElementById('error-state').style.display = 'none';
+        }
 
         function generateStars(rating) {
             const fullStars = Math.floor(rating);
@@ -616,6 +604,11 @@
         }
 
         function populateTourData() {
+            if (!tourData) {
+                showError('Данные тура не загружены');
+                return;
+            }
+
             // Basic info
             document.getElementById('page-title').textContent = tourData.title + ' - Bunyod-Tour';
             document.getElementById('tour-title').textContent = tourData.title;
@@ -783,6 +776,22 @@
 
         function populateReviews(showAll = false) {
             const reviewsContainer = document.getElementById('reviews-container');
+            
+            // Check if reviews exist
+            if (!tourData.reviews || tourData.reviews.length === 0) {
+                reviewsContainer.innerHTML = `
+                    <div class="text-center py-8">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-500">Отзывы пока отсутствуют</p>
+                        <p class="text-xs text-gray-400">Станьте первым, кто оставит отзыв о туре!</p>
+                    </div>
+                `;
+                document.getElementById('load-more-reviews').style.display = 'none';
+                return;
+            }
+            
             const reviewsToShow = showAll ? tourData.reviews : tourData.reviews.slice(0, 3);
             
             reviewsContainer.innerHTML = reviewsToShow.map(review => 
@@ -790,18 +799,18 @@
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center space-x-2">
                             <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-white font-semibold">
-                                ${review.name.charAt(0)}
+                                ${review.name?.charAt(0) || 'A'}
                             </div>
                             <div>
-                                <span class="font-medium text-gray-900">${review.name}</span>
-                                <div class="text-xs text-gray-500">${review.date}</div>
+                                <span class="font-medium text-gray-900">${review.name || 'Аноним'}</span>
+                                <div class="text-xs text-gray-500">${review.date || 'Дата не указана'}</div>
                             </div>
                         </div>
                         <div class="flex items-center">
-                            ${generateStars(review.rating)}
+                            ${generateStars(review.rating || 5)}
                         </div>
                     </div>
-                    <p class="text-gray-700 mt-2">${review.text}</p>
+                    <p class="text-gray-700 mt-2">${review.text || 'Отзыв не указан'}</p>
                 </div>`
             ).join('');
             
@@ -813,17 +822,32 @@
 
         function populateRelatedTours() {
             const relatedContainer = document.getElementById('related-tours');
+            
+            // Check if related tours exist
+            if (!tourData.related_tours || tourData.related_tours.length === 0) {
+                relatedContainer.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-500">Похожие туры пока не добавлены</p>
+                        <a href="tours.html" class="mt-2 inline-block text-blue-600 hover:text-blue-800 text-sm">Посмотреть все туры</a>
+                    </div>
+                `;
+                return;
+            }
+            
             relatedContainer.innerHTML = tourData.related_tours.map(tour => 
                 `<div class="bg-gray-50 rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
-                    <img src="${tour.image}" alt="${tour.title}" class="w-full h-40 object-cover">
+                    <img src="${tour.image || '/placeholder-tour.jpg'}" alt="${tour.title || 'Тур'}" class="w-full h-40 object-cover">
                     <div class="p-4">
-                        <h4 class="font-medium text-gray-900 mb-2">${tour.title}</h4>
+                        <h4 class="font-medium text-gray-900 mb-2">${tour.title || 'Название тура'}</h4>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                ${generateStars(tour.rating)}
-                                <span class="text-sm text-gray-600 ml-2">${tour.rating}</span>
+                                ${generateStars(tour.rating || 0)}
+                                <span class="text-sm text-gray-600 ml-2">${tour.rating || '0.0'}</span>
                             </div>
-                            <div class="text-lg font-bold text-gray-900">$${tour.price}</div>
+                            <div class="text-lg font-bold text-gray-900">$${tour.price || '0'}</div>
                         </div>
                     </div>
                 </div>`
@@ -838,25 +862,20 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
-        // Load tour data based on URL parameter
-        function loadTourFromUrl() {
-            const tourKey = getUrlParameter('tour');
-            if (tourKey && typeof sampleTours !== 'undefined' && sampleTours[tourKey]) {
-                tourData = sampleTours[tourKey];
-                console.log(`Загружен тур из URL: ${tourKey}`);
-            } else {
-                console.log('Используются данные тура по умолчанию');
-            }
-        }
+        // Old function removed - now using API-only approach
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', async function() {
-            // Load tour data from API if tour ID is provided
+            // Load tour data from API - ID is required
             const tourId = getTourIdFromUrl();
-            await loadTourData(tourId);
+            const loadSuccess = await loadTourData(tourId);
             
-            // Populate page content
-            populateTourData();
+            if (loadSuccess && tourData) {
+                // Populate page content and show tour
+                populateTourData();
+                showTour();
+            }
+            // Error states are handled in loadTourData function
             
             // Load more reviews functionality
             document.getElementById('load-more-reviews').addEventListener('click', function() {
