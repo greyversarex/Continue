@@ -1080,33 +1080,22 @@
             const tourReviews = document.getElementById('tour-reviews');
             if (tourReviews) tourReviews.textContent = `(${tourData.reviews_count || tourData.reviewCount || 0} отзыва)`;
             
-            // Обновляем продолжительность
-            const tourDuration = document.getElementById('tour-duration');
-            if (tourDuration) {
-                if (tourData.duration) {
-                    tourDuration.textContent = tourData.duration;
-                } else if (tourData.durationDays) {
-                    tourDuration.textContent = tourData.durationDays + ' дней';
-                } else {
-                    tourDuration.textContent = 'Длительность: уточнить';
-                }
-            }
-            
-            // ✅ ДЛИТЕЛЬНОСТЬ ТУРА
+            // ✅ ДЛИТЕЛЬНОСТЬ ТУРА (объединенная логика)
             const durationElement = document.getElementById('tour-duration');
-            if (durationElement && tourData.duration) {
+            if (durationElement) {
                 let durationText = '';
                 if (tourData.durationDays && tourData.durationDays > 1) {
                     durationText = `${tourData.durationDays} дней`;
                 } else if (tourData.duration) {
-                    durationText = `Длительность: ${tourData.duration}`;
-                    if (tourData.duration.includes('час')) {
+                    if (tourData.duration.includes('час') || tourData.duration.includes('дн')) {
                         durationText = tourData.duration;
-                    } else if (!tourData.duration.includes('дн') && !tourData.duration.includes('час')) {
-                        durationText += ' дней';
+                    } else {
+                        durationText = `${tourData.duration} дней`;
                     }
+                } else {
+                    durationText = 'Длительность уточняется';
                 }
-                durationElement.textContent = durationText || 'Уточняется';
+                durationElement.textContent = durationText;
             }
 
             // ✅ ИНФОРМАЦИЯ О ПИТАНИИ/ПРИЁМЕ
@@ -1138,17 +1127,7 @@
                 if (priceTypeText) priceTypeText.textContent = tourData.priceType || 'за человека';
             }
             
-            // ✅ ДЛИТЕЛЬНОСТЬ из формы (eTourDurationDays -> tour-duration)
-            const durationElement = document.getElementById('tour-duration');
-            if (durationElement) {
-                if (tourData.durationDays) {
-                    durationElement.textContent = `${tourData.durationDays} дней`;
-                } else if (tourData.duration) {
-                    durationElement.textContent = tourData.duration;
-                } else {
-                    durationElement.textContent = 'Длительность уточнить';
-                }
-            }
+            // ✅ ДЛИТЕЛЬНОСТЬ из формы (eTourDurationDays -> tour-duration) - уже обработано выше
             
             // ✅ СЛОЖНОСТЬ из формы (eTourDifficulty)
             if (tourData.difficulty) {
