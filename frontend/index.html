@@ -2383,12 +2383,12 @@
                     // Добавляем клик на кнопку "Бронировать"
                     button.addEventListener('click', function(e) {
                         e.stopPropagation();
-                        window.open(`tour-template-viator.html?tour=${tourKey}`, '_blank');
+                        window.open(`tour-template.html?tour=${tourKey}`, '_blank');
                     });
                     
                     // Добавляем клик на всю карточку
                     card.addEventListener('click', function() {
-                        window.open(`tour-template-viator.html?tour=${tourKey}`, '_blank');
+                        window.open(`tour-template.html?tour=${tourKey}`, '_blank');
                     });
                 }
             });
@@ -2662,7 +2662,7 @@
             
             return `
                 <div class="tour-card group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full"
-                     onclick="window.location.href='tour-template-viator.html?tour=${tour.id}'">
+                     onclick="window.location.href='tour-template.html?tour=${tour.id}'">
                     <div class="relative overflow-hidden rounded-t-lg">
                         <div class="w-full h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
                             ${tour.mainImage ? 
