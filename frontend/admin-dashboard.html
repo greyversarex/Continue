@@ -1738,6 +1738,49 @@
                         <small class="text-gray-500">Укажите доступные времена начала тура</small>
                     </div>
                     
+                    <!-- Дополнительная информация о туре -->
+                    <div class="form-group">
+                        <label class="form-label">Рейтинг тура</label>
+                        <input type="number" class="form-input" id="tourRating" min="1" max="5" step="0.1" placeholder="4.8">
+                        <small class="text-gray-500">Рейтинг от 1 до 5 (например: 4.8)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Количество отзывов</label>
+                        <input type="number" class="form-input" id="tourReviewsCount" min="0" placeholder="234">
+                        <small class="text-gray-500">Общее количество отзывов</small>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Что включено в тур (через запятую)</label>
+                        <textarea class="form-input" rows="3" id="tourIncludes" placeholder="Транспорт, Гид, Обед, Входные билеты"></textarea>
+                        <small class="text-gray-500">Перечислите что включено в стоимость тура</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Сложность тура</label>
+                        <select class="form-input" id="tourDifficulty">
+                            <option value="">Выберите сложность</option>
+                            <option value="Легкая">Легкая</option>
+                            <option value="Средняя">Средняя</option>
+                            <option value="Сложная">Сложная</option>
+                            <option value="Высокая">Высокая</option>
+                        </select>
+                        <small class="text-gray-500">Уровень физической подготовки для тура</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Минимальное количество людей</label>
+                        <input type="number" class="form-input" id="tourMinPeople" min="1" placeholder="2">
+                        <small class="text-gray-500">Минимальное количество участников</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Максимальное количество людей</label>
+                        <input type="number" class="form-input" id="tourMaxPeople" min="1" placeholder="12">
+                        <small class="text-gray-500">Максимальное количество участников</small>
+                    </div>
+                    
                     <!-- Доступность тура -->
                     <div class="form-group col-span-2">
                         <label class="form-label">Доступные месяцы</label>
@@ -2914,6 +2957,31 @@
                         }
                         document.getElementById('tourStartTimeOptions').value = startTimes;
                         
+                        // Загрузка новых полей
+                        document.getElementById('tourRating').value = tour.rating || '';
+                        document.getElementById('tourReviewsCount').value = tour.reviewsCount || '';
+                        document.getElementById('tourDifficulty').value = tour.difficulty || '';
+                        document.getElementById('tourMinPeople').value = tour.minPeople || '';
+                        document.getElementById('tourMaxPeople').value = tour.maxPeople || '';
+                        
+                        // Обработка "что включено"
+                        let includes = '';
+                        if (tour.includes || tour.highlights) {
+                            try {
+                                const includesData = tour.includes || tour.highlights;
+                                if (typeof includesData === 'string') {
+                                    const parsedIncludes = JSON.parse(includesData);
+                                    includes = Array.isArray(parsedIncludes) ? parsedIncludes.join(', ') : includesData;
+                                } else if (Array.isArray(includesData)) {
+                                    includes = includesData.join(', ');
+                                }
+                            } catch (e) {
+                                console.warn('Failed to parse includes:', e);
+                                includes = tour.includes || tour.highlights || '';
+                            }
+                        }
+                        document.getElementById('tourIncludes').value = includes;
+                        
                     })
                     .catch(err => {
                         console.error('Error loading tour data:', err);
@@ -3664,11 +3732,16 @@
                 // Доступность тура
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
-                // Новые поля
+                // Новые поля из формы
+                rating: parseFloat(document.getElementById('tourRating').value) || null,
+                reviewsCount: parseInt(document.getElementById('tourReviewsCount').value) || 0,
+                difficulty: document.getElementById('tourDifficulty').value || null,
+                minPeople: parseInt(document.getElementById('tourMinPeople').value) || null,
+                maxPeople: parseInt(document.getElementById('tourMaxPeople').value) || null,
+                includes: JSON.stringify(document.getElementById('tourIncludes').value.split(',').map(item => item.trim()).filter(item => item)),
+                // Существующие поля
                 highlights: JSON.stringify(window.tourHighlights || []),
-                itinerary: JSON.stringify(window.tourItinerary || []),
-                startTimeOptions: JSON.stringify(window.tourStartTimes || []),
-                includes: JSON.stringify(window.tourIncludes || [])
+                itinerary: JSON.stringify(window.tourItinerary || [])
             };
             
             const url = currentTourId ? 
