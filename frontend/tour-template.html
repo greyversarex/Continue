@@ -1243,7 +1243,7 @@
             
             // Check if elements exist to prevent null errors
             if (!startTimeSection || !startTimeSelect) {
-                console.warn('Start time elements not found');
+                // Элементы времени начала не найдены, но это нормально если их нет в HTML
                 return;
             }
             
@@ -1472,22 +1472,27 @@
         
         // Функция для проверки доступности выбранной даты
         function checkDateAvailability(selectedDate) {
-            if (!tourData.availableMonths || !tourData.availableDays) {
-                return true; // Если нет ограничений, дата доступна
+            // Если данных о доступности нет вообще, то все даты доступны
+            if (!tourData.availableMonths && !tourData.availableDays) {
+                return true;
             }
             
             const month = selectedDate.getMonth() + 1; // getMonth() возвращает 0-11, нам нужно 1-12
             const dayOfWeek = selectedDate.getDay(); // 0 = воскресенье, 1 = понедельник, и т.д.
             
-            // Проверяем доступность месяца
-            const isMonthAvailable = tourData.availableMonths.length === 0 || 
-                                   tourData.availableMonths.includes(month) || 
-                                   tourData.availableMonths.includes(month.toString());
+            // Проверяем доступность месяца (если есть ограничения по месяцам)
+            let isMonthAvailable = true;
+            if (tourData.availableMonths && tourData.availableMonths.length > 0) {
+                isMonthAvailable = tourData.availableMonths.includes(month) || 
+                                 tourData.availableMonths.includes(month.toString());
+            }
             
-            // Проверяем доступность дня недели
-            const isDayAvailable = tourData.availableDays.length === 0 || 
-                                 tourData.availableDays.includes(dayOfWeek) || 
-                                 tourData.availableDays.includes(dayOfWeek.toString());
+            // Проверяем доступность дня недели (если есть ограничения по дням)
+            let isDayAvailable = true;
+            if (tourData.availableDays && tourData.availableDays.length > 0) {
+                isDayAvailable = tourData.availableDays.includes(dayOfWeek) || 
+                               tourData.availableDays.includes(dayOfWeek.toString());
+            }
             
             console.log('Проверка доступности:', {
                 selectedDate: selectedDate.toISOString().split('T')[0],
@@ -1496,7 +1501,8 @@
                 availableMonths: tourData.availableMonths,
                 availableDays: tourData.availableDays,
                 isMonthAvailable: isMonthAvailable,
-                isDayAvailable: isDayAvailable
+                isDayAvailable: isDayAvailable,
+                result: isMonthAvailable && isDayAvailable
             });
             
             return isMonthAvailable && isDayAvailable;
