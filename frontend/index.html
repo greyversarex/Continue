@@ -2262,7 +2262,7 @@
                                 </div>
                                 ${tour.category ? `
                                 <div class="flex items-center px-2 py-1 rounded-full text-xs font-medium" style="background-color: #f3f4f6; color: #3E3E3E;">
-                                    ${tour.category}
+                                    ${tour.category.name ? (tour.category.name.ru || tour.category.name.en || 'Категория') : 'Категория'}
                                 </div>` : ''}
                             </div>
                         </div>
@@ -2703,7 +2703,7 @@
                         ${tour.category ? `
                         <div class="flex items-center text-xs mb-2" style="color: #3E3E3E;">
                             <span class="mr-1">🏷️</span>
-                            <span class="font-medium">${tour.category}</span>
+                            <span class="font-medium">${tour.category.name ? (tour.category.name.ru || tour.category.name.en || 'Категория') : 'Категория'}</span>
                         </div>` : ''}
                         ${tour.rating ? `
                         <div class="flex items-center text-green-600 text-xs mb-2">

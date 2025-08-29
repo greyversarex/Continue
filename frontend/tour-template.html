@@ -1400,11 +1400,23 @@
                 
                 // Handle date change with availability check
                 dateInput.addEventListener('change', function() {
+                    if (!this.value) {
+                        return; // Если значение пустое, ничего не делаем
+                    }
+                    
                     const selectedDate = new Date(this.value);
+                    
+                    // Проверяем валидность даты
+                    if (isNaN(selectedDate.getTime())) {
+                        console.warn('Невалидная дата:', this.value);
+                        this.value = '';
+                        return;
+                    }
+                    
                     const isAvailable = checkDateAvailability(selectedDate);
                     
                     if (!isAvailable) {
-                        // Просто сбрасываем значение без alert'а
+                        alert('Выбранная дата недоступна для этого тура. Пожалуйста, выберите другую дату.');
                         this.value = '';
                         return;
                     }
@@ -1419,15 +1431,7 @@
                     console.log('Выбрана дата:', formattedDate);
                 });
                 
-                // Добавляем обработчик для предотвращения выбора недоступных дат
-                dateInput.addEventListener('input', function() {
-                    const selectedDate = new Date(this.value);
-                    const isAvailable = checkDateAvailability(selectedDate);
-                    
-                    if (!isAvailable) {
-                        this.value = '';
-                    }
-                });
+                // Убираем дублирующий обработчик input - достаточно change
             }
         }
 
@@ -1887,10 +1891,18 @@
             
             // Проверяем доступность выбранной даты
             const date = new Date(selectedDate);
+            
+            // Проверяем валидность даты
+            if (isNaN(date.getTime())) {
+                alert('Некорректная дата. Пожалуйста, выберите дату из календаря.');
+                document.getElementById('tour-date').value = '';
+                return;
+            }
+            
             const isAvailable = checkDateAvailability(date);
             
             if (!isAvailable) {
-                // Просто сбрасываем значение без alert'а
+                alert('Выбранная дата недоступна для этого тура. Пожалуйста, выберите другую дату.');
                 document.getElementById('tour-date').value = '';
                 return;
             }
@@ -1906,6 +1918,13 @@
         function updateAvailabilityModal(dateStr) {
             // Format date
             const date = new Date(dateStr);
+            
+            // Проверяем валидность даты
+            if (isNaN(date.getTime())) {
+                console.error('Невалидная дата в updateAvailabilityModal:', dateStr);
+                return;
+            }
+            
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = date.toLocaleDateString('ru-RU', options);
             
