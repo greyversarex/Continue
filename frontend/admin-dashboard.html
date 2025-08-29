@@ -902,9 +902,17 @@
                                     </div>
                                     
                                     <div class="form-group lg:col-span-2">
-                                        <label class="form-label">Время начала (через запятую)</label>
-                                        <input type="text" class="form-input" id="eTourStartTimeOptions" placeholder="09:00, 14:00, 18:00">
-                                        <small class="text-gray-500">Укажите доступное время начала тура через запятую</small>
+                                        <label class="form-label">Доступное время начала тура</label>
+                                        <div id="editStartTimesList" class="space-y-2 mb-3">
+                                            <!-- Динамически добавляемые варианты времени -->
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <input type="time" class="form-input flex-1" id="editNewStartTime" placeholder="07:30">
+                                            <button type="button" onclick="addEditStartTime()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                                                Добавить время
+                                            </button>
+                                        </div>
+                                        <small class="text-gray-500">Добавьте возможные варианты времени начала тура</small>
                                     </div>
                                     
                                     <div class="form-group lg:col-span-2">
@@ -1793,11 +1801,6 @@
                         <input type="hidden" id="tourLanguages">
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label">Время начала тура (через запятую)</label>
-                        <input type="text" class="form-input" id="tourStartTimeOptions" placeholder="09:00, 14:00, 16:00">
-                        <small class="text-gray-500">Укажите доступные времена начала тура</small>
-                    </div>
                     
                     <!-- Дополнительная информация о туре -->
                     <div class="form-group">
@@ -2581,6 +2584,7 @@
         window.tourHighlights = [];
         window.tourItinerary = [];
         window.tourStartTimes = [];
+        window.editStartTimes = [];
         window.tourIncludes = [];
 
         // Функции управления "Что включено"
@@ -2811,7 +2815,7 @@
                 itinerary: JSON.stringify(window.tourItinerary || []),
                 
                 // Время начала
-                startTimeOptions: document.getElementById('tourStartTimeOptions')?.value || '',
+                startTimeOptions: JSON.stringify(window.tourStartTimes || []),
                 
                 // Доступность тура (месяцы и дни недели)
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
@@ -2853,6 +2857,7 @@
             window.tourHighlights = [];
             window.tourItinerary = [];
             window.tourStartTimes = [];
+            window.editStartTimes = [];
             window.tourIncludes = [];
             
             // Обновляем отображение
@@ -2903,7 +2908,7 @@
             `).join('');
         }
 
-        // Функции управления временем начала тура
+        // Функции управления временем начала тура (быстрое создание)
         function addStartTime() {
             const input = document.getElementById('newStartTime');
             const time = input.value;
@@ -2928,6 +2933,37 @@
                 <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
                     <span>🕐 ${time}</span>
                     <button type="button" onclick="removeStartTime(${index})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        // Функции управления временем начала тура (редактирование)
+        function addEditStartTime() {
+            const input = document.getElementById('editNewStartTime');
+            const time = input.value;
+            
+            if (time && !window.editStartTimes.includes(time)) {
+                window.editStartTimes.push(time);
+                updateEditStartTimesList();
+                input.value = '';
+            } else if (window.editStartTimes.includes(time)) {
+                alert('Это время уже добавлено');
+            }
+        }
+
+        function removeEditStartTime(index) {
+            window.editStartTimes.splice(index, 1);
+            updateEditStartTimesList();
+        }
+
+        function updateEditStartTimesList() {
+            const container = document.getElementById('editStartTimesList');
+            container.innerHTML = window.editStartTimes.map((time, index) => `
+                <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
+                    <span>🕐 ${time}</span>
+                    <button type="button" onclick="removeEditStartTime(${index})" class="text-red-500 hover:text-red-700">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -3269,16 +3305,16 @@
                         }
                         
                         // Обработка времен начала тура
-                        let startTimes = '';
+                        window.editStartTimes = [];
                         if (tour.startTimeOptions) {
                             try {
-                                const timeArray = JSON.parse(tour.startTimeOptions);
-                                startTimes = timeArray.join(', ');
+                                window.editStartTimes = JSON.parse(tour.startTimeOptions);
                             } catch (e) {
-                                startTimes = tour.startTimeOptions;
+                                // Если старый формат - строка через запятую
+                                window.editStartTimes = tour.startTimeOptions.split(',').map(t => t.trim()).filter(t => t);
                             }
                         }
-                        document.getElementById('tourStartTimeOptions').value = startTimes;
+                        updateEditStartTimesList();
                         
                         // Загрузка новых полей
                         document.getElementById('tourRating').value = tour.rating || '';
@@ -4053,7 +4089,7 @@
                 price: document.getElementById('tourPrice').value,
                 priceType: document.getElementById('tourPriceType').value,
                 pickupInfo: document.getElementById('tourPickupInfo').value,
-                startTimeOptions: JSON.stringify(document.getElementById('tourStartTimeOptions').value.split(',').map(t => t.trim()).filter(t => t)),
+                startTimeOptions: JSON.stringify(window.editStartTimes || []),
                 languages: document.getElementById('tourLanguages').value,
                 // Доступность тура
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),

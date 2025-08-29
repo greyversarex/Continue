@@ -676,10 +676,19 @@
                         </div>
                     </div>
                     
-                    <!-- Check Availability Button -->
-                    <button onclick="checkAvailability()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium mb-4 transition-colors">
-                        Проверить наличие
+                    <!-- Time Selection -->
+                    <div class="mb-4" id="time-selection-section">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Время начала тура</label>
+                        <div class="space-y-2" id="time-options">
+                            <!-- Time options will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Book Now Button -->
+                    <button onclick="goToBookingPage()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                        Забронировать сейчас
                     </button>
+                    
                     
                     <!-- Features -->
                     <div class="space-y-3 text-sm">
@@ -828,69 +837,6 @@
         </div>
     </footer>
 
-    <!-- Tour Availability Modal -->
-    <div id="tourAvailabilityModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
-        <div class="bg-white rounded-lg max-w-2xl w-full mx-4 p-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold">Выберите время и подтвердите бронирование</h3>
-                <button onclick="closeTourAvailabilityModal()" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <!-- Selected Date and Travelers Info -->
-            <div class="bg-gray-50 rounded-lg p-4 mb-6">
-                <div class="text-sm text-gray-600 mb-1">Выбранная дата</div>
-                <div class="font-semibold text-lg" id="selected-date-info">Понедельник, 10 августа 2025</div>
-                <div class="text-sm text-gray-600 mt-2" id="selected-travelers-info">2 взрослых, 1 ребенок</div>
-            </div>
-            
-            <!-- Available Times -->
-            <div class="mb-6">
-                <h4 class="font-semibold mb-4">Доступное время</h4>
-                <div class="space-y-3" id="available-times">
-                    <!-- Time options will be populated here -->
-                </div>
-            </div>
-            
-            <!-- Tour Includes -->
-            <div class="mb-6">
-                <h4 class="font-semibold mb-3">Что включено в тур</h4>
-                <div class="space-y-2" id="modal-tour-includes">
-                    <!-- Will be populated from tour data -->
-                </div>
-            </div>
-            
-            <!-- Pricing Info -->
-            <div class="bg-blue-50 rounded-lg p-4 mb-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <div class="text-sm text-gray-600">Общая стоимость</div>
-                        <div class="text-xl font-bold text-blue-900" id="total-price">10 500₽</div>
-                        <div class="text-sm text-gray-600" id="price-breakdown">2 взрослых — 7 000₽, 1 ребенок — 3 500₽</div>
-                    </div>
-                </div>
-                <div class="mt-3 text-xs text-green-600 flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                    Бесплатная отмена до 7:30 утра 14 октября (по местному времени)
-                </div>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div class="flex gap-3">
-                <button onclick="closeTourAvailabilityModal()" class="flex-1 py-3 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors">
-                    Отмена
-                </button>
-                <button onclick="proceedToBooking()" class="flex-1 py-3 px-4 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition-colors">
-                    Бронировать прямо сейчас
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Hotel Availability Modal -->
     <div id="hotelAvailabilityModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
@@ -1519,8 +1465,29 @@
             const selectedDate = document.getElementById('tour-date').value;
             const tourTitle = document.querySelector('#tour-title')?.textContent || 'Неизвестный тур';
             
-            // Navigate to booking page with simple parameters
-            window.location.href = `booking.html?tour=${encodeURIComponent(tourTitle)}&date=${selectedDate}&step=1`;
+            if (!selectedDate) {
+                alert('Пожалуйста, выберите дату');
+                return;
+            }
+            
+            if (!selectedTime) {
+                alert('Пожалуйста, выберите время начала тура');
+                return;
+            }
+            
+            // Prepare booking data with selected time
+            const bookingData = {
+                tourId: tourData.id,
+                date: selectedDate,
+                time: selectedTime,
+                travelers: travelers
+            };
+            
+            // Store in localStorage for booking flow
+            localStorage.setItem('bookingData', JSON.stringify(bookingData));
+            
+            // Navigate to booking page
+            window.location.href = `booking.html?tour=${encodeURIComponent(tourTitle)}&date=${selectedDate}&time=${encodeURIComponent(selectedTime)}&step=1`;
         }
 
         function closeHotelModal() {
@@ -1878,80 +1845,13 @@
             document.getElementById('traveler-summary').textContent = summary.join(', ');
         }
         
-        // ============ AVAILABILITY MODAL FUNCTIONS ============
+        // ============ TIME SELECTION FUNCTIONS ============
         let selectedTime = null;
         
-        function checkAvailability() {
-            const selectedDate = document.getElementById('tour-date').value;
+        function populateTimeOptions() {
+            const container = document.getElementById('time-options');
+            if (!container) return;
             
-            if (!selectedDate) {
-                alert('Пожалуйста, выберите дату');
-                return;
-            }
-            
-            // Проверяем доступность выбранной даты
-            const date = new Date(selectedDate);
-            
-            // Проверяем валидность даты
-            if (isNaN(date.getTime())) {
-                alert('Некорректная дата. Пожалуйста, выберите дату из календаря.');
-                document.getElementById('tour-date').value = '';
-                return;
-            }
-            
-            const isAvailable = checkDateAvailability(date);
-            
-            if (!isAvailable) {
-                alert('Выбранная дата недоступна для этого тура. Пожалуйста, выберите другую дату.');
-                document.getElementById('tour-date').value = '';
-                return;
-            }
-            
-            // Update modal with selected data
-            updateAvailabilityModal(selectedDate);
-            
-            // Show modal
-            document.getElementById('tourAvailabilityModal').classList.remove('hidden');
-            document.getElementById('tourAvailabilityModal').classList.add('flex');
-        }
-        
-        function updateAvailabilityModal(dateStr) {
-            // Format date
-            const date = new Date(dateStr);
-            
-            // Проверяем валидность даты
-            if (isNaN(date.getTime())) {
-                console.error('Невалидная дата в updateAvailabilityModal:', dateStr);
-                return;
-            }
-            
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = date.toLocaleDateString('ru-RU', options);
-            
-            document.getElementById('selected-date-info').textContent = formattedDate;
-            
-            // Update travelers info
-            const { adults, children, infants } = travelers;
-            let travelersInfo = [];
-            
-            if (adults > 0) travelersInfo.push(`${adults} взрослых`);
-            if (children > 0) travelersInfo.push(`${children} детей`);
-            if (infants > 0) travelersInfo.push(`${infants} младенцев`);
-            
-            document.getElementById('selected-travelers-info').textContent = travelersInfo.join(', ');
-            
-            // Update available times (based on tour data)
-            populateAvailableTimes();
-            
-            // Update includes section
-            populateModalIncludes();
-            
-            // Calculate pricing
-            updateModalPricing();
-        }
-        
-        function populateAvailableTimes() {
-            const container = document.getElementById('available-times');
             let availableTimes = [];
             
             // Use times from tour data if available
@@ -1968,20 +1868,14 @@
             }
             
             if (timeOptions && Array.isArray(timeOptions) && timeOptions.length > 0) {
-                availableTimes = timeOptions.map(time => {
-                    // Convert 24-hour format to readable format
-                    const [hours, minutes] = time.split(':');
-                    const hour = parseInt(hours);
-                    const displayTime = hour < 12 ? `${time} утра` : `${time} дня`;
-                    return displayTime;
-                });
+                availableTimes = timeOptions;
             } else {
-                // Fallback to default times
-                availableTimes = ['7:30 утра', '9:00 утра', '13:30 дня', '12:00 дня'];
+                // Default times if none specified
+                availableTimes = ['9:00', '13:00'];
             }
             
             if (availableTimes.length === 0) {
-                container.innerHTML = '<div class="text-gray-500 text-center py-4">Время начала не настроено</div>';
+                container.innerHTML = '<div class="text-sm text-gray-500">Время не указано</div>';
                 return;
             }
             
@@ -1991,22 +1885,20 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <div class="font-medium">${time}</div>
-                            <div class="text-sm text-gray-600">Доступно</div>
+                            <div class="text-sm text-gray-500">Доступно</div>
                         </div>
-                        <div class="text-right">
-                            <div class="text-sm text-teal-600 font-medium">${index === 0 ? 'Рекомендуется' : ''}</div>
-                        </div>
+                        ${index === 0 ? '<span class="text-xs text-teal-600 font-medium">Рекомендуется</span>' : ''}
                     </div>
                 </div>
             `).join('');
             
-            // Select first time by default
-            selectedTime = availableTimes[0] || null;
+            // Auto-select first time
+            selectedTime = availableTimes[0];
         }
         
         function selectTime(time, element) {
             // Remove selection from all options
-            document.querySelectorAll('#available-times > div').forEach(div => {
+            document.querySelectorAll('#time-options > div').forEach(div => {
                 div.classList.remove('border-teal-500', 'bg-teal-50');
                 div.classList.add('border-gray-300');
             });
@@ -2016,119 +1908,14 @@
             element.classList.add('border-teal-500', 'bg-teal-50');
             
             selectedTime = time;
+            console.log('Выбрано время:', time);
         }
         
-        function populateModalIncludes() {
-            const container = document.getElementById('modal-tour-includes');
-            
-            // Try to use includes field first, then highlights as fallback
-            let includesData = null;
-            
-            if (tourData.includes && Array.isArray(tourData.includes)) {
-                includesData = tourData.includes;
-            } else if (tourData.includes && typeof tourData.includes === 'string') {
-                try {
-                    includesData = JSON.parse(tourData.includes);
-                } catch (e) {
-                    console.warn('Failed to parse includes JSON:', e);
-                }
-            }
-            
-            // Fallback to highlights if includes not available
-            if (!includesData && tourData.highlights && Array.isArray(tourData.highlights)) {
-                includesData = tourData.highlights;
-            } else if (!includesData && tourData.highlights && typeof tourData.highlights === 'string') {
-                try {
-                    includesData = JSON.parse(tourData.highlights);
-                } catch (e) {
-                    console.warn('Failed to parse highlights JSON:', e);
-                }
-            }
-            
-            if (includesData && Array.isArray(includesData) && includesData.length > 0) {
-                container.innerHTML = includesData.map(item => `
-                    <div class="flex items-center space-x-2">
-                        <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="text-sm">${item}</span>
-                    </div>
-                `).join('');
-            } else {
-                // Default includes
-                container.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="text-sm">Профессиональный гид</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="text-sm">Транспорт</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="text-sm">Входные билеты</span>
-                    </div>
-                `;
-            }
-        }
         
-        function updateModalPricing() {
-            const basePrice = parseInt(tourData.price) || 3500;
-            const { adults, children, infants } = travelers;
-            
-            // Pricing calculation (children 50% discount, infants free)
-            const adultPrice = basePrice;
-            const childPrice = Math.round(basePrice * 0.5);
-            const infantPrice = 0;
-            
-            const totalAdults = adults * adultPrice;
-            const totalChildren = children * childPrice;
-            const totalInfants = infants * infantPrice;
-            const totalPrice = totalAdults + totalChildren + totalInfants;
-            
-            document.getElementById('total-price').textContent = `${totalPrice.toLocaleString()}₽`;
-            
-            let breakdown = [];
-            if (adults > 0) breakdown.push(`${adults} взрослых — ${totalAdults.toLocaleString()}₽`);
-            if (children > 0) breakdown.push(`${children} детей — ${totalChildren.toLocaleString()}₽`);
-            if (infants > 0) breakdown.push(`${infants} младенцев — бесплатно`);
-            
-            document.getElementById('price-breakdown').textContent = breakdown.join(', ');
-        }
         
-        function closeTourAvailabilityModal() {
-            document.getElementById('tourAvailabilityModal').classList.add('hidden');
-            document.getElementById('tourAvailabilityModal').classList.remove('flex');
-        }
         
-        function proceedToBooking() {
-            if (!selectedTime) {
-                alert('Пожалуйста, выберите время');
-                return;
-            }
-            
-            // Prepare booking data
-            const bookingData = {
-                tourId: tourData.id,
-                date: document.getElementById('tour-date').value,
-                time: selectedTime,
-                travelers: travelers,
-                totalPrice: document.getElementById('total-price').textContent
-            };
-            
-            // Store in localStorage for booking flow
-            localStorage.setItem('bookingData', JSON.stringify(bookingData));
-            
-            // Navigate to booking flow
-            window.location.href = 'booking-flow.html';
-        }
+        
+        
         
         // Close modal when clicking outside
         document.addEventListener('click', function(event) {
