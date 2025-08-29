@@ -1851,10 +1851,43 @@
                         </div>
                     </div>
                     
+                    <!-- Галерея изображений -->
                     <div class="form-group col-span-2">
-                        <label class="form-label">Фотографии</label>
-                        <input type="file" class="form-input" id="tourImages" multiple accept="image/*">
-                        <div id="imagePreview" class="mt-2"></div>
+                        <label class="form-label">
+                            <i class="fas fa-images text-blue-600 mr-2"></i>
+                            Галерея изображений тура
+                        </label>
+                        
+                        <!-- Главное изображение -->
+                        <div class="mb-4">
+                            <label class="form-label text-sm">Главное изображение (URL)</label>
+                            <input type="url" class="form-input" id="tourMainImage" placeholder="https://example.com/main-image.jpg">
+                            <small class="text-gray-500">Основное изображение для отображения в списке туров</small>
+                        </div>
+                        
+                        <!-- Дополнительные изображения -->
+                        <div class="mb-4">
+                            <label class="form-label text-sm">Дополнительные изображения для галереи</label>
+                            <div id="galleryImagesList" class="space-y-2 mb-3">
+                                <!-- Динамически добавляемые изображения -->
+                            </div>
+                            <div class="flex gap-2">
+                                <input type="url" class="form-input flex-1" id="newImageUrl" placeholder="https://example.com/gallery-image.jpg">
+                                <button type="button" onclick="addGalleryImage()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                                    <i class="fas fa-plus mr-1"></i>
+                                    Добавить
+                                </button>
+                            </div>
+                            <small class="text-gray-500">Добавьте URL изображений для галереи на странице тура</small>
+                        </div>
+                        
+                        <!-- Альтернативная загрузка файлов -->
+                        <div class="border-t pt-4">
+                            <label class="form-label text-sm">Или загрузите файлы изображений</label>
+                            <input type="file" class="form-input" id="tourImages" multiple accept="image/*">
+                            <div id="imagePreview" class="mt-2"></div>
+                            <small class="text-gray-500">Выберите несколько изображений для загрузки</small>
+                        </div>
                     </div>
                     
                     <div class="form-group col-span-2">
@@ -1900,7 +1933,7 @@
                     <button type="button" onclick="closeTourModal()" class="btn btn-secondary">
                         Отмена
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" onclick="createFullTour(event)">
                         <i class="fas fa-save"></i>
                         Сохранить
                     </button>
@@ -2538,6 +2571,149 @@
                     </button>
                 </div>
             `).join('');
+        }
+
+        // Инициализация глобальных переменных для галереи
+        window.tourGalleryImages = window.tourGalleryImages || [];
+
+        // Функции управления галереей изображений
+        function addGalleryImage() {
+            const input = document.getElementById('newImageUrl');
+            const imageUrl = input.value.trim();
+            
+            if (imageUrl && !window.tourGalleryImages.includes(imageUrl)) {
+                window.tourGalleryImages.push(imageUrl);
+                updateGalleryImagesList();
+                input.value = '';
+            } else if (window.tourGalleryImages.includes(imageUrl)) {
+                alert('Это изображение уже добавлено');
+            } else {
+                alert('Пожалуйста, введите корректный URL изображения');
+            }
+        }
+
+        function removeGalleryImage(index) {
+            window.tourGalleryImages.splice(index, 1);
+            updateGalleryImagesList();
+        }
+
+        function updateGalleryImagesList() {
+            const container = document.getElementById('galleryImagesList');
+            container.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
+                <div class="flex items-center justify-between bg-gray-50 p-3 rounded border">
+                    <div class="flex items-center gap-3">
+                        <img src="${imageUrl}" alt="Preview" class="w-12 h-12 object-cover rounded" onerror="this.style.display='none';">
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm font-medium text-gray-900 truncate">${imageUrl}</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="removeGalleryImage(${index})" class="text-red-500 hover:text-red-700 ml-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Главная функция создания тура с полными данными
+        function createFullTour(event) {
+            event.preventDefault();
+            
+            // Собираем все данные из формы
+            const mainImageUrl = document.getElementById('tourMainImage')?.value?.trim();
+            const allImages = [...window.tourGalleryImages];
+            if (mainImageUrl && !allImages.includes(mainImageUrl)) {
+                allImages.unshift(mainImageUrl); // Добавляем главное изображение в начало
+            }
+            
+            // Собираем включенные услуги из чекбоксов
+            const serviceCheckboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
+            const includedServices = Array.from(serviceCheckboxes).map(cb => cb.value);
+            
+            // Формируем данные для отправки
+            const tourData = {
+                title: {
+                    ru: document.getElementById('tourTitleRu')?.value || '',
+                    en: document.getElementById('tourTitleEn')?.value || ''
+                },
+                description: {
+                    ru: document.getElementById('tourDescRu')?.value || '',
+                    en: document.getElementById('tourDescEn')?.value || ''
+                },
+                duration: document.getElementById('tourDuration')?.value || '',
+                durationDays: parseInt(document.getElementById('tourDurationDays')?.value) || 1,
+                price: document.getElementById('tourPrice')?.value || '',
+                priceType: document.getElementById('tourPriceType')?.value || 'за человека',
+                country: document.getElementById('tourCountry')?.value || '',
+                city: document.getElementById('tourCity')?.value || '',
+                categoryId: parseInt(document.getElementById('tourCategory')?.value) || null,
+                tourBlockId: parseInt(document.getElementById('tourBlockId')?.value) || null,
+                
+                // Информация о туре
+                pickupInfo: document.getElementById('tourPickupInfo')?.value || '',
+                languages: document.getElementById('tourLanguages')?.value || '',
+                rating: parseFloat(document.getElementById('tourRating')?.value) || null,
+                reviewsCount: parseInt(document.getElementById('tourReviewsCount')?.value) || null,
+                difficulty: document.getElementById('tourDifficulty')?.value || '',
+                minPeople: parseInt(document.getElementById('tourMinPeople')?.value) || null,
+                maxPeople: parseInt(document.getElementById('tourMaxPeople')?.value) || null,
+                
+                // Изображения
+                mainImage: mainImageUrl || '',
+                images: JSON.stringify(allImages),
+                
+                // Что включено
+                includes: JSON.stringify(includedServices.concat(window.tourIncludes || [])),
+                
+                // Программа тура  
+                itinerary: JSON.stringify(window.tourItinerary || []),
+                
+                // Время начала
+                startTimeOptions: document.getElementById('tourStartTimeOptions')?.value || '',
+                
+                // Дополнительная информация из формы
+                highlights: JSON.stringify(window.tourHighlights || [])
+            };
+            
+            console.log('📝 Отправляем тур с данными:', tourData);
+            
+            // Отправляем на сервер
+            fetch(`${getApiUrl()}/tours`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(tourData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Тур успешно создан!');
+                    closeTourModal();
+                    resetTourForm();
+                    loadTours(); // Обновляем список туров
+                } else {
+                    alert('❌ Ошибка при создании тура: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Ошибка создания тура:', err);
+                alert('❌ Ошибка соединения с сервером');
+            });
+        }
+        
+        // Функция сброса формы
+        function resetTourForm() {
+            // Очищаем глобальные массивы
+            window.tourGalleryImages = [];
+            window.tourHighlights = [];
+            window.tourItinerary = [];
+            window.tourStartTimes = [];
+            window.tourIncludes = [];
+            
+            // Обновляем отображение
+            updateGalleryImagesList();
+            updateHighlightsList();
+            updateItineraryList();
+            updateStartTimesList();
+            updateIncludesList();
         }
 
         // Функции управления программой тура
