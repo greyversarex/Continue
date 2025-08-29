@@ -1679,20 +1679,6 @@
                         <small class="text-gray-500">Добавьте возможные варианты времени начала тура</small>
                     </div>
 
-                    <!-- Услуги включенные в тур -->
-                    <div class="form-group col-span-2">
-                        <label class="form-label">Услуги включенные в тур</label>
-                        <div id="includesList" class="space-y-2 mb-3">
-                            <!-- Динамически добавляемые услуги -->
-                        </div>
-                        <div class="flex gap-2">
-                            <input type="text" class="form-input flex-1" id="newInclude" placeholder="Профессиональный гид">
-                            <button type="button" onclick="addInclude()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                                Добавить услугу
-                            </button>
-                        </div>
-                        <small class="text-gray-500">Добавьте услуги, которые включены в стоимость тура</small>
-                    </div>
                     
                     <div class="form-group">
                         <label class="form-label">Категории тура</label>
@@ -2970,36 +2956,6 @@
             `).join('');
         }
 
-        // Функции управления включенными услугами
-        function addInclude() {
-            const input = document.getElementById('newInclude');
-            const service = input.value.trim();
-            
-            if (service && !window.tourIncludes.includes(service)) {
-                window.tourIncludes.push(service);
-                updateIncludesList();
-                input.value = '';
-            } else if (window.tourIncludes.includes(service)) {
-                alert('Эта услуга уже добавлена');
-            }
-        }
-
-        function removeInclude(index) {
-            window.tourIncludes.splice(index, 1);
-            updateIncludesList();
-        }
-
-        function updateIncludesList() {
-            const container = document.getElementById('includesList');
-            container.innerHTML = window.tourIncludes.map((service, index) => `
-                <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                    <span>✓ ${service}</span>
-                    <button type="button" onclick="removeInclude(${index})" class="text-red-500 hover:text-red-700">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
 
         // Add category to tour
         function addCategoryToTour() {
