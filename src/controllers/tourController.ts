@@ -136,7 +136,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, highlights, itinerary, included, excluded, pickupInfo, startTimeOptions, languages, isFeatured, startDate, endDate } = req.body;
+      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, highlights, itinerary, included, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -230,6 +230,8 @@ export class TourController {
         pickupInfo: pickupInfo || null,
         startTimeOptions: startTimeOptions || null,
         languages: languages || null,
+        availableMonths: availableMonths || null,
+        availableDays: availableDays || null,
         isFeatured: isFeatured || false,
         startDate: startDate || null,
         endDate: endDate || null
@@ -293,7 +295,7 @@ export class TourController {
         });
       }
 
-      const { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, startDate, endDate } = req.body;
+      const { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate } = req.body;
 
       // Validation for provided fields
       if (title && (!title.en || !title.ru)) {
@@ -326,6 +328,8 @@ export class TourController {
       if (pickupInfo !== undefined) updateData.pickupInfo = pickupInfo;
       if (startTimeOptions !== undefined) updateData.startTimeOptions = startTimeOptions;
       if (languages !== undefined) updateData.languages = languages;
+      if (availableMonths !== undefined) updateData.availableMonths = availableMonths;
+      if (availableDays !== undefined) updateData.availableDays = availableDays;
       if (startDate !== undefined) updateData.startDate = startDate;
       if (endDate !== undefined) updateData.endDate = endDate;
 

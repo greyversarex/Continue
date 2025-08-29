@@ -1092,10 +1092,35 @@
                 }
             }
             
-            // Обновляем информацию о приёме/сборе
+            // ✅ ДЛИТЕЛЬНОСТЬ ТУРА
+            const durationElement = document.getElementById('tour-duration');
+            if (durationElement && tourData.duration) {
+                let durationText = '';
+                if (tourData.durationDays && tourData.durationDays > 1) {
+                    durationText = `${tourData.durationDays} дней`;
+                } else if (tourData.duration) {
+                    durationText = `Длительность: ${tourData.duration}`;
+                    if (tourData.duration.includes('час')) {
+                        durationText = tourData.duration;
+                    } else if (!tourData.duration.includes('дн') && !tourData.duration.includes('час')) {
+                        durationText += ' дней';
+                    }
+                }
+                durationElement.textContent = durationText || 'Уточняется';
+            }
+
+            // ✅ ИНФОРМАЦИЯ О ПИТАНИИ/ПРИЁМЕ
             const mealsElement = document.getElementById('meals-included');
             if (mealsElement) {
-                mealsElement.textContent = tourData.pickupInfo || 'Приём не включен';
+                if (tourData.pickupInfo && tourData.pickupInfo.trim()) {
+                    mealsElement.textContent = tourData.pickupInfo;
+                } else if (tourData.included && tourData.included.includes('питание')) {
+                    mealsElement.textContent = 'Питание включено';
+                } else if (tourData.excluded && tourData.excluded.includes('питание')) {
+                    mealsElement.textContent = 'Питание не включено';
+                } else {
+                    mealsElement.textContent = 'Уточняется при бронировании';
+                }
             }
             
             // ✅ ПОЛНОЕ ОПИСАНИЕ из формы (eTourFullDesc -> tour-description-content)
@@ -1221,7 +1246,7 @@
                     languagesElement.textContent = 'Языки: ' + tourData.languages;
                 }
             } else if (languagesElement) {
-                languagesElement.textContent = 'Языки: Русский, Английский, Таджикский';
+                languagesElement.textContent = 'Языки: Русский, Английский';
             }
             
             // Set price display from database
