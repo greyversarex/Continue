@@ -890,6 +890,23 @@
                                         </select>
                                     </div>
                                     
+                                    <!-- Дополнительная информация -->
+                                    <div class="lg:col-span-2">
+                                        <h3 class="text-lg font-semibold mb-4 mt-6">Дополнительная информация</h3>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Информация о приёме/сборе</label>
+                                        <input type="text" class="form-input" id="eTourPickupInfo" placeholder="Например: Приём включён, Место сбора: отель">
+                                        <small class="text-gray-500">Укажите информацию о приёме/месте сбора для туристов</small>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Время начала (через запятую)</label>
+                                        <input type="text" class="form-input" id="eTourStartTimeOptions" placeholder="09:00, 14:00, 18:00">
+                                        <small class="text-gray-500">Укажите доступное время начала тура через запятую</small>
+                                    </div>
+                                    
                                     <div class="form-group lg:col-span-2">
                                         <label class="form-label flex items-center">
                                             <input type="checkbox" id="eTourIsFeatured" class="mr-2">
@@ -4975,7 +4992,7 @@
                 priceType: document.getElementById('eTourPriceType').value,
                 originalPrice: document.getElementById('eTourOriginalPrice').value ? parseFloat(document.getElementById('eTourOriginalPrice').value) : null,
                 durationDays: parseInt(document.getElementById('eTourDurationDays').value),
-                // difficulty field removed per user request
+                difficulty: document.getElementById('eTourDifficulty').value,
                 maxPeople: document.getElementById('eTourMaxPeople').value ? parseInt(document.getElementById('eTourMaxPeople').value) : null,
                 minPeople: document.getElementById('eTourMinPeople').value ? parseInt(document.getElementById('eTourMinPeople').value) : null,
                 country: document.getElementById('eTourCountry').value,
@@ -4985,6 +5002,12 @@
                 categoryId: parseInt(document.getElementById('eTourCategoryId').value),
                 tourBlockId: document.getElementById('eTourBlockId').value ? parseInt(document.getElementById('eTourBlockId').value) : null,
                 isFeatured: document.getElementById('eTourIsFeatured').checked,
+                // Новые поля
+                pickupInfo: document.getElementById('eTourPickupInfo').value,
+                startTimeOptions: document.getElementById('eTourStartTimeOptions').value,
+                // Календарные ограничения
+                availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
+                availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
                 isActive: true,
                 highlights: JSON.stringify({ ru: window.tourHighlights || [], en: window.tourHighlights || [] }),
                 itinerary: JSON.stringify({ ru: window.tourItinerary || [], en: window.tourItinerary || [] }),

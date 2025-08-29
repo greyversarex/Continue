@@ -1018,10 +1018,12 @@
                         price: apiTour.price || '0',
                         priceType: apiTour.priceType || 'за человека',
                         duration: apiTour.duration || '',
+                        durationDays: apiTour.durationDays || null,
                         description: apiTour.description?.ru || apiTour.description || '',
                         rating: apiTour.rating || 0,
                         reviews_count: apiTour.reviewsCount || 0,
                         pickupInfo: apiTour.pickupInfo || 'Включен',
+                        difficulty: apiTour.difficulty || '',
                         languages: apiTour.languages ? (typeof apiTour.languages === 'string' ? JSON.parse(apiTour.languages) : apiTour.languages) : [],
                         images: apiTour.images ? (typeof apiTour.images === 'string' ? JSON.parse(apiTour.images) : apiTour.images) : [],
                         highlights: apiTour.highlights ? (typeof apiTour.highlights === 'string' ? JSON.parse(apiTour.highlights) : apiTour.highlights) : [],
@@ -1031,6 +1033,9 @@
                         startTimeOptions: apiTour.startTimeOptions || '',
                         minPeople: apiTour.minPeople || 1,
                         maxPeople: apiTour.maxPeople || 10,
+                        // Календарные ограничения
+                        availableMonths: apiTour.availableMonths ? (typeof apiTour.availableMonths === 'string' ? JSON.parse(apiTour.availableMonths) : apiTour.availableMonths) : [],
+                        availableDays: apiTour.availableDays ? (typeof apiTour.availableDays === 'string' ? JSON.parse(apiTour.availableDays) : apiTour.availableDays) : [],
                         reviews: [],
                         related_tours: []
                     };
@@ -1117,6 +1122,9 @@
                 const difficultyElement = document.getElementById('tour-difficulty');
                 if (difficultyElement) difficultyElement.textContent = tourData.difficulty;
             }
+            
+            // ✅ ИНФОРМАЦИЯ О ДОСТУПНОСТИ
+            updateAvailabilityInfo();
             
             // ✅ МАКС/МИН ЛЮДЕЙ из формы (eTourMaxPeople, eTourMinPeople)
             if (tourData.maxPeople || tourData.minPeople) {
@@ -1390,9 +1398,17 @@
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 dateInput.min = tomorrow.toISOString().split('T')[0];
                 
-                // Handle date change
+                // Handle date change with availability check
                 dateInput.addEventListener('change', function() {
                     const selectedDate = new Date(this.value);
+                    const isAvailable = checkDateAvailability(selectedDate);
+                    
+                    if (!isAvailable) {
+                        alert('Извините, выбранная дата недоступна для этого тура. Пожалуйста, выберите другую дату.');
+                        this.value = '';
+                        return;
+                    }
+                    
                     const options = { 
                         weekday: 'long', 
                         day: 'numeric', 
@@ -1436,6 +1452,82 @@
                 if (e.key === 'ArrowLeft') document.getElementById('modalPrev').click();
                 if (e.key === 'ArrowRight') document.getElementById('modalNext').click();
             };
+        }
+
+        // Функция для обновления информации о доступности тура
+        function updateAvailabilityInfo() {
+            if (!tourData.availableMonths || !tourData.availableDays) {
+                return; // Если нет данных о доступности, ничего не делаем
+            }
+            
+            // Создаем информацию о доступных месяцах
+            let availabilityText = '';
+            
+            if (tourData.availableMonths.length > 0) {
+                const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 
+                                 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+                const availableMonthNames = tourData.availableMonths.map(month => monthNames[month - 1]).filter(Boolean);
+                availabilityText += `Месяцы: ${availableMonthNames.join(', ')}`;
+            }
+            
+            if (tourData.availableDays.length > 0) {
+                const dayNames = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+                const availableDayNames = tourData.availableDays.map(day => dayNames[day]).filter(Boolean);
+                if (availabilityText) availabilityText += '; ';
+                availabilityText += `Дни: ${availableDayNames.join(', ')}`;
+            }
+            
+            // Добавляем информацию о доступности в интерфейс
+            const availabilityElement = document.getElementById('tour-availability-info');
+            if (availabilityElement) {
+                availabilityElement.textContent = availabilityText || 'Доступен круглый год';
+            } else {
+                // Создаем элемент для отображения доступности, если его нет
+                const languagesElement = document.getElementById('tour-languages');
+                if (languagesElement && availabilityText) {
+                    const availabilityDiv = document.createElement('div');
+                    availabilityDiv.className = 'flex items-center mt-2';
+                    availabilityDiv.innerHTML = `
+                        <svg class="w-4 h-4 text-gray-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-sm text-gray-600">Доступность: ${availabilityText}</span>
+                    `;
+                    languagesElement.parentNode.insertBefore(availabilityDiv, languagesElement.nextSibling);
+                }
+            }
+        }
+        
+        // Функция для проверки доступности выбранной даты
+        function checkDateAvailability(selectedDate) {
+            if (!tourData.availableMonths || !tourData.availableDays) {
+                return true; // Если нет ограничений, дата доступна
+            }
+            
+            const month = selectedDate.getMonth() + 1; // getMonth() возвращает 0-11, нам нужно 1-12
+            const dayOfWeek = selectedDate.getDay(); // 0 = воскресенье, 1 = понедельник, и т.д.
+            
+            // Проверяем доступность месяца
+            const isMonthAvailable = tourData.availableMonths.length === 0 || 
+                                   tourData.availableMonths.includes(month) || 
+                                   tourData.availableMonths.includes(month.toString());
+            
+            // Проверяем доступность дня недели
+            const isDayAvailable = tourData.availableDays.length === 0 || 
+                                 tourData.availableDays.includes(dayOfWeek) || 
+                                 tourData.availableDays.includes(dayOfWeek.toString());
+            
+            console.log('Проверка доступности:', {
+                selectedDate: selectedDate.toISOString().split('T')[0],
+                month: month,
+                dayOfWeek: dayOfWeek,
+                availableMonths: tourData.availableMonths,
+                availableDays: tourData.availableDays,
+                isMonthAvailable: isMonthAvailable,
+                isDayAvailable: isDayAvailable
+            });
+            
+            return isMonthAvailable && isDayAvailable;
         }
 
         // Note: DOM initialization moved to API loading section below
@@ -1812,6 +1904,16 @@
             
             if (!selectedDate) {
                 alert('Пожалуйста, выберите дату');
+                return;
+            }
+            
+            // Проверяем доступность выбранной даты
+            const date = new Date(selectedDate);
+            const isAvailable = checkDateAvailability(date);
+            
+            if (!isAvailable) {
+                alert('Извините, выбранная дата недоступна для этого тура. Пожалуйста, выберите другую дату.');
+                document.getElementById('tour-date').value = '';
                 return;
             }
             
