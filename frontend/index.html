@@ -2256,8 +2256,14 @@
                     <div class="p-6 flex flex-col flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <h3 class="text-xl font-bold text-gray-900">${tour.title.ru}</h3>
-                            <div class="flex items-center bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                                ${tour.format}
+                            <div class="flex flex-col gap-1">
+                                <div class="flex items-center bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                                    ${tour.format || 'Групповой'}
+                                </div>
+                                ${tour.category ? `
+                                <div class="flex items-center bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                    ${tour.category}
+                                </div>` : ''}
                             </div>
                         </div>
                         <p class="text-gray-600 mb-4 flex-grow">
@@ -2693,6 +2699,11 @@
                         <div class="flex items-center text-blue-600 text-xs mb-2">
                             <span class="mr-1">🟢</span>
                             <span class="font-medium">${tour.format}</span>
+                        </div>` : ''}
+                        ${tour.category ? `
+                        <div class="flex items-center text-purple-600 text-xs mb-2">
+                            <span class="mr-1">🏷️</span>
+                            <span class="font-medium">${tour.category}</span>
                         </div>` : ''}
                         ${tour.rating ? `
                         <div class="flex items-center text-green-600 text-xs mb-2">

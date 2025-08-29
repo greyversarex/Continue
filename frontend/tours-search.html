@@ -1408,7 +1408,8 @@
                             
                             <div class="tour-features">
                                 <span><i class="fas fa-clock mr-1"></i> ${duration}</span>
-                                ${features.slice(0, 2).map(f => `
+                                ${tour.category ? `<span><i class="fas fa-tag text-purple-500 mr-1"></i> ${tour.category}</span>` : ''}
+                                ${features.slice(0, 1).map(f => `
                                     <span><i class="fas fa-check text-green-500 mr-1"></i> ${f}</span>
                                 `).join('')}
                             </div>
