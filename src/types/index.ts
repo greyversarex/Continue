@@ -58,6 +58,8 @@ export interface CreateTourData {
   pickupInfo?: string;
   startTimeOptions?: string;
   languages?: string;
+  availableMonths?: string;
+  availableDays?: string;
   startDate?: string;
   endDate?: string;
 }
