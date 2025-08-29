@@ -322,7 +322,7 @@
                 <span>›</span>
                 <a href="#" class="hover:text-blue-600">Горные туры</a>
                 <span>›</span>
-                <span class="text-gray-900" id="breadcrumb-final"><!-- Название загружается из API --></span>
+                <span class="text-gray-900" id="breadcrumb-final">Памирское шоссе</span>
             </div>
         </div>
     </nav>
@@ -332,16 +332,16 @@
         <!-- Tour Title -->
         <div class="mb-4">
             <h1 class="text-3xl font-bold text-gray-900 mb-3" id="tour-title">
-                <!-- Название тура загружается из API -->
+                Полный день: Памирское шоссе, горы и озёра
             </h1>
             
             <div class="flex items-center space-x-4">
                 <div class="flex items-center">
-                    <div class="flex text-yellow-400 text-lg" id="tour-rating"><!-- Рейтинг загружается из API --></div>
-                    <span class="ml-2 text-sm text-gray-600" id="tour-reviews"><!-- Отзывы загружаются из API --></span>
+                    <div class="flex text-yellow-400 text-lg" id="tour-rating">★★★★★</div>
+                    <span class="ml-2 text-sm text-gray-600" id="tour-reviews">(234 отзыва)</span>
                 </div>
                 <span class="text-gray-400">|</span>
-                <span class="text-sm text-gray-600" id="tour-location"><!-- Локация загружается из API --></span>
+                <span class="text-sm text-gray-600" id="tour-location">Памирские горы, Таджикистан</span>
             </div>
         </div>
 
@@ -955,11 +955,60 @@
         let basePricePerPerson = 3500; // Base price per person
         let groupSize = 2; // Default group size
         
-        // API Configuration
-        const API_BASE = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/api`;
-        
-        // Tour data will be loaded from API
-        const embeddedTourData = {};
+        // Embedded tour data for reliability
+        const embeddedTourData = {
+            pamir_highway: {
+                "title": "Полный день: Памирское шоссе, горы и озёра",
+                "location": "Памирские горы, Таджикистан",
+                "rating": 4.8,
+                "reviews_count": 234,
+                "duration": "6-7 часов",
+                "price": "От 3 500₽",
+                "images": [
+                    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+                    "https://images.unsplash.com/photo-1464822759844-d150b377fc24?w=400&h=300&fit=crop", 
+                    "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1454391304352-2bf4678b1a7a?w=400&h=300&fit=crop"
+                ],
+                "reviews": [
+                    {
+                        "name": "Анна Петрова",
+                        "rating": 5,
+                        "date": "Январь 2025",
+                        "comment": "Невероятный тур! Виды просто захватывают дух. Гид очень знающий и дружелюбный. Обязательно вернусь ещё раз!"
+                    },
+                    {
+                        "name": "Дмитрий Иванов",
+                        "rating": 5,
+                        "date": "Декабрь 2024",
+                        "comment": "Потрясающие пейзажи и отлично организованный тур. Памирское шоссе действительно уникальное место на земле."
+                    }
+                ]
+            },
+            samarkand: {
+                "title": "Древний Самарканд и мавзолей Гур-Эмир",
+                "location": "Самарканд, Узбекистан", 
+                "rating": 4.9,
+                "reviews_count": 189,
+                "duration": "8 часов",
+                "price": "От 2 500₽",
+                "images": [
+                    "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&h=600&fit=crop",
+                    "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+                ],
+                "reviews": [
+                    {
+                        "name": "Елена Козлова",
+                        "rating": 5,
+                        "date": "Март 2025",
+                        "comment": "Восхитительный тур по историческому Самарканду. Архитектура поражает воображение!"
+                    }
+                ]
+            }
+        };
 
         // Tab switching functionality
         function switchTab(tabName) {
@@ -988,60 +1037,28 @@
             }
         }
 
-        // Load tour data from API
-        async function loadTourData() {
-            console.log("Loading tour data from API...");
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const tourId = urlParams.get('id') || urlParams.get('tour');
-            
-            if (!tourId) {
-                console.error('Не указан ID тура');
+        // Load tour data from URL parameter or use default
+        function loadTourData() {
+            if (isLoaded) {
+                console.log('Tour data already loaded from API, skipping static fallback');
                 return;
             }
+            console.log("Loading tour data...");
             
-            try {
-                const response = await fetch(`${API_BASE}/tours/${tourId}`);
-                if (!response.ok) {
-                    console.error('Ошибка загрузки тура:', response.status);
-                    return;
-                }
-                
-                const result = await response.json();
-                if (result.success && result.data) {
-                    const apiTour = result.data;
-                    
-                    // Convert API data to our format
-                    tourData = {
-                        title: apiTour.title?.ru || apiTour.title || '',
-                        location: `${apiTour.city || ''}, ${apiTour.country || ''}`.replace(/^, |, $/, '') || '',
-                        price: apiTour.price || '0',
-                        priceType: apiTour.priceType || 'за человека',
-                        duration: apiTour.duration || '',
-                        description: apiTour.description?.ru || apiTour.description || '',
-                        rating: apiTour.rating || 0,
-                        reviews_count: apiTour.reviewsCount || 0,
-                        pickupInfo: apiTour.pickupInfo || 'Включен',
-                        languages: apiTour.languages ? (typeof apiTour.languages === 'string' ? JSON.parse(apiTour.languages) : apiTour.languages) : [],
-                        images: apiTour.images ? (typeof apiTour.images === 'string' ? JSON.parse(apiTour.images) : apiTour.images) : [],
-                        highlights: apiTour.highlights ? (typeof apiTour.highlights === 'string' ? JSON.parse(apiTour.highlights) : apiTour.highlights) : [],
-                        includes: apiTour.includes ? (typeof apiTour.includes === 'string' ? JSON.parse(apiTour.includes) : apiTour.includes) : [],
-                        itinerary: apiTour.itinerary ? (typeof apiTour.itinerary === 'string' ? JSON.parse(apiTour.itinerary) : apiTour.itinerary) : [],
-                        mainImage: apiTour.mainImage || '',
-                        startTimeOptions: apiTour.startTimeOptions || '',
-                        minPeople: apiTour.minPeople || 1,
-                        maxPeople: apiTour.maxPeople || 10,
-                        reviews: [],
-                        related_tours: []
-                    };
-                    
-                    console.log('✅ Tour data loaded from API:', tourData);
-                    updatePageContent();
-                } else {
-                    console.error('Ошибка: API вернул неуспешный ответ');
-                }
-            } catch (error) {
-                console.error('Ошибка при загрузке данных тура:', error);
+            const urlParams = new URLSearchParams(window.location.search);
+            const tourId = urlParams.get('id') || urlParams.get('tour') || 'pamir_highway';
+            
+            // Use embedded data first, then try external
+            if (embeddedTourData[tourId]) {
+                tourData = embeddedTourData[tourId];
+                console.log("Using embedded tour data for:", tourId);
+                updatePageContent();
+            } else {
+                console.log("Tour data not found for:", tourId);
+                // Fallback to default tour
+                console.log("Falling back to static tour data");
+                tourData = embeddedTourData.pamir_highway;
+                updatePageContent();
             }
         }
 
@@ -1133,47 +1150,82 @@
                 }
             }
             
-            // Обновляем "Что включено"
-            if (tourData.highlights && tourData.highlights.length > 0) {
-                const includesElement = document.getElementById('tour-includes');
-                if (includesElement) {
-                    includesElement.innerHTML = tourData.highlights.map(highlight => `
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-3 mt-1">✓</span>
-                            <span class="text-gray-700">${highlight}</span>
-                        </li>
-                    `).join('');
+            // ✅ ИСПРАВЛЯЕМ: Обновляем "Что включено" - парсим JSON данные
+            if (tourData.highlights) {
+                try {
+                    let highlightsList = [];
+                    
+                    // Парсим JSON если это строка
+                    if (typeof tourData.highlights === 'string') {
+                        const parsedHighlights = JSON.parse(tourData.highlights);
+                        highlightsList = parsedHighlights.ru || parsedHighlights.en || [];
+                    } else if (Array.isArray(tourData.highlights)) {
+                        highlightsList = tourData.highlights;
+                    }
+                    
+                    if (highlightsList.length > 0) {
+                        const includesElement = document.getElementById('tour-includes');
+                        if (includesElement) {
+                            includesElement.innerHTML = highlightsList.map(highlight => `
+                                <li class="flex items-start">
+                                    <span class="text-green-600 mr-3 mt-1">✓</span>
+                                    <span class="text-gray-700">${highlight}</span>
+                                </li>
+                            `).join('');
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to parse highlights:', e);
                 }
             }
             
-            // Обновляем программу тура
-            if (tourData.itinerary && tourData.itinerary.length > 0) {
-                const programElement = document.getElementById('content-program');
-                if (programElement) {
-                    programElement.innerHTML = `
-                        <div class="space-y-6">
-                            ${tourData.itinerary.map(item => `
-                                <div class="flex items-start space-x-4">
-                                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">${item.time || 'Время'}</div>
-                                    <div>
-                                        <h4 class="font-semibold text-gray-900">${item.title || 'Название'}</h4>
-                                        <p class="text-gray-600 mt-1">${item.description || 'Описание'}</p>
-                                    </div>
+            // ✅ ИСПРАВЛЯЕМ: Обновляем программу тура - парсим JSON данные
+            if (tourData.itinerary) {
+                try {
+                    let itineraryList = [];
+                    
+                    // Парсим JSON если это строка
+                    if (typeof tourData.itinerary === 'string') {
+                        const parsedItinerary = JSON.parse(tourData.itinerary);
+                        itineraryList = parsedItinerary.ru || parsedItinerary.en || [];
+                    } else if (Array.isArray(tourData.itinerary)) {
+                        itineraryList = tourData.itinerary;
+                    }
+                    
+                    if (itineraryList.length > 0) {
+                        const programElement = document.getElementById('content-program');
+                        if (programElement) {
+                            programElement.innerHTML = `
+                                <div class="space-y-6">
+                                    ${itineraryList.map(item => `
+                                        <div class="flex items-start space-x-4">
+                                            <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">${item.time}</div>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-900">${item.title}</h4>
+                                                <p class="text-gray-600 mt-1">${item.description}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
                                 </div>
-                            `).join('')}
-                        </div>
-                    `;
+                            `;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to parse itinerary:', e);
                 }
             }
             
             // Обновляем языки тура
             const languagesElement = document.getElementById('tour-languages');
-            if (languagesElement) {
-                if (tourData.languages && tourData.languages.length > 0) {
-                    languagesElement.textContent = 'Языки: ' + tourData.languages.join(', ');
-                } else {
-                    languagesElement.textContent = 'Языки: Русский, Английский';
+            if (languagesElement && tourData.languages) {
+                try {
+                    const languagesArray = JSON.parse(tourData.languages);
+                    languagesElement.textContent = 'Языки: ' + languagesArray.join(', ');
+                } catch (e) {
+                    languagesElement.textContent = 'Языки: ' + tourData.languages;
                 }
+            } else if (languagesElement) {
+                languagesElement.textContent = 'Языки: Русский, Английский';
             }
             
             // Set price display from database
@@ -1614,13 +1666,188 @@
         }
     </script>
     
+    <script src="sample-tour-data.js"></script>
     <script>
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', async function() {
+        // API Tour Loading
+        const API_BASE_URL = window.location.protocol + '//' + window.location.host + '/api';
+        
+        async function loadTourFromAPI() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tourId = urlParams.get('tour') || urlParams.get('id');
+            
+            if (!tourId) {
+                console.log('No tour ID provided, falling back to static data');
+                loadTourData();
+                setupEventListeners();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/tours/${tourId}`);
+                const result = await response.json();
+                
+                console.log('API Response:', result);
+                if (result.success && result.data) {
+                    const apiTourData = result.data;
+                    console.log('Processing API data:', apiTourData);
+                    
+                    // Parse multilingual content (handle both string and object formats)
+                    let title, description;
+                    try {
+                        title = typeof apiTourData.title === 'string' 
+                            ? JSON.parse(apiTourData.title) 
+                            : apiTourData.title;
+                    } catch (e) {
+                        console.warn('Failed to parse title:', e);
+                        title = { ru: apiTourData.title };
+                    }
+                    
+                    try {
+                        description = typeof apiTourData.description === 'string' 
+                            ? JSON.parse(apiTourData.description) 
+                            : apiTourData.description;
+                    } catch (e) {
+                        console.warn('Failed to parse description:', e);
+                        description = { ru: apiTourData.description };
+                    }
+                    
+                    // ✅ ПОЛНЫЙ МАППИНГ всех полей из API
+                    tourData = {
+                        ...tourData,
+                        id: apiTourData.id,
+                        title: title.ru,
+                        description: description.ru,
+                        shortDesc: apiTourData.shortDesc,
+                        
+                        // Ценовые поля  
+                        price: apiTourData.price,
+                        priceType: apiTourData.priceType,
+                        originalPrice: apiTourData.originalPrice,
+                        
+                        // Временные поля
+                        duration: apiTourData.duration,
+                        durationDays: apiTourData.durationDays,
+                        
+                        // Локация
+                        country: apiTourData.country,
+                        city: apiTourData.city,
+                        location: `${apiTourData.city || 'Неизвестно'}, ${apiTourData.country || 'Центральная Азия'}`,
+                        
+                        // Детали тура
+                        format: apiTourData.format,
+                        difficulty: apiTourData.difficulty,
+                        maxPeople: apiTourData.maxPeople,
+                        minPeople: apiTourData.minPeople,
+                        
+                        // Изображения
+                        mainImage: apiTourData.mainImage,
+                        
+                        // Опции
+                        rating: apiTourData.rating || 4.8,
+                        reviewCount: apiTourData.reviewsCount || 0,
+                        pickupInfo: apiTourData.pickupInfo,
+                        startTimeOptions: apiTourData.startTimeOptions,
+                        languages: apiTourData.languages,
+                        
+                        // Статусы
+                        isActive: apiTourData.isActive,
+                        isFeatured: apiTourData.isFeatured
+                    };
+                    
+                    // Parse optional JSON fields and set default images
+                    if (apiTourData.images) {
+                        try {
+                            tourData.images = JSON.parse(apiTourData.images);
+                        } catch (e) {
+                            console.warn('Failed to parse images:', e);
+                            tourData.images = [];
+                        }
+                    }
+                    
+                    // Add default images if none provided
+                    if (!tourData.images || tourData.images.length === 0) {
+                        tourData.images = [
+                            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
+                            'https://images.unsplash.com/photo-1464822759844-d150b377fc24?w=400&h=300&fit=crop',
+                            'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=300&fit=crop',
+                            'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=400&h=300&fit=crop'
+                        ];
+                    }
+                    
+                    if (apiTourData.highlights) {
+                        try {
+                            const highlights = JSON.parse(apiTourData.highlights);
+                            tourData.highlights = highlights.ru || highlights;
+                        } catch (e) {
+                            console.warn('Failed to parse highlights:', e);
+                        }
+                    }
+                    
+                    if (apiTourData.itinerary) {
+                        try {
+                            const itinerary = JSON.parse(apiTourData.itinerary);
+                            tourData.itinerary = itinerary.ru || itinerary;
+                        } catch (e) {
+                            console.warn('Failed to parse itinerary:', e);
+                        }
+                    }
+                    
+                    if (apiTourData.included) {
+                        try {
+                            const included = JSON.parse(apiTourData.included);
+                            tourData.included = included.ru || included;
+                        } catch (e) {
+                            console.warn('Failed to parse included:', e);
+                        }
+                    }
+                    
+                    if (apiTourData.excluded) {
+                        try {
+                            const excluded = JSON.parse(apiTourData.excluded);
+                            tourData.excluded = excluded.ru || excluded;
+                        } catch (e) {
+                            console.warn('Failed to parse excluded:', e);
+                        }
+                    }
+                    
+                    console.log('Tour loaded from API:', tourData);
+                    isLoaded = true; // Mark as loaded
+                    
+                    try {
+                        console.log('Starting to update page content...');
+                        updatePageContent();
+                        console.log('Page content updated successfully');
+                        setupEventListeners();
+                        console.log('Successfully updated page with API data');
+                    } catch (updateError) {
+                        console.error('Error updating page content:', updateError);
+                        console.error('Error stack:', updateError.stack);
+                    }
+                    return; // Successfully loaded from API, no need to load static data
+                } else {
+                    console.error('Failed to load tour from API. Success:', result.success, 'Data:', result.data);
+                    // Fallback to static data if API response not successful
+                    console.log('Falling back to static tour data');
+                    loadTourData();
+                    setupEventListeners();
+                }
+            } catch (error) {
+                console.error('Error loading tour from API:', error);
+                // Fallback to static data if API failed
+                console.log('Falling back to static tour data');
+                loadTourData();
+                setupEventListeners();
+            }
+        }
+
+        // Initialize page - API first, then fallback if needed
+        document.addEventListener('DOMContentLoaded', function() {
             console.log("DOM loaded, initializing page...");
-            await loadTourData();
-            setupEventListeners();
+            loadTourFromAPI();
         });
+        
+        // Prevent duplicate loadTourData calls
+        let isLoaded = false;
         // Share functionality
         function toggleShareMenu() {
             const shareMenu = document.getElementById('share-menu');
