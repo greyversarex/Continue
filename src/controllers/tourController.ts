@@ -136,7 +136,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, highlights, itinerary, included, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate } = req.body;
+      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -226,6 +226,7 @@ export class TourController {
         highlights: highlights || null,
         itinerary: itinerary || null,
         included: included || null,
+        includes: includes || null,
         excluded: excluded || null,
         pickupInfo: pickupInfo || null,
         startTimeOptions: startTimeOptions || null,
@@ -234,7 +235,9 @@ export class TourController {
         availableDays: availableDays || null,
         isFeatured: isFeatured || false,
         startDate: startDate || null,
-        endDate: endDate || null
+        endDate: endDate || null,
+        rating: rating || null,
+        reviewsCount: reviewsCount || null
       });
 
       // Parse JSON fields for response with safe parsing

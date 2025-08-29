@@ -62,6 +62,14 @@ export interface CreateTourData {
   availableDays?: string;
   startDate?: string;
   endDate?: string;
+  rating?: number;
+  reviewsCount?: number;
+  includes?: string;
+  theme?: string;
+  requirements?: string;
+  tags?: string;
+  location?: string;
+  services?: string;
 }
 
 // API Response types
