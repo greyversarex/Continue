@@ -432,7 +432,7 @@
                             <!-- Share function moved to same row -->
                             <div class="flex items-center space-x-2">
                                 <div class="relative">
-                                    <button id="share-btn" onclick="toggleShareMenu()" class="flex items-center space-x-2 px-3 py-2 text-white rounded-lg transition-colors" style="background-color: #6B7280; hover:background-color: #4B5563;">
+                                    <button id="share-btn" onclick="toggleShareMenu()" class="flex items-center space-x-2 px-3 py-2 text-white bg-gray-500 hover:bg-gray-600 rounded-lg transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
                                         </svg>
@@ -590,12 +590,45 @@
                     <!-- Date Selector -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Выберите дату</label>
-                        <input 
-                            type="date" 
-                            id="tour-date" 
-                            class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            value="2025-08-10"
-                            min="2025-08-09">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="tour-date-display" 
+                                class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+                                placeholder="Выберите дату"
+                                readonly
+                                onclick="toggleCalendar()">
+                            <input type="hidden" id="tour-date" value="">
+                            
+                            <!-- Custom Calendar Dropdown -->
+                            <div id="custom-calendar" class="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50 p-4">
+                                <div class="flex justify-between items-center mb-4">
+                                    <button type="button" onclick="changeMonth(-1)" class="p-2 hover:bg-gray-100 rounded">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                        </svg>
+                                    </button>
+                                    <h3 id="calendar-month" class="font-semibold text-gray-900"></h3>
+                                    <button type="button" onclick="changeMonth(1)" class="p-2 hover:bg-gray-100 rounded">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-7 gap-1 mb-2">
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Пн</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Вт</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Ср</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Чт</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Пт</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Сб</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Вс</div>
+                                </div>
+                                <div id="calendar-days" class="grid grid-cols-7 gap-1">
+                                    <!-- Days will be populated here -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Travelers Selector -->
@@ -677,7 +710,7 @@
                     </div>
                     
                     <!-- Time Selection -->
-                    <div class="mb-4" id="time-selection-section">
+                    <div class="mb-4" id="time-selection-section" style="display: none;">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Время начала тура</label>
                         <div class="space-y-2" id="time-options">
                             <!-- Time options will be populated here -->
@@ -1193,6 +1226,12 @@
                 return;
             }
             
+            // Check if both date and travelers are selected before showing time options
+            if (!shouldShowTimeSelection()) {
+                timeSelectionSection.style.display = 'none';
+                return;
+            }
+            
             if (tourData.startTimeOptions) {
                 try {
                     let timeOptions;
@@ -1230,6 +1269,151 @@
                 input.checked = (input.value === time);
             });
             console.log('Selected time:', time);
+        }
+        
+        // Function to check if time selection should be shown
+        function shouldShowTimeSelection() {
+            const dateInput = document.getElementById('tour-date');
+            const travelerSummary = document.getElementById('traveler-summary');
+            
+            // Check if date is selected (has value)
+            const dateSelected = dateInput && dateInput.value && dateInput.value.trim() !== '';
+            
+            // Check if travelers are selected (total > 0)
+            const travelersSelected = travelers && (travelers.adults + travelers.children + travelers.infants) > 0;
+            
+            return dateSelected && travelersSelected;
+        }
+        
+        // Custom Calendar Variables
+        let currentCalendarMonth = new Date().getMonth();
+        let currentCalendarYear = new Date().getFullYear();
+        const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+        
+        // Initialize Custom Calendar
+        function initializeCustomCalendar() {
+            const today = new Date();
+            currentCalendarMonth = today.getMonth();
+            currentCalendarYear = today.getFullYear();
+            
+            renderCalendar();
+            
+            // Close calendar when clicking outside
+            document.addEventListener('click', function(event) {
+                const calendar = document.getElementById('custom-calendar');
+                const dateDisplay = document.getElementById('tour-date-display');
+                
+                if (calendar && dateDisplay && !calendar.contains(event.target) && event.target !== dateDisplay) {
+                    calendar.classList.add('hidden');
+                }
+            });
+        }
+        
+        // Toggle Calendar Visibility
+        function toggleCalendar() {
+            const calendar = document.getElementById('custom-calendar');
+            if (calendar) {
+                calendar.classList.toggle('hidden');
+                if (!calendar.classList.contains('hidden')) {
+                    renderCalendar();
+                }
+            }
+        }
+        
+        // Change Month
+        function changeMonth(delta) {
+            currentCalendarMonth += delta;
+            
+            if (currentCalendarMonth < 0) {
+                currentCalendarMonth = 11;
+                currentCalendarYear--;
+            } else if (currentCalendarMonth > 11) {
+                currentCalendarMonth = 0;
+                currentCalendarYear++;
+            }
+            
+            renderCalendar();
+        }
+        
+        // Render Calendar
+        function renderCalendar() {
+            const monthElement = document.getElementById('calendar-month');
+            const daysElement = document.getElementById('calendar-days');
+            
+            if (!monthElement || !daysElement) return;
+            
+            // Set month name
+            monthElement.textContent = `${monthNames[currentCalendarMonth]} ${currentCalendarYear}`;
+            
+            // Clear days
+            daysElement.innerHTML = '';
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(currentCalendarYear, currentCalendarMonth, 1);
+            const lastDay = new Date(currentCalendarYear, currentCalendarMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            
+            // Get first Monday (adjust for Monday start)
+            let startDay = (firstDay.getDay() + 6) % 7; // Convert Sunday=0 to Monday=0
+            
+            // Add empty cells for previous month
+            for (let i = 0; i < startDay; i++) {
+                const emptyDiv = document.createElement('div');
+                daysElement.appendChild(emptyDiv);
+            }
+            
+            // Add days of current month
+            const today = new Date();
+            const selectedDate = document.getElementById('tour-date').value;
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayDate = new Date(currentCalendarYear, currentCalendarMonth, day);
+                const dateString = dayDate.toISOString().split('T')[0];
+                
+                const dayDiv = document.createElement('div');
+                dayDiv.textContent = day;
+                dayDiv.className = 'w-8 h-8 flex items-center justify-center text-sm rounded cursor-pointer';
+                
+                // Check if this date is in the past
+                const isPast = dayDate < today;
+                
+                if (isPast) {
+                    // Past dates - gray and not clickable
+                    dayDiv.className += ' text-gray-300 cursor-not-allowed';
+                } else {
+                    // Future dates - clickable
+                    dayDiv.className += ' hover:bg-blue-100 text-gray-900';
+                    dayDiv.onclick = () => selectDate(dateString, day, currentCalendarMonth + 1, currentCalendarYear);
+                }
+                
+                // Selected date
+                if (selectedDate === dateString) {
+                    dayDiv.className += ' bg-blue-600 text-white';
+                }
+                
+                daysElement.appendChild(dayDiv);
+            }
+        }
+        
+        // Select Date
+        function selectDate(dateString, day, month, year) {
+            const hiddenInput = document.getElementById('tour-date');
+            const displayInput = document.getElementById('tour-date-display');
+            const calendar = document.getElementById('custom-calendar');
+            
+            // Set values
+            hiddenInput.value = dateString;
+            displayInput.value = `${day.toString().padStart(2, '0')}.${month.toString().padStart(2, '0')}.${year}`;
+            
+            // Hide calendar
+            calendar.classList.add('hidden');
+            
+            // Re-render to show selection
+            renderCalendar();
+            
+            // Check if we should show time selection
+            updateStartTimeOptions();
         }
 
         function loadImages() {
@@ -1339,14 +1523,10 @@
                 }
             });
 
-            // Date picker functionality
-            const dateInput = document.getElementById('tour-date');
-            if (dateInput) {
-                // Set minimum date to today
-                const today = new Date();
-                const tomorrow = new Date(today);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                dateInput.min = tomorrow.toISOString().split('T')[0];
+            // Initialize custom calendar
+            setTimeout(() => {
+                initializeCustomCalendar();
+            }, 100);
                 
                 // Handle date change with availability check
                 dateInput.addEventListener('change', function() {
@@ -1383,7 +1563,6 @@
                 
                 // Убираем дублирующий обработчик input - достаточно change
             }
-        }
 
         function openImageModal(startIndex) {
             currentImageIndex = startIndex;
@@ -1825,6 +2004,9 @@
             
             travelers[type] = newCount;
             document.getElementById(`${type}-count`).textContent = newCount;
+            
+            // Check if we should show time selection now
+            updateStartTimeOptions();
         }
         
         function applyTravelerSelection() {
