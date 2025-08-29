@@ -50,20 +50,8 @@ app.use('/api', apiRoutes);
 
 // HTML files will be served by express.static
 
-// Обслуживать React build или статические файлы
-const reactBuildPath = path.join(__dirname, 'frontend', 'build');
-const staticPath = path.join(__dirname, 'frontend');
-
-// Проверяем есть ли React build
-if (require('fs').existsSync(reactBuildPath)) {
-  // Используем React build если есть
-  app.use(express.static(reactBuildPath));
-  console.log('🎯 Serving React build');
-} else {
-  // Используем статические HTML файлы как fallback
-  app.use(express.static(staticPath));
-  console.log('📄 Serving static HTML files');
-}
+// Обслуживать статические файлы из папки frontend
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 // Hotel template page - explicit route BEFORE static middleware
 app.get('/hotel-template.html', (req, res) => {

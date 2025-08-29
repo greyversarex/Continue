@@ -52,7 +52,7 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get<ApiResponse>('http://localhost:5000/api/categories');
+      const response = await axios.get<ApiResponse>('http://localhost:3001/api/categories');
       if (response.data.success) {
         setCategories(response.data.data);
       }
@@ -114,10 +114,10 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
       
       if (tour) {
         // Update existing tour
-        response = await axios.put<ApiResponse>(`http://localhost:5000/api/tours/${tour.id}`, tourData);
+        response = await axios.put<ApiResponse>(`http://localhost:3001/api/tours/${tour.id}`, tourData);
       } else {
         // Create new tour
-        response = await axios.post<ApiResponse>('http://localhost:5000/api/tours', tourData);
+        response = await axios.post<ApiResponse>('http://localhost:3001/api/tours', tourData);
       }
 
       if (response.data.success) {

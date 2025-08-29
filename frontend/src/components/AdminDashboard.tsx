@@ -43,12 +43,12 @@ const AdminDashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     try {
       const [toursRes, hotelsRes, categoriesRes, bookingsRes, reviewsRes, newsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/tours'),
-        axios.get('http://localhost:5000/api/hotels'),
-        axios.get('http://localhost:5000/api/categories'),
-        axios.get('http://localhost:5000/api/tours/booking-requests'),
-        axios.get('http://localhost:5000/api/tours/reviews'),
-        axios.get('http://localhost:5000/api/news/admin/all')
+        axios.get('http://localhost:3001/api/tours'),
+        axios.get('http://localhost:3001/api/hotels'),
+        axios.get('http://localhost:3001/api/categories'),
+        axios.get('http://localhost:3001/api/tours/booking-requests'),
+        axios.get('http://localhost:3001/api/tours/reviews'),
+        axios.get('http://localhost:3001/api/news/admin/all')
       ]);
 
       if (toursRes.data.success) {
@@ -96,7 +96,7 @@ const AdminDashboard: React.FC = () => {
   const handleDeleteTour = async (tourId: number) => {
     if (window.confirm('Вы уверены, что хотите удалить этот тур?')) {
       try {
-        const response = await axios.delete(`http://localhost:5000/api/tours/${tourId}`);
+        const response = await axios.delete(`http://localhost:3001/api/tours/${tourId}`);
         if (response.data.success) {
           setTours(tours.filter(tour => tour.id !== tourId));
           setStats(prev => ({ ...prev, totalTours: prev.totalTours - 1 }));
@@ -122,7 +122,7 @@ const AdminDashboard: React.FC = () => {
   const handleDeleteHotel = async (hotelId: number) => {
     if (window.confirm('Вы уверены, что хотите удалить этот отель?')) {
       try {
-        const response = await axios.delete(`http://localhost:5000/api/hotels/${hotelId}`);
+        const response = await axios.delete(`http://localhost:3001/api/hotels/${hotelId}`);
         if (response.data.success) {
           setHotels(hotels.filter(hotel => hotel.id !== hotelId));
         }
@@ -137,7 +137,7 @@ const AdminDashboard: React.FC = () => {
   const handleDeleteNews = async (newsId: number) => {
     if (window.confirm('Вы уверены, что хотите удалить эту новость?')) {
       try {
-        const response = await axios.delete(`http://localhost:5000/api/news/admin/${newsId}`);
+        const response = await axios.delete(`http://localhost:3001/api/news/admin/${newsId}`);
         if (response.data.success) {
           setNews(news.filter(article => article.id !== newsId));
         }

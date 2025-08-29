@@ -117,8 +117,8 @@ const NewsForm: React.FC<NewsFormProps> = ({ news, onSuccess }) => {
       };
 
       const url = news 
-        ? `http://localhost:5000/api/news/admin/${news.id}`
-        : 'http://localhost:5000/api/news/admin/create';
+        ? `http://localhost:3001/api/news/admin/${news.id}`
+        : 'http://localhost:3001/api/news/admin/create';
       
       const method = news ? 'put' : 'post';
       
