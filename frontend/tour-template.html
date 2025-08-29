@@ -497,7 +497,7 @@
         // Function to get tour ID from URL parameters
         function getTourIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('id');
+            return urlParams.get('tour') || urlParams.get('id'); // Support both 'tour' and 'id' parameters
         }
 
         // Global tour data - will be populated from API
