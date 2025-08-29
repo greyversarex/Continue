@@ -459,7 +459,66 @@
 
     <script src="sample-tour-data.js"></script>
     <script>
-        // Default tour data - will be replaced by URL parameter or API call
+        // API Configuration
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api'
+            : `${window.location.protocol}//${window.location.hostname}:${window.location.port}/api`;
+
+        // Function to get tour ID from URL parameters
+        function getTourIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Function to load tour data from API
+        async function loadTourData(tourId) {
+            if (!tourId) {
+                console.log('No tour ID provided, using sample data');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/tours/${tourId}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to load tour: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                if (result.success && result.data) {
+                    // Update tourData with API response
+                    const apiTour = result.data;
+                    
+                    // Convert API data to our tourData format
+                    tourData = {
+                        ...tourData, // Keep sample data as fallback
+                        title: apiTour.title?.ru || apiTour.title || tourData.title,
+                        location: `${apiTour.city || ''}, ${apiTour.country || ''}`.replace(/^, |, $/, ''),
+                        price_from: parseInt(apiTour.price) || tourData.price_from,
+                        duration: `${apiTour.durationDays || 1} ${apiTour.durationDays === 1 ? 'день' : 'дня'}`,
+                        overview: apiTour.description?.ru || apiTour.description || tourData.overview,
+                        rating: apiTour.rating || tourData.rating,
+                        reviews_count: apiTour.reviewsCount || tourData.reviews_count,
+                        
+                        // Parse JSON fields safely
+                        images: apiTour.images ? (typeof apiTour.images === 'string' ? JSON.parse(apiTour.images) : apiTour.images) : tourData.images,
+                        highlights: apiTour.highlights ? (typeof apiTour.highlights === 'string' ? JSON.parse(apiTour.highlights) : apiTour.highlights) : tourData.highlights,
+                        
+                        // Calendar restrictions
+                        availableMonths: apiTour.availableMonths ? (typeof apiTour.availableMonths === 'string' ? JSON.parse(apiTour.availableMonths) : apiTour.availableMonths) : [],
+                        availableDays: apiTour.availableDays ? (typeof apiTour.availableDays === 'string' ? JSON.parse(apiTour.availableDays) : apiTour.availableDays) : []
+                    };
+                    
+                    console.log('Tour data loaded from API:', tourData);
+                } else {
+                    throw new Error(result.message || 'Failed to load tour data');
+                }
+            } catch (error) {
+                console.error('Error loading tour data:', error);
+                console.log('Using sample data as fallback');
+            }
+        }
+
+        // Default tour data - will be used as fallback if API call fails
         let tourData = {
             "title": "Полный день: Памирское шоссе, горы и озёра",
             "location": "Памирские горы, Таджикистан",
@@ -639,14 +698,87 @@
             // Related tours
             populateRelatedTours();
             
-            // Set minimum date to today
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tour-date').setAttribute('min', today);
+            // Set calendar restrictions based on available months and days
+            setupCalendarRestrictions();
             
             // Show load more reviews button only if there are more than 3 reviews
             if (tourData.reviews && tourData.reviews.length > 3) {
                 document.getElementById('load-more-reviews').classList.remove('hidden');
             }
+        }
+
+        // Function to setup calendar restrictions based on tour availability
+        function setupCalendarRestrictions() {
+            const dateInput = document.getElementById('tour-date');
+            if (!dateInput) return;
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+            
+            // If no calendar restrictions are defined, allow all dates
+            if (!tourData.availableMonths || !tourData.availableDays || 
+                tourData.availableMonths.length === 0 || tourData.availableDays.length === 0) {
+                console.log('No calendar restrictions defined, allowing all dates');
+                return;
+            }
+            
+            console.log('Setting up calendar restrictions:', {
+                availableMonths: tourData.availableMonths,
+                availableDays: tourData.availableDays
+            });
+            
+            // Add event listener to validate selected dates
+            dateInput.addEventListener('input', function() {
+                const selectedDate = new Date(this.value);
+                const selectedMonth = selectedDate.getMonth() + 1; // getMonth() returns 0-11, we need 1-12
+                const selectedDay = selectedDate.getDay(); // getDay() returns 0-6, Sunday=0
+                
+                // Check if selected month is available
+                const isMonthAvailable = tourData.availableMonths.includes(selectedMonth.toString()) || 
+                                        tourData.availableMonths.includes(selectedMonth);
+                
+                // Check if selected day of week is available
+                const isDayAvailable = tourData.availableDays.includes(selectedDay.toString()) || 
+                                      tourData.availableDays.includes(selectedDay);
+                
+                if (!isMonthAvailable || !isDayAvailable) {
+                    // Show error message
+                    let errorMessage = 'Выбранная дата недоступна. ';
+                    
+                    if (!isMonthAvailable) {
+                        const availableMonthNames = tourData.availableMonths.map(m => {
+                            const monthNames = ['', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 
+                                              'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+                            return monthNames[parseInt(m)] || m;
+                        });
+                        errorMessage += `Доступные месяцы: ${availableMonthNames.join(', ')}. `;
+                    }
+                    
+                    if (!isDayAvailable) {
+                        const availableDayNames = tourData.availableDays.map(d => {
+                            const dayNames = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+                            return dayNames[parseInt(d)] || d;
+                        });
+                        errorMessage += `Доступные дни недели: ${availableDayNames.join(', ')}.`;
+                    }
+                    
+                    alert(errorMessage);
+                    this.value = ''; // Clear invalid date
+                }
+            });
+            
+            // Additional visual feedback: add custom styling for restricted dates
+            // This is a basic implementation - for more advanced date picker with visual restrictions,
+            // you would need to use a library like Flatpickr or implement a custom calendar
+            const style = document.createElement('style');
+            style.textContent = `
+                #tour-date:invalid {
+                    border-color: #ef4444;
+                    background-color: #fef2f2;
+                }
+            `;
+            document.head.appendChild(style);
         }
 
         function populateReviews(showAll = false) {
@@ -718,8 +850,12 @@
         }
 
         // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            loadTourFromUrl();
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Load tour data from API if tour ID is provided
+            const tourId = getTourIdFromUrl();
+            await loadTourData(tourId);
+            
+            // Populate page content
             populateTourData();
             
             // Load more reviews functionality

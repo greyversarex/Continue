@@ -1801,17 +1801,7 @@
                         <small class="text-gray-500">Перечислите что включено в стоимость тура</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label">Сложность тура</label>
-                        <select class="form-input" id="tourDifficulty">
-                            <option value="">Выберите сложность</option>
-                            <option value="Легкая">Легкая</option>
-                            <option value="Средняя">Средняя</option>
-                            <option value="Сложная">Сложная</option>
-                            <option value="Высокая">Высокая</option>
-                        </select>
-                        <small class="text-gray-500">Уровень физической подготовки для тура</small>
-                    </div>
+                    <!-- Поле сложности тура удалено по требованию пользователя -->
                     
                     <div class="form-group">
                         <label class="form-label">Минимальное количество людей</label>
@@ -1899,38 +1889,26 @@
                     <div class="form-group col-span-2">
                         <label class="form-label">
                             <i class="fas fa-images text-blue-600 mr-2"></i>
-                            Галерея изображений тура
+                            Фотографии тура
                         </label>
                         
-                        <!-- Главное изображение -->
-                        <div class="mb-4">
-                            <label class="form-label text-sm">Главное изображение (URL)</label>
-                            <input type="url" class="form-input" id="tourMainImage" placeholder="https://example.com/main-image.jpg">
-                            <small class="text-gray-500">Основное изображение для отображения в списке туров</small>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                            <div class="text-center">
+                                <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-3"></i>
+                                <label for="tourImages" class="cursor-pointer">
+                                    <span class="text-blue-600 font-semibold">Выберите фотографии</span>
+                                    <span class="text-gray-600"> или перетащите их сюда</span>
+                                </label>
+                                <input type="file" class="hidden" id="tourImages" multiple accept="image/*" onchange="handleTourImageUpload(this)">
+                                <p class="text-gray-500 text-sm mt-2">
+                                    Первая загруженная фотография автоматически станет главной для карточки тура
+                                </p>
+                            </div>
                         </div>
                         
-                        <!-- Дополнительные изображения -->
-                        <div class="mb-4">
-                            <label class="form-label text-sm">Дополнительные изображения для галереи</label>
-                            <div id="galleryImagesList" class="space-y-2 mb-3">
-                                <!-- Динамически добавляемые изображения -->
-                            </div>
-                            <div class="flex gap-2">
-                                <input type="url" class="form-input flex-1" id="newImageUrl" placeholder="https://example.com/gallery-image.jpg">
-                                <button type="button" onclick="addGalleryImage()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                                    <i class="fas fa-plus mr-1"></i>
-                                    Добавить
-                                </button>
-                            </div>
-                            <small class="text-gray-500">Добавьте URL изображений для галереи на странице тура</small>
-                        </div>
-                        
-                        <!-- Альтернативная загрузка файлов -->
-                        <div class="border-t pt-4">
-                            <label class="form-label text-sm">Или загрузите файлы изображений</label>
-                            <input type="file" class="form-input" id="tourImages" multiple accept="image/*">
-                            <div id="imagePreview" class="mt-2"></div>
-                            <small class="text-gray-500">Выберите несколько изображений для загрузки</small>
+                        <!-- Предварительный просмотр загруженных изображений -->
+                        <div id="tourImagePreview" class="grid grid-cols-4 gap-4 mt-4" style="display: none;">
+                            <!-- Превью изображений будут добавлены здесь -->
                         </div>
                     </div>
                     
@@ -2658,15 +2636,119 @@
             `).join('');
         }
 
+        // Initialize global variable for uploaded tour images
+        window.uploadedTourImages = [];
+
+        // Function to handle file upload for tour images
+        function handleTourImageUpload(input) {
+            const files = input.files;
+            if (!files || files.length === 0) return;
+            
+            window.uploadedTourImages = []; // Reset uploaded images
+            const previewContainer = document.getElementById('tourImagePreview');
+            previewContainer.innerHTML = '';
+            
+            Array.from(files).forEach((file, index) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        window.uploadedTourImages.push({
+                            file: file,
+                            dataURL: e.target.result,
+                            isMain: index === 0 // First image becomes main image
+                        });
+                        
+                        // Create preview element
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'relative border rounded-lg overflow-hidden';
+                        
+                        previewDiv.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview ${index + 1}" class="w-full h-32 object-cover">
+                            <div class="absolute top-2 left-2">
+                                ${index === 0 ? '<span class="bg-green-500 text-white text-xs px-2 py-1 rounded">Главное</span>' : ''}
+                            </div>
+                            <button type="button" onclick="removeUploadedImage(${index})" 
+                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                            <div class="p-2 bg-gray-50">
+                                <p class="text-xs text-gray-600 truncate">${file.name}</p>
+                            </div>
+                        `;
+                        
+                        previewContainer.appendChild(previewDiv);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Show preview container
+            if (files.length > 0) {
+                previewContainer.style.display = 'grid';
+            }
+        }
+
+        // Function to remove uploaded image
+        function removeUploadedImage(index) {
+            window.uploadedTourImages.splice(index, 1);
+            
+            // Reassign main image (first one becomes main)
+            if (window.uploadedTourImages.length > 0) {
+                window.uploadedTourImages[0].isMain = true;
+                window.uploadedTourImages.forEach((img, i) => {
+                    if (i > 0) img.isMain = false;
+                });
+            }
+            
+            // Update preview
+            const previewContainer = document.getElementById('tourImagePreview');
+            previewContainer.innerHTML = '';
+            
+            window.uploadedTourImages.forEach((imageData, i) => {
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'relative border rounded-lg overflow-hidden';
+                
+                previewDiv.innerHTML = `
+                    <img src="${imageData.dataURL}" alt="Preview ${i + 1}" class="w-full h-32 object-cover">
+                    <div class="absolute top-2 left-2">
+                        ${i === 0 ? '<span class="bg-green-500 text-white text-xs px-2 py-1 rounded">Главное</span>' : ''}
+                    </div>
+                    <button type="button" onclick="removeUploadedImage(${i})" 
+                            class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                    <div class="p-2 bg-gray-50">
+                        <p class="text-xs text-gray-600 truncate">${imageData.file.name}</p>
+                    </div>
+                `;
+                
+                previewContainer.appendChild(previewDiv);
+            });
+            
+            if (window.uploadedTourImages.length === 0) {
+                previewContainer.style.display = 'none';
+                // Clear file input
+                document.getElementById('tourImages').value = '';
+            }
+        }
+
         // Главная функция создания тура с полными данными
         function createFullTour(event) {
             event.preventDefault();
             
-            // Собираем все данные из формы
-            const mainImageUrl = document.getElementById('tourMainImage')?.value?.trim();
-            const allImages = [...window.tourGalleryImages];
-            if (mainImageUrl && !allImages.includes(mainImageUrl)) {
-                allImages.unshift(mainImageUrl); // Добавляем главное изображение в начало
+            // Process uploaded images - convert to base64 or use URLs from uploaded images
+            let mainImage = '';
+            let allImages = [];
+            
+            if (window.uploadedTourImages && window.uploadedTourImages.length > 0) {
+                // Use uploaded images
+                const mainImageData = window.uploadedTourImages.find(img => img.isMain) || window.uploadedTourImages[0];
+                mainImage = mainImageData.dataURL; // base64 data
+                allImages = window.uploadedTourImages.map(img => img.dataURL);
+            } else {
+                // Fallback to old URL system (if no images uploaded)
+                mainImage = '';
+                allImages = [];
             }
             
             // Собираем включенные услуги из чекбоксов
@@ -2697,12 +2779,12 @@
                 languages: document.getElementById('tourLanguages')?.value || '',
                 rating: parseFloat(document.getElementById('tourRating')?.value) || null,
                 reviewsCount: parseInt(document.getElementById('tourReviewsCount')?.value) || null,
-                difficulty: document.getElementById('tourDifficulty')?.value || '',
+                // difficulty field removed per user request
                 minPeople: parseInt(document.getElementById('tourMinPeople')?.value) || null,
                 maxPeople: parseInt(document.getElementById('tourMaxPeople')?.value) || null,
                 
-                // Изображения
-                mainImage: mainImageUrl || '',
+                // Images - using uploaded files
+                mainImage: mainImage || '',
                 images: JSON.stringify(allImages),
                 
                 // Что включено
@@ -2713,6 +2795,10 @@
                 
                 // Время начала
                 startTimeOptions: document.getElementById('tourStartTimeOptions')?.value || '',
+                
+                // Доступность тура (месяцы и дни недели)
+                availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
+                availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
                 
                 // Дополнительная информация из формы
                 highlights: JSON.stringify(window.tourHighlights || [])
@@ -3180,7 +3266,7 @@
                         // Загрузка новых полей
                         document.getElementById('tourRating').value = tour.rating || '';
                         document.getElementById('tourReviewsCount').value = tour.reviewsCount || '';
-                        document.getElementById('tourDifficulty').value = tour.difficulty || '';
+                        // difficulty field removed per user request
                         document.getElementById('tourMinPeople').value = tour.minPeople || '';
                         document.getElementById('tourMaxPeople').value = tour.maxPeople || '';
                         
@@ -3958,7 +4044,7 @@
                 // Новые поля из формы
                 rating: parseFloat(document.getElementById('tourRating').value) || null,
                 reviewsCount: parseInt(document.getElementById('tourReviewsCount').value) || 0,
-                difficulty: document.getElementById('tourDifficulty').value || null,
+                // difficulty field removed per user request
                 minPeople: parseInt(document.getElementById('tourMinPeople').value) || null,
                 maxPeople: parseInt(document.getElementById('tourMaxPeople').value) || null,
                 includes: JSON.stringify(document.getElementById('tourIncludes').value.split(',').map(item => item.trim()).filter(item => item)),
@@ -4889,7 +4975,7 @@
                 priceType: document.getElementById('eTourPriceType').value,
                 originalPrice: document.getElementById('eTourOriginalPrice').value ? parseFloat(document.getElementById('eTourOriginalPrice').value) : null,
                 durationDays: parseInt(document.getElementById('eTourDurationDays').value),
-                difficulty: document.getElementById('eTourDifficulty').value,
+                // difficulty field removed per user request
                 maxPeople: document.getElementById('eTourMaxPeople').value ? parseInt(document.getElementById('eTourMaxPeople').value) : null,
                 minPeople: document.getElementById('eTourMinPeople').value ? parseInt(document.getElementById('eTourMinPeople').value) : null,
                 country: document.getElementById('eTourCountry').value,
