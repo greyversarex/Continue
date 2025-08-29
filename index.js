@@ -58,6 +58,11 @@ app.get('/hotel-template.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'hotel-template.html'));
 });
 
+// Hotels catalog page - explicit route BEFORE static middleware
+app.get('/hotels-catalog.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'hotels-catalog.html'));
+});
+
 // Обслуживать главную страницу
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
