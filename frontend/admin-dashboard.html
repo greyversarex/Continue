@@ -1455,6 +1455,50 @@
                     </div>
                     
                     <div class="form-group">
+                        <label class="form-label">Количество звезд</label>
+                        <select class="form-input" id="hotelStars">
+                            <option value="">Не указано</option>
+                            <option value="1">⭐ 1 звезда</option>
+                            <option value="2">⭐⭐ 2 звезды</option>
+                            <option value="3">⭐⭐⭐ 3 звезды</option>
+                            <option value="4">⭐⭐⭐⭐ 4 звезды</option>
+                            <option value="5">⭐⭐⭐⭐⭐ 5 звезд</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Бренд отеля</label>
+                        <input type="text" class="form-input" id="hotelBrand" placeholder="Hilton, Marriott, Radisson и т.д.">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Категория отеля</label>
+                        <select class="form-input" id="hotelCategory">
+                            <option value="">Выберите категорию</option>
+                            <option value="Budget">Бюджетный</option>
+                            <option value="Premium">Премиум</option>
+                            <option value="Luxury">Люкс</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Страна</label>
+                        <select class="form-input" id="hotelCountry">
+                            <option value="">Выберите страну</option>
+                            <option value="Таджикистан">Таджикистан</option>
+                            <option value="Узбекистан">Узбекистан</option>
+                            <option value="Киргизстан">Киргизстан</option>
+                            <option value="Туркменистан">Туркменистан</option>
+                            <option value="Казахстан">Казахстан</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Город</label>
+                        <input type="text" class="form-input" id="hotelCity" placeholder="Душанбе, Самарканд, Бишкек и т.д.">
+                    </div>
+                    
+                    <div class="form-group">
                         <label class="form-label">Тип питания</label>
                         <select class="form-input" id="hotelPension">
                             <option value="none">Не включено</option>
@@ -3344,6 +3388,11 @@
                     document.getElementById('hotelDescTj').value = description.tj || '';
                     document.getElementById('hotelAddress').value = hotel.address || '';
                     document.getElementById('hotelRating').value = hotel.rating || '';
+                    document.getElementById('hotelStars').value = hotel.stars || '';
+                    document.getElementById('hotelBrand').value = hotel.brand || '';
+                    document.getElementById('hotelCategory').value = hotel.category || '';
+                    document.getElementById('hotelCountry').value = hotel.country || '';
+                    document.getElementById('hotelCity').value = hotel.city || '';
                     document.getElementById('hotelPension').value = hotel.pension || 'none';
                     document.getElementById('hotelActive').checked = hotel.isActive;
                     
@@ -3450,6 +3499,11 @@
                 description: JSON.stringify(description),
                 address: document.getElementById('hotelAddress').value,
                 rating: parseFloat(document.getElementById('hotelRating').value) || null,
+                stars: parseInt(document.getElementById('hotelStars').value) || null,
+                brand: document.getElementById('hotelBrand').value || null,
+                category: document.getElementById('hotelCategory').value || null,
+                country: document.getElementById('hotelCountry').value || null,
+                city: document.getElementById('hotelCity').value || null,
                 pension: document.getElementById('hotelPension').value,
                 amenities: JSON.stringify(amenities),
                 isActive: document.getElementById('hotelActive').checked,

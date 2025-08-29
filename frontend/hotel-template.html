@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Отель - Bunyod-Tour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Lightbox for gallery */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            padding: 20px;
+        }
+        
+        .lightbox-prev { left: 20px; }
+        .lightbox-next { right: 20px; }
+
+        /* Stars styling */
+        .stars {
+            color: #ffd700;
+        }
+        
+        /* Hotel amenities icons */
+        .amenity-icon {
+            width: 20px;
+            height: 20px;
+            color: #059669;
+        }
+        
+        /* Booking section styling */
+        .booking-section {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        /* Star rating display */
+        .rating-stars {
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .rating-stars .star {
+            color: #ffd700;
+            font-size: 16px;
+        }
+        
+        .rating-stars .empty-star {
+            color: #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md relative z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-2xl font-bold text-blue-600">Bunyod-Tour</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 hover:text-blue-600">Главная</a>
+                    <a href="/tours" class="text-gray-700 hover:text-blue-600">Туры</a>
+                    <a href="/hotels" class="text-gray-700 hover:text-blue-600">Отели</a>
+                    <a href="/contact" class="text-gray-700 hover:text-blue-600">Контакты</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hotel Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column - Hotel Info -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Hotel Header -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h1 id="hotel-name" class="text-3xl font-bold text-gray-900 mb-2">
+                                Загружается...
+                            </h1>
+                            <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                <div class="flex items-center" id="hotel-stars">
+                                    <!-- Звезды отеля будут добавлены через JS -->
+                                </div>
+                                <div class="flex items-center" id="hotel-rating-display">
+                                    <!-- Рейтинг отеля будет добавлен через JS -->
+                                </div>
+                                <div id="hotel-category" class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                                    <!-- Категория отеля -->
+                                </div>
+                            </div>
+                        </div>
+                        <div id="hotel-brand" class="text-right text-gray-600">
+                            <!-- Бренд отеля -->
+                        </div>
+                    </div>
+                    
+                    <!-- Location -->
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span id="hotel-location">Загружается...</span>
+                    </div>
+                    
+                    <!-- Hotel Description -->
+                    <div id="hotel-description" class="text-gray-700 leading-relaxed">
+                        <p>Загружается описание отеля...</p>
+                    </div>
+                </div>
+
+                <!-- Hotel Gallery -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-semibold mb-4">Фотогалерея</h2>
+                    <div id="hotel-gallery" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- Фотографии будут добавлены через JS -->
+                        <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                        <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                        <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                    </div>
+                </div>
+
+                <!-- Hotel Amenities -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-semibold mb-4">Удобства отеля</h2>
+                    <div id="hotel-amenities" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- Удобства будут добавлены через JS -->
+                    </div>
+                </div>
+
+                <!-- Hotel Info Strip -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <!-- Тип питания -->
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-utensils text-gray-600"></i>
+                            <span class="text-gray-900 font-medium" id="hotel-pension">Питание: Не включено</span>
+                        </div>
+                        
+                        <!-- Звезды отеля -->
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-star text-yellow-500"></i>
+                            <span class="text-gray-900 font-medium" id="hotel-stars-text">Категория: —</span>
+                        </div>
+                        
+                        <!-- Адрес -->
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-building text-gray-600"></i>
+                            <span class="text-gray-900 font-medium" id="hotel-address">Адрес: Загружается...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Booking -->
+            <div class="lg:col-span-1">
+                <div class="booking-section bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-4">Забронировать номер</h3>
+                    
+                    <!-- Date Selection -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Дата заезда</label>
+                            <input type="date" id="checkin-date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Дата выезда</label>
+                            <input type="date" id="checkout-date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Количество гостей</label>
+                            <select id="guests-count" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="1">1 гость</option>
+                                <option value="2">2 гостя</option>
+                                <option value="3">3 гостя</option>
+                                <option value="4">4 гостя</option>
+                                <option value="5">5+ гостей</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Room Type Selection (будет добавлено через JS) -->
+                    <div id="room-types" class="mt-4">
+                        <!-- Типы номеров будут добавлены через JS -->
+                    </div>
+                    
+                    <!-- Pricing -->
+                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Стоимость за ночь:</span>
+                            <span id="room-price" class="text-xl font-semibold text-blue-600">По запросу</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Booking Button -->
+                    <button id="book-hotel-btn" class="w-full mt-6 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+                        Забронировать сейчас
+                    </button>
+                    
+                    <!-- Contact Info -->
+                    <div class="mt-4 text-center text-sm text-gray-600">
+                        <p>Нужна помощь? <a href="/contact" class="text-blue-600 hover:underline">Свяжитесь с нами</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox for Gallery -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <span class="lightbox-nav lightbox-prev" onclick="previousImage()">&#10094;</span>
+        <img id="lightbox-img" src="" alt="Hotel Image">
+        <span class="lightbox-nav lightbox-next" onclick="nextImage()">&#10095;</span>
+    </div>
+
+    <script>
+        // Global variables
+        let hotelData = {};
+        let currentImageIndex = 0;
+        let hotelImages = [];
+
+        // Get hotel ID from URL
+        function getHotelId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('hotel');
+        }
+
+        // API configuration
+        function getApiUrl() {
+            const hostname = window.location.hostname;
+            if (hostname.includes('replit.dev') || hostname.includes('replit.app')) {
+                return `https://${hostname}:5000/api`;
+            }
+            return 'http://localhost:5000/api';
+        }
+
+        // Load hotel data
+        async function loadHotelData() {
+            const hotelId = getHotelId();
+            if (!hotelId) {
+                document.getElementById('hotel-name').textContent = 'Отель не найден';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/hotels/${hotelId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    hotelData = result.data;
+                    displayHotelData();
+                } else {
+                    throw new Error(result.message || 'Ошибка загрузки данных отеля');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки отеля:', error);
+                document.getElementById('hotel-name').textContent = 'Ошибка загрузки отеля';
+            }
+        }
+
+        // Display hotel data
+        function displayHotelData() {
+            // Parse multilingual content
+            const name = typeof hotelData.name === 'string' ? JSON.parse(hotelData.name || '{}') : hotelData.name || {};
+            const description = typeof hotelData.description === 'string' ? JSON.parse(hotelData.description || '{}') : hotelData.description || {};
+            
+            // Set page title and hotel name
+            const hotelName = name.ru || name.en || 'Отель';
+            document.getElementById('page-title').textContent = `${hotelName} - Bunyod-Tour`;
+            document.getElementById('hotel-name').textContent = hotelName;
+            
+            // Hotel description
+            const hotelDesc = description.ru || description.en || 'Описание отеля не указано';
+            document.getElementById('hotel-description').innerHTML = `<p>${hotelDesc}</p>`;
+            
+            // Location (country + city + address)
+            const locationParts = [];
+            if (hotelData.country) locationParts.push(hotelData.country);
+            if (hotelData.city) locationParts.push(hotelData.city);
+            if (hotelData.address) locationParts.push(hotelData.address);
+            document.getElementById('hotel-location').textContent = locationParts.join(', ') || 'Адрес не указан';
+            
+            // Hotel stars
+            displayHotelStars();
+            
+            // Hotel rating
+            displayHotelRating();
+            
+            // Hotel category
+            displayHotelCategory();
+            
+            // Hotel brand
+            document.getElementById('hotel-brand').textContent = hotelData.brand || '';
+            
+            // Hotel address in info strip
+            document.getElementById('hotel-address').textContent = `Адрес: ${hotelData.address || 'Не указан'}`;
+            
+            // Hotel pension type
+            displayPensionType();
+            
+            // Hotel amenities
+            displayHotelAmenities();
+            
+            // Hotel gallery
+            displayHotelGallery();
+            
+            // Set minimum dates
+            setMinimumDates();
+        }
+
+        // Display hotel stars
+        function displayHotelStars() {
+            const starsContainer = document.getElementById('hotel-stars');
+            const starsTextContainer = document.getElementById('hotel-stars-text');
+            
+            if (hotelData.stars) {
+                let starsHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= hotelData.stars) {
+                        starsHTML += '<i class="fas fa-star stars"></i>';
+                    } else {
+                        starsHTML += '<i class="far fa-star text-gray-300"></i>';
+                    }
+                }
+                starsContainer.innerHTML = starsHTML;
+                starsTextContainer.textContent = `Категория: ${hotelData.stars} ${hotelData.stars === 1 ? 'звезда' : hotelData.stars < 5 ? 'звезды' : 'звезд'}`;
+            } else {
+                starsContainer.innerHTML = '<span class="text-gray-500">Звезды не указаны</span>';
+                starsTextContainer.textContent = 'Категория: Не указана';
+            }
+        }
+
+        // Display hotel rating
+        function displayHotelRating() {
+            const ratingContainer = document.getElementById('hotel-rating-display');
+            
+            if (hotelData.rating) {
+                const rating = parseFloat(hotelData.rating);
+                const starsHTML = generateRatingStars(rating);
+                ratingContainer.innerHTML = `
+                    <div class="rating-stars">
+                        ${starsHTML}
+                        <span class="ml-1 text-sm font-medium">${rating.toFixed(1)}</span>
+                    </div>
+                `;
+            } else {
+                ratingContainer.innerHTML = '<span class="text-gray-500">Рейтинг не указан</span>';
+            }
+        }
+
+        // Generate rating stars HTML
+        function generateRatingStars(rating) {
+            let starsHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    starsHTML += '<i class="fas fa-star star"></i>';
+                } else if (i - 0.5 <= rating) {
+                    starsHTML += '<i class="fas fa-star-half-alt star"></i>';
+                } else {
+                    starsHTML += '<i class="far fa-star empty-star"></i>';
+                }
+            }
+            return starsHTML;
+        }
+
+        // Display hotel category
+        function displayHotelCategory() {
+            const categoryContainer = document.getElementById('hotel-category');
+            const categoryMap = {
+                'Budget': 'Бюджетный',
+                'Premium': 'Премиум',
+                'Luxury': 'Люкс'
+            };
+            
+            if (hotelData.category) {
+                const categoryText = categoryMap[hotelData.category] || hotelData.category;
+                categoryContainer.textContent = categoryText;
+                
+                // Add appropriate styling based on category
+                categoryContainer.className = 'px-2 py-1 rounded-full text-xs ';
+                if (hotelData.category === 'Luxury') {
+                    categoryContainer.className += 'bg-purple-100 text-purple-800';
+                } else if (hotelData.category === 'Premium') {
+                    categoryContainer.className += 'bg-blue-100 text-blue-800';
+                } else {
+                    categoryContainer.className += 'bg-green-100 text-green-800';
+                }
+            } else {
+                categoryContainer.style.display = 'none';
+            }
+        }
+
+        // Display pension type
+        function displayPensionType() {
+            const pensionContainer = document.getElementById('hotel-pension');
+            const pensionMap = {
+                'none': 'Питание: Не включено',
+                'half': 'Питание: Полупансион (завтрак)',
+                'full': 'Питание: Полный пансион (завтрак + обед)'
+            };
+            
+            pensionContainer.textContent = pensionMap[hotelData.pension] || 'Питание: Не указано';
+        }
+
+        // Display hotel amenities
+        function displayHotelAmenities() {
+            const amenitiesContainer = document.getElementById('hotel-amenities');
+            
+            if (hotelData.amenities) {
+                try {
+                    const amenities = JSON.parse(hotelData.amenities);
+                    const amenityIcons = {
+                        'WiFi': 'fas fa-wifi',
+                        'Завтрак': 'fas fa-coffee',
+                        'Парковка': 'fas fa-parking',
+                        'Ресторан': 'fas fa-utensils',
+                        'Бассейн': 'fas fa-swimming-pool',
+                        'Спа': 'fas fa-spa',
+                        'Фитнес': 'fas fa-dumbbell',
+                        'Кондиционер': 'fas fa-snowflake'
+                    };
+                    
+                    let amenitiesHTML = '';
+                    amenities.forEach(amenity => {
+                        const icon = amenityIcons[amenity] || 'fas fa-check';
+                        amenitiesHTML += `
+                            <div class="flex items-center space-x-2">
+                                <i class="${icon} amenity-icon"></i>
+                                <span class="text-gray-700">${amenity}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    amenitiesContainer.innerHTML = amenitiesHTML;
+                } catch (e) {
+                    amenitiesContainer.innerHTML = '<p class="text-gray-500">Удобства не указаны</p>';
+                }
+            } else {
+                amenitiesContainer.innerHTML = '<p class="text-gray-500">Удобства не указаны</p>';
+            }
+        }
+
+        // Display hotel gallery
+        function displayHotelGallery() {
+            const galleryContainer = document.getElementById('hotel-gallery');
+            
+            if (hotelData.images) {
+                try {
+                    hotelImages = JSON.parse(hotelData.images);
+                    
+                    if (hotelImages.length > 0) {
+                        let galleryHTML = '';
+                        hotelImages.forEach((image, index) => {
+                            galleryHTML += `
+                                <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity" onclick="openLightbox(${index})">
+                                    <img src="${image}" alt="Hotel Image ${index + 1}" class="w-full h-full object-cover">
+                                </div>
+                            `;
+                        });
+                        galleryContainer.innerHTML = galleryHTML;
+                    } else {
+                        galleryContainer.innerHTML = '<p class="col-span-full text-gray-500 text-center">Фотографии не добавлены</p>';
+                    }
+                } catch (e) {
+                    galleryContainer.innerHTML = '<p class="col-span-full text-gray-500 text-center">Ошибка загрузки фотографий</p>';
+                }
+            } else {
+                galleryContainer.innerHTML = '<p class="col-span-full text-gray-500 text-center">Фотографии не добавлены</p>';
+            }
+        }
+
+        // Set minimum dates for booking
+        function setMinimumDates() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            const todayString = today.toISOString().split('T')[0];
+            const tomorrowString = tomorrow.toISOString().split('T')[0];
+            
+            document.getElementById('checkin-date').min = todayString;
+            document.getElementById('checkout-date').min = tomorrowString;
+            
+            // Set checkout date when checkin date changes
+            document.getElementById('checkin-date').addEventListener('change', function() {
+                const checkinDate = new Date(this.value);
+                const minCheckout = new Date(checkinDate);
+                minCheckout.setDate(minCheckout.getDate() + 1);
+                
+                document.getElementById('checkout-date').min = minCheckout.toISOString().split('T')[0];
+                
+                if (document.getElementById('checkout-date').value <= this.value) {
+                    document.getElementById('checkout-date').value = minCheckout.toISOString().split('T')[0];
+                }
+            });
+        }
+
+        // Lightbox functions
+        function openLightbox(index) {
+            currentImageIndex = index;
+            document.getElementById('lightbox-img').src = hotelImages[index];
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % hotelImages.length;
+            document.getElementById('lightbox-img').src = hotelImages[currentImageIndex];
+        }
+
+        function previousImage() {
+            currentImageIndex = (currentImageIndex - 1 + hotelImages.length) % hotelImages.length;
+            document.getElementById('lightbox-img').src = hotelImages[currentImageIndex];
+        }
+
+        // Booking functionality
+        document.getElementById('book-hotel-btn').addEventListener('click', function() {
+            const checkinDate = document.getElementById('checkin-date').value;
+            const checkoutDate = document.getElementById('checkout-date').value;
+            const guestsCount = document.getElementById('guests-count').value;
+            
+            if (!checkinDate || !checkoutDate) {
+                alert('Пожалуйста, выберите даты заезда и выезда');
+                return;
+            }
+            
+            // Here you would implement booking logic
+            alert(`Бронирование отеля "${hotelData.name ? JSON.parse(hotelData.name).ru : 'отеля'}" на ${guestsCount} гостей с ${checkinDate} по ${checkoutDate}`);
+        });
+
+        // Keyboard navigation for lightbox
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('lightbox').style.display === 'flex') {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === 'ArrowLeft') {
+                    previousImage();
+                } else if (e.key === 'ArrowRight') {
+                    nextImage();
+                }
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHotelData();
+        });
+    </script>
+</body>
+</html>

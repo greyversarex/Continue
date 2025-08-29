@@ -53,6 +53,11 @@ app.use('/api', apiRoutes);
 // Обслуживать статические файлы из папки frontend
 app.use(express.static(path.join(__dirname, 'frontend')));
 
+// Hotel template page - explicit route BEFORE static middleware
+app.get('/hotel-template.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'hotel-template.html'));
+});
+
 // Обслуживать главную страницу
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'index.html'));

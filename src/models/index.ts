@@ -449,12 +449,18 @@ export class HotelModel {
   static async create(data: any) {
     return await prisma.hotel.create({
       data: {
-        name: JSON.stringify(data.name),
-        description: data.description ? JSON.stringify(data.description) : null,
-        images: data.images ? JSON.stringify(data.images) : null,
+        name: data.name ? (typeof data.name === 'string' ? data.name : JSON.stringify(data.name)) : '{}',
+        description: data.description ? (typeof data.description === 'string' ? data.description : JSON.stringify(data.description)) : null,
+        images: data.images ? (typeof data.images === 'string' ? data.images : JSON.stringify(data.images)) : null,
         address: data.address,
-        rating: data.rating,
-        amenities: data.amenities ? JSON.stringify(data.amenities) : null,
+        rating: data.rating ? parseFloat(data.rating) : null,
+        stars: data.stars ? parseInt(data.stars) : null,
+        brand: data.brand || null,
+        category: data.category || null,
+        country: data.country || null,
+        city: data.city || null,
+        pension: data.pension || 'none',
+        amenities: data.amenities ? (typeof data.amenities === 'string' ? data.amenities : JSON.stringify(data.amenities)) : null,
         isActive: data.isActive !== undefined ? data.isActive : true
       }
     });
@@ -466,12 +472,18 @@ export class HotelModel {
   static async update(id: number, data: any) {
     const updateData: any = {};
     
-    if (data.name) updateData.name = JSON.stringify(data.name);
-    if (data.description) updateData.description = JSON.stringify(data.description);
-    if (data.images) updateData.images = JSON.stringify(data.images);
+    if (data.name) updateData.name = typeof data.name === 'string' ? data.name : JSON.stringify(data.name);
+    if (data.description) updateData.description = typeof data.description === 'string' ? data.description : JSON.stringify(data.description);
+    if (data.images) updateData.images = typeof data.images === 'string' ? data.images : JSON.stringify(data.images);
     if (data.address) updateData.address = data.address;
-    if (data.rating !== undefined) updateData.rating = data.rating;
-    if (data.amenities) updateData.amenities = JSON.stringify(data.amenities);
+    if (data.rating !== undefined) updateData.rating = parseFloat(data.rating);
+    if (data.stars !== undefined) updateData.stars = data.stars ? parseInt(data.stars) : null;
+    if (data.brand !== undefined) updateData.brand = data.brand;
+    if (data.category !== undefined) updateData.category = data.category;
+    if (data.country !== undefined) updateData.country = data.country;
+    if (data.city !== undefined) updateData.city = data.city;
+    if (data.pension !== undefined) updateData.pension = data.pension;
+    if (data.amenities) updateData.amenities = typeof data.amenities === 'string' ? data.amenities : JSON.stringify(data.amenities);
     if (data.isActive !== undefined) updateData.isActive = data.isActive;
 
     const hotel = await prisma.hotel.findUnique({ where: { id } });
