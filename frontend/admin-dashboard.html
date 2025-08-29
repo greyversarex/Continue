@@ -1731,10 +1731,6 @@
                         <input type="number" class="form-input" id="tourDurationDays" min="1" required>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label">Продолжительность (например: "6-7 часов (прибл.)")</label>
-                        <input type="text" class="form-input" id="tourDuration" placeholder="6-7 часов (прибл.)">
-                    </div>
                     
                     
                     <div class="form-group">
@@ -1801,11 +1797,6 @@
                         <small class="text-gray-500">Общее количество отзывов</small>
                     </div>
                     
-                    <div class="form-group col-span-2">
-                        <label class="form-label">Что включено в тур (через запятую)</label>
-                        <textarea class="form-input" rows="3" id="tourIncludes" placeholder="Транспорт, Гид, Обед, Входные билеты"></textarea>
-                        <small class="text-gray-500">Перечислите что включено в стоимость тура</small>
-                    </div>
                     
                     <!-- Поле сложности тура удалено по требованию пользователя -->
                     
@@ -2571,7 +2562,6 @@
         window.tourItinerary = [];
         window.tourStartTimes = [];
         window.editStartTimes = [];
-        window.tourIncludes = [];
 
         // Функции управления "Что включено"
         function addHighlight() {
@@ -2772,7 +2762,7 @@
                     ru: document.getElementById('tourDescRu')?.value || '',
                     en: document.getElementById('tourDescEn')?.value || ''
                 },
-                duration: document.getElementById('tourDuration')?.value || '',
+                duration: '',  // Поле удалено из формы
                 durationDays: parseInt(document.getElementById('tourDurationDays')?.value) || 1,
                 price: document.getElementById('tourPrice')?.value || '',
                 priceType: document.getElementById('tourPriceType')?.value || 'за человека',
@@ -2795,7 +2785,7 @@
                 images: JSON.stringify(allImages),
                 
                 // Что включено
-                includes: JSON.stringify(includedServices.concat(window.tourIncludes || [])),
+                includes: JSON.stringify(includedServices),
                 
                 // Программа тура  
                 itinerary: JSON.stringify(window.tourItinerary || []),
@@ -2844,14 +2834,12 @@
             window.tourItinerary = [];
             window.tourStartTimes = [];
             window.editStartTimes = [];
-            window.tourIncludes = [];
             
-            // Обновляем отображение
+            // Обновляем отображение (updateIncludesList удален - используем чекбоксы)
             updateGalleryImagesList();
             updateHighlightsList();
             updateItineraryList();
             updateStartTimesList();
-            updateIncludesList();
         }
 
         // Функции управления программой тура
@@ -3228,7 +3216,7 @@
                         document.getElementById('tourCountry').value = tour.country || '';
                         document.getElementById('tourCity').value = tour.city || '';
                         document.getElementById('tourDurationDays').value = tour.durationDays || '';
-                        document.getElementById('tourDuration').value = tour.duration || '';
+                        // Поле duration удалено из формы
                         document.getElementById('tourPrice').value = tour.price || '';
                         document.getElementById('tourPriceType').value = tour.priceType || 'за человека';
                         document.getElementById('tourPickupInfo').value = tour.pickupInfo || '';
@@ -3295,7 +3283,7 @@
                                 includes = tour.includes || tour.highlights || '';
                             }
                         }
-                        document.getElementById('tourIncludes').value = includes;
+                        // Поле tourIncludes удалено из формы
                         
                     })
                     .catch(err => {
@@ -4040,7 +4028,7 @@
                 format: document.getElementById('tourType').value,
                 country: document.getElementById('tourCountry').value,
                 city: document.getElementById('tourCity').value,
-                duration: document.getElementById('tourDuration').value,
+                duration: '',  // Поле удалено из формы
                 durationDays: parseInt(document.getElementById('tourDurationDays').value),
                 price: document.getElementById('tourPrice').value,
                 priceType: document.getElementById('tourPriceType').value,
@@ -4056,7 +4044,7 @@
                 // difficulty field removed per user request
                 minPeople: parseInt(document.getElementById('tourMinPeople').value) || null,
                 maxPeople: parseInt(document.getElementById('tourMaxPeople').value) || null,
-                includes: JSON.stringify(document.getElementById('tourIncludes').value.split(',').map(item => item.trim()).filter(item => item)),
+                includes: JSON.stringify([]),  // Используем чекбоксы вместо текстового поля
                 // Существующие поля
                 highlights: JSON.stringify(window.tourHighlights || []),
                 itinerary: JSON.stringify(window.tourItinerary || [])
