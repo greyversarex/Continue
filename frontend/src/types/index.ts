@@ -2,12 +2,16 @@
 export interface MultilingualContent {
   en: string;
   ru: string;
+  tj?: string;
 }
+
+// Content can be either string or multilingual object
+export type FlexibleContent = string | MultilingualContent;
 
 // Category interface
 export interface Category {
   id: number;
-  name: MultilingualContent;
+  name: FlexibleContent;
   _count?: {
     tours: number;
   };
@@ -16,12 +20,12 @@ export interface Category {
 // Tour interface matching the backend API response
 export interface Tour {
   id: number;
-  title: MultilingualContent;
-  description: MultilingualContent;
+  title: FlexibleContent;
+  description: FlexibleContent;
   duration: string;
   price: string;
   categoryId: number;
-  category: Category;
+  category?: Category;
   createdAt: string;
   updatedAt: string;
 }

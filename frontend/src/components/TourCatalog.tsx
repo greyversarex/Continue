@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { Tour, Category, ApiResponse } from '../types';
+import { Tour, Category, ApiResponse, FlexibleContent } from '../types';
+
+// Helper function to get content in current language
+const getContent = (content: FlexibleContent, language: string = 'en'): string => {
+  if (typeof content === 'string') return content;
+  if (content && typeof content === 'object') {
+    return content[language as keyof typeof content] || content.en || content.ru || '';
+  }
+  return '';
+};
 
 const TourCatalog: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -19,7 +28,7 @@ const TourCatalog: React.FC = () => {
 
   const fetchTours = async () => {
     try {
-      const response = await axios.get<ApiResponse>('http://localhost:3001/api/tours');
+      const response = await axios.get<ApiResponse>('http://localhost:5000/api/tours');
       if (response.data.success) {
         setTours(response.data.data);
       }
@@ -33,7 +42,7 @@ const TourCatalog: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get<ApiResponse>('http://localhost:3001/api/categories');
+      const response = await axios.get<ApiResponse>('http://localhost:5000/api/categories');
       if (response.data.success) {
         setCategories(response.data.data);
       }
@@ -102,7 +111,7 @@ const TourCatalog: React.FC = () => {
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
-              {category.name[i18n.language as keyof typeof category.name] || category.name.en || category.name.ru}
+              {getContent(category.name, i18n.language)}
             </button>
           ))}
         </div>
@@ -130,18 +139,18 @@ const TourCatalog: React.FC = () => {
               <div className="p-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
-                    {tour.category?.name.en}
+                    {tour.category ? getContent(tour.category.name, i18n.language) : ''}
                   </span>
                   <span className="text-green-600 font-semibold">{tour.price}</span>
                 </div>
 
                 <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  {tour.title[i18n.language as keyof typeof tour.title] || tour.title.en || tour.title.ru}
+                  {getContent(tour.title, i18n.language)}
                 </h3>
 
                 <p className="text-gray-600 mb-4 line-clamp-3">
                   {(() => {
-                    const description = tour.description[i18n.language as keyof typeof tour.description] || tour.description.en || tour.description.ru;
+                    const description = getContent(tour.description, i18n.language);
                     return description.length > 120 
                       ? `${description.substring(0, 120)}...`
                       : description;

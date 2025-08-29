@@ -63,9 +63,9 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
   const fetchTourDetails = async () => {
     try {
       const [tourRes, hotelsRes, guidesRes] = await Promise.all([
-        axios.get(`http://localhost:3001/api/tours/${tourId}`),
-        axios.get('http://localhost:3001/api/hotels'),
-        axios.get('http://localhost:3001/api/guides')
+        axios.get(`http://localhost:5000/api/tours/${tourId}`),
+        axios.get('http://localhost:5000/api/hotels'),
+        axios.get('http://localhost:5000/api/guides')
       ]);
 
       if (tourRes.data.success) {

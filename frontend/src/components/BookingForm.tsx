@@ -50,7 +50,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
     setMessage(null);
 
     try {
-      const response = await axios.post<ApiResponse>('http://localhost:3001/api/tours/booking-requests', {
+      const response = await axios.post<ApiResponse>('http://localhost:5000/api/tours/booking-requests', {
         ...formData,
         tourId: currentTourId
       });
