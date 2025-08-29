@@ -3469,8 +3469,6 @@
         document.getElementById('hotelForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const formData = new FormData();
-            
             // Build name object
             const name = {
                 ru: document.getElementById('hotelNameRu').value,
@@ -3510,25 +3508,20 @@
                 images: JSON.stringify([]) // For now, we'll handle images separately
             };
             
-            // Append hotel data to formData
-            Object.keys(hotelData).forEach(key => {
-                formData.append(key, hotelData[key]);
-            });
-            
-            // Handle images
-            const imageFiles = document.getElementById('hotelImages').files;
-            for (let i = 0; i < imageFiles.length; i++) {
-                formData.append('images', imageFiles[i]);
-            }
+            console.log('📝 Отправляем отель с данными:', hotelData);
             
             const apiUrl = getApiUrl();
             const url = currentHotelId ? `${apiUrl}/hotels/${currentHotelId}` : `${apiUrl}/hotels`;
             const method = currentHotelId ? 'PUT' : 'POST';
             
+            // For now, send as JSON instead of FormData (images handled separately)
             fetch(url, {
                 method: method,
-                headers: getAuthHeaders(),
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...getAuthHeaders()
+                },
+                body: JSON.stringify(hotelData)
             })
                 .then(res => res.json())
                 .then(data => {
