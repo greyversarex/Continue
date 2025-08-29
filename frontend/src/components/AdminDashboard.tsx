@@ -629,7 +629,7 @@ const AdminDashboard: React.FC = () => {
                   ✕
                 </button>
               </div>
-              <TourForm tour={selectedTour} onSuccess={handleTourFormClose} onCancel={handleTourFormClose} />
+              <TourForm tour={selectedTour} onSuccess={handleTourFormClose} />
             </div>
           </div>
         </div>
@@ -651,7 +651,7 @@ const AdminDashboard: React.FC = () => {
                   ✕
                 </button>
               </div>
-              <HotelForm hotel={selectedHotel} onSuccess={handleHotelFormClose} onCancel={handleHotelFormClose} />
+              <HotelForm hotel={selectedHotel} onSuccess={handleHotelFormClose} />
             </div>
           </div>
         </div>

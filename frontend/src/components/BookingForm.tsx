@@ -32,7 +32,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
   });
   
   const currentTourId = tourId || tour?.id;
-  const currentTourTitle = tourTitle || (typeof tour?.title === "object" ? tour.title.en || tour.title.ru : tour?.title) || 'Tour';
+  const currentTourTitle = tourTitle || (tour?.title.en) || 'Tour';
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 

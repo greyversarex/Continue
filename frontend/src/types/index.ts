@@ -5,7 +5,7 @@ export interface MultilingualContent {
   tj?: string;
 }
 
-// Content can be either string or multilingual object  
+// Content can be either string or multilingual object
 export type FlexibleContent = string | MultilingualContent;
 
 // Category interface

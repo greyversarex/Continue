@@ -51,10 +51,10 @@ const ViatorTourCatalog: React.FC = () => {
     // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(tour => 
-        (typeof tour.title === 'object' ? tour.title.en || '' : tour.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (typeof tour.title === 'object' ? tour.title.ru || '' : tour.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (typeof tour.description === 'object' ? tour.description.en || '' : tour.description).toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (typeof tour.description === 'object' ? tour.description.ru || '' : tour.description).toLowerCase().includes(searchQuery.toLowerCase())
+        tour.title.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tour.title.ru.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tour.description.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tour.description.ru.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
     
@@ -176,7 +176,7 @@ const ViatorTourCatalog: React.FC = () => {
                   <option value="">{t('catalog.filters.all_categories', 'All Categories')}</option>
                   {categories.map(category => (
                     <option key={category.id} value={category.id.toString()}>
-                      {typeof category.name === 'object' ? category.name.en || category.name.ru : category.name} ({category._count?.tours || 0})
+                      {category.name.en} ({category._count?.tours || 0})
                     </option>
                   ))}
                 </select>

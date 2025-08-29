@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { Tour, Category, ApiResponse } from '../types';
-
-type FlexibleContent = string | { en: string; ru: string; tj?: string };
+import { Tour, Category, ApiResponse, FlexibleContent } from '../types';
 
 // Helper function to get content in current language
 const getContent = (content: FlexibleContent, language: string = 'en'): string => {

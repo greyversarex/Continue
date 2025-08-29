@@ -55,17 +55,17 @@ const ViatorTourCard: React.FC<TourCardProps> = ({ tour }) => {
       <div className="p-4">
         {/* Category */}
         <div className="text-sm text-gray-500 mb-2">
-          {tour.category && (typeof tour.category.name === 'object' ? tour.category.name[i18n.language as keyof typeof tour.category.name] || tour.category.name.en || tour.category.name.ru : tour.category.name)}
+          {tour.category && (tour.category.name[i18n.language as keyof typeof tour.category.name] || tour.category.name.en)}
         </div>
         
         {/* Title */}
         <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
-          {typeof tour.title === 'object' ? tour.title[i18n.language as keyof typeof tour.title] || tour.title.en || tour.title.ru : tour.title}
+          {tour.title[i18n.language as keyof typeof tour.title] || tour.title.en}
         </h3>
         
         {/* Description */}
         <p className="text-gray-600 text-sm mb-3 line-clamp-3">
-          {typeof tour.description === 'object' ? tour.description[i18n.language as keyof typeof tour.description] || tour.description.en || tour.description.ru : tour.description}
+          {tour.description[i18n.language as keyof typeof tour.description] || tour.description.en}
         </p>
         
         {/* Rating */}

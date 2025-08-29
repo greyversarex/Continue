@@ -75,6 +75,11 @@ app.get('/hotels-catalog.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'hotels-catalog.html'));
 });
 
+// Обслуживать главную страницу
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
+
 // Глобальная обработка ошибок
 app.use((error, req, res, next) => {
   console.error('Global error handler:', error);
@@ -84,8 +89,6 @@ app.use((error, req, res, next) => {
     details: process.env.NODE_ENV === 'development' ? error.message : undefined
   });
 });
-
-// Note: React SPA routing handled by React Router on client side
 
 // Инициализация базы данных
 async function startServer() {
