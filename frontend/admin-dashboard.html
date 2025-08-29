@@ -2845,8 +2845,21 @@
                             throw new Error('Tour data not found');
                         }
                         
-                        const title = JSON.parse(tour.title || '{}');
-                        const description = JSON.parse(tour.description || '{}');
+                        // Safely parse title and description (handle both string and object formats)
+                        let title, description;
+                        try {
+                            title = typeof tour.title === 'string' ? JSON.parse(tour.title || '{}') : (tour.title || {});
+                        } catch (e) {
+                            console.warn('Failed to parse title:', e);
+                            title = { ru: tour.title || '', en: '' };
+                        }
+                        
+                        try {
+                            description = typeof tour.description === 'string' ? JSON.parse(tour.description || '{}') : (tour.description || {});
+                        } catch (e) {
+                            console.warn('Failed to parse description:', e);
+                            description = { ru: tour.description || '', en: '' };
+                        }
                         
                         document.getElementById('tourType').value = tour.format || '';
                         document.getElementById('tourTitleRu').value = title.ru || '';
