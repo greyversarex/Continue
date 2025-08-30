@@ -5437,10 +5437,35 @@
 
         // Save Enhanced Tour (supports both create and edit)
         function saveEnhancedTour() {
+            // Валидация обязательных полей
+            const categoryId = document.getElementById('eTourCategoryId').value;
+            if (!categoryId || categoryId === '') {
+                alert('Пожалуйста, выберите категорию тура');
+                return;
+            }
+            
+            const titleRu = document.getElementById('eTourTitleRu').value;
+            if (!titleRu || titleRu.trim() === '') {
+                alert('Пожалуйста, введите название тура на русском языке');
+                return;
+            }
+            
+            const price = document.getElementById('eTourPrice').value;
+            if (!price || isNaN(parseFloat(price))) {
+                alert('Пожалуйста, введите корректную цену тура');
+                return;
+            }
+            
+            const durationDays = document.getElementById('eTourDurationDays').value;
+            if (!durationDays || isNaN(parseInt(durationDays))) {
+                alert('Пожалуйста, введите длительность тура в днях');
+                return;
+            }
+
             const formData = {
                 title: JSON.stringify({
-                    ru: document.getElementById('eTourTitleRu').value,
-                    en: document.getElementById('eTourTitleEn').value
+                    ru: titleRu,
+                    en: document.getElementById('eTourTitleEn').value || titleRu
                 }),
                 shortDescription: JSON.stringify({
                     ru: document.getElementById('eTourShortDesc').value,
@@ -5450,25 +5475,25 @@
                     ru: document.getElementById('eTourFullDesc').value,
                     en: document.getElementById('eTourFullDesc').value
                 }),
-                price: parseFloat(document.getElementById('eTourPrice').value),
-                priceType: document.getElementById('eTourPriceType').value,
+                price: parseFloat(price),
+                priceType: document.getElementById('eTourPriceType').value || 'за человека',
                 originalPrice: document.getElementById('eTourOriginalPrice').value ? parseFloat(document.getElementById('eTourOriginalPrice').value) : null,
-                durationDays: parseInt(document.getElementById('eTourDurationDays').value),
-                format: document.getElementById('eTourType').value, // Тип тура
-                difficulty: document.getElementById('eTourDifficulty').value,
+                durationDays: parseInt(durationDays),
+                format: document.getElementById('eTourType').value || 'Групповой', // Тип тура
+                difficulty: document.getElementById('eTourDifficulty').value || 'Легкий',
                 maxPeople: document.getElementById('eTourMaxPeople').value ? parseInt(document.getElementById('eTourMaxPeople').value) : null,
                 minPeople: document.getElementById('eTourMinPeople').value ? parseInt(document.getElementById('eTourMinPeople').value) : null,
-                country: document.getElementById('eTourCountry').value,
-                city: document.getElementById('eTourCity').value,
-                mainImage: document.getElementById('eTourMainImage').value,
+                country: document.getElementById('eTourCountry').value || 'Таджикистан',
+                city: document.getElementById('eTourCity').value || 'Душанбе',
+                mainImage: document.getElementById('eTourMainImage').value || '',
                 images: JSON.stringify(window.tourGalleryImages || []), // Галерея изображений
-                categoryId: parseInt(document.getElementById('eTourCategoryId').value),
+                categoryId: parseInt(categoryId),
                 tourBlockId: document.getElementById('eTourBlockId').value ? parseInt(document.getElementById('eTourBlockId').value) : null,
-                isFeatured: document.getElementById('eTourIsFeatured').checked,
+                isFeatured: document.getElementById('eTourIsFeatured') ? document.getElementById('eTourIsFeatured').checked : false,
                 // Новые поля
-                pickupInfo: document.getElementById('eTourPickupInfo').value,
+                pickupInfo: document.getElementById('eTourPickupInfo').value || '',
                 startTimeOptions: JSON.stringify(window.editStartTimes || []), // Время начала
-                languages: document.getElementById('eTourLanguages').value, // Языки тура
+                languages: document.getElementById('eTourLanguages').value || '["Русский"]', // Языки тура
                 // Календарные ограничения
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
@@ -5478,6 +5503,8 @@
                 includes: JSON.stringify(getSelectedIncludes()), // Что включено
                 excluded: JSON.stringify([])
             };
+            
+            console.log('📝 Sending tour data:', formData);
 
             // Определяем режим: создание или редактирование
             const isEditing = currentTourId && currentTourId !== null;
