@@ -1030,7 +1030,7 @@
                     };
                     
                     console.log('✅ Tour data loaded from API:', tourData);
-                    updatePageContent();
+                    await updatePageContent();
                 } else {
                     console.error('Ошибка: API вернул неуспешный ответ');
                 }
@@ -1039,7 +1039,7 @@
             }
         }
 
-        function updatePageContent() {
+        async function updatePageContent() {
             console.log("Updating page content with tour data:", tourData);
             
             try {
@@ -1203,9 +1203,11 @@
             loadImages();
             
             // Load reviews
-            loadReviews().catch(err => {
+            try {
+                await loadReviews();
+            } catch (err) {
                 console.error('Failed to load reviews:', err);
-            });
+            }
             
             // Update start time options
             updateStartTimeOptions();
