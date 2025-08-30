@@ -2896,14 +2896,14 @@
                 return;
             }
             
-            const price = document.getElementById('tourPrice').value;
-            if (!price || isNaN(parseFloat(price))) {
+            const tourPriceValue = document.getElementById('tourPrice').value;
+            if (!tourPriceValue || isNaN(parseFloat(tourPriceValue))) {
                 alert('Пожалуйста, введите корректную цену тура');
                 return;
             }
             
-            const durationDays = document.getElementById('tourDurationDays').value;
-            if (!durationDays || isNaN(parseInt(durationDays))) {
+            const tourDurationValue = document.getElementById('tourDurationDays').value;
+            if (!tourDurationValue || isNaN(parseInt(tourDurationValue))) {
                 alert('Пожалуйста, введите длительность тура в днях');
                 return;
             }
@@ -3006,11 +3006,11 @@
         // Функции управления программой тура
         function addItinerary() {
             const time = document.getElementById('newItineraryTime').value;
-            const title = document.getElementById('newItineraryTitle').value.trim();
+            const itineraryTitle = document.getElementById('newItineraryTitle').value.trim();
             const desc = document.getElementById('newItineraryDesc').value.trim();
             
-            if (time && title && desc) {
-                window.tourItinerary.push({ time, title, description: desc });
+            if (time && itineraryTitle && desc) {
+                window.tourItinerary.push({ time, title: itineraryTitle, description: desc });
                 updateItineraryList();
                 document.getElementById('newItineraryTime').value = '';
                 document.getElementById('newItineraryTitle').value = '';
@@ -3106,8 +3106,8 @@
                 const language = selectedOption.value;
                 
                 // Получаем текущие языки
-                const hiddenField = document.getElementById('eTourLanguages');
-                let currentLanguages = hiddenField.value ? hiddenField.value.split(', ') : [];
+                const eTourLanguagesField4 = document.getElementById('eTourLanguages');
+                let currentLanguages = eTourLanguagesField4.value ? eTourLanguagesField4.value.split(', ') : [];
                 
                 // Проверяем, не добавлен ли уже
                 if (currentLanguages.includes(language)) {
@@ -3117,7 +3117,7 @@
                 
                 // Добавляем новый язык
                 currentLanguages.push(language);
-                hiddenField.value = currentLanguages.join(', ');
+                eTourLanguagesField4.value = currentLanguages.join(', ');
                 
                 // Обновляем отображение
                 updateEditSelectedLanguages();
@@ -3128,12 +3128,12 @@
         }
 
         function updateEditSelectedLanguages() {
-            const hiddenField = document.getElementById('eTourLanguages');
+            const eTourLanguagesField2 = document.getElementById('eTourLanguages');
             const container = document.getElementById('eSelectedLanguages');
             
             if (!container) return;
             
-            const languages = hiddenField.value ? hiddenField.value.split(', ') : [];
+            const languages = eTourLanguagesField2.value ? eTourLanguagesField2.value.split(', ') : [];
             
             if (languages.length === 0 || (languages.length === 1 && languages[0] === '')) {
                 container.innerHTML = '<small class="text-gray-500">Выбранные языки появятся здесь</small>';
@@ -3151,10 +3151,10 @@
         }
 
         function removeEditLanguage(index) {
-            const hiddenField = document.getElementById('eTourLanguages');
-            let languages = hiddenField.value ? hiddenField.value.split(', ') : [];
+            const eTourLanguagesField3 = document.getElementById('eTourLanguages');
+            let languages = eTourLanguagesField3.value ? eTourLanguagesField3.value.split(', ') : [];
             languages.splice(index, 1);
-            hiddenField.value = languages.join(', ');
+            eTourLanguagesField3.value = languages.join(', ');
             updateEditSelectedLanguages();
         }
 
@@ -3320,11 +3320,11 @@
         // Update selected categories display
         function updateSelectedCategoriesDisplay() {
             const container = document.getElementById('selectedCategories');
-            const hiddenInput = document.getElementById('tourCategory');
+            const categoryHiddenInput = document.getElementById('tourCategory');
             
             if (selectedCategories.length === 0) {
                 container.innerHTML = '<small class="text-gray-500">Выбранные категории появятся здесь</small>';
-                hiddenInput.value = '';
+                categoryHiddenInput.value = '';
             } else {
                 container.innerHTML = selectedCategories.map(cat => 
                     `<div class="flex justify-between items-center bg-white p-2 rounded border">
@@ -3336,7 +3336,7 @@
                 ).join('');
                 
                 // Set first category as primary (for required field)
-                hiddenInput.value = selectedCategories[0].id;
+                categoryHiddenInput.value = selectedCategories[0].id;
             }
         }
 
@@ -3374,11 +3374,11 @@
         // Update selected languages display
         function updateSelectedLanguagesDisplay() {
             const container = document.getElementById('selectedLanguages');
-            const hiddenInput = document.getElementById('tourLanguages');
+            const languagesHiddenInput = document.getElementById('tourLanguages');
             
             if (selectedLanguages.length === 0) {
                 container.innerHTML = '<small class="text-gray-500">Выбранные языки появятся здесь</small>';
-                hiddenInput.value = '';
+                languagesHiddenInput.value = '';
             } else {
                 container.innerHTML = selectedLanguages.map(lang => 
                     `<div class="flex justify-between items-center bg-white p-2 rounded border">
@@ -3965,8 +3965,8 @@
             console.log('💾 Saving tour:', { tourId, isEditing });
             
             // Валидация обязательных полей
-            const titleRu = document.getElementById('tourTitleRu').value;
-            const titleEn = document.getElementById('tourTitleEn').value;
+            const titleRuValue = document.getElementById('tourTitleRu').value;
+            const titleEnValue = document.getElementById('tourTitleEn').value;
             
             // Проверяем выбранные категории вместо dropdown
             if (!selectedCategories || selectedCategories.length === 0) {
@@ -3974,26 +3974,26 @@
                 return;
             }
             
-            const category = document.getElementById('tourCategory').value;
-            const price = document.getElementById('tourPrice').value;
-            const durationDays = document.getElementById('tourDurationDays').value;
+            const categoryValue = document.getElementById('tourCategory').value;
+            const priceValue = document.getElementById('tourPrice').value;
+            const durationDaysValue = document.getElementById('tourDurationDays').value;
             
-            if (!titleRu || titleRu.trim() === '') {
+            if (!titleRuValue || titleRuValue.trim() === '') {
                 alert('Пожалуйста, введите название тура на русском языке');
                 return;
             }
             
-            if (!category || category === '') {
+            if (!categoryValue || categoryValue === '') {
                 alert('Пожалуйста, выберите категорию тура');
                 return;
             }
             
-            if (!price || isNaN(parseFloat(price))) {
+            if (!priceValue || isNaN(parseFloat(priceValue))) {
                 alert('Пожалуйста, введите корректную цену тура');
                 return;
             }
             
-            if (!durationDays || isNaN(parseInt(durationDays))) {
+            if (!durationDaysValue || isNaN(parseInt(durationDaysValue))) {
                 alert('Пожалуйста, введите длительность тура в днях');
                 return;
             }
@@ -4001,21 +4001,21 @@
             // Формируем данные для отправки
             const formData = {
                 title: JSON.stringify({
-                    ru: titleRu,
-                    en: titleEn || titleRu
+                    ru: titleRuValue,
+                    en: titleEnValue || titleRuValue
                 }),
                 description: JSON.stringify({
                     ru: document.getElementById('tourDescRu').value || '',
                     en: document.getElementById('tourDescEn').value || ''
                 }),
-                price: parseFloat(price),
+                price: parseFloat(priceValue),
                 priceType: document.getElementById('tourPriceType').value || 'за человека',
-                categoryId: parseInt(category),
+                categoryId: parseInt(categoryValue),
                 tourBlockId: document.getElementById('tourBlockId').value ? parseInt(document.getElementById('tourBlockId').value) : null,
                 country: document.getElementById('tourCountry').value || '',
                 city: document.getElementById('tourCity').value || '',
-                durationDays: parseInt(durationDays),
-                duration: durationDays.toString(),
+                durationDays: parseInt(durationDaysValue),
+                duration: durationDaysValue.toString(),
                 format: document.getElementById('tourType').value || '',
                 tourType: document.getElementById('tourType').value || '',
                 pickupInfo: document.getElementById('tourPickupInfo').value || '',
@@ -4197,14 +4197,14 @@
             updateHighlightsList();
         }
         
-        function addItinerary() {
+        function addItinerary2() {
             const time = document.getElementById('newItineraryTime').value;
-            const title = document.getElementById('newItineraryTitle').value.trim();
+            const itineraryTitle2 = document.getElementById('newItineraryTitle').value.trim();
             const description = document.getElementById('newItineraryDesc').value.trim();
             
-            if (time && title) {
+            if (time && itineraryTitle2) {
                 window.tourItinerary = window.tourItinerary || [];
-                window.tourItinerary.push({ time, title, description });
+                window.tourItinerary.push({ time, title: itineraryTitle2, description });
                 
                 // Очищаем поля
                 document.getElementById('newItineraryTime').value = '';
