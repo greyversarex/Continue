@@ -1590,8 +1590,8 @@
                     
                     <div class="form-group">
                         <label class="form-label">Фотографии отеля</label>
-                        <input type="file" class="form-input" id="hotelImages" multiple accept="image/*">
-                        <div id="hotelImagePreview" class="mt-2"></div>
+                        <div id="hotel-uploader-container"></div>
+                        <input type="hidden" id="hotelImages">
                     </div>
                     
                     <div class="form-group">
@@ -1937,24 +1937,11 @@
                             Фотографии тура
                         </label>
                         
-                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                            <div class="text-center">
-                                <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-3"></i>
-                                <label for="tourImages" class="cursor-pointer">
-                                    <span class="text-blue-600 font-semibold">Выберите фотографии</span>
-                                    <span class="text-gray-600"> или перетащите их сюда</span>
-                                </label>
-                                <input type="file" class="hidden" id="tourImages" multiple accept="image/*" onchange="handleTourImageUpload(this)">
-                                <p class="text-gray-500 text-sm mt-2">
-                                    Первая загруженная фотография автоматически станет главной для карточки тура
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <!-- Предварительный просмотр загруженных изображений -->
-                        <div id="tourImagePreview" class="grid grid-cols-4 gap-4 mt-4" style="display: none;">
-                            <!-- Превью изображений будут добавлены здесь -->
-                        </div>
+                        <div id="tour-uploader-container"></div>
+                        <p class="text-gray-500 text-sm mt-2">
+                            Первая загруженная фотография автоматически станет главной для карточки тура
+                        </p>
+                        <input type="hidden" id="tourImages">
                         
                         <!-- Список галереи для редактирования -->
                         <div id="galleryImagesList" class="space-y-2 mt-4">
@@ -2235,6 +2222,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="components/ObjectUploader.js"></script>
     <script>
         // Global variables
         let currentSection = 'dashboard';
@@ -3446,7 +3434,13 @@
             currentTourId = tourId;
             console.log('🔵 Set currentTourId to:', currentTourId);
             window.currentTourId = tourId; // Также устанавливаем глобально
+            window.tourImageURLs = [];
             document.getElementById('tourModal').classList.add('active');
+            
+            // Initialize the uploader
+            setTimeout(() => {
+                initializeTourUploader();
+            }, 100);
             
             // Load hotels and guides for checkboxes
             loadHotelsForCheckboxes();
@@ -4053,6 +4047,11 @@
             document.getElementById('tourModal').classList.remove('active');
             document.getElementById('tourForm').reset();
             
+            // Clear the uploader
+            if (tourUploader) {
+                tourUploader.clear('tour-uploader-container');
+            }
+            
             // Очищаем скрытое поле ID и переменные
             document.getElementById('tour-id').value = '';
             currentTourId = null;
@@ -4065,6 +4064,7 @@
             window.editStartTimes = [];
             window.tourStartTimes = [];
             window.tourLanguages = window.tourLanguages || [];
+            window.tourImageURLs = [];
             
             // Обновляем списки
             updateHighlightsList();
@@ -4373,7 +4373,13 @@
         
         function openHotelModal(hotelId = null) {
             currentHotelId = hotelId;
+            window.hotelImageURLs = [];
             document.getElementById('hotelModal').classList.add('active');
+            
+            // Initialize the uploader
+            setTimeout(() => {
+                initializeHotelUploader();
+            }, 100);
             
             if (hotelId) {
                 document.getElementById('hotelModalTitle').textContent = 'Редактировать отель';
@@ -4381,14 +4387,19 @@
             } else {
                 document.getElementById('hotelModalTitle').textContent = 'Добавить отель';
                 document.getElementById('hotelForm').reset();
-                document.getElementById('hotelImagePreview').innerHTML = '';
+                if (hotelUploader) {
+                    hotelUploader.clear('hotel-uploader-container');
+                }
             }
         }
         
         function closeHotelModal() {
             document.getElementById('hotelModal').classList.remove('active');
             document.getElementById('hotelForm').reset();
-            document.getElementById('hotelImagePreview').innerHTML = '';
+            if (hotelUploader) {
+                hotelUploader.clear('hotel-uploader-container');
+            }
+            window.hotelImageURLs = [];
             currentHotelId = null;
         }
         
@@ -4561,26 +4572,88 @@
                 });
         });
         
-        // Hotel image preview handler
-        document.getElementById('hotelImages').addEventListener('change', function(e) {
-            const files = e.target.files;
-            const preview = document.getElementById('hotelImagePreview');
-            preview.innerHTML = '';
+        // Initialize ObjectUploader for hotels
+        let hotelUploader = null;
+        let tourUploader = null;
+        window.hotelImageURLs = [];
+        window.tourImageURLs = [];
+
+        function initializeHotelUploader() {
+            if (hotelUploader) return;
             
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.classList.add('image-preview');
-                    preview.appendChild(img);
-                };
-                
-                reader.readAsDataURL(file);
-            }
-        });
+            hotelUploader = new ObjectUploader({
+                maxFiles: 10,
+                maxFileSize: 10 * 1024 * 1024, // 10MB
+                onComplete: (fileInfo, allFiles) => {
+                    console.log('Hotel image uploaded:', fileInfo);
+                    
+                    // Normalize the object path for database storage
+                    fetch('/api/images', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ imageURL: fileInfo.url })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.hotelImageURLs.push(data.objectPath);
+                            // Update hidden input for form submission
+                            document.getElementById('hotelImages').value = JSON.stringify(window.hotelImageURLs);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error processing uploaded image:', error);
+                    });
+                },
+                onError: (error) => {
+                    alert('Ошибка загрузки: ' + error);
+                }
+            });
+            
+            hotelUploader.createElement('hotel-uploader-container');
+        }
+
+        function initializeTourUploader() {
+            if (tourUploader) return;
+            
+            tourUploader = new ObjectUploader({
+                maxFiles: 15,
+                maxFileSize: 10 * 1024 * 1024, // 10MB
+                onComplete: (fileInfo, allFiles) => {
+                    console.log('Tour image uploaded:', fileInfo);
+                    
+                    // Normalize the object path for database storage
+                    fetch('/api/images', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ imageURL: fileInfo.url })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.tourImageURLs.push(data.objectPath);
+                            // Update hidden input for form submission
+                            document.getElementById('tourImages').value = JSON.stringify(window.tourImageURLs);
+                            // Also update gallery images array
+                            window.tourGalleryImages = window.tourGalleryImages || [];
+                            window.tourGalleryImages.push(data.objectPath);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error processing uploaded image:', error);
+                    });
+                },
+                onError: (error) => {
+                    alert('Ошибка загрузки: ' + error);
+                }
+            });
+            
+            tourUploader.createElement('tour-uploader-container');
+        }
 
         // Bookings functions
         function loadBookings(status = 'all') {

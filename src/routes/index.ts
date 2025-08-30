@@ -14,6 +14,7 @@ import tourBlockRoutes from './tourBlockRoutes';
 import translationRoutes from './translationRoutes';
 import newsRoutes from './newsRoutes';
 import slideRoutes from './slideRoutes';
+import objectStorageRoutes from './objectStorageRoutes';
 
 // Remove old SQLite database routes (now using Prisma)
 
@@ -35,6 +36,7 @@ router.use('/tour-blocks', tourBlockRoutes);
 router.use('/translate', translationRoutes);
 router.use('/news', newsRoutes);
 router.use('/slides', slideRoutes);
+router.use('/', objectStorageRoutes);
 
 // All data access now through Prisma models
 
