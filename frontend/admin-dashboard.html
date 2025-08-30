@@ -881,6 +881,8 @@
                                     </div>
                                     
                                     <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Загрузка изображений</label>
+                                        <div id="tour-edit-uploader-container"></div>
                                         <label class="form-label">Галерея изображений тура</label>
                                         <div class="flex gap-2 mb-3">
                                             <input type="url" class="form-input flex-1" id="eNewImageUrl" placeholder="https://example.com/image.jpg">
@@ -3440,6 +3442,7 @@
             // Initialize the uploader
             setTimeout(() => {
                 initializeTourUploader();
+                initializeTourEditUploader();
             }, 100);
             
             // Load hotels and guides for checkboxes
@@ -4051,6 +4054,9 @@
             if (tourUploader) {
                 tourUploader.clear('tour-uploader-container');
             }
+            if (window.tourEditUploader) {
+                window.tourEditUploader.clear('tour-edit-uploader-container');
+            }
             
             // Очищаем скрытое поле ID и переменные
             document.getElementById('tour-id').value = '';
@@ -4650,10 +4656,18 @@
                             
                             // Set as main image if it's the first one
                             if (window.tourGalleryImages.length === 1) {
+                                // For create form
                                 const mainImageInput = document.getElementById('tourMainImage');
                                 if (mainImageInput) {
                                     mainImageInput.value = data.objectPath;
-                                    console.log('Set main image:', data.objectPath);
+                                    console.log('Set main image for create:', data.objectPath);
+                                }
+                                
+                                // For edit form  
+                                const editMainImageInput = document.getElementById('eTourMainImage');
+                                if (editMainImageInput) {
+                                    editMainImageInput.value = data.objectPath;
+                                    console.log('Set main image for edit:', data.objectPath);
                                 }
                             }
                             
@@ -4671,6 +4685,56 @@
             });
             
             tourUploader.createElement('tour-uploader-container');
+        }
+
+        function initializeTourEditUploader() {
+            if (window.tourEditUploader) return;
+            
+            window.tourEditUploader = new ObjectUploader({
+                maxFiles: 15,
+                maxFileSize: 10 * 1024 * 1024, // 10MB
+                onComplete: (fileInfo, allFiles) => {
+                    console.log('Tour edit image uploaded:', fileInfo);
+                    
+                    // Normalize the object path for database storage
+                    fetch('/api/images', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ imageURL: fileInfo.url })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.tourImageURLs.push(data.objectPath);
+                            // Update gallery images array
+                            window.tourGalleryImages = window.tourGalleryImages || [];
+                            window.tourGalleryImages.push(data.objectPath);
+                            
+                            // Set as main image if it's the first one
+                            if (window.tourGalleryImages.length === 1) {
+                                const editMainImageInput = document.getElementById('eTourMainImage');
+                                if (editMainImageInput) {
+                                    editMainImageInput.value = data.objectPath;
+                                    console.log('Set edit main image:', data.objectPath);
+                                }
+                            }
+                            
+                            // Update gallery display for edit form
+                            updateEditGalleryImagesList();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error processing uploaded image:', error);
+                    });
+                },
+                onError: (error) => {
+                    alert('Ошибка загрузки: ' + error);
+                }
+            });
+            
+            window.tourEditUploader.createElement('tour-edit-uploader-container');
         }
 
         // Bookings functions
