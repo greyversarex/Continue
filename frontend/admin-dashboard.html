@@ -2918,8 +2918,8 @@
             // Получаем ID тура из скрытого поля
             const tourId = document.getElementById('tour-id').value || '';
             
-            // Определяем режим редактирования
-            const isEditing = tourId && tourId.trim() !== '';
+            // Определяем режим редактирования (boolean, не строка!)
+            const isEditing = Boolean(tourId && tourId.trim() !== '');
             
             // Продолжаем с сохранением
             proceedWithTourSaving(isEditing, tourId);
@@ -2929,23 +2929,31 @@
         function proceedWithTourSaving(isEditing, tourId) {
             console.log('🚀 Proceeding with tour saving:', { isEditing, tourId });
             
+            // Безопасное получение значений с проверкой на null  
+            const titleRuElement = document.getElementById('tourTitleRu');
+            const titleEnElement = document.getElementById('tourTitleEn');
+            const descRuElement = document.getElementById('tourDescRu');
+            const descEnElement = document.getElementById('tourDescEn');
+            const priceElement = document.getElementById('tourPrice');
+            const durationElement = document.getElementById('tourDurationDays');
+            
             const formData = {
                 title: JSON.stringify({
-                    ru: document.getElementById('tourTitleRu').value,
-                    en: document.getElementById('tourTitleEn').value || document.getElementById('tourTitleRu').value
+                    ru: titleRuElement ? titleRuElement.value : '',
+                    en: titleEnElement ? titleEnElement.value : (titleRuElement ? titleRuElement.value : '')
                 }),
                 shortDescription: JSON.stringify({
-                    ru: document.getElementById('tourShortDesc').value,
-                    en: document.getElementById('tourShortDesc').value
+                    ru: descRuElement ? descRuElement.value : '',
+                    en: descEnElement ? descEnElement.value : (descRuElement ? descRuElement.value : '')
                 }),
                 description: JSON.stringify({
-                    ru: document.getElementById('tourFullDesc').value,
-                    en: document.getElementById('tourFullDesc').value
+                    ru: descRuElement ? descRuElement.value : '',
+                    en: descEnElement ? descEnElement.value : (descRuElement ? descRuElement.value : '')
                 }),
-                price: parseFloat(document.getElementById('tourPrice').value),
+                price: priceElement ? parseFloat(priceElement.value) : 0,
                 priceType: document.getElementById('tourPriceType')?.value || 'за человека',
                 originalPrice: document.getElementById('tourOriginalPrice')?.value ? parseFloat(document.getElementById('tourOriginalPrice').value) : null,
-                durationDays: parseInt(document.getElementById('tourDurationDays').value),
+                durationDays: durationElement ? parseInt(durationElement.value) : 1,
                 format: document.getElementById('tourType')?.value,
                 tourType: document.getElementById('tourType')?.value,
                 difficulty: document.getElementById('tourDifficulty')?.value || 'Легкий',
