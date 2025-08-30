@@ -12,6 +12,7 @@ const router = Router();
 router.get('/', TourController.getAllTours);
 router.get('/search', TourController.searchTours);
 router.get('/suggestions', TourController.getSearchSuggestions);
+router.get('/:id/main-image', TourController.getTourMainImage);
 router.get('/:id', TourController.getTourById);
 router.post('/', TourController.createTour);
 router.put('/:id', TourController.updateTour);

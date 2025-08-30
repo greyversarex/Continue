@@ -81,6 +81,65 @@ export class TourController {
   }
 
   /**
+   * Get tour main image
+   * GET /api/tours/:id/main-image
+   */
+  static async getTourMainImage(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = parseInt(req.params.id);
+      
+      if (isNaN(id)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid tour ID'
+        });
+      }
+
+      const tour = await TourModel.findById(id);
+      
+      if (!tour) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tour not found'
+        });
+      }
+
+      // Get main image path
+      let imagePath = tour.mainImage;
+      
+      // If no main image, try to get first image from gallery
+      if (!imagePath && tour.images) {
+        try {
+          const images = JSON.parse(tour.images);
+          if (images && images.length > 0) {
+            imagePath = images[0];
+          }
+        } catch (e) {
+          console.error('Error parsing tour images:', e);
+        }
+      }
+
+      if (!imagePath) {
+        return res.status(404).json({
+          success: false,
+          error: 'No image found for this tour'
+        });
+      }
+
+      // Redirect to the image path - this should be handled by object storage middleware
+      if (imagePath.startsWith('/objects/')) {
+        return res.redirect(imagePath);
+      } else {
+        // For external URLs, redirect directly
+        return res.redirect(imagePath);
+      }
+
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * Get a single tour by ID
    * GET /api/tours/:id
    */
