@@ -3459,9 +3459,9 @@
                             console.log('✅ Loaded price:', tour.price);
                         }
                         
-                        const tourPriceType = document.getElementById('tourPriceType');
-                        if (tourPriceType) {
-                            tourPriceType.value = tour.priceType || 'за человека';
+                        const tourPriceTypeElement = document.getElementById('tourPriceType');
+                        if (tourPriceTypeElement) {
+                            tourPriceTypeElement.value = tour.priceType || 'за человека';
                             console.log('✅ Loaded price type:', tour.priceType);
                         }
                         
@@ -3560,9 +3560,9 @@
                                 console.warn('Failed to parse available days:', e);
                             }
                         }
-                        const tourPriceType = document.getElementById('eTourPriceType');
-                        if (tourPriceType) {
-                            tourPriceType.value = tour.priceType || 'за человека';
+                        const eTourPriceTypeElement = document.getElementById('eTourPriceType');
+                        if (eTourPriceTypeElement) {
+                            eTourPriceTypeElement.value = tour.priceType || 'за человека';
                             console.log('✅ Loaded edit price type:', tour.priceType);
                         } else {
                             console.error('❌ Element eTourPriceType not found');
