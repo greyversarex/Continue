@@ -2582,6 +2582,10 @@
 
         function updateHighlightsList() {
             const container = document.getElementById('highlightsList');
+            if (!container) {
+                console.warn('highlightsList container not found');
+                return;
+            }
             container.innerHTML = window.tourHighlights.map((highlight, index) => `
                 <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
                     <span>✓ ${highlight}</span>
@@ -2618,6 +2622,10 @@
 
         function updateGalleryImagesList() {
             const container = document.getElementById('galleryImagesList');
+            if (!container) {
+                console.warn('galleryImagesList container not found');
+                return;
+            }
             container.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
                 <div class="flex items-center justify-between bg-gray-50 p-3 rounded border">
                     <div class="flex items-center gap-3">
@@ -2866,6 +2874,10 @@
 
         function updateItineraryList() {
             const container = document.getElementById('itineraryList');
+            if (!container) {
+                console.warn('itineraryList container not found');
+                return;
+            }
             container.innerHTML = window.tourItinerary.map((item, index) => `
                 <div class="bg-gray-50 p-3 rounded border">
                     <div class="flex justify-between items-start mb-2">
@@ -2934,6 +2946,10 @@
 
         function updateEditStartTimesList() {
             const container = document.getElementById('editStartTimesList');
+            if (!container) {
+                console.warn('editStartTimesList container not found');
+                return;
+            }
             container.innerHTML = window.editStartTimes.map((time, index) => `
                 <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
                     <span>🕐 ${time}</span>
@@ -3169,7 +3185,9 @@
         }
         
         function openTourModal(tourId = null) {
+            console.log('Opening tour modal with tourId:', tourId);
             currentTourId = tourId;
+            console.log('Set currentTourId to:', currentTourId);
             document.getElementById('tourModal').classList.add('active');
             
             // Load hotels and guides for checkboxes
@@ -3184,12 +3202,20 @@
                 fetch(`${getApiUrl()}/tours/${tourId}`, {
                     headers: getAuthHeaders()
                 })
-                    .then(res => res.json())
-                    .then(data => {
-                        const tour = data.data || data.tour;
-                        if (!tour) {
-                            throw new Error('Tour data not found');
+                    .then(res => {
+                        console.log('API response status:', res.status);
+                        if (!res.ok) {
+                            throw new Error(`HTTP error! status: ${res.status}`);
                         }
+                        return res.json();
+                    })
+                    .then(data => {
+                        console.log('API response data:', data);
+                        const tour = data.data || data.tour || data;
+                        if (!tour) {
+                            throw new Error('Tour data not found in response');
+                        }
+                        console.log('Tour object:', tour);
                         
                         // Safely parse title and description (handle both string and object formats)
                         let title, description;
@@ -3258,7 +3284,11 @@
                                 window.editStartTimes = tour.startTimeOptions.split(',').map(t => t.trim()).filter(t => t);
                             }
                         }
-                        updateEditStartTimesList();
+                        try {
+                            updateEditStartTimesList();
+                        } catch (e) {
+                            console.warn('Failed to update start times list:', e);
+                        }
                         
                         // Загрузка новых полей
                         document.getElementById('tourRating').value = tour.rating || '';
@@ -3295,7 +3325,11 @@
                                 window.tourHighlights = [];
                             }
                         }
-                        updateHighlightsList();
+                        try {
+                            updateHighlightsList();
+                        } catch (e) {
+                            console.warn('Failed to update highlights list:', e);
+                        }
                         
                         // Загрузка маршрута (itinerary)
                         window.tourItinerary = [];
@@ -3307,7 +3341,11 @@
                                 window.tourItinerary = [];
                             }
                         }
-                        updateItineraryList();
+                        try {
+                            updateItineraryList();
+                        } catch (e) {
+                            console.warn('Failed to update itinerary list:', e);
+                        }
                         
                         // Загрузка доступности по месяцам
                         if (tour.availableMonths) {
@@ -3365,7 +3403,11 @@
                                 window.tourGalleryImages = [];
                             }
                         }
-                        updateGalleryImagesList();
+                        try {
+                            updateGalleryImagesList();
+                        } catch (e) {
+                            console.warn('Failed to update gallery images list:', e);
+                        }
                         
                         console.log('✅ Tour data loaded successfully for editing:', tour.id);
                         
@@ -4160,6 +4202,13 @@
                 `${getApiUrl()}/tours/${currentTourId}` : 
                 `${getApiUrl()}/tours`;
             const method = currentTourId ? 'PUT' : 'POST';
+            
+            console.log('Saving tour with:', {
+                currentTourId: currentTourId,
+                url: url,
+                method: method,
+                isEditing: !!currentTourId
+            });
             
             fetch(url, {
                 method: method,
