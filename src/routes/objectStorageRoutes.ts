@@ -22,11 +22,14 @@ router.get('/public-objects/:filePath', async (req: Request, res: Response): Pro
 
 // This endpoint is used to serve private objects that can be accessed publicly
 // (i.e.: without authentication and ACL check).
-router.get('/objects/:objectPath', async (req: Request, res: Response): Promise<void> => {
+router.get('/objects/:objectPath/:fileName', async (req: Request, res: Response): Promise<void> => {
   const objectStorageService = new ObjectStorageService();
   try {
+    // Extract the full path from params
+    const fullObjectPath = `${req.params.objectPath}/${req.params.fileName}`;
+    console.log('Serving object:', fullObjectPath);
     const objectFile = await objectStorageService.getObjectEntityFile(
-      `/objects/${req.params.objectPath}`,
+      `/objects/${fullObjectPath}`,
     );
     await objectStorageService.downloadObject(objectFile, res);
   } catch (error) {
