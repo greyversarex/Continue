@@ -2915,6 +2915,9 @@
                 return;
             }
             
+            // Получаем ID тура из скрытого поля
+            const tourId = document.getElementById('tour-id').value || '';
+            
             // Определяем режим редактирования
             const isEditing = tourId && tourId.trim() !== '';
             
