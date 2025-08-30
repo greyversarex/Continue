@@ -2309,8 +2309,16 @@
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             console.log('🔐 Login form submitted');
             e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            const usernameElement = document.getElementById('username');
+            const passwordElement = document.getElementById('password');
+            
+            if (!usernameElement || !passwordElement) {
+                alert('Ошибка формы входа');
+                return;
+            }
+            
+            const username = usernameElement.value;
+            const password = passwordElement.value;
             
             console.log('📝 Username:', username);
             console.log('🔒 Password length:', password.length);
@@ -2817,7 +2825,8 @@
             if (window.uploadedTourImages.length === 0) {
                 previewContainer.style.display = 'none';
                 // Clear file input
-                document.getElementById('tourImages').value = '';
+                const tourImagesElement = document.getElementById('tourImages');
+                if (tourImagesElement) tourImagesElement.value = '';
             }
         }
 
@@ -2897,20 +2906,20 @@
             
             // НЕ перенаправляем на saveEnhancedTour! Продолжаем с правильной логикой
             
-            const titleRu = document.getElementById('tourTitleRu').value;
-            if (!titleRu || titleRu.trim() === '') {
+            const titleRuElement = document.getElementById('tourTitleRu');
+            if (!titleRuElement || !titleRuElement.value || titleRuElement.value.trim() === '') {
                 alert('Пожалуйста, введите название тура на русском языке');
                 return;
             }
             
-            const tourPriceValue = document.getElementById('tourPrice').value;
-            if (!tourPriceValue || isNaN(parseFloat(tourPriceValue))) {
+            const tourPriceElement = document.getElementById('tourPrice');
+            if (!tourPriceElement || !tourPriceElement.value || isNaN(parseFloat(tourPriceElement.value))) {
                 alert('Пожалуйста, введите корректную цену тура');
                 return;
             }
             
-            const tourDurationValue = document.getElementById('tourDurationDays').value;
-            if (!tourDurationValue || isNaN(parseInt(tourDurationValue))) {
+            const tourDurationElement = document.getElementById('tourDurationDays');
+            if (!tourDurationElement || !tourDurationElement.value || isNaN(parseInt(tourDurationElement.value))) {
                 alert('Пожалуйста, введите длительность тура в днях');
                 return;
             }
