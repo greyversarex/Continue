@@ -268,7 +268,7 @@ export class TourController {
         description,
         shortDescription: shortDescription || null,
         duration: String(finalDuration), // Convert to string for Prisma
-        price,
+        price: String(price),
         priceType: priceType || 'за человека',
         originalPrice: originalPrice || null,
         categoryId: categoryIdNumber,
