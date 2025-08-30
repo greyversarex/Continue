@@ -68,6 +68,8 @@ router.post('/upload-photos', upload.array('photos', 5), (req, res) => {
 // Admin routes
 router.get('/', reviewController.getAllReviews);
 router.put('/:id/moderate', reviewController.moderateReview);
+router.put('/:id/approve', reviewController.approveReview);
+router.put('/:id/reject', reviewController.rejectReview);
 router.delete('/:id', reviewController.deleteReview);
 
 export default router;

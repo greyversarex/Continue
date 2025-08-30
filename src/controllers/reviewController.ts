@@ -341,3 +341,131 @@ export const getReviewStats = async (req: Request, res: Response) => {
     });
   }
 };
+
+// Approve a review (admin only)
+export const approveReview = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const reviewId = parseInt(id);
+
+    if (isNaN(reviewId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid review ID',
+      });
+    }
+
+    // Check if review exists
+    const existingReview = await prisma.review.findUnique({
+      where: { id: reviewId },
+    });
+
+    if (!existingReview) {
+      return res.status(404).json({
+        success: false,
+        message: 'Review not found',
+      });
+    }
+
+    // Update review as approved and moderated
+    const review = await prisma.review.update({
+      where: { id: reviewId },
+      data: {
+        isApproved: true,
+        isModerated: true,
+      },
+      include: {
+        customer: true,
+        tour: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Review approved successfully',
+      data: {
+        ...review,
+        tour: {
+          ...review.tour,
+          title: JSON.parse(review.tour.title),
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error approving review:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to approve review',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};
+
+// Reject a review (admin only)
+export const rejectReview = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const reviewId = parseInt(id);
+
+    if (isNaN(reviewId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid review ID',
+      });
+    }
+
+    // Check if review exists
+    const existingReview = await prisma.review.findUnique({
+      where: { id: reviewId },
+    });
+
+    if (!existingReview) {
+      return res.status(404).json({
+        success: false,
+        message: 'Review not found',
+      });
+    }
+
+    // Update review as rejected but moderated
+    const review = await prisma.review.update({
+      where: { id: reviewId },
+      data: {
+        isApproved: false,
+        isModerated: true,
+      },
+      include: {
+        customer: true,
+        tour: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Review rejected successfully',
+      data: {
+        ...review,
+        tour: {
+          ...review.tour,
+          title: JSON.parse(review.tour.title),
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error rejecting review:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to reject review',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};

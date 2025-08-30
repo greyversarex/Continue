@@ -104,8 +104,43 @@ export class TourModel {
 
     if (data.title) updateData.title = JSON.stringify(data.title);
     if (data.description) updateData.description = JSON.stringify(data.description);
-    if (data.duration) updateData.duration = data.duration;
+    if (data.shortDescription) updateData.shortDesc = JSON.stringify(data.shortDescription);
+    if (data.duration) updateData.duration = String(data.duration);
     if (data.price) updateData.price = data.price;
+    if (data.priceType !== undefined) updateData.priceType = data.priceType;
+    if (data.originalPrice !== undefined) updateData.originalPrice = data.originalPrice;
+    if (data.country !== undefined) updateData.country = data.country;
+    if (data.city !== undefined) updateData.city = data.city;
+    if (data.format !== undefined) updateData.format = data.format;
+    if (data.tourType !== undefined) updateData.tourType = data.tourType;
+    if (data.durationDays !== undefined) updateData.durationDays = data.durationDays;
+    if (data.difficulty !== undefined) updateData.difficulty = data.difficulty;
+    if (data.maxPeople !== undefined) updateData.maxPeople = data.maxPeople;
+    if (data.minPeople !== undefined) updateData.minPeople = data.minPeople;
+    if (data.mainImage !== undefined) updateData.mainImage = data.mainImage;
+    if (data.images !== undefined) updateData.images = data.images;
+    if (data.highlights !== undefined) updateData.highlights = data.highlights;
+    if (data.itinerary !== undefined) updateData.itinerary = data.itinerary;
+    if (data.included !== undefined) updateData.included = data.included;
+    if (data.includes !== undefined) updateData.includes = data.includes;
+    if (data.excluded !== undefined) updateData.excluded = data.excluded;
+    if (data.pickupInfo !== undefined) updateData.pickupInfo = data.pickupInfo;
+    if (data.startTimeOptions !== undefined) updateData.startTimeOptions = data.startTimeOptions;
+    if (data.languages !== undefined) updateData.languages = data.languages;
+    if (data.availableMonths !== undefined) updateData.availableMonths = data.availableMonths;
+    if (data.availableDays !== undefined) updateData.availableDays = data.availableDays;
+    if (data.rating !== undefined) updateData.rating = data.rating;
+    if (data.reviewsCount !== undefined) updateData.reviewsCount = data.reviewsCount;
+    if (data.theme !== undefined) updateData.theme = data.theme;
+    if (data.requirements !== undefined) updateData.requirements = data.requirements;
+    if (data.tags !== undefined) updateData.tags = data.tags;
+    if (data.location !== undefined) updateData.location = data.location;
+    if (data.services !== undefined) updateData.services = data.services;
+    if (data.isFeatured !== undefined) updateData.isFeatured = data.isFeatured;
+    if (data.startDate !== undefined) updateData.startDate = data.startDate;
+    if (data.endDate !== undefined) updateData.endDate = data.endDate;
+    if (data.tourBlockId !== undefined) updateData.tourBlockId = data.tourBlockId;
+    
     if (data.categoryId) {
       // Validate that the category exists
       const category = await prisma.category.findUnique({

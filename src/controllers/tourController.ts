@@ -358,7 +358,34 @@ export class TourController {
         });
       }
 
-      const { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate } = req.body;
+      let { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured } = req.body;
+
+      // Parse JSON strings if needed (same as createTour)
+      if (typeof title === 'string') {
+        try {
+          title = JSON.parse(title);
+          console.log('Parsed title for update:', title);
+        } catch (e) {
+          console.error('Failed to parse title:', e);
+          return res.status(400).json({
+            success: false,
+            error: 'Invalid title format'
+          });
+        }
+      }
+
+      if (typeof description === 'string') {
+        try {
+          description = JSON.parse(description);
+          console.log('Parsed description for update:', description);
+        } catch (e) {
+          console.error('Failed to parse description:', e);
+          return res.status(400).json({
+            success: false,
+            error: 'Invalid description format'
+          });
+        }
+      }
 
       // Validation for provided fields
       if (title && (!title.en || !title.ru)) {
@@ -375,16 +402,26 @@ export class TourController {
         });
       }
 
+      // Convert numeric fields like in createTour
+      const categoryIdNumber = categoryId ? parseInt(categoryId) : undefined;
+      const tourBlockIdNumber = tourBlockId ? parseInt(tourBlockId) : undefined;
+      const durationDaysNumber = durationDays ? parseInt(durationDays) : undefined;
+      const maxPeopleNumber = maxPeople ? parseInt(maxPeople) : undefined;
+      const minPeopleNumber = minPeople ? parseInt(minPeople) : undefined;
+      const ratingNumber = rating ? parseFloat(rating) : undefined;
+      const reviewsCountNumber = reviewsCount ? parseInt(reviewsCount) : undefined;
+
       const updateData: Partial<CreateTourData> = {};
       if (title) updateData.title = title;
       if (description) updateData.description = description;
+      if (shortDescription) updateData.shortDescription = shortDescription;
       if (duration) updateData.duration = String(duration);
-      if (price) updateData.price = price;
-      if (categoryId) updateData.categoryId = categoryId;
-      if (tourBlockId !== undefined) updateData.tourBlockId = tourBlockId;
+      if (price) updateData.price = String(price);
+      if (categoryIdNumber) updateData.categoryId = categoryIdNumber;
+      if (tourBlockIdNumber !== undefined) updateData.tourBlockId = tourBlockIdNumber;
       if (country !== undefined) updateData.country = country;
       if (city !== undefined) updateData.city = city;
-      if (durationDays !== undefined) updateData.durationDays = durationDays;
+      if (durationDaysNumber !== undefined) updateData.durationDays = durationDaysNumber;
       if (format !== undefined) updateData.format = format;
       if (tourType !== undefined) updateData.tourType = tourType;
       if (priceType !== undefined) updateData.priceType = priceType;
@@ -395,6 +432,19 @@ export class TourController {
       if (availableDays !== undefined) updateData.availableDays = availableDays;
       if (startDate !== undefined) updateData.startDate = startDate;
       if (endDate !== undefined) updateData.endDate = endDate;
+      if (mainImage !== undefined) updateData.mainImage = mainImage;
+      if (images !== undefined) updateData.images = images;
+      if (highlights !== undefined) updateData.highlights = highlights;
+      if (itinerary !== undefined) updateData.itinerary = itinerary;
+      if (included !== undefined) updateData.included = included;
+      if (includes !== undefined) updateData.includes = includes;
+      if (excluded !== undefined) updateData.excluded = excluded;
+      if (difficulty !== undefined) updateData.difficulty = difficulty;
+      if (maxPeopleNumber !== undefined) updateData.maxPeople = maxPeopleNumber;
+      if (minPeopleNumber !== undefined) updateData.minPeople = minPeopleNumber;
+      if (ratingNumber !== undefined) updateData.rating = ratingNumber;
+      if (reviewsCountNumber !== undefined) updateData.reviewsCount = reviewsCountNumber;
+      if (isFeatured !== undefined) updateData.isFeatured = isFeatured;
 
       const tour = await TourModel.update(id, updateData);
 
