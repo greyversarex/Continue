@@ -2307,12 +2307,17 @@
         
         // Authentication
         document.getElementById('loginForm').addEventListener('submit', function(e) {
+            console.log('🔐 Login form submitted');
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
+            console.log('📝 Username:', username);
+            console.log('🔒 Password length:', password.length);
+            
             // API login using unified server
             const apiUrl = getApiUrl();
+            console.log('🌐 API URL:', apiUrl);
             
             fetch(`${apiUrl}/admin/login`, {
                 method: 'POST',
@@ -2321,21 +2326,27 @@
                 },
                 body: JSON.stringify({ username, password })
             })
-            .then(res => res.json())
+            .then(res => {
+                console.log('📡 Response status:', res.status);
+                return res.json();
+            })
             .then(data => {
+                console.log('📊 Response data:', data);
                 if (data.success) {
+                    console.log('✅ Login successful, storing token');
                     localStorage.setItem('authToken', data.data.token);
                     localStorage.setItem('user', JSON.stringify(data.data.admin));
                     document.getElementById('loginScreen').style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'block';
                     loadDashboard();
                 } else {
+                    console.log('❌ Login failed:', data.message);
                     alert('Неверные учетные данные: ' + (data.message || 'Ошибка авторизации'));
                 }
             })
             .catch(err => {
-                console.error('Login error:', err);
-                alert('Ошибка соединения с сервером');
+                console.error('🚨 Login error:', err);
+                alert('Ошибка соединения с сервером: ' + err.message);
             });
         });
         
@@ -3429,9 +3440,9 @@
                             console.log('✅ Loaded category:', tour.categoryId);
                         }
                         
-                        const tourBlockId = document.getElementById('tourBlockId');
-                        if (tourBlockId) {
-                            tourBlockId.value = tour.tourBlockId || '';
+                        const tourBlockIdElement = document.getElementById('tourBlockId');
+                        if (tourBlockIdElement) {
+                            tourBlockIdElement.value = tour.tourBlockId || '';
                             console.log('✅ Loaded tour block:', tour.tourBlockId);
                         }
                         
@@ -3676,9 +3687,9 @@
                             console.log('✅ Loaded edit main image:', tour.mainImage);
                         }
                         
-                        const tourBlockId = document.getElementById('eTourBlockId');
-                        if (tourBlockId) {
-                            tourBlockId.value = tour.tourBlockId || '';
+                        const eTourBlockIdElement = document.getElementById('eTourBlockId');
+                        if (eTourBlockIdElement) {
+                            eTourBlockIdElement.value = tour.tourBlockId || '';
                             console.log('✅ Loaded edit tour block:', tour.tourBlockId);
                         }
                         
