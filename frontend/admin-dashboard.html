@@ -1655,6 +1655,9 @@
             </div>
             
             <form id="tourForm">
+                <!-- Скрытое поле для ID тура -->
+                <input type="hidden" id="tour-id">
+                
                 <div class="grid grid-cols-2 gap-4">
                     <div class="form-group col-span-2">
                         <label class="form-label">Тип тура</label>
@@ -3351,6 +3354,9 @@
             loadCategories();
             
             if (tourId) {
+                // Заполняем скрытое поле ID тура
+                document.getElementById('tour-id').value = tourId;
+                
                 // Load tour data for editing
                 fetch(`${getApiUrl()}/tours/${tourId}`, {
                     headers: getAuthHeaders()
@@ -3386,80 +3392,173 @@
                             description = { ru: tour.description || '', en: '' };
                         }
                         
-                        // Загрузка типа тура (format) - используем форму редактирования
-                        const tourTypeElement = document.getElementById('eTourType');
-                        if (tourTypeElement) {
-                            const tourTypeValue = tour.format || tour.tourType || tour.tourFormat || '';
-                            console.log('🔍 Tour type data from server:', { format: tour.format, tourType: tour.tourType, final: tourTypeValue });
-                            tourTypeElement.value = tourTypeValue;
-                            console.log('✅ Loaded edit tour type:', tourTypeValue);
-                            console.log('📋 Available edit tour type options:', Array.from(tourTypeElement.options).map(o => o.value));
-                        } else {
-                            console.error('❌ Element eTourType not found');
-                        }
-                        // 📝 Проверяем существование полей формы
-                        console.log('📝 Checking form fields existence:');
-                        console.log('eTourTitleRu exists:', !!document.getElementById('eTourTitleRu'));
-                        console.log('eTourType exists:', !!document.getElementById('eTourType'));
-                        console.log('eTourPrice exists:', !!document.getElementById('eTourPrice'));
-                        console.log('eTourFullDesc exists:', !!document.getElementById('eTourFullDesc'));
-                        
-                        const tourTitleRu = document.getElementById('eTourTitleRu');
+                        // Заполняем поля ОСНОВНОЙ формы tourForm
+                        const tourTitleRu = document.getElementById('tourTitleRu');
                         if (tourTitleRu) {
                             tourTitleRu.value = title.ru || '';
-                            console.log('✅ Loaded edit title RU:', title.ru, '-> field value:', tourTitleRu.value);
-                        } else {
-                            console.error('❌ Element eTourTitleRu not found');
+                            console.log('✅ Loaded title RU:', title.ru);
                         }
-                        const tourTitleEn = document.getElementById('eTourTitleEn');
+                        
+                        const tourTitleEn = document.getElementById('tourTitleEn');
                         if (tourTitleEn) {
                             tourTitleEn.value = title.en || '';
-                            console.log('✅ Loaded edit title EN:', title.en, '-> field value:', tourTitleEn.value);
-                        } else {
-                            console.error('❌ Element eTourTitleEn not found');
+                            console.log('✅ Loaded title EN:', title.en);
                         }
-                        const tourDescRu = document.getElementById('eTourFullDesc');
+                        
+                        const tourDescRu = document.getElementById('tourDescRu');
                         if (tourDescRu) {
                             tourDescRu.value = description.ru || '';
-                            console.log('✅ Loaded edit description RU');
-                        } else {
-                            console.error('❌ Element eTourFullDesc not found');
+                            console.log('✅ Loaded description RU');
                         }
-                        // Описание EN не выводится в форме редактирования, только в создании
-                        const tourCategory = document.getElementById('eTourCategoryId');
+                        
+                        const tourDescEn = document.getElementById('tourDescEn');
+                        if (tourDescEn) {
+                            tourDescEn.value = description.en || '';
+                            console.log('✅ Loaded description EN');
+                        }
+                        
+                        const tourType = document.getElementById('tourType');
+                        if (tourType) {
+                            tourType.value = tour.format || tour.tourType || '';
+                            console.log('✅ Loaded tour type:', tour.format || tour.tourType);
+                        }
+                        
+                        const tourCategory = document.getElementById('tourCategory');
                         if (tourCategory) {
                             tourCategory.value = tour.categoryId || '';
-                            console.log('✅ Loaded edit category:', tour.categoryId);
-                        } else {
-                            console.error('❌ Element eTourCategoryId not found');
+                            console.log('✅ Loaded category:', tour.categoryId);
                         }
-                        const tourCountry = document.getElementById('eTourCountry');
+                        
+                        const tourBlockId = document.getElementById('tourBlockId');
+                        if (tourBlockId) {
+                            tourBlockId.value = tour.tourBlockId || '';
+                            console.log('✅ Loaded tour block:', tour.tourBlockId);
+                        }
+                        
+                        const tourCountry = document.getElementById('tourCountry');
                         if (tourCountry) {
                             tourCountry.value = tour.country || '';
-                            console.log('✅ Loaded edit country:', tour.country, '-> field value:', tourCountry.value);
-                        } else {
-                            console.error('❌ Element eTourCountry not found');
+                            console.log('✅ Loaded country:', tour.country);
                         }
-                        const tourCity = document.getElementById('eTourCity');
+                        
+                        const tourCity = document.getElementById('tourCity');
                         if (tourCity) {
                             tourCity.value = tour.city || '';
-                            console.log('✅ Loaded edit city:', tour.city, '-> field value:', tourCity.value);
-                        } else {
-                            console.error('❌ Element eTourCity not found');
+                            console.log('✅ Loaded city:', tour.city);
                         }
-                        const tourDurationDays = document.getElementById('eTourDurationDays');
+                        
+                        const tourDurationDays = document.getElementById('tourDurationDays');
                         if (tourDurationDays) {
                             tourDurationDays.value = tour.durationDays || '';
-                            console.log('✅ Loaded edit duration days:', tour.durationDays, '-> field value:', tourDurationDays.value);
-                        } else {
-                            console.error('❌ Element eTourDurationDays not found');
+                            console.log('✅ Loaded duration days:', tour.durationDays);
                         }
-                        const tourPrice = document.getElementById('eTourPrice');
+                        
+                        const tourPrice = document.getElementById('tourPrice');
                         if (tourPrice) {
                             tourPrice.value = tour.price || '';
-                            console.log('✅ Loaded edit price:', tour.price, '-> field value:', tourPrice.value);
-                        } else {
-                            console.error('❌ Element eTourPrice not found');
+                            console.log('✅ Loaded price:', tour.price);
+                        }
+                        
+                        const tourPriceType = document.getElementById('tourPriceType');
+                        if (tourPriceType) {
+                            tourPriceType.value = tour.priceType || 'за человека';
+                            console.log('✅ Loaded price type:', tour.priceType);
+                        }
+                        
+                        const tourPickupInfo = document.getElementById('tourPickupInfo');
+                        if (tourPickupInfo) {
+                            tourPickupInfo.value = tour.pickupInfo || '';
+                            console.log('✅ Loaded pickup info:', tour.pickupInfo);
+                        }
+                        
+                        const tourRating = document.getElementById('tourRating');
+                        if (tourRating) {
+                            tourRating.value = tour.rating || '';
+                            console.log('✅ Loaded rating:', tour.rating);
+                        }
+                        
+                        const tourReviewsCount = document.getElementById('tourReviewsCount');
+                        if (tourReviewsCount) {
+                            tourReviewsCount.value = tour.reviewsCount || '';
+                            console.log('✅ Loaded reviews count:', tour.reviewsCount);
+                        }
+                        
+                        const tourMinPeople = document.getElementById('tourMinPeople');
+                        if (tourMinPeople) {
+                            tourMinPeople.value = tour.minPeople || '';
+                            console.log('✅ Loaded min people:', tour.minPeople);
+                        }
+                        
+                        const tourMaxPeople = document.getElementById('tourMaxPeople');
+                        if (tourMaxPeople) {
+                            tourMaxPeople.value = tour.maxPeople || '';
+                            console.log('✅ Loaded max people:', tour.maxPeople);
+                        }
+                        
+                        // Заполняем сложные поля (массивы)
+                        if (tour.highlights) {
+                            try {
+                                const highlights = typeof tour.highlights === 'string' ? JSON.parse(tour.highlights) : tour.highlights;
+                                window.tourHighlights = highlights || [];
+                                updateHighlightsList();
+                            } catch (e) {
+                                console.warn('Failed to parse highlights:', e);
+                            }
+                        }
+                        
+                        if (tour.itinerary) {
+                            try {
+                                const itinerary = typeof tour.itinerary === 'string' ? JSON.parse(tour.itinerary) : tour.itinerary;
+                                window.tourItinerary = itinerary || [];
+                                updateItineraryList();
+                            } catch (e) {
+                                console.warn('Failed to parse itinerary:', e);
+                            }
+                        }
+                        
+                        if (tour.startTimeOptions) {
+                            try {
+                                const startTimes = typeof tour.startTimeOptions === 'string' ? JSON.parse(tour.startTimeOptions) : tour.startTimeOptions;
+                                window.tourStartTimes = startTimes || [];
+                                updateStartTimesList();
+                            } catch (e) {
+                                console.warn('Failed to parse start times:', e);
+                            }
+                        }
+                        
+                        if (tour.languages) {
+                            try {
+                                const languages = typeof tour.languages === 'string' ? JSON.parse(tour.languages) : tour.languages;
+                                window.tourLanguages = languages || [];
+                                updateSelectedLanguages();
+                            } catch (e) {
+                                console.warn('Failed to parse languages:', e);
+                            }
+                        }
+                        
+                        // Обновляем месяцы и дни доступности
+                        if (tour.availableMonths) {
+                            try {
+                                const months = typeof tour.availableMonths === 'string' ? JSON.parse(tour.availableMonths) : tour.availableMonths;
+                                months.forEach(month => {
+                                    const checkbox = document.getElementById(`month-${month}`);
+                                    if (checkbox) checkbox.checked = true;
+                                });
+                            } catch (e) {
+                                console.warn('Failed to parse available months:', e);
+                            }
+                        }
+                        
+                        if (tour.availableDays) {
+                            try {
+                                const days = typeof tour.availableDays === 'string' ? JSON.parse(tour.availableDays) : tour.availableDays;
+                                days.forEach(day => {
+                                    const checkbox = document.getElementById(`day-${day}`);
+                                    if (checkbox) checkbox.checked = true;
+                                });
+                            } catch (e) {
+                                console.warn('Failed to parse available days:', e);
+                            }
                         }
                         const tourPriceType = document.getElementById('eTourPriceType');
                         if (tourPriceType) {
@@ -3749,35 +3848,295 @@
             }
         }
         
+        // Новая функция сохранения для основной формы tourForm
+        function saveTourForm() {
+            // Получаем ID тура из скрытого поля
+            const tourId = document.getElementById('tour-id').value;
+            const isEditing = tourId && tourId.trim() !== '';
+            
+            console.log('💾 Saving tour:', { tourId, isEditing });
+            
+            // Валидация обязательных полей
+            const titleRu = document.getElementById('tourTitleRu').value;
+            const titleEn = document.getElementById('tourTitleEn').value;
+            const category = document.getElementById('tourCategory').value;
+            const price = document.getElementById('tourPrice').value;
+            const durationDays = document.getElementById('tourDurationDays').value;
+            
+            if (!titleRu || titleRu.trim() === '') {
+                alert('Пожалуйста, введите название тура на русском языке');
+                return;
+            }
+            
+            if (!category || category === '') {
+                alert('Пожалуйста, выберите категорию тура');
+                return;
+            }
+            
+            if (!price || isNaN(parseFloat(price))) {
+                alert('Пожалуйста, введите корректную цену тура');
+                return;
+            }
+            
+            if (!durationDays || isNaN(parseInt(durationDays))) {
+                alert('Пожалуйста, введите длительность тура в днях');
+                return;
+            }
+            
+            // Формируем данные для отправки
+            const formData = {
+                title: JSON.stringify({
+                    ru: titleRu,
+                    en: titleEn || titleRu
+                }),
+                description: JSON.stringify({
+                    ru: document.getElementById('tourDescRu').value || '',
+                    en: document.getElementById('tourDescEn').value || ''
+                }),
+                price: parseFloat(price),
+                priceType: document.getElementById('tourPriceType').value || 'за человека',
+                categoryId: parseInt(category),
+                tourBlockId: document.getElementById('tourBlockId').value ? parseInt(document.getElementById('tourBlockId').value) : null,
+                country: document.getElementById('tourCountry').value || '',
+                city: document.getElementById('tourCity').value || '',
+                durationDays: parseInt(durationDays),
+                duration: durationDays.toString(),
+                format: document.getElementById('tourType').value || '',
+                tourType: document.getElementById('tourType').value || '',
+                pickupInfo: document.getElementById('tourPickupInfo').value || '',
+                rating: document.getElementById('tourRating').value ? parseFloat(document.getElementById('tourRating').value) : null,
+                reviewsCount: document.getElementById('tourReviewsCount').value ? parseInt(document.getElementById('tourReviewsCount').value) : null,
+                minPeople: document.getElementById('tourMinPeople').value ? parseInt(document.getElementById('tourMinPeople').value) : null,
+                maxPeople: document.getElementById('tourMaxPeople').value ? parseInt(document.getElementById('tourMaxPeople').value) : null,
+                highlights: JSON.stringify(window.tourHighlights || []),
+                itinerary: JSON.stringify(window.tourItinerary || []),
+                startTimeOptions: JSON.stringify(window.tourStartTimes || []),
+                languages: JSON.stringify(window.tourLanguages || ['Русский']),
+                availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
+                availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
+                isActive: true,
+                isFeatured: false
+            };
+            
+            console.log('📝 Form data:', formData);
+            
+            // Определяем URL и метод
+            const url = isEditing ? `${getApiUrl()}/tours/${tourId}` : `${getApiUrl()}/tours`;
+            const method = isEditing ? 'PUT' : 'POST';
+            
+            console.log('🚀 Request:', { url, method, isEditing });
+            
+            // Отправляем данные
+            fetch(url, {
+                method: method,
+                headers: getAuthHeaders(),
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('📬 Server response:', data);
+                if (data.success) {
+                    const message = isEditing ? '✅ Тур успешно обновлён!' : '✅ Тур успешно создан!';
+                    alert(message);
+                    
+                    // Закрываем модальное окно и обновляем список
+                    closeTourModal();
+                    loadTours();
+                } else {
+                    const action = isEditing ? 'обновлении' : 'создании';
+                    alert(`❌ Ошибка при ${action} тура: ` + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('❌ Error saving tour:', err);
+                alert('❌ Ошибка соединения с сервером');
+            });
+        }
+        
         function closeTourModal() {
             document.getElementById('tourModal').classList.remove('active');
             document.getElementById('tourForm').reset();
             
-            // НЕ СБРАСЫВАЕМ currentTourId чтобы избежать проблем с редактированием
-            console.log('🔒 Closing modal - keeping currentTourId for stability');
-            // currentTourId = null; // ЗАКОММЕНТИРОВАНО!
+            // Очищаем скрытое поле ID и переменные
+            document.getElementById('tour-id').value = '';
+            currentTourId = null;
+            window.currentTourId = null;
             
             // Очищаем все дополнительные данные
             window.tourHighlights = [];
             window.tourItinerary = [];
             window.tourGalleryImages = [];
             window.editStartTimes = [];
+            window.tourStartTimes = [];
+            window.tourLanguages = [];
             
             // Обновляем списки
             updateHighlightsList();
             updateItineraryList();
             updateGalleryImagesList();
             updateEditStartTimesList();
+            updateStartTimesList();
+            updateSelectedLanguages();
             
             // Очищаем чекбоксы доступности
             for (let i = 1; i <= 12; i++) {
                 const checkbox = document.getElementById(`month-${i}`);
                 if (checkbox) checkbox.checked = false;
             }
-            for (let i = 1; i <= 31; i++) {
+            for (let i = 0; i <= 6; i++) {
                 const checkbox = document.getElementById(`day-${i}`);
                 if (checkbox) checkbox.checked = false;
             }
+            
+            console.log('🔒 Modal closed and form reset');
+        }
+        
+        // Вспомогательные функции для работы с чекбоксами и списками
+        function getSelectedCheckboxValues(prefix) {
+            const checkboxes = document.querySelectorAll(`input[id^="${prefix}"]:checked`);
+            return Array.from(checkboxes).map(cb => cb.id.replace(prefix, ''));
+        }
+        
+        function updateHighlightsList() {
+            const container = document.getElementById('highlightsList');
+            if (!container) return;
+            
+            const highlights = window.tourHighlights || [];
+            container.innerHTML = highlights.map((highlight, index) => `
+                <div class="flex items-center justify-between bg-gray-50 p-3 rounded">
+                    <span>${highlight}</span>
+                    <button type="button" onclick="removeHighlight(${index})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function updateItineraryList() {
+            const container = document.getElementById('itineraryList');
+            if (!container) return;
+            
+            const itinerary = window.tourItinerary || [];
+            container.innerHTML = itinerary.map((item, index) => `
+                <div class="bg-gray-50 p-3 rounded">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium">${item.time} - ${item.title}</span>
+                        <button type="button" onclick="removeItinerary(${index})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-600">${item.description}</p>
+                </div>
+            `).join('');
+        }
+        
+        function updateStartTimesList() {
+            const container = document.getElementById('startTimesList');
+            if (!container) return;
+            
+            const startTimes = window.tourStartTimes || [];
+            container.innerHTML = startTimes.map((time, index) => `
+                <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
+                    <span>${time}</span>
+                    <button type="button" onclick="removeStartTime(${index})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function updateSelectedLanguages() {
+            const container = document.getElementById('selectedLanguages');
+            if (!container) return;
+            
+            const languages = window.tourLanguages || [];
+            if (languages.length === 0) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные языки появятся здесь</small>';
+                return;
+            }
+            
+            container.innerHTML = languages.map((language, index) => `
+                <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
+                    <span>${language}</span>
+                    <button type="button" onclick="removeLanguage(${index})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        // Функции для работы с динамическими списками
+        function addHighlight() {
+            const input = document.getElementById('newHighlight');
+            const value = input.value.trim();
+            if (value) {
+                window.tourHighlights = window.tourHighlights || [];
+                window.tourHighlights.push(value);
+                input.value = '';
+                updateHighlightsList();
+            }
+        }
+        
+        function removeHighlight(index) {
+            window.tourHighlights.splice(index, 1);
+            updateHighlightsList();
+        }
+        
+        function addItinerary() {
+            const time = document.getElementById('newItineraryTime').value;
+            const title = document.getElementById('newItineraryTitle').value.trim();
+            const description = document.getElementById('newItineraryDesc').value.trim();
+            
+            if (time && title) {
+                window.tourItinerary = window.tourItinerary || [];
+                window.tourItinerary.push({ time, title, description });
+                
+                // Очищаем поля
+                document.getElementById('newItineraryTime').value = '';
+                document.getElementById('newItineraryTitle').value = '';
+                document.getElementById('newItineraryDesc').value = '';
+                
+                updateItineraryList();
+            }
+        }
+        
+        function removeItinerary(index) {
+            window.tourItinerary.splice(index, 1);
+            updateItineraryList();
+        }
+        
+        function addStartTime() {
+            const input = document.getElementById('newStartTime');
+            const value = input.value;
+            if (value) {
+                window.tourStartTimes = window.tourStartTimes || [];
+                window.tourStartTimes.push(value);
+                input.value = '';
+                updateStartTimesList();
+            }
+        }
+        
+        function removeStartTime(index) {
+            window.tourStartTimes.splice(index, 1);
+            updateStartTimesList();
+        }
+        
+        function addLanguageToTour() {
+            const select = document.getElementById('availableLanguages');
+            const language = select.value;
+            if (language) {
+                window.tourLanguages = window.tourLanguages || [];
+                if (!window.tourLanguages.includes(language)) {
+                    window.tourLanguages.push(language);
+                    updateSelectedLanguages();
+                }
+                select.value = '';
+            }
+        }
+        
+        function removeLanguage(index) {
+            window.tourLanguages.splice(index, 1);
+            updateSelectedLanguages();
         }
         
         function loadHotelsForCheckboxes() {
@@ -4562,8 +4921,8 @@
         if (tourFormElement) {
             tourFormElement.addEventListener('submit', function(e) {
                 e.preventDefault();
-                console.log('🔥 OLD tourForm submit - redirecting to saveEnhancedTour');
-                saveEnhancedTour(); // Используем единую функцию для всех случаев
+                console.log('🔥 tourForm submit - calling saveTourForm');
+                saveTourForm(); // Новая функция для основной формы
             });
         }
         
