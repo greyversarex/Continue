@@ -3330,7 +3330,8 @@
                         }
                         // Обработка языков для multiple select
                         const languageSelect = document.getElementById('tourLanguages');
-                        if (languageSelect) {
+                        if (languageSelect && languageSelect.options) {
+                            console.log('✅ Found language select with', languageSelect.options.length, 'options');
                             // Очищаем все выбранные опции
                             Array.from(languageSelect.options).forEach(option => option.selected = false);
                             
@@ -3340,9 +3341,12 @@
                                 Array.from(languageSelect.options).forEach(option => {
                                     if (selectedLanguages.includes(option.value)) {
                                         option.selected = true;
+                                        console.log('✅ Selected language:', option.value);
                                     }
                                 });
                             }
+                        } else {
+                            console.error('❌ Element tourLanguages not found or has no options');
                         }
                         
                         // Обработка времен начала тура
@@ -3359,8 +3363,9 @@
                         }
                         try {
                             updateEditStartTimesList();
+                            console.log('✅ Updated start times list');
                         } catch (e) {
-                            console.warn('Failed to update start times list:', e);
+                            console.error('❌ Failed to update start times list:', e);
                         }
                         
                         // Загрузка новых полей
@@ -3402,6 +3407,7 @@
                                 
                                 // Сначала очищаем все чекбоксы
                                 const includesCheckboxes = document.querySelectorAll('#includesOptions input[type="checkbox"]');
+                                console.log('✅ Found', includesCheckboxes.length, 'includes checkboxes');
                                 includesCheckboxes.forEach(checkbox => checkbox.checked = false);
                                 
                                 // Затем отмечаем нужные
@@ -3411,6 +3417,8 @@
                                         if (checkbox) {
                                             checkbox.checked = true;
                                             console.log('✅ Checked include:', item);
+                                        } else {
+                                            console.warn('❌ Include checkbox not found for:', item);
                                         }
                                     });
                                 }
@@ -3431,8 +3439,9 @@
                         }
                         try {
                             updateHighlightsList();
+                            console.log('✅ Updated highlights list');
                         } catch (e) {
-                            console.warn('Failed to update highlights list:', e);
+                            console.error('❌ Failed to update highlights list:', e);
                         }
                         
                         // Загрузка маршрута (itinerary)
@@ -3448,8 +3457,9 @@
                         }
                         try {
                             updateItineraryList();
+                            console.log('✅ Updated itinerary list');
                         } catch (e) {
-                            console.warn('Failed to update itinerary list:', e);
+                            console.error('❌ Failed to update itinerary list:', e);
                         }
                         
                         // Загрузка доступности по месяцам
@@ -3518,8 +3528,9 @@
                         }
                         try {
                             updateGalleryImagesList();
+                            console.log('✅ Updated gallery images list');
                         } catch (e) {
-                            console.warn('Failed to update gallery images list:', e);
+                            console.error('❌ Failed to update gallery images list:', e);
                         }
                         
                         console.log('✅ Tour data loaded successfully for editing:', tour.id);
