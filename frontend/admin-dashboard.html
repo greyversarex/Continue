@@ -822,6 +822,16 @@
                                     </div>
                                     
                                     <div class="form-group">
+                                        <label class="form-label">Тип тура</label>
+                                        <select class="form-input" id="eTourType">
+                                            <option value="">Выберите тип тура</option>
+                                            <option value="Персональный">Персональный</option>
+                                            <option value="Групповой персональный">Групповой персональный</option>
+                                            <option value="Групповой общий">Групповой общий</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
                                         <label class="form-label">Сложность</label>
                                         <select class="form-input" id="eTourDifficulty">
                                             <option value="">Выберите сложность</option>
@@ -869,6 +879,21 @@
                                         <input type="url" class="form-input" id="eTourMainImage" placeholder="https://example.com/image.jpg">
                                     </div>
                                     
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Галерея изображений тура</label>
+                                        <div class="flex gap-2 mb-3">
+                                            <input type="url" class="form-input flex-1" id="eNewImageUrl" placeholder="https://example.com/image.jpg">
+                                            <button type="button" onclick="addEditGalleryImage()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                                                <i class="fas fa-plus"></i>
+                                                Добавить
+                                            </button>
+                                        </div>
+                                        <div id="eGalleryImagesList" class="space-y-2">
+                                            <!-- Загруженные изображения для редактирования появятся здесь -->
+                                        </div>
+                                        <small class="text-gray-500">Добавьте URL изображений для галереи тура</small>
+                                    </div>
+                                    
                                     <!-- Block Assignment -->
                                     <div class="lg:col-span-2">
                                         <h3 class="text-lg font-semibold mb-4 mt-6">Размещение в блоке</h3>
@@ -899,6 +924,36 @@
                                         <label class="form-label">Информация о приёме/сборе</label>
                                         <input type="text" class="form-input" id="eTourPickupInfo" placeholder="Например: Приём включён, Место сбора: отель">
                                         <small class="text-gray-500">Укажите информацию о приёме/месте сбора для туристов</small>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Языки тура</label>
+                                        <div class="flex gap-2 mb-2">
+                                            <select class="form-input flex-1" id="eAvailableLanguages">
+                                                <option value="">Выберите язык для добавления</option>
+                                                <option value="Русский">Русский</option>
+                                                <option value="Английский">Английский</option>
+                                                <option value="Таджикский">Таджикский</option>
+                                                <option value="Узбекский">Узбекский</option>
+                                                <option value="Киргизский">Киргизский</option>
+                                                <option value="Казахский">Казахский</option>
+                                                <option value="Туркменский">Туркменский</option>
+                                                <option value="Персидский">Персидский</option>
+                                                <option value="Арабский">Арабский</option>
+                                                <option value="Китайский">Китайский</option>
+                                                <option value="Французский">Французский</option>
+                                                <option value="Немецкий">Немецкий</option>
+                                                <option value="Испанский">Испанский</option>
+                                                <option value="Итальянский">Итальянский</option>
+                                            </select>
+                                            <button type="button" onclick="addEditLanguageToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div id="eSelectedLanguages" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                                            <small class="text-gray-500">Выбранные языки появятся здесь</small>
+                                        </div>
+                                        <input type="hidden" id="eTourLanguages">
                                     </div>
                                     
                                     <div class="form-group lg:col-span-2">
@@ -2949,6 +3004,107 @@
             updateEditStartTimesList();
         }
 
+        // Функции для работы с языками в форме редактирования
+        function addEditLanguageToTour() {
+            const select = document.getElementById('eAvailableLanguages');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                const language = selectedOption.value;
+                
+                // Получаем текущие языки
+                const hiddenField = document.getElementById('eTourLanguages');
+                let currentLanguages = hiddenField.value ? hiddenField.value.split(', ') : [];
+                
+                // Проверяем, не добавлен ли уже
+                if (currentLanguages.includes(language)) {
+                    alert('Этот язык уже добавлен');
+                    return;
+                }
+                
+                // Добавляем новый язык
+                currentLanguages.push(language);
+                hiddenField.value = currentLanguages.join(', ');
+                
+                // Обновляем отображение
+                updateEditSelectedLanguages();
+                
+                // Сбрасываем выбор
+                select.selectedIndex = 0;
+            }
+        }
+
+        function updateEditSelectedLanguages() {
+            const hiddenField = document.getElementById('eTourLanguages');
+            const container = document.getElementById('eSelectedLanguages');
+            
+            if (!container) return;
+            
+            const languages = hiddenField.value ? hiddenField.value.split(', ') : [];
+            
+            if (languages.length === 0 || (languages.length === 1 && languages[0] === '')) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные языки появятся здесь</small>';
+                return;
+            }
+            
+            container.innerHTML = languages.map((language, index) => `
+                <div class="flex items-center justify-between bg-blue-100 text-blue-800 px-2 py-1 rounded mb-1">
+                    <span>${language}</span>
+                    <button type="button" onclick="removeEditLanguage(${index})" class="text-red-500 hover:text-red-700 ml-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function removeEditLanguage(index) {
+            const hiddenField = document.getElementById('eTourLanguages');
+            let languages = hiddenField.value ? hiddenField.value.split(', ') : [];
+            languages.splice(index, 1);
+            hiddenField.value = languages.join(', ');
+            updateEditSelectedLanguages();
+        }
+
+        // Функции для работы с галереей в форме редактирования
+        function addEditGalleryImage() {
+            const input = document.getElementById('eNewImageUrl');
+            const imageUrl = input.value.trim();
+            
+            if (imageUrl && !window.tourGalleryImages.includes(imageUrl)) {
+                window.tourGalleryImages.push(imageUrl);
+                updateEditGalleryImagesList();
+                input.value = '';
+            } else if (window.tourGalleryImages.includes(imageUrl)) {
+                alert('Это изображение уже добавлено');
+            } else {
+                alert('Пожалуйста, введите корректный URL изображения');
+            }
+        }
+
+        function updateEditGalleryImagesList() {
+            const container = document.getElementById('eGalleryImagesList');
+            if (!container) {
+                console.warn('eGalleryImagesList container not found');
+                return;
+            }
+            container.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
+                <div class="flex items-center gap-3 p-3 bg-gray-50 rounded border">
+                    <img src="${imageUrl}" alt="Tour image" class="w-16 h-16 object-cover rounded">
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-700 break-all">${imageUrl}</p>
+                    </div>
+                    <button type="button" onclick="removeEditGalleryImage(${index})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('') || '<p class="text-gray-500 text-sm">Нет изображений в галерее</p>';
+        }
+
+        function removeEditGalleryImage(index) {
+            window.tourGalleryImages.splice(index, 1);
+            updateEditGalleryImagesList();
+        }
+
         function updateEditStartTimesList() {
             const container = document.getElementById('editStartTimesList');
             if (!container) {
@@ -3238,15 +3394,15 @@
                             description = { ru: tour.description || '', en: '' };
                         }
                         
-                        // Загрузка типа тура (format)
-                        const tourTypeElement = document.getElementById('tourType');
+                        // Загрузка типа тура (format) - используем форму редактирования
+                        const tourTypeElement = document.getElementById('eTourType');
                         if (tourTypeElement) {
                             const tourTypeValue = tour.format || tour.tourType || '';
                             tourTypeElement.value = tourTypeValue;
-                            console.log('✅ Loaded tour type:', tourTypeValue);
-                            console.log('📋 Available tour type options:', Array.from(tourTypeElement.options).map(o => o.value));
+                            console.log('✅ Loaded edit tour type:', tourTypeValue);
+                            console.log('📋 Available edit tour type options:', Array.from(tourTypeElement.options).map(o => o.value));
                         } else {
-                            console.error('❌ Element tourType not found');
+                            console.error('❌ Element eTourType not found');
                         }
                         const tourTitleRu = document.getElementById('tourTitleRu');
                         if (tourTitleRu) {
@@ -3337,29 +3493,29 @@
                                 languages = tour.languages;
                             }
                         }
-                        // Обработка языков - заполняем скрытое поле и показываем выбранные языки
-                        const languageHiddenField = document.getElementById('tourLanguages');
+                        // Обработка языков - используем форму редактирования
+                        const languageHiddenField = document.getElementById('eTourLanguages');
                         if (languageHiddenField) {
                             languageHiddenField.value = languages;
-                            console.log('✅ Set tourLanguages hidden field:', languages);
+                            console.log('✅ Set eTourLanguages hidden field:', languages);
                             
-                            // Показываем выбранные языки в контейнере
-                            const selectedLanguagesContainer = document.getElementById('selectedLanguages');
+                            // Показываем выбранные языки в контейнере редактирования
+                            const selectedLanguagesContainer = document.getElementById('eSelectedLanguages');
                             if (selectedLanguagesContainer) {
                                 if (languages) {
                                     const languagesList = languages.split(', ').filter(lang => lang.trim());
                                     selectedLanguagesContainer.innerHTML = languagesList.map(lang => 
                                         `<span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1">${lang}</span>`
                                     ).join(' ');
-                                    console.log('✅ Updated selected languages display with:', languagesList);
+                                    console.log('✅ Updated edit selected languages display with:', languagesList);
                                 } else {
                                     selectedLanguagesContainer.innerHTML = '<small class="text-gray-500">Языки не выбраны</small>';
                                 }
                             } else {
-                                console.error('❌ Element selectedLanguages container not found');
+                                console.error('❌ Element eSelectedLanguages container not found');
                             }
                         } else {
-                            console.error('❌ Element tourLanguages not found');
+                            console.error('❌ Element eTourLanguages not found');
                         }
                         
                         // Обработка времен начала тура
@@ -3548,22 +3704,22 @@
                             }
                         }
                         try {
-                            updateGalleryImagesList();
-                            console.log('✅ Updated gallery images list with images:', window.tourGalleryImages);
+                            updateEditGalleryImagesList();
+                            console.log('✅ Updated edit gallery images list with images:', window.tourGalleryImages);
                             
-                            // Проверяем что галерея видима в форме
-                            const galleryContainer = document.getElementById('galleryImagesList');
+                            // Проверяем что галерея видима в форме редактирования
+                            const galleryContainer = document.getElementById('eGalleryImagesList');
                             if (galleryContainer) {
                                 if (window.tourGalleryImages && window.tourGalleryImages.length > 0) {
-                                    console.log('✅ Gallery container has', window.tourGalleryImages.length, 'images');
+                                    console.log('✅ Edit gallery container has', window.tourGalleryImages.length, 'images');
                                 } else {
-                                    console.log('✅ Gallery container is empty (no images to show)');
+                                    console.log('✅ Edit gallery container is empty (no images to show)');
                                 }
                             } else {
-                                console.error('❌ Element galleryImagesList container not found');
+                                console.error('❌ Element eGalleryImagesList container not found');
                             }
                         } catch (e) {
-                            console.error('❌ Failed to update gallery images list:', e);
+                            console.error('❌ Failed to update edit gallery images list:', e);
                         }
                         
                         console.log('✅ Tour data loaded successfully for editing:', tour.id);
