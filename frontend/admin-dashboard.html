@@ -5434,8 +5434,8 @@
             console.log('📝 Sending tour data:', formData);
 
             // Определяем режим: создание или редактирование
-            const isEditing = currentTourId && currentTourId !== null;
-            const url = isEditing ? `${getApiUrl()}/tours/${currentTourId}` : `${getApiUrl()}/tours`;
+            const isEditing = window.currentTourId && window.currentTourId !== null;
+            const url = isEditing ? `${getApiUrl()}/tours/${window.currentTourId}` : `${getApiUrl()}/tours`;
             const method = isEditing ? 'PUT' : 'POST';
             
             console.log('🚀 Saving enhanced tour:', {

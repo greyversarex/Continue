@@ -33,25 +33,37 @@ export class TourController {
       // Parse JSON fields for response with safe parsing
       const parsedTours = limitedTours.map((tour: any) => {
         try {
+          // ОПТИМИЗАЦИЯ: Удаляем большие изображения из списка туров для производительности
+          const tourWithoutImages = { ...tour };
+          delete tourWithoutImages.mainImage;
+          delete tourWithoutImages.images;
+          
           return {
-            ...tour,
+            ...tourWithoutImages,
             title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
             description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
             category: tour.category ? {
               ...tour.category,
               name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
-            } : null
+            } : null,
+            // Добавляем флаг что изображения есть, но не передаем сами изображения
+            hasImages: !!(tour.mainImage || tour.images)
           };
         } catch (jsonError) {
           console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
+          const tourWithoutImages = { ...tour };
+          delete tourWithoutImages.mainImage;
+          delete tourWithoutImages.images;
+          
           return {
-            ...tour,
+            ...tourWithoutImages,
             title: { ru: tour.title || '', en: tour.title || '' },
             description: { ru: tour.description || '', en: tour.description || '' },
             category: tour.category ? {
               ...tour.category,
               name: { ru: tour.category.name || '', en: tour.category.name || '' }
-            } : null
+            } : null,
+            hasImages: !!(tour.mainImage || tour.images)
           };
         }
       });
