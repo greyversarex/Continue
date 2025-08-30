@@ -2543,8 +2543,14 @@
         let selectedCategories = [];
         let selectedLanguages = [];
         
-        // Инициализация глобальных переменных для турLanguages
+        // Инициализация всех глобальных переменных
         window.tourLanguages = window.tourLanguages || [];
+        window.tourHighlights = window.tourHighlights || [];
+        window.tourItinerary = window.tourItinerary || [];
+        window.tourStartTimes = window.tourStartTimes || [];
+        window.editStartTimes = window.editStartTimes || [];
+        window.tourGalleryImages = window.tourGalleryImages || [];
+        window.uploadedTourImages = window.uploadedTourImages || [];
 
         // Load categories from API
         function loadCategories() {
@@ -2891,6 +2897,7 @@
             
             // НЕ перенаправляем на saveEnhancedTour! Продолжаем с правильной логикой
             
+            const titleRu = document.getElementById('tourTitleRu').value;
             if (!titleRu || titleRu.trim() === '') {
                 alert('Пожалуйста, введите название тура на русском языке');
                 return;
