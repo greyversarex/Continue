@@ -1365,30 +1365,34 @@
             
             // Add days of current month
             const today = new Date();
+            today.setHours(0, 0, 0, 0); // Reset time to start of day for accurate comparison
             const selectedDate = document.getElementById('tour-date').value;
             
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayDate = new Date(currentCalendarYear, currentCalendarMonth, day);
+                dayDate.setHours(0, 0, 0, 0); // Reset time for accurate comparison
                 const dateString = dayDate.toISOString().split('T')[0];
                 
                 const dayDiv = document.createElement('div');
                 dayDiv.textContent = day;
-                dayDiv.className = 'w-8 h-8 flex items-center justify-center text-sm rounded cursor-pointer';
+                dayDiv.className = 'w-8 h-8 flex items-center justify-center text-sm rounded';
                 
                 // Check if this date is in the past
                 const isPast = dayDate < today;
                 
                 if (isPast) {
-                    // Past dates - gray and not clickable
-                    dayDiv.className += ' text-gray-300 cursor-not-allowed';
+                    // Past dates - gray and not clickable with stronger gray styling
+                    dayDiv.className += ' text-gray-400 bg-gray-100 cursor-not-allowed opacity-50';
+                    dayDiv.style.pointerEvents = 'none'; // Completely disable clicking
                 } else {
                     // Future dates - clickable
-                    dayDiv.className += ' hover:bg-blue-100 text-gray-900';
+                    dayDiv.className += ' hover:bg-blue-100 text-gray-900 cursor-pointer';
                     dayDiv.onclick = () => selectDate(dateString, day, currentCalendarMonth + 1, currentCalendarYear);
                 }
                 
-                // Selected date
-                if (selectedDate === dateString) {
+                // Selected date - override other styles if selected
+                if (selectedDate === dateString && !isPast) {
+                    dayDiv.className = dayDiv.className.replace('hover:bg-blue-100 text-gray-900', '');
                     dayDiv.className += ' bg-blue-600 text-white';
                 }
                 

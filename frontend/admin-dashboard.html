@@ -3285,6 +3285,90 @@
                         }
                         // Поле tourIncludes удалено из формы
                         
+                        // Загрузка основных моментов (highlights)
+                        window.tourHighlights = [];
+                        if (tour.highlights) {
+                            try {
+                                window.tourHighlights = typeof tour.highlights === 'string' ? JSON.parse(tour.highlights) : tour.highlights;
+                            } catch (e) {
+                                console.warn('Failed to parse highlights:', e);
+                                window.tourHighlights = [];
+                            }
+                        }
+                        updateHighlightsList();
+                        
+                        // Загрузка маршрута (itinerary)
+                        window.tourItinerary = [];
+                        if (tour.itinerary) {
+                            try {
+                                window.tourItinerary = typeof tour.itinerary === 'string' ? JSON.parse(tour.itinerary) : tour.itinerary;
+                            } catch (e) {
+                                console.warn('Failed to parse itinerary:', e);
+                                window.tourItinerary = [];
+                            }
+                        }
+                        updateItineraryList();
+                        
+                        // Загрузка доступности по месяцам
+                        if (tour.availableMonths) {
+                            try {
+                                const availableMonths = typeof tour.availableMonths === 'string' ? JSON.parse(tour.availableMonths) : tour.availableMonths;
+                                // Снимаем выделение со всех месяцев
+                                for (let i = 1; i <= 12; i++) {
+                                    const checkbox = document.getElementById(`month-${i}`);
+                                    if (checkbox) checkbox.checked = false;
+                                }
+                                // Выделяем нужные месяцы
+                                availableMonths.forEach(month => {
+                                    const checkbox = document.getElementById(`month-${month}`);
+                                    if (checkbox) checkbox.checked = true;
+                                });
+                            } catch (e) {
+                                console.warn('Failed to parse availableMonths:', e);
+                            }
+                        }
+                        
+                        // Загрузка доступности по дням месяца
+                        if (tour.availableDays) {
+                            try {
+                                const availableDays = typeof tour.availableDays === 'string' ? JSON.parse(tour.availableDays) : tour.availableDays;
+                                // Снимаем выделение со всех дней
+                                for (let i = 1; i <= 31; i++) {
+                                    const checkbox = document.getElementById(`day-${i}`);
+                                    if (checkbox) checkbox.checked = false;
+                                }
+                                // Выделяем нужные дни
+                                availableDays.forEach(day => {
+                                    const checkbox = document.getElementById(`day-${day}`);
+                                    if (checkbox) checkbox.checked = true;
+                                });
+                            } catch (e) {
+                                console.warn('Failed to parse availableDays:', e);
+                            }
+                        }
+                        
+                        // Загрузка турблока
+                        if (tour.tourBlockId) {
+                            const tourBlockSelect = document.getElementById('tourBlockId');
+                            if (tourBlockSelect) {
+                                tourBlockSelect.value = tour.tourBlockId;
+                            }
+                        }
+                        
+                        // Загрузка галереи изображений
+                        window.tourGalleryImages = [];
+                        if (tour.images) {
+                            try {
+                                window.tourGalleryImages = typeof tour.images === 'string' ? JSON.parse(tour.images) : tour.images;
+                            } catch (e) {
+                                console.warn('Failed to parse gallery images:', e);
+                                window.tourGalleryImages = [];
+                            }
+                        }
+                        updateGalleryImagesList();
+                        
+                        console.log('✅ Tour data loaded successfully for editing:', tour.id);
+                        
                     })
                     .catch(err => {
                         console.error('Error loading tour data:', err);
@@ -3297,6 +3381,28 @@
             document.getElementById('tourModal').classList.remove('active');
             document.getElementById('tourForm').reset();
             currentTourId = null;
+            
+            // Очищаем все дополнительные данные
+            window.tourHighlights = [];
+            window.tourItinerary = [];
+            window.tourGalleryImages = [];
+            window.editStartTimes = [];
+            
+            // Обновляем списки
+            updateHighlightsList();
+            updateItineraryList();
+            updateGalleryImagesList();
+            updateEditStartTimesList();
+            
+            // Очищаем чекбоксы доступности
+            for (let i = 1; i <= 12; i++) {
+                const checkbox = document.getElementById(`month-${i}`);
+                if (checkbox) checkbox.checked = false;
+            }
+            for (let i = 1; i <= 31; i++) {
+                const checkbox = document.getElementById(`day-${i}`);
+                if (checkbox) checkbox.checked = false;
+            }
         }
         
         function loadHotelsForCheckboxes() {
