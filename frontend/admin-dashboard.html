@@ -4362,7 +4362,7 @@
         
         // Reviews functions
         function loadReviews(filter = 'all') {
-            fetch(`${getApiUrl()}/api/reviews`, {
+            fetch(`${getApiUrl()}/reviews`, {
                 headers: getAuthHeaders()
             })
                 .then(res => res.json())
@@ -4660,7 +4660,7 @@
         }
         
         function approveReview(id) {
-            fetch(`${getApiUrl()}/api/reviews/${id}/moderate`, {
+            fetch(`${getApiUrl()}/reviews/${id}/moderate`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -4683,7 +4683,7 @@
         }
         
         function rejectReview(id) {
-            fetch(`${getApiUrl()}/api/reviews/${id}/moderate`, {
+            fetch(`${getApiUrl()}/reviews/${id}/moderate`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -4707,7 +4707,7 @@
         
         function deleteReview(id) {
             if (confirm('Вы уверены, что хотите удалить этот отзыв?')) {
-                fetch(`${getApiUrl()}/api/reviews/${id}`, {
+                fetch(`${getApiUrl()}/reviews/${id}`, {
                     method: 'DELETE',
                     headers: getAuthHeaders()
                 })
