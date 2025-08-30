@@ -2869,7 +2869,7 @@
                 highlights: JSON.stringify(window.tourHighlights || [])
             };
             
-            console.log('📝 Отправляем тур с данными:', tourData);
+            console.log('🗑️ СТАРАЯ ФУНКЦИЯ - НЕ ДОЛЖНА ИСПОЛЬЗОВАТЬСЯ:', tourData);
             
             // Отправляем на сервер
             fetch(`${getApiUrl()}/tours`, {
@@ -4493,89 +4493,15 @@
             });
         });
         
-        // Form submissions
-        document.getElementById('tourForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Check if category is selected
-            const categoryValue = document.getElementById('tourCategory').value;
-            console.log('Category field value:', categoryValue);
-            console.log('Selected categories:', selectedCategories);
-            
-            if (!categoryValue || categoryValue === '') {
-                alert('Пожалуйста, выберите категорию тура из выпадающего списка');
-                return;
-            }
-            
-            const formData = {
-                title: JSON.stringify({
-                    ru: document.getElementById('tourTitleRu').value,
-                    en: document.getElementById('tourTitleEn').value
-                }),
-                description: JSON.stringify({
-                    ru: document.getElementById('tourDescRu').value,
-                    en: document.getElementById('tourDescEn').value
-                }),
-                categoryId: parseInt(categoryValue),
-                tourBlockId: document.getElementById('tourBlockId') ? parseInt(document.getElementById('tourBlockId').value) : null,
-                format: document.getElementById('tourType').value,
-                country: document.getElementById('tourCountry').value,
-                city: document.getElementById('tourCity').value,
-                duration: '',  // Поле удалено из формы
-                durationDays: parseInt(document.getElementById('tourDurationDays').value),
-                price: document.getElementById('tourPrice').value,
-                priceType: document.getElementById('tourPriceType').value,
-                pickupInfo: document.getElementById('tourPickupInfo').value,
-                startTimeOptions: JSON.stringify(window.editStartTimes || []),
-                languages: document.getElementById('tourLanguages').value,
-                // Доступность тура
-                availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
-                availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
-                // Новые поля из формы
-                rating: parseFloat(document.getElementById('tourRating').value) || null,
-                reviewsCount: parseInt(document.getElementById('tourReviewsCount').value) || 0,
-                // difficulty field removed per user request
-                minPeople: parseInt(document.getElementById('tourMinPeople').value) || null,
-                maxPeople: parseInt(document.getElementById('tourMaxPeople').value) || null,
-                includes: JSON.stringify([]),  // Используем чекбоксы вместо текстового поля
-                // Существующие поля
-                highlights: JSON.stringify(window.tourHighlights || []),
-                itinerary: JSON.stringify(window.tourItinerary || [])
-            };
-            
-            const url = currentTourId ? 
-                `${getApiUrl()}/tours/${currentTourId}` : 
-                `${getApiUrl()}/tours`;
-            const method = currentTourId ? 'PUT' : 'POST';
-            
-            console.log('Saving tour with:', {
-                currentTourId: currentTourId,
-                url: url,
-                method: method,
-                isEditing: !!currentTourId
+        // Form submissions - ИСПОЛЬЗУЕМ ЕДИНУЮ ФУНКЦИЮ СОХРАНЕНИЯ  
+        const tourFormElement = document.getElementById('tourForm');
+        if (tourFormElement) {
+            tourFormElement.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('🔥 OLD tourForm submit - redirecting to saveEnhancedTour');
+                saveEnhancedTour(); // Используем единую функцию для всех случаев
             });
-            
-            fetch(url, {
-                method: method,
-                headers: getAuthHeaders(),
-                body: JSON.stringify(formData)
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log('Tour save response:', data);
-                if (data.success) {
-                    alert('Тур успешно сохранен!');
-                    closeTourModal();
-                    loadTours();
-                } else {
-                    alert('Ошибка при сохранении тура: ' + (data.error || data.message || 'Неизвестная ошибка'));
-                }
-            })
-            .catch(err => {
-                console.error('Error saving tour:', err);
-                alert('Ошибка при сохранении тура');
-            });
-        });
+        }
         
         // Additional functions
         function editTour(id) {
