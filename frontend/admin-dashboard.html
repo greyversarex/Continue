@@ -3465,9 +3465,9 @@
                             console.log('✅ Loaded price type:', tour.priceType);
                         }
                         
-                        const tourPickupInfo = document.getElementById('tourPickupInfo');
-                        if (tourPickupInfo) {
-                            tourPickupInfo.value = tour.pickupInfo || '';
+                        const tourPickupInfoElement = document.getElementById('tourPickupInfo');
+                        if (tourPickupInfoElement) {
+                            tourPickupInfoElement.value = tour.pickupInfo || '';
                             console.log('✅ Loaded pickup info:', tour.pickupInfo);
                         }
                         
@@ -3483,15 +3483,15 @@
                             console.log('✅ Loaded reviews count:', tour.reviewsCount);
                         }
                         
-                        const tourMinPeople = document.getElementById('tourMinPeople');
-                        if (tourMinPeople) {
-                            tourMinPeople.value = tour.minPeople || '';
+                        const tourMinPeopleElement = document.getElementById('tourMinPeople');
+                        if (tourMinPeopleElement) {
+                            tourMinPeopleElement.value = tour.minPeople || '';
                             console.log('✅ Loaded min people:', tour.minPeople);
                         }
                         
-                        const tourMaxPeople = document.getElementById('tourMaxPeople');
-                        if (tourMaxPeople) {
-                            tourMaxPeople.value = tour.maxPeople || '';
+                        const tourMaxPeopleElement = document.getElementById('tourMaxPeople');
+                        if (tourMaxPeopleElement) {
+                            tourMaxPeopleElement.value = tour.maxPeople || '';
                             console.log('✅ Loaded max people:', tour.maxPeople);
                         }
                         
@@ -3567,10 +3567,10 @@
                         } else {
                             console.error('❌ Element eTourPriceType not found');
                         }
-                        const tourPickupInfo = document.getElementById('eTourPickupInfo');
-                        if (tourPickupInfo) {
-                            tourPickupInfo.value = tour.pickupInfo || '';
-                            console.log('✅ Loaded edit pickup info:', tour.pickupInfo, '-> field value:', tourPickupInfo.value);
+                        const eTourPickupInfoElement = document.getElementById('eTourPickupInfo');
+                        if (eTourPickupInfoElement) {
+                            eTourPickupInfoElement.value = tour.pickupInfo || '';
+                            console.log('✅ Loaded edit pickup info:', tour.pickupInfo, '-> field value:', eTourPickupInfoElement.value);
                         } else {
                             console.error('❌ Element eTourPickupInfo not found');
                         }
@@ -3658,15 +3658,15 @@
                             console.log('✅ Loaded edit difficulty:', tour.difficulty);
                         }
                         
-                        const tourMaxPeople = document.getElementById('eTourMaxPeople');
-                        if (tourMaxPeople) {
-                            tourMaxPeople.value = tour.maxPeople || '';
+                        const eTourMaxPeopleElement = document.getElementById('eTourMaxPeople');
+                        if (eTourMaxPeopleElement) {
+                            eTourMaxPeopleElement.value = tour.maxPeople || '';
                             console.log('✅ Loaded edit max people:', tour.maxPeople);
                         }
                         
-                        const tourMinPeople = document.getElementById('eTourMinPeople');
-                        if (tourMinPeople) {
-                            tourMinPeople.value = tour.minPeople || '';
+                        const eTourMinPeopleElement = document.getElementById('eTourMinPeople');
+                        if (eTourMinPeopleElement) {
+                            eTourMinPeopleElement.value = tour.minPeople || '';
                             console.log('✅ Loaded edit min people:', tour.minPeople);
                         }
                         
