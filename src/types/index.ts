@@ -104,9 +104,11 @@ export interface CreateBookingRequestData {
 // Review types
 export interface ReviewData {
   id: number;
-  customerId: number;
+  customerId?: number; // Теперь необязательный
+  reviewerName: string; // Имя туриста
   rating: number;
   text: string;
+  photos?: string; // JSON строка с URL фотографий
   isModerated: boolean;
   isApproved: boolean;
   tourId: number;
@@ -122,10 +124,12 @@ export interface ReviewData {
 }
 
 export interface CreateReviewData {
-  customerId: number;
+  customerId?: number; // Теперь необязательный
+  reviewerName: string; // Имя туриста
   rating: number;
   text: string;
   tourId: number;
+  photos?: string[]; // Массив URL фотографий
 }
 
 export interface UpdateReviewData {

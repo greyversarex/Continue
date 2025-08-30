@@ -208,17 +208,19 @@ model BookingRequest {
 }
 
 model Review {
-  id          Int      @id @default(autoincrement())
-  customerId  Int      @map("customer_id")
-  tourId      Int      @map("tour_id")
-  rating      Int      // 1-5 stars
-  text        String
-  isModerated Boolean  @default(false) @map("is_moderated")
-  isApproved  Boolean  @default(false) @map("is_approved")
-  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  tour        Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int       @id @default(autoincrement())
+  customerId   Int?      @map("customer_id") // Сделано необязательным - отзыв может оставить кто угодно
+  tourId       Int       @map("tour_id")
+  reviewerName String    @map("reviewer_name") // Имя туриста
+  rating       Int       // 1-5 stars
+  text         String
+  photos       String?   // JSON array с URL фотографий
+  isModerated  Boolean   @default(false) @map("is_moderated")
+  isApproved   Boolean   @default(false) @map("is_approved")
+  customer     Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tour         Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@map("reviews")
 }

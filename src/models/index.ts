@@ -647,10 +647,12 @@ export class ReviewModel {
 
     return await prisma.review.create({
       data: {
-        customerId: data.customerId,
+        customerId: data.customerId || null,
+        reviewerName: data.reviewerName,
         rating: data.rating,
         text: data.text,
-        tourId: data.tourId
+        tourId: data.tourId,
+        photos: data.photos ? JSON.stringify(data.photos) : null
       },
       include: {
         customer: true,

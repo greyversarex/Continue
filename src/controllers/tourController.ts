@@ -1088,13 +1088,13 @@ export class ReviewController {
    */
   static async createReview(req: Request, res: Response, next: NextFunction) {
     try {
-      const { customerId, rating, text, tourId }: CreateReviewData = req.body;
+      const { customerId, rating, text, tourId, reviewerName, photos }: CreateReviewData = req.body;
 
       // Validation
-      if (!customerId) {
+      if (!reviewerName) {
         return res.status(400).json({
           success: false,
-          error: 'Customer ID is required'
+          error: 'Reviewer name is required'
         });
       }
 
@@ -1121,24 +1121,20 @@ export class ReviewController {
 
       const review = await ReviewModel.create({
         customerId,
+        reviewerName,
         rating,
         text,
-        tourId
+        tourId,
+        photos
       });
 
-      // Parse JSON fields for response
+      // Простой ответ без связанных объектов
       const parsedReview = {
         ...review,
-        customer: review.customer,
-        tour: review.tour ? {
-          ...review.tour,
-          title: JSON.parse(review.tour.title) as MultilingualContent,
-          description: JSON.parse(review.tour.description) as MultilingualContent,
-          category: {
-            ...review.tour.category,
-            name: JSON.parse(review.tour.category.name) as MultilingualContent
-          }
-        } : null
+        customerId,
+        tourId,
+        rating,
+        text
       };
 
       const response: ApiResponse = {

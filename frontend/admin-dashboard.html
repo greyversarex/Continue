@@ -655,10 +655,11 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Дата</th>
-                                        <th>Клиент</th>
+                                        <th>Имя туриста</th>
                                         <th>Тур</th>
                                         <th>Рейтинг</th>
                                         <th>Отзыв</th>
+                                        <th>Фотографии</th>
                                         <th>Статус</th>
                                         <th>Действия</th>
                                     </tr>
@@ -4358,7 +4359,7 @@
         
         // Reviews functions
         function loadReviews(filter = 'all') {
-            fetch(`${getApiUrl()}/reviews`, {
+            fetch(`${getApiUrl()}/api/reviews`, {
                 headers: getAuthHeaders()
             })
                 .then(res => res.json())
@@ -4376,7 +4377,7 @@
                     }
                     
                     if (reviews.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-500">Нет отзывов</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-gray-500">Нет отзывов</td></tr>';
                         return;
                     }
                     
@@ -4384,14 +4385,23 @@
                         <tr>
                             <td>${review.id}</td>
                             <td>${formatDate(review.createdAt)}</td>
-                            <td>${review.customer?.fullName || 'Неизвестно'}</td>
+                            <td>${review.reviewerName || review.customer?.fullName || 'Аноним'}</td>
                             <td>${getTourName(review.tour)}</td>
                             <td>
                                 <span class="text-yellow-500">
                                     ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
                                 </span>
                             </td>
-                            <td class="max-w-xs truncate">${review.text}</td>
+                            <td class="max-w-xs">
+                                <div class="truncate" title="${review.text}">${review.text}</div>
+                                ${review.text.length > 100 ? 
+                                    `<button onclick="showFullReview('${review.text.replace(/'/g, "\\'")}')" class="text-blue-600 text-xs">показать полностью</button>` 
+                                    : ''
+                                }
+                            </td>
+                            <td>
+                                ${review.photos ? renderReviewPhotos(review.photos) : '<span class="text-gray-400">Нет фото</span>'}
+                            </td>
                             <td>
                                 ${!review.isModerated ? 
                                     '<span class="badge badge-warning">На модерации</span>' :
@@ -4402,17 +4412,70 @@
                             </td>
                             <td>
                                 ${!review.isModerated ? `
-                                    <button onclick="approveReview(${review.id})" class="text-green-600 hover:text-green-800 mr-2">
+                                    <button onclick="approveReview(${review.id})" class="text-green-600 hover:text-green-800 mr-2" title="Одобрить">
                                         <i class="fas fa-check"></i>
                                     </button>
-                                    <button onclick="rejectReview(${review.id})" class="text-red-600 hover:text-red-800">
+                                    <button onclick="rejectReview(${review.id})" class="text-red-600 hover:text-red-800" title="Отклонить">
                                         <i class="fas fa-times"></i>
                                     </button>
-                                ` : ''}
+                                ` : `
+                                    <button onclick="deleteReview(${review.id})" class="text-red-600 hover:text-red-800" title="Удалить">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                `}
                             </td>
                         </tr>
                     `).join('');
                 });
+        }
+        
+        // Функция для отображения фотографий отзыва
+        function renderReviewPhotos(photosJson) {
+            try {
+                const photos = JSON.parse(photosJson);
+                if (!Array.isArray(photos) || photos.length === 0) {
+                    return '<span class="text-gray-400">Нет фото</span>';
+                }
+                
+                return `
+                    <div class="flex gap-1">
+                        ${photos.slice(0, 3).map(photo => `
+                            <img src="${photo}" alt="Фото отзыва" 
+                                 class="w-8 h-8 object-cover rounded cursor-pointer" 
+                                 onclick="showPhotoModal('${photo}')"
+                                 title="Нажмите для увеличения">
+                        `).join('')}
+                        ${photos.length > 3 ? `<span class="text-xs text-gray-500">+${photos.length - 3}</span>` : ''}
+                    </div>
+                `;
+            } catch (e) {
+                return '<span class="text-gray-400">Нет фото</span>';
+            }
+        }
+        
+        // Функция для показа полного текста отзыва
+        function showFullReview(text) {
+            alert(text);
+        }
+        
+        // Функция для показа фотографии в модальном окне
+        function showPhotoModal(photoUrl) {
+            const modal = `
+                <div id="photoModal" class="modal active" onclick="closePhotoModal()">
+                    <div class="modal-content" style="max-width: 90%; background: transparent; padding: 0;">
+                        <img src="${photoUrl}" alt="Фото отзыва" style="max-width: 100%; max-height: 90vh; border-radius: 8px;">
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modal);
+        }
+        
+        // Функция для закрытия модального окна с фотографией
+        function closePhotoModal() {
+            const modal = document.getElementById('photoModal');
+            if (modal) {
+                modal.remove();
+            }
         }
         
         // Helper functions
@@ -4549,7 +4612,7 @@
         }
         
         function approveReview(id) {
-            fetch(`${getApiUrl()}/reviews/${id}/moderate`, {
+            fetch(`${getApiUrl()}/api/reviews/${id}/moderate`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -4561,12 +4624,18 @@
                 if (data.success) {
                     alert('Отзыв одобрен');
                     loadReviews();
+                } else {
+                    alert('Ошибка: ' + data.message);
                 }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Ошибка при одобрении отзыва');
             });
         }
         
         function rejectReview(id) {
-            fetch(`${getApiUrl()}/reviews/${id}/moderate`, {
+            fetch(`${getApiUrl()}/api/reviews/${id}/moderate`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -4578,8 +4647,36 @@
                 if (data.success) {
                     alert('Отзыв отклонен');
                     loadReviews();
+                } else {
+                    alert('Ошибка: ' + data.message);
                 }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Ошибка при отклонении отзыва');
             });
+        }
+        
+        function deleteReview(id) {
+            if (confirm('Вы уверены, что хотите удалить этот отзыв?')) {
+                fetch(`${getApiUrl()}/api/reviews/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Отзыв удален');
+                        loadReviews();
+                    } else {
+                        alert('Ошибка: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Ошибка при удалении отзыва');
+                });
+            }
         }
         
         function openGuideModal() {

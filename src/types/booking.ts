@@ -42,10 +42,22 @@ export interface PaymentData {
 }
 
 export interface ReviewData {
-  customerId: number;
+  customerId?: number; // Теперь необязательный
   tourId: number;
+  reviewerName: string; // Имя туриста
   rating: number;
   text: string;
+  photos?: string[]; // Массив URL фотографий
+}
+
+// Для создания отзыва
+export interface CreateReviewData {
+  customerId?: number;
+  tourId: number;
+  reviewerName: string;
+  rating: number;
+  text: string;
+  photos?: string[];
 }
 
 export interface HotelData {

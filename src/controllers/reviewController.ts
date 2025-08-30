@@ -4,13 +4,13 @@ import { ReviewData } from '../types/booking';
 
 export const createReview = async (req: Request, res: Response) => {
   try {
-    const { customerId, tourId, rating, text } = req.body;
+    const { customerId, tourId, rating, text, reviewerName, photos } = req.body;
 
     // Validation
-    if (!customerId || !tourId || !rating || !text) {
+    if (!tourId || !rating || !text || !reviewerName) {
       return res.status(400).json({
         success: false,
-        message: 'Customer ID, tour ID, rating, and text are required',
+        message: 'Tour ID, reviewer name, rating, and text are required',
       });
     }
 
@@ -21,18 +21,8 @@ export const createReview = async (req: Request, res: Response) => {
       });
     }
 
-    // Check if customer and tour exist
-    const [customer, tour] = await Promise.all([
-      prisma.customer.findUnique({ where: { id: customerId } }),
-      prisma.tour.findUnique({ where: { id: tourId } }),
-    ]);
-
-    if (!customer) {
-      return res.status(404).json({
-        success: false,
-        message: 'Customer not found',
-      });
-    }
+    // Check if tour exists
+    const tour = await prisma.tour.findUnique({ where: { id: tourId } });
 
     if (!tour) {
       return res.status(404).json({
@@ -41,27 +31,40 @@ export const createReview = async (req: Request, res: Response) => {
       });
     }
 
-    // Check if customer already reviewed this tour
-    const existingReview = await prisma.review.findFirst({
-      where: {
-        customerId,
-        tourId,
-      },
-    });
+    // Опционально проверяем customer если указан
+    if (customerId) {
+      const customer = await prisma.customer.findUnique({ where: { id: customerId } });
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message: 'Customer not found',
+        });
+      }
 
-    if (existingReview) {
-      return res.status(400).json({
-        success: false,
-        message: 'You have already reviewed this tour',
+      // Check if customer already reviewed this tour
+      const existingReview = await prisma.review.findFirst({
+        where: {
+          customerId,
+          tourId,
+        },
       });
+
+      if (existingReview) {
+        return res.status(400).json({
+          success: false,
+          message: 'You have already reviewed this tour',
+        });
+      }
     }
 
     const review = await prisma.review.create({
       data: {
-        customerId,
+        customerId: customerId || null,
         tourId,
+        reviewerName,
         rating,
         text,
+        photos: photos ? JSON.stringify(photos) : null,
       },
       include: {
         customer: true,
@@ -118,9 +121,15 @@ export const getReviewsByTour = async (req: Request, res: Response) => {
       },
     });
 
+    // Форматируем отзывы с обработкой фото
+    const formattedReviews = reviews.map(review => ({
+      ...review,
+      photos: review.photos ? JSON.parse(review.photos) : [],
+    }));
+
     return res.json({
       success: true,
-      data: reviews,
+      data: formattedReviews,
     });
   } catch (error) {
     console.error('Error fetching reviews:', error);
@@ -174,6 +183,7 @@ export const getAllReviews = async (req: Request, res: Response) => {
 
     const formattedReviews = reviews.map(review => ({
       ...review,
+      photos: review.photos ? JSON.parse(review.photos) : [],
       tour: {
         ...review.tour,
         title: JSON.parse(review.tour.title),
