@@ -237,6 +237,32 @@ export class TourController {
         });
       }
 
+      // Convert string fields to numbers for Prisma
+      const categoryIdNumber = parseInt(categoryId);
+      const tourBlockIdNumber = tourBlockId ? parseInt(tourBlockId) : undefined;
+      const durationDaysNumber = durationDays ? parseInt(durationDays) : undefined;
+      const maxPeopleNumber = maxPeople ? parseInt(maxPeople) : undefined;
+      const minPeopleNumber = minPeople ? parseInt(minPeople) : undefined;
+      const ratingNumber = rating ? parseFloat(rating) : undefined;
+      const reviewsCountNumber = reviewsCount ? parseInt(reviewsCount) : undefined;
+      
+      if (isNaN(categoryIdNumber)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid category ID format'
+        });
+      }
+
+      console.log('Converted numeric fields:', {
+        categoryId: categoryIdNumber,
+        tourBlockId: tourBlockIdNumber,
+        durationDays: durationDaysNumber,
+        maxPeople: maxPeopleNumber,
+        minPeople: minPeopleNumber,
+        rating: ratingNumber,
+        reviewsCount: reviewsCountNumber
+      });
+
       const tour = await TourModel.create({
         title,
         description,
@@ -245,16 +271,16 @@ export class TourController {
         price,
         priceType: priceType || 'за человека',
         originalPrice: originalPrice || null,
-        categoryId,
-        tourBlockId: tourBlockId || null,
+        categoryId: categoryIdNumber,
+        tourBlockId: tourBlockIdNumber,
         country: country || null,
         city: city || null,
         format: format || null,
         tourType: tourType || null,
-        durationDays: durationDays || null,
+        durationDays: durationDaysNumber,
         difficulty: difficulty || null,
-        maxPeople: maxPeople || null,
-        minPeople: minPeople || null,
+        maxPeople: maxPeopleNumber,
+        minPeople: minPeopleNumber,
         mainImage: mainImage || null,
         images: images || null,
         highlights: highlights || null,
@@ -270,8 +296,8 @@ export class TourController {
         isFeatured: isFeatured || false,
         startDate: startDate || null,
         endDate: endDate || null,
-        rating: rating || null,
-        reviewsCount: reviewsCount || null
+        rating: ratingNumber,
+        reviewsCount: reviewsCountNumber
       });
 
       // Parse JSON fields for response with safe parsing
