@@ -3241,8 +3241,12 @@
                         // Загрузка типа тура (format)
                         const tourTypeElement = document.getElementById('tourType');
                         if (tourTypeElement) {
-                            tourTypeElement.value = tour.format || '';
-                            console.log('✅ Loaded tour type:', tour.format);
+                            const tourTypeValue = tour.format || tour.tourType || '';
+                            tourTypeElement.value = tourTypeValue;
+                            console.log('✅ Loaded tour type:', tourTypeValue);
+                            console.log('📋 Available tour type options:', Array.from(tourTypeElement.options).map(o => o.value));
+                        } else {
+                            console.error('❌ Element tourType not found');
                         }
                         const tourTitleRu = document.getElementById('tourTitleRu');
                         if (tourTitleRu) {
@@ -3341,12 +3345,18 @@
                             
                             // Показываем выбранные языки в контейнере
                             const selectedLanguagesContainer = document.getElementById('selectedLanguages');
-                            if (selectedLanguagesContainer && languages) {
-                                const languagesList = languages.split(', ').filter(lang => lang.trim());
-                                selectedLanguagesContainer.innerHTML = languagesList.map(lang => 
-                                    `<span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">${lang}</span>`
-                                ).join(' ');
-                                console.log('✅ Updated selected languages display');
+                            if (selectedLanguagesContainer) {
+                                if (languages) {
+                                    const languagesList = languages.split(', ').filter(lang => lang.trim());
+                                    selectedLanguagesContainer.innerHTML = languagesList.map(lang => 
+                                        `<span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1">${lang}</span>`
+                                    ).join(' ');
+                                    console.log('✅ Updated selected languages display with:', languagesList);
+                                } else {
+                                    selectedLanguagesContainer.innerHTML = '<small class="text-gray-500">Языки не выбраны</small>';
+                                }
+                            } else {
+                                console.error('❌ Element selectedLanguages container not found');
                             }
                         } else {
                             console.error('❌ Element tourLanguages not found');
@@ -3366,7 +3376,15 @@
                         }
                         try {
                             updateEditStartTimesList();
-                            console.log('✅ Updated start times list');
+                            console.log('✅ Updated start times list with times:', window.editStartTimes);
+                            
+                            // Проверяем что список времени видим в форме
+                            const startTimesContainer = document.getElementById('editStartTimesList');
+                            if (startTimesContainer) {
+                                console.log('✅ Start times container HTML:', startTimesContainer.innerHTML.length > 0 ? 'Has content' : 'Empty');
+                            } else {
+                                console.error('❌ Element editStartTimesList container not found');
+                            }
                         } catch (e) {
                             console.error('❌ Failed to update start times list:', e);
                         }
@@ -3531,7 +3549,19 @@
                         }
                         try {
                             updateGalleryImagesList();
-                            console.log('✅ Updated gallery images list');
+                            console.log('✅ Updated gallery images list with images:', window.tourGalleryImages);
+                            
+                            // Проверяем что галерея видима в форме
+                            const galleryContainer = document.getElementById('galleryImagesList');
+                            if (galleryContainer) {
+                                if (window.tourGalleryImages && window.tourGalleryImages.length > 0) {
+                                    console.log('✅ Gallery container has', window.tourGalleryImages.length, 'images');
+                                } else {
+                                    console.log('✅ Gallery container is empty (no images to show)');
+                                }
+                            } else {
+                                console.error('❌ Element galleryImagesList container not found');
+                            }
                         } catch (e) {
                             console.error('❌ Failed to update gallery images list:', e);
                         }
