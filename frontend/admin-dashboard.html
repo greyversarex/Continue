@@ -3233,7 +3233,12 @@
                             description = { ru: tour.description || '', en: '' };
                         }
                         
-                        document.getElementById('tourType').value = tour.format || '';
+                        // Загрузка типа тура (format)
+                        const tourTypeElement = document.getElementById('tourType');
+                        if (tourTypeElement) {
+                            tourTypeElement.value = tour.format || '';
+                            console.log('✅ Loaded tour type:', tour.format);
+                        }
                         document.getElementById('tourTitleRu').value = title.ru || '';
                         document.getElementById('tourTitleEn').value = title.en || '';
                         document.getElementById('tourDescRu').value = description.ru || '';
@@ -3279,9 +3284,11 @@
                         if (tour.startTimeOptions) {
                             try {
                                 window.editStartTimes = JSON.parse(tour.startTimeOptions);
+                                console.log('✅ Loaded start times:', window.editStartTimes);
                             } catch (e) {
                                 // Если старый формат - строка через запятую
                                 window.editStartTimes = tour.startTimeOptions.split(',').map(t => t.trim()).filter(t => t);
+                                console.log('✅ Loaded start times (legacy format):', window.editStartTimes);
                             }
                         }
                         try {
@@ -3297,23 +3304,30 @@
                         document.getElementById('tourMinPeople').value = tour.minPeople || '';
                         document.getElementById('tourMaxPeople').value = tour.maxPeople || '';
                         
-                        // Обработка "что включено"
-                        let includes = '';
-                        if (tour.includes || tour.highlights) {
+                        // Загрузка "что включено" - обновляем чекбоксы includes
+                        if (tour.includes) {
                             try {
-                                const includesData = tour.includes || tour.highlights;
-                                if (typeof includesData === 'string') {
-                                    const parsedIncludes = JSON.parse(includesData);
-                                    includes = Array.isArray(parsedIncludes) ? parsedIncludes.join(', ') : includesData;
-                                } else if (Array.isArray(includesData)) {
-                                    includes = includesData.join(', ');
+                                const includesData = typeof tour.includes === 'string' ? JSON.parse(tour.includes) : tour.includes;
+                                console.log('✅ Loading includes data:', includesData);
+                                
+                                // Сначала очищаем все чекбоксы
+                                const includesCheckboxes = document.querySelectorAll('#includesOptions input[type="checkbox"]');
+                                includesCheckboxes.forEach(checkbox => checkbox.checked = false);
+                                
+                                // Затем отмечаем нужные
+                                if (Array.isArray(includesData)) {
+                                    includesData.forEach(item => {
+                                        const checkbox = document.querySelector(`#includesOptions input[value="${item}"]`);
+                                        if (checkbox) {
+                                            checkbox.checked = true;
+                                            console.log('✅ Checked include:', item);
+                                        }
+                                    });
                                 }
                             } catch (e) {
                                 console.warn('Failed to parse includes:', e);
-                                includes = tour.includes || tour.highlights || '';
                             }
                         }
-                        // Поле tourIncludes удалено из формы
                         
                         // Загрузка основных моментов (highlights)
                         window.tourHighlights = [];
@@ -3336,6 +3350,7 @@
                         if (tour.itinerary) {
                             try {
                                 window.tourItinerary = typeof tour.itinerary === 'string' ? JSON.parse(tour.itinerary) : tour.itinerary;
+                                console.log('✅ Loaded itinerary:', window.tourItinerary);
                             } catch (e) {
                                 console.warn('Failed to parse itinerary:', e);
                                 window.tourItinerary = [];
@@ -3351,6 +3366,7 @@
                         if (tour.availableMonths) {
                             try {
                                 const availableMonths = typeof tour.availableMonths === 'string' ? JSON.parse(tour.availableMonths) : tour.availableMonths;
+                                console.log('✅ Loading available months:', availableMonths);
                                 // Снимаем выделение со всех месяцев
                                 for (let i = 1; i <= 12; i++) {
                                     const checkbox = document.getElementById(`month-${i}`);
@@ -3359,7 +3375,10 @@
                                 // Выделяем нужные месяцы
                                 availableMonths.forEach(month => {
                                     const checkbox = document.getElementById(`month-${month}`);
-                                    if (checkbox) checkbox.checked = true;
+                                    if (checkbox) {
+                                        checkbox.checked = true;
+                                        console.log('✅ Checked month:', month);
+                                    }
                                 });
                             } catch (e) {
                                 console.warn('Failed to parse availableMonths:', e);
@@ -3370,15 +3389,19 @@
                         if (tour.availableDays) {
                             try {
                                 const availableDays = typeof tour.availableDays === 'string' ? JSON.parse(tour.availableDays) : tour.availableDays;
-                                // Снимаем выделение со всех дней
+                                console.log('✅ Loading available days:', availableDays);
+                                // Снимаем выделение со всех дней месяца
                                 for (let i = 1; i <= 31; i++) {
                                     const checkbox = document.getElementById(`day-${i}`);
                                     if (checkbox) checkbox.checked = false;
                                 }
-                                // Выделяем нужные дни
+                                // Выделяем нужные дни месяца
                                 availableDays.forEach(day => {
                                     const checkbox = document.getElementById(`day-${day}`);
-                                    if (checkbox) checkbox.checked = true;
+                                    if (checkbox) {
+                                        checkbox.checked = true;
+                                        console.log('✅ Checked day:', day);
+                                    }
                                 });
                             } catch (e) {
                                 console.warn('Failed to parse availableDays:', e);
@@ -3386,11 +3409,10 @@
                         }
                         
                         // Загрузка турблока
-                        if (tour.tourBlockId) {
-                            const tourBlockSelect = document.getElementById('tourBlockId');
-                            if (tourBlockSelect) {
-                                tourBlockSelect.value = tour.tourBlockId;
-                            }
+                        const tourBlockSelect = document.getElementById('tourBlockId');
+                        if (tourBlockSelect && tour.tourBlockId) {
+                            tourBlockSelect.value = tour.tourBlockId;
+                            console.log('✅ Loaded tour block:', tour.tourBlockId);
                         }
                         
                         // Загрузка галереи изображений
@@ -3398,6 +3420,7 @@
                         if (tour.images) {
                             try {
                                 window.tourGalleryImages = typeof tour.images === 'string' ? JSON.parse(tour.images) : tour.images;
+                                console.log('✅ Loaded gallery images:', window.tourGalleryImages);
                             } catch (e) {
                                 console.warn('Failed to parse gallery images:', e);
                                 window.tourGalleryImages = [];
