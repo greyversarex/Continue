@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
 const { exec } = require('child_process');
-const { initializeDatabase } = require('./src/database/init');
+// Remove old SQLite initialization
+// const { initializeDatabase } = require('./src/database/init');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -83,12 +84,10 @@ app.use((error, req, res, next) => {
   });
 });
 
-// Инициализация базы данных
+// Использование PostgreSQL через Prisma
 async function startServer() {
   try {
-    console.log('🗄️ Инициализация базы данных...');
-    await initializeDatabase();
-    console.log('🗄️ База данных готова к работе');
+    console.log('🗄️ Подключение к PostgreSQL через Prisma...');
     
     console.log('Starting backend API server...');
     
@@ -97,7 +96,7 @@ async function startServer() {
       console.log(`📱 Frontend: http://0.0.0.0:${PORT}`);
       console.log(`🔧 Admin: http://0.0.0.0:${PORT}/admin-dashboard.html`);
       console.log(`🌐 API: http://0.0.0.0:${PORT}/api`);
-      console.log('🗄️  База данных: database.db');
+      console.log('🗄️  База данных: PostgreSQL через Prisma');
     });
 
     // Graceful shutdown

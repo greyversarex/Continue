@@ -2265,30 +2265,9 @@
                 href: window.location.href
             });
             
-            // For local development
-            if (hostname === 'localhost' || hostname === '127.0.0.1') {
-                return 'http://localhost:5000/api';
-            }
+            // Always use relative URL for unified server
+            return '/api';
             
-            // For Replit - API доступен на том же домене и порту
-            if (hostname.includes('replit')) {
-                // В Replit используем тот же порт что и для фронтенда  
-                const currentPort = window.location.port;
-                if (currentPort && currentPort !== '80' && currentPort !== '443') {
-                    const apiUrl = `${protocol}//${hostname}:${currentPort}/api`;
-                    console.log('Using API_BASE:', apiUrl);
-                    return apiUrl;
-                } else {
-                    const apiUrl = `${protocol}//${hostname}/api`;
-                    console.log('Using API_BASE:', apiUrl);
-                    return apiUrl;
-                }
-            }
-            
-            // Попробовать тот же хост с портом 5000  
-            const apiUrl = `${protocol}//${hostname}:5000/api`;
-            console.log('Using API_BASE:', apiUrl);
-            return apiUrl;
         }
 
         // Authorization helper

@@ -15,8 +15,7 @@ import translationRoutes from './translationRoutes';
 import newsRoutes from './newsRoutes';
 import slideRoutes from './slideRoutes';
 
-// Import SQLite database routes  
-const databaseRoutes = require('./databaseRoutes');
+// Remove old SQLite database routes (now using Prisma)
 
 const router = Router();
 
@@ -37,8 +36,7 @@ router.use('/translate', translationRoutes);
 router.use('/news', newsRoutes);
 router.use('/slides', slideRoutes);
 
-// SQLite database routes
-router.use('/', databaseRoutes);
+// All data access now through Prisma models
 
 // Health check endpoint
 router.get('/health', (req, res) => {
