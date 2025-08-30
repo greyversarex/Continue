@@ -4433,9 +4433,14 @@
         }
         
         // Функция для отображения фотографий отзыва
-        function renderReviewPhotos(photosJson) {
+        function renderReviewPhotos(photosData) {
             try {
-                const photos = JSON.parse(photosJson);
+                // API возвращает photos как массив, не как JSON строку
+                let photos = photosData;
+                if (typeof photosData === 'string') {
+                    photos = JSON.parse(photosData);
+                }
+                
                 if (!Array.isArray(photos) || photos.length === 0) {
                     return '<span class="text-gray-400">Нет фото</span>';
                 }
@@ -4484,8 +4489,17 @@
         // Helper functions
         function getTourName(tour) {
             if (!tour) return 'Неизвестно';
-            const title = JSON.parse(tour.title || '{}');
-            return title.ru || title.en || 'Без названия';
+            // API возвращает title как объект, не как JSON строку
+            if (typeof tour.title === 'object') {
+                return tour.title.ru || tour.title.en || 'Без названия';
+            }
+            // Если это строка JSON, парсим её
+            try {
+                const title = JSON.parse(tour.title || '{}');
+                return title.ru || title.en || 'Без названия';
+            } catch {
+                return tour.title || 'Без названия';
+            }
         }
         
         function getHotelName(hotel) {
