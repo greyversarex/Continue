@@ -4376,6 +4376,9 @@
             window.hotelImageURLs = [];
             document.getElementById('hotelModal').classList.add('active');
             
+            // Reset the hidden input
+            document.getElementById('hotelImages').value = '';
+            
             // Initialize the uploader
             setTimeout(() => {
                 initializeHotelUploader();
@@ -4401,6 +4404,9 @@
             }
             window.hotelImageURLs = [];
             currentHotelId = null;
+            
+            // Reset the hidden input
+            document.getElementById('hotelImages').value = '';
         }
         
         function loadHotelData(hotelId) {
@@ -4538,7 +4544,7 @@
                 pension: document.getElementById('hotelPension').value,
                 amenities: JSON.stringify(amenities),
                 isActive: document.getElementById('hotelActive').checked,
-                images: JSON.stringify([]) // For now, we'll handle images separately
+                images: JSON.stringify(window.hotelImageURLs || []) // Use uploaded images
             };
             
             console.log('📝 Отправляем отель с данными:', hotelData);
