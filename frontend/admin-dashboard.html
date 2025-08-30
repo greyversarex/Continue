@@ -3239,18 +3239,84 @@
                             tourTypeElement.value = tour.format || '';
                             console.log('✅ Loaded tour type:', tour.format);
                         }
-                        document.getElementById('tourTitleRu').value = title.ru || '';
-                        document.getElementById('tourTitleEn').value = title.en || '';
-                        document.getElementById('tourDescRu').value = description.ru || '';
-                        document.getElementById('tourDescEn').value = description.en || '';
-                        document.getElementById('tourCategory').value = tour.categoryId || '';
-                        document.getElementById('tourCountry').value = tour.country || '';
-                        document.getElementById('tourCity').value = tour.city || '';
-                        document.getElementById('tourDurationDays').value = tour.durationDays || '';
+                        const tourTitleRu = document.getElementById('tourTitleRu');
+                        if (tourTitleRu) {
+                            tourTitleRu.value = title.ru || '';
+                            console.log('✅ Loaded title RU:', title.ru);
+                        } else {
+                            console.error('❌ Element tourTitleRu not found');
+                        }
+                        const tourTitleEn = document.getElementById('tourTitleEn');
+                        if (tourTitleEn) {
+                            tourTitleEn.value = title.en || '';
+                            console.log('✅ Loaded title EN:', title.en);
+                        } else {
+                            console.error('❌ Element tourTitleEn not found');
+                        }
+                        const tourDescRu = document.getElementById('tourDescRu');
+                        if (tourDescRu) {
+                            tourDescRu.value = description.ru || '';
+                            console.log('✅ Loaded description RU');
+                        } else {
+                            console.error('❌ Element tourDescRu not found');
+                        }
+                        const tourDescEn = document.getElementById('tourDescEn');
+                        if (tourDescEn) {
+                            tourDescEn.value = description.en || '';
+                            console.log('✅ Loaded description EN');
+                        } else {
+                            console.error('❌ Element tourDescEn not found');
+                        }
+                        const tourCategory = document.getElementById('tourCategory');
+                        if (tourCategory) {
+                            tourCategory.value = tour.categoryId || '';
+                            console.log('✅ Loaded category:', tour.categoryId);
+                        } else {
+                            console.error('❌ Element tourCategory not found');
+                        }
+                        const tourCountry = document.getElementById('tourCountry');
+                        if (tourCountry) {
+                            tourCountry.value = tour.country || '';
+                            console.log('✅ Loaded country:', tour.country);
+                        } else {
+                            console.error('❌ Element tourCountry not found');
+                        }
+                        const tourCity = document.getElementById('tourCity');
+                        if (tourCity) {
+                            tourCity.value = tour.city || '';
+                            console.log('✅ Loaded city:', tour.city);
+                        } else {
+                            console.error('❌ Element tourCity not found');
+                        }
+                        const tourDurationDays = document.getElementById('tourDurationDays');
+                        if (tourDurationDays) {
+                            tourDurationDays.value = tour.durationDays || '';
+                            console.log('✅ Loaded duration days:', tour.durationDays);
+                        } else {
+                            console.error('❌ Element tourDurationDays not found');
+                        }
                         // Поле duration удалено из формы
-                        document.getElementById('tourPrice').value = tour.price || '';
-                        document.getElementById('tourPriceType').value = tour.priceType || 'за человека';
-                        document.getElementById('tourPickupInfo').value = tour.pickupInfo || '';
+                        const tourPrice = document.getElementById('tourPrice');
+                        if (tourPrice) {
+                            tourPrice.value = tour.price || '';
+                            console.log('✅ Loaded price:', tour.price);
+                        } else {
+                            console.error('❌ Element tourPrice not found');
+                        }
+                        const tourPriceType = document.getElementById('tourPriceType');
+                        if (tourPriceType) {
+                            tourPriceType.value = tour.priceType || 'за человека';
+                            console.log('✅ Loaded price type:', tour.priceType);
+                        } else {
+                            console.error('❌ Element tourPriceType not found');
+                        }
+                        const tourPickupInfo = document.getElementById('tourPickupInfo');
+                        if (tourPickupInfo) {
+                            tourPickupInfo.value = tour.pickupInfo || '';
+                            console.log('✅ Loaded pickup info:', tour.pickupInfo);
+                        } else {
+                            console.error('❌ Element tourPickupInfo not found');
+                        }
                         
                         // Обработка языков
                         let languages = '';
@@ -3298,11 +3364,35 @@
                         }
                         
                         // Загрузка новых полей
-                        document.getElementById('tourRating').value = tour.rating || '';
-                        document.getElementById('tourReviewsCount').value = tour.reviewsCount || '';
+                        const tourRating = document.getElementById('tourRating');
+                        if (tourRating) {
+                            tourRating.value = tour.rating || '';
+                            console.log('✅ Loaded rating:', tour.rating);
+                        } else {
+                            console.error('❌ Element tourRating not found');
+                        }
+                        const tourReviewsCount = document.getElementById('tourReviewsCount');
+                        if (tourReviewsCount) {
+                            tourReviewsCount.value = tour.reviewsCount || '';
+                            console.log('✅ Loaded reviews count:', tour.reviewsCount);
+                        } else {
+                            console.error('❌ Element tourReviewsCount not found');
+                        }
                         // difficulty field removed per user request
-                        document.getElementById('tourMinPeople').value = tour.minPeople || '';
-                        document.getElementById('tourMaxPeople').value = tour.maxPeople || '';
+                        const tourMinPeople = document.getElementById('tourMinPeople');
+                        if (tourMinPeople) {
+                            tourMinPeople.value = tour.minPeople || '';
+                            console.log('✅ Loaded min people:', tour.minPeople);
+                        } else {
+                            console.error('❌ Element tourMinPeople not found');
+                        }
+                        const tourMaxPeople = document.getElementById('tourMaxPeople');
+                        if (tourMaxPeople) {
+                            tourMaxPeople.value = tour.maxPeople || '';
+                            console.log('✅ Loaded max people:', tour.maxPeople);
+                        } else {
+                            console.error('❌ Element tourMaxPeople not found');
+                        }
                         
                         // Загрузка "что включено" - обновляем чекбоксы includes
                         if (tour.includes) {
@@ -3436,8 +3526,10 @@
                         
                     })
                     .catch(err => {
-                        console.error('Error loading tour data:', err);
-                        alert('Ошибка загрузки данных тура');
+                        console.error('❌ Error loading tour data:', err);
+                        console.error('❌ Error stack:', err.stack);
+                        console.error('❌ Error message:', err.message);
+                        alert('Ошибка загрузки данных тура: ' + err.message);
                     });
             }
         }
