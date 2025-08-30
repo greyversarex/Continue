@@ -75,17 +75,22 @@ export class TourController {
   static async getTourById(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseInt(req.params.id);
+      console.log('📋 getTourById called with ID:', id);
       
       if (isNaN(id)) {
+        console.log('❌ Invalid tour ID provided:', req.params.id);
         return res.status(400).json({
           success: false,
           error: 'Invalid tour ID'
         });
       }
 
+      console.log('🔍 Searching for tour with ID:', id);
       const tour = await TourModel.findById(id);
+      console.log('📦 Found tour:', tour ? 'Yes' : 'No');
       
       if (!tour) {
+        console.log('❌ Tour not found with ID:', id);
         return res.status(404).json({
           success: false,
           error: 'Tour not found'
@@ -123,8 +128,10 @@ export class TourController {
         message: 'Tour retrieved successfully'
       };
 
+      console.log('✅ Returning tour data successfully for ID:', id);
       return res.status(200).json(response);
     } catch (error) {
+      console.error('❌ Error in getTourById:', error);
       return next(error);
     }
   }
