@@ -1203,7 +1203,9 @@
             loadImages();
             
             // Load reviews
-            loadReviews();
+            loadReviews().catch(err => {
+                console.error('Failed to load reviews:', err);
+            });
             
             // Update start time options
             updateStartTimeOptions();
@@ -1459,9 +1461,17 @@
         }
 
         async function loadReviews() {
+            console.log('=== loadReviews() called ===');
+            
             const reviewsContainer = document.getElementById('reviews-container');
             const reviewsCount = document.getElementById('reviews-count');
             const reviewsLoading = document.getElementById('reviews-loading');
+            
+            console.log('DOM elements found:', {
+                reviewsContainer: !!reviewsContainer,
+                reviewsCount: !!reviewsCount,
+                reviewsLoading: !!reviewsLoading
+            });
             
             // Проверяем наличие элементов DOM
             if (!reviewsContainer || !reviewsCount || !reviewsLoading) {
@@ -1470,6 +1480,8 @@
             }
             
             try {
+                console.log('Starting review loading process...');
+                
                 // Показываем загрузку
                 reviewsLoading.classList.remove('hidden');
                 reviewsContainer.innerHTML = '';
@@ -1489,6 +1501,7 @@
                 console.log('Loading reviews for tour ID:', tourId);
                 
                 const response = await fetch(`/api/reviews/tours/${tourId}`);
+                console.log('Fetch response status:', response.status);
                 
                 if (!response.ok) {
                     console.error(`HTTP error! status: ${response.status}`);
@@ -1518,10 +1531,12 @@
                 }
                 
                 const reviews = data.data;
+                console.log('Found reviews:', reviews.length);
                 reviewsCount.textContent = `(${reviews.length})`;
                 
                 reviewsContainer.innerHTML = '';
                 reviews.forEach((review, index) => {
+                    console.log(`Rendering review ${index + 1}:`, review.reviewerName);
                     const reviewDiv = document.createElement('div');
                     reviewDiv.className = 'border-b border-gray-100 pb-6 last:border-b-0 mb-6 last:mb-0';
                     
@@ -1574,10 +1589,12 @@
                     reviewsContainer.appendChild(reviewDiv);
                 });
                 
+                console.log('All reviews rendered successfully!');
+                
             } catch (error) {
                 console.error('Error loading reviews:', error);
+                console.error('Error stack:', error.stack);
                 reviewsLoading.classList.add('hidden');
-                // При ошибке просто оставляем пустой контейнер без уведомления об ошибке
                 reviewsContainer.innerHTML = '';
                 reviewsCount.textContent = '(0)';
             }
