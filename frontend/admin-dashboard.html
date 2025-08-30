@@ -3748,7 +3748,10 @@
         function closeTourModal() {
             document.getElementById('tourModal').classList.remove('active');
             document.getElementById('tourForm').reset();
-            currentTourId = null;
+            
+            // НЕ СБРАСЫВАЕМ currentTourId чтобы избежать проблем с редактированием
+            console.log('🔒 Closing modal - keeping currentTourId for stability');
+            // currentTourId = null; // ЗАКОММЕНТИРОВАНО!
             
             // Очищаем все дополнительные данные
             window.tourHighlights = [];
@@ -5458,7 +5461,10 @@
                     const message = isEditing ? 'Тур успешно обновлён!' : 'Тур успешно создан!';
                     alert(message);
                     if (isEditing) {
-                        // При редактировании закрываем модальное окно и обновляем список
+                        // При редактировании НЕ закрываем модальное окно сразу - сначала чистим ID
+                        console.log('🔄 Tour edited successfully - clearing currentTourId before closing modal');
+                        currentTourId = null;
+                        window.currentTourId = null;
                         closeTourModal();
                         loadTours();
                     } else {

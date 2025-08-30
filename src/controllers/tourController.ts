@@ -109,7 +109,7 @@ export class TourController {
         });
       }
 
-      // Parse JSON fields for response with safe parsing
+      // Parse JSON fields for response - ДЛЯ РЕДАКТИРОВАНИЯ возвращаем ВСЕ данные включая изображения
       let parsedTour;
       try {
         parsedTour = {
@@ -120,6 +120,7 @@ export class TourController {
             ...tour.category,
             name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
           } : null
+          // НЕ удаляем mainImage и images - они нужны для редактирования!
         };
       } catch (jsonError) {
         console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
@@ -131,6 +132,7 @@ export class TourController {
             ...tour.category,
             name: { ru: tour.category.name || '', en: tour.category.name || '' }
           } : null
+          // НЕ удаляем mainImage и images - они нужны для редактирования!
         };
       }
 
