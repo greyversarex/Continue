@@ -27,7 +27,6 @@ router.get('/objects/:objectPath/:fileName', async (req: Request, res: Response)
   try {
     // Extract the full path from params
     const fullObjectPath = `${req.params.objectPath}/${req.params.fileName}`;
-    console.log('Serving object:', fullObjectPath);
     const objectFile = await objectStorageService.getObjectEntityFile(
       `/objects/${fullObjectPath}`,
     );
