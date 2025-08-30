@@ -1188,14 +1188,18 @@
                 breadcrumbElement.textContent = tourData.title.split(':')[1]?.trim() || tourData.title;
             }
             
-            // ✅ ИЗОБРАЖЕНИЯ - используем mainImage из формы
-            if (tourData.mainImage) {
+            // ✅ ИЗОБРАЖЕНИЯ - используем mainImage из формы или первое изображение из галереи
+            if (tourData.mainImage || (tourData.images && tourData.images.length > 0)) {
+                const mainImageUrl = tourData.mainImage || tourData.images[0];
                 const heroImage = document.querySelector('.hero-image img, [id*="hero"] img');
-                if (heroImage) heroImage.src = tourData.mainImage;
+                if (heroImage) heroImage.src = mainImageUrl;
                 
                 // Обновляем все изображения в галерее
                 if (!tourData.images || tourData.images.length === 0) {
-                    tourData.images = [tourData.mainImage];
+                    tourData.images = [mainImageUrl];
+                } else if (tourData.mainImage && !tourData.images.includes(tourData.mainImage)) {
+                    // Добавляем главное изображение в начало галереи, если его там нет
+                    tourData.images.unshift(tourData.mainImage);
                 }
             }
             
@@ -1443,8 +1447,26 @@
             
             if (!tourData.images || tourData.images.length === 0) {
                 console.log("No images found in tour data");
+                // Set a default placeholder image
+                if (mainImage) {
+                    mainImage.src = "https://via.placeholder.com/800x600/cccccc/666666?text=No+Image";
+                }
                 return;
             }
+            
+            // Ensure images are properly formatted URLs
+            tourData.images = tourData.images.map(img => {
+                if (img.startsWith('/objects/')) {
+                    // Object storage path - construct full URL
+                    return `${window.location.origin}${img}`;
+                } else if (img.startsWith('http')) {
+                    // Full URL - use as is
+                    return img;
+                } else {
+                    // Relative path - make it absolute
+                    return `${window.location.origin}/${img}`;
+                }
+            });
             
             // Set main image
             mainImage.src = tourData.images[0];

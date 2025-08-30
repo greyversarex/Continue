@@ -2673,8 +2673,8 @@
                      onclick="window.location.href='tour-template.html?tour=${tour.id || 1}'">
                     <div class="relative overflow-hidden rounded-t-lg">
                         <div class="w-full h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                            ${tour.mainImage ? 
-                                `<img src="${tour.mainImage}" alt="${title.ru}" class="w-full h-full object-cover">` :
+                            ${tour.mainImage || (tour.images && tour.images.length > 0 && tour.images[0]) ? 
+                                `<img src="${formatImageUrl(tour.mainImage || tour.images[0])}" alt="${title.ru}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<svg class=\\'w-16 h-16 text-gray-400\\' fill=\\'currentColor\\' viewBox=\\'0 0 20 20\\'><path fill-rule=\\'evenodd\\' d=\\'M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z\\' clip-rule=\\'evenodd\\'></path></svg>';">` :
                                 `<div class="text-center p-4">
                                     <svg class="w-12 h-12 mx-auto text-blue-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -2914,6 +2914,20 @@
             loadSlides();
         });
 
+        function formatImageUrl(imageUrl) {
+            if (!imageUrl) return '';
+            
+            if (imageUrl.startsWith('/objects/')) {
+                // Object storage path - construct full URL
+                return `${window.location.origin}${imageUrl}`;
+            } else if (imageUrl.startsWith('http')) {
+                // Full URL - use as is
+                return imageUrl;
+            } else {
+                // Relative path - make it absolute
+                return `${window.location.origin}/${imageUrl}`;
+            }
+        }
     </script>
 </body>
 </html>

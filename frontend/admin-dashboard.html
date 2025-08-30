@@ -4641,6 +4641,18 @@
                             // Also update gallery images array
                             window.tourGalleryImages = window.tourGalleryImages || [];
                             window.tourGalleryImages.push(data.objectPath);
+                            
+                            // Set as main image if it's the first one
+                            if (window.tourGalleryImages.length === 1) {
+                                const mainImageInput = document.getElementById('tourMainImage');
+                                if (mainImageInput) {
+                                    mainImageInput.value = data.objectPath;
+                                    console.log('Set main image:', data.objectPath);
+                                }
+                            }
+                            
+                            // Update gallery display
+                            updateGalleryImagesList();
                         }
                     })
                     .catch(error => {
