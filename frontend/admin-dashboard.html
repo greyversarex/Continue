@@ -1907,11 +1907,16 @@
                         <div id="tourImagePreview" class="grid grid-cols-4 gap-4 mt-4" style="display: none;">
                             <!-- Превью изображений будут добавлены здесь -->
                         </div>
+                        
+                        <!-- Список галереи для редактирования -->
+                        <div id="galleryImagesList" class="space-y-2 mt-4">
+                            <!-- Загруженные изображения для редактирования появятся здесь -->
+                        </div>
                     </div>
                     
                     <div class="form-group col-span-2">
                         <label class="form-label">Услуги включенные в тур</label>
-                        <div class="checkbox-group">
+                        <div class="checkbox-group" id="includesOptions">
                             <label class="checkbox-item">
                                 <input type="checkbox" value="Трансфер"> Трансфер
                             </label>
@@ -3328,25 +3333,23 @@
                                 languages = tour.languages;
                             }
                         }
-                        // Обработка языков для multiple select
-                        const languageSelect = document.getElementById('tourLanguages');
-                        if (languageSelect && languageSelect.options) {
-                            console.log('✅ Found language select with', languageSelect.options.length, 'options');
-                            // Очищаем все выбранные опции
-                            Array.from(languageSelect.options).forEach(option => option.selected = false);
+                        // Обработка языков - заполняем скрытое поле и показываем выбранные языки
+                        const languageHiddenField = document.getElementById('tourLanguages');
+                        if (languageHiddenField) {
+                            languageHiddenField.value = languages;
+                            console.log('✅ Set tourLanguages hidden field:', languages);
                             
-                            // Если есть языки, выбираем их
-                            if (languages) {
-                                const selectedLanguages = languages.split(', ');
-                                Array.from(languageSelect.options).forEach(option => {
-                                    if (selectedLanguages.includes(option.value)) {
-                                        option.selected = true;
-                                        console.log('✅ Selected language:', option.value);
-                                    }
-                                });
+                            // Показываем выбранные языки в контейнере
+                            const selectedLanguagesContainer = document.getElementById('selectedLanguages');
+                            if (selectedLanguagesContainer && languages) {
+                                const languagesList = languages.split(', ').filter(lang => lang.trim());
+                                selectedLanguagesContainer.innerHTML = languagesList.map(lang => 
+                                    `<span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">${lang}</span>`
+                                ).join(' ');
+                                console.log('✅ Updated selected languages display');
                             }
                         } else {
-                            console.error('❌ Element tourLanguages not found or has no options');
+                            console.error('❌ Element tourLanguages not found');
                         }
                         
                         // Обработка времен начала тура
