@@ -1465,7 +1465,7 @@
             
             // Проверяем наличие элементов DOM
             if (!reviewsContainer || !reviewsCount || !reviewsLoading) {
-                console.error('Required DOM elements not found');
+                console.log('Reviews elements not found, skipping reviews loading');
                 return;
             }
             
@@ -1476,7 +1476,11 @@
                 
                 const tourId = getTourIdFromUrl();
                 if (!tourId) {
-                    throw new Error('Tour ID not found in URL');
+                    console.log('No tour ID found, hiding reviews section');
+                    reviewsLoading.classList.add('hidden');
+                    reviewsContainer.innerHTML = '';
+                    reviewsCount.textContent = '(0)';
+                    return;
                 }
                 
                 console.log('Loading reviews for tour ID:', tourId);
@@ -1484,7 +1488,11 @@
                 const response = await fetch(`/api/reviews/tours/${tourId}`);
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    console.error(`HTTP error! status: ${response.status}`);
+                    reviewsLoading.classList.add('hidden');
+                    reviewsContainer.innerHTML = '';
+                    reviewsCount.textContent = '(0)';
+                    return;
                 }
                 
                 const data = await response.json();
@@ -1493,19 +1501,15 @@
                 reviewsLoading.classList.add('hidden');
                 
                 if (!data.success) {
-                    throw new Error(data.message || 'API returned error');
+                    console.error('API returned error:', data.message);
+                    reviewsContainer.innerHTML = '';
+                    reviewsCount.textContent = '(0)';
+                    return;
                 }
                 
                 if (!data.data || data.data.length === 0) {
-                    reviewsContainer.innerHTML = `
-                        <div class="text-center py-8 text-gray-500">
-                            <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.13 8.13 0 01-2.939-.542l-3.286-.975a1 1 0 01-.734-.99v-5.949A48.474 48.474 0 0112 4c4.418 0 8 3.582 8 8z"></path>
-                            </svg>
-                            <p>Отзывы пока не добавлены.</p>
-                            <p class="text-sm mt-1">Будьте первым, кто оставит отзыв об этом туре!</p>
-                        </div>
-                    `;
+                    console.log('No reviews found for this tour');
+                    reviewsContainer.innerHTML = '';
                     reviewsCount.textContent = '(0)';
                     return;
                 }
@@ -1570,15 +1574,8 @@
             } catch (error) {
                 console.error('Error loading reviews:', error);
                 reviewsLoading.classList.add('hidden');
-                reviewsContainer.innerHTML = `
-                    <div class="text-center py-8 text-red-500">
-                        <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                        </svg>
-                        <p>Ошибка загрузки отзывов</p>
-                        <button onclick="loadReviews()" class="mt-2 text-blue-600 hover:text-blue-800 text-sm">Попробовать снова</button>
-                    </div>
-                `;
+                // При ошибке просто оставляем пустой контейнер без уведомления об ошибке
+                reviewsContainer.innerHTML = '';
                 reviewsCount.textContent = '(0)';
             }
         }
