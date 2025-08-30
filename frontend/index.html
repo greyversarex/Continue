@@ -2680,7 +2680,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     </svg>
-                                    <div class="text-sm font-medium text-blue-600">${title.ru}</div>
+                                    <div class="text-sm font-medium text-blue-600">${(title && typeof title === 'object' && title.ru) ? title.ru : (typeof title === 'string' ? title : 'Название тура')}</div>
                                 </div>`
                             }
                         </div>
@@ -2714,7 +2714,7 @@
                             <span class="text-gray-500 ml-1">(${tour.reviewsCount || 0})</span>
                         </div>` : ''}
                         <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
-                            ${shortDesc ? shortDesc.ru : title.ru}
+                            ${(shortDesc && typeof shortDesc === 'object' && shortDesc.ru) ? shortDesc.ru : (title && typeof title === 'object' && title.ru) ? title.ru : (typeof title === 'string' ? title : 'Название тура')}
                         </h3>
                         <div class="flex items-center justify-between mt-auto">
                             <div class="text-lg font-bold text-gray-900">

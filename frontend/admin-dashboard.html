@@ -1844,17 +1844,6 @@
                     
                     
                     <!-- Дополнительная информация о туре -->
-                    <div class="form-group">
-                        <label class="form-label">Рейтинг тура</label>
-                        <input type="number" class="form-input" id="tourRating" min="1" max="5" step="0.1" placeholder="4.8">
-                        <small class="text-gray-500">Рейтинг от 1 до 5 (например: 4.8)</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Количество отзывов</label>
-                        <input type="number" class="form-input" id="tourReviewsCount" min="0" placeholder="234">
-                        <small class="text-gray-500">Общее количество отзывов</small>
-                    </div>
                     
                     
                     <!-- Поле сложности тура удалено по требованию пользователя -->
@@ -2854,8 +2843,6 @@
                 // Информация о туре
                 pickupInfo: document.getElementById('tourPickupInfo')?.value || '',
                 languages: document.getElementById('tourLanguages')?.value || '',
-                rating: parseFloat(document.getElementById('tourRating')?.value) || null,
-                reviewsCount: parseInt(document.getElementById('tourReviewsCount')?.value) || null,
                 // difficulty field removed per user request
                 minPeople: parseInt(document.getElementById('tourMinPeople')?.value) || null,
                 maxPeople: parseInt(document.getElementById('tourMaxPeople')?.value) || null,
@@ -2950,8 +2937,6 @@
                 country: document.getElementById('tourCountry')?.value,
                 city: document.getElementById('tourCity')?.value,
                 pickupInfo: document.getElementById('tourPickupInfo')?.value,
-                rating: document.getElementById('tourRating')?.value ? parseFloat(document.getElementById('tourRating').value) : null,
-                reviewsCount: document.getElementById('tourReviewsCount')?.value ? parseInt(document.getElementById('tourReviewsCount').value) : null,
                 mainImage: document.getElementById('tourMainImage')?.value,
                 gallery: JSON.stringify(window.tourGalleryImages || []),
                 highlights: JSON.stringify(window.tourHighlights || []),
@@ -3588,17 +3573,6 @@
                             console.log('✅ Loaded pickup info:', tour.pickupInfo);
                         }
                         
-                        const tourRating = document.getElementById('tourRating');
-                        if (tourRating) {
-                            tourRating.value = tour.rating || '';
-                            console.log('✅ Loaded rating:', tour.rating);
-                        }
-                        
-                        const tourReviewsCount = document.getElementById('tourReviewsCount');
-                        if (tourReviewsCount) {
-                            tourReviewsCount.value = tour.reviewsCount || '';
-                            console.log('✅ Loaded reviews count:', tour.reviewsCount);
-                        }
                         
                         const tourMinPeopleElement = document.getElementById('tourMinPeople');
                         if (tourMinPeopleElement) {
@@ -4028,8 +4002,6 @@
                 format: document.getElementById('tourType').value || '',
                 tourType: document.getElementById('tourType').value || '',
                 pickupInfo: document.getElementById('tourPickupInfo').value || '',
-                rating: document.getElementById('tourRating').value ? parseFloat(document.getElementById('tourRating').value) : null,
-                reviewsCount: document.getElementById('tourReviewsCount').value ? parseInt(document.getElementById('tourReviewsCount').value) : null,
                 minPeople: document.getElementById('tourMinPeople').value ? parseInt(document.getElementById('tourMinPeople').value) : null,
                 maxPeople: document.getElementById('tourMaxPeople').value ? parseInt(document.getElementById('tourMaxPeople').value) : null,
                 highlights: JSON.stringify(window.tourHighlights || []),
