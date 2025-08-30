@@ -2659,12 +2659,12 @@
         }
 
         function updateHighlightsList() {
-            const container = document.getElementById('highlightsList');
-            if (!container) {
+            const highlightsContainer = document.getElementById('highlightsList');
+            if (!highlightsContainer) {
                 console.warn('highlightsList container not found');
                 return;
             }
-            container.innerHTML = window.tourHighlights.map((highlight, index) => `
+            highlightsContainer.innerHTML = window.tourHighlights.map((highlight, index) => `
                 <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
                     <span>✓ ${highlight}</span>
                     <button type="button" onclick="removeHighlight(${index})" class="text-red-500 hover:text-red-700">
@@ -2679,13 +2679,13 @@
 
         // Функции управления галереей изображений
         function addGalleryImage() {
-            const input = document.getElementById('newImageUrl');
-            const imageUrl = input.value.trim();
+            const imageUrlInput = document.getElementById('newImageUrl');
+            const imageUrl = imageUrlInput.value.trim();
             
             if (imageUrl && !window.tourGalleryImages.includes(imageUrl)) {
                 window.tourGalleryImages.push(imageUrl);
                 updateGalleryImagesList();
-                input.value = '';
+                imageUrlInput.value = '';
             } else if (window.tourGalleryImages.includes(imageUrl)) {
                 alert('Это изображение уже добавлено');
             } else {
@@ -2699,12 +2699,12 @@
         }
 
         function updateGalleryImagesList() {
-            const container = document.getElementById('galleryImagesList');
-            if (!container) {
+            const galleryContainer = document.getElementById('galleryImagesList');
+            if (!galleryContainer) {
                 console.warn('galleryImagesList container not found');
                 return;
             }
-            container.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
+            galleryContainer.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
                 <div class="flex items-center justify-between bg-gray-50 p-3 rounded border">
                     <div class="flex items-center gap-3">
                         <img src="${imageUrl}" alt="Preview" class="w-12 h-12 object-cover rounded" onerror="this.style.display='none';">
@@ -3026,12 +3026,12 @@
         }
 
         function updateItineraryList() {
-            const container = document.getElementById('itineraryList');
-            if (!container) {
+            const itineraryContainer = document.getElementById('itineraryList');
+            if (!itineraryContainer) {
                 console.warn('itineraryList container not found');
                 return;
             }
-            container.innerHTML = window.tourItinerary.map((item, index) => `
+            itineraryContainer.innerHTML = window.tourItinerary.map((item, index) => `
                 <div class="bg-gray-50 p-3 rounded border">
                     <div class="flex justify-between items-start mb-2">
                         <div class="flex items-center gap-3">
@@ -4182,12 +4182,12 @@
         
         // Функции для работы с динамическими списками
         function addHighlight() {
-            const input = document.getElementById('newHighlight');
-            const value = input.value.trim();
+            const highlightInput = document.getElementById('newHighlight');
+            const value = highlightInput.value.trim();
             if (value) {
                 window.tourHighlights = window.tourHighlights || [];
                 window.tourHighlights.push(value);
-                input.value = '';
+                highlightInput.value = '';
                 updateHighlightsList();
             }
         }
@@ -4221,12 +4221,12 @@
         }
         
         function addStartTime() {
-            const input = document.getElementById('newStartTime');
-            const value = input.value;
+            const startTimeInput = document.getElementById('newStartTime');
+            const value = startTimeInput.value;
             if (value) {
                 window.tourStartTimes = window.tourStartTimes || [];
                 window.tourStartTimes.push(value);
-                input.value = '';
+                startTimeInput.value = '';
                 updateStartTimesList();
             }
         }
