@@ -173,6 +173,12 @@ export class TourController {
         }
       }
 
+      // Parse shortDescription if description is not provided
+      if (!description && shortDescription) {
+        description = shortDescription;
+        console.log('Using shortDescription as description:', shortDescription);
+      }
+
       if (typeof description === 'string') {
         try {
           description = JSON.parse(description);
@@ -194,11 +200,18 @@ export class TourController {
         });
       }
 
-      if (!description || !description.en || !description.ru) {
-        return res.status(400).json({
-          success: false,
-          error: 'Description is required in both English and Russian'
-        });
+      // Make description optional or use shortDescription
+      if (description && (typeof description === 'object')) {
+        if (!description.en || !description.ru) {
+          return res.status(400).json({
+            success: false,
+            error: 'Description must have both English and Russian versions if provided'
+          });
+        }
+      } else if (!description) {
+        // Set default empty description if none provided
+        description = { ru: '', en: '' };
+        console.log('Using default empty description');
       }
 
       // Use durationDays if duration is not provided
