@@ -244,81 +244,63 @@
             background: rgba(16, 185, 129, 0.95);
         }
     </style>
+    
+    <!-- Leaflet.js для карты -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body class="min-h-screen bg-gray-50">
-    <!-- Навигация -->
-    <header class="bg-gray-900 shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-between items-center h-20">
+    <!-- Хедер -->
+    <header class="shadow-md sticky top-0 z-50" style="background-color: #3E3E3E;">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between h-16 px-6">
                 <!-- Логотип -->
                 <div class="flex items-center">
-                    <a href="index.html" class="text-2xl font-bold text-white">
-                        Bunyod-Tour
-                    </a>
+                    <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour Logo" class="w-12 h-12 mr-3 rounded-full">
+                    <span class="text-xl font-bold text-white">Bunyod-Tour</span>
                 </div>
                 
-                <!-- Основная навигация -->
-                <nav class="hidden md:flex items-center space-x-6">
-                    <a href="index.html" class="text-white hover:text-gray-300 transition-colors">Главная</a>
-                    
-                    <!-- Туры (с выпадающим меню) -->
-                    <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туры</a>
-                        <div class="dropdown-content">
-                            <div class="dropdown-submenu">
-                                <a href="#">Туры по Центральной Азии</a>
-                                <div class="dropdown-subcontent">
-                                    <a href="#">Туры по Таджикистану</a>
-                                    <a href="#">Туры по Узбекистану</a>
-                                    <a href="#">Туры по Киргизстану</a>
-                                    <a href="#">Туры по Туркменистану</a>
-                                    <a href="#">Туры по Казахстану</a>
-                                </div>
-                            </div>
-                            <a href="#">Популярные туры</a>
-                            <a href="#">Рекомендованные туры</a>
-                            <a href="#">Групповые туры</a>
-                            <a href="#">Индивидуальные туры</a>
-                            <a href="#">Эксклюзивные туры</a>
-                            <a href="#">VIP туры</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Экскурсии (с выпадающим меню) -->
-                    <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Экскурсии</a>
-                        <div class="dropdown-content">
-                            <a href="#">Экскурсии по Душанбе</a>
-                            <a href="#">Экскурсии по Худжанду</a>
-                            <a href="#">Горные экскурсии</a>
-                            <a href="#">Культурные экскурсии</a>
-                            <a href="#">Гастрономические туры</a>
-                        </div>
-                    </div>
+                <!-- Навигационное меню -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors">О нас</a>
                     
                     <!-- Услуги (с выпадающим меню) -->
                     <div class="dropdown">
                         <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
                         <div class="dropdown-content">
-                            <a href="#">Бронирование отелей</a>
-                            <a href="#">Аренда автомобилей</a>
-                            <a href="#">Гиды-переводчики</a>
-                            <a href="#">Визовая поддержка</a>
-                            <a href="#">Трансферы</a>
-                            <a href="#">Страхование</a>
+                            <div class="dropdown-submenu">
+                                <a href="#">Туры</a>
+                                <div class="dropdown-subcontent" style="width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px;">
+                                    <a href="#" style="padding: 8px;">Однодневные</a>
+                                    <a href="#" style="padding: 8px;">Многодневные</a>
+                                    <a href="#" style="padding: 8px;">Экскурсии</a>
+                                    <a href="#" style="padding: 8px;">Городские туры</a>
+                                    <a href="#" style="padding: 8px;">Природа/экологические туры</a>
+                                    <a href="#" style="padding: 8px;">Культурно познавательные туры</a>
+                                    <a href="#" style="padding: 8px;">Исторические туры</a>
+                                    <a href="#" style="padding: 8px;">Походы/трекинги</a>
+                                    <a href="#" style="padding: 8px;">Горные ландшафты</a>
+                                    <a href="#" style="padding: 8px;">Озерные ландшафты</a>
+                                    <a href="#" style="padding: 8px;">Приключенческие туры</a>
+                                    <a href="#" style="padding: 8px;">Гастрономические туры</a>
+                                    <a href="#" style="padding: 8px;">Автотуры/сафари/джип-туры</a>
+                                    <a href="#" style="padding: 8px;">Агротуры</a>
+                                    <a href="#" style="padding: 8px;">VIP туры</a>
+                                </div>
+                            </div>
+                            <a href="/hotels-catalog.html">Отели</a>
+                            <a href="#">Тургиды</a>
+                            <a href="#" >Трансфер</a>
+                            <a href="#">Заказ тура</a>
+                            <a href="visa-support.html">Визовая поддержка</a>
                         </div>
                     </div>
                     
-                    <!-- О нас (с выпадающим меню) -->
+                    <!-- Туристам (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">О нас</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туристам</a>
                         <div class="dropdown-content">
-                            <a href="#">О компании</a>
-                            <a href="#">Наша команда</a>
-                            <a href="#">Отзывы</a>
-                            <a href="#">Контакты</a>
-                            <a href="#">Сертификаты</a>
-                            <a href="#">Партнеры</a>
+                            <a href="booking-guide.html">Инструкция сайта</a>
                             <a href="#">Специальные заметки</a>
                             <a href="#">Договор оферта</a>
                             <a href="#">Правила оплаты и возврата средств</a>
@@ -327,7 +309,6 @@
                     
                     <!-- Акции (БЕЗ выпадающего меню) -->
                     <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors">Акции</a>
-                    
                     <a href="news.html" class="text-white hover:text-gray-300 transition-colors">Новости</a>
                     
                     <!-- Тур-агенты (с выпадающим меню) -->
@@ -364,13 +345,30 @@
                                 <span class="flag flag-tj"></span>
                                 <span class="lang-name">Тоҷикӣ</span>
                             </a>
-                            <a href="#" class="lang-option" data-lang="fa" onclick="selectLanguage('fa', 'flag-ir', 'فارسی')">
-                                <span class="flag flag-ir"></span>
-                                <span class="lang-name">فارسی</span>
+                        </div>
+                    </div>
+
+                    <!-- Валютный селектор -->
+                    <div class="language-dropdown">
+                        <button class="lang-selector-btn" onclick="toggleCurrencyDropdown()">
+                            <span class="selected-currency">USD</span>
+                            <span class="currency-symbol">$</span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="lang-dropdown-content" id="currencyDropdown">
+                            <a href="#" class="lang-option active" data-currency="usd" onclick="selectCurrency('USD', '$')">
+                                <span class="currency-name">USD</span>
+                                <span class="currency-symbol">$</span>
                             </a>
-                            <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', 'flag-de', 'Deutsch')">
-                                <span class="flag flag-de"></span>
-                                <span class="lang-name">Deutsch</span>
+                            <a href="#" class="lang-option" data-currency="eur" onclick="selectCurrency('EUR', '€')">
+                                <span class="currency-name">EUR</span>
+                                <span class="currency-symbol">€</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="tjs" onclick="selectCurrency('TJS', 'ТЖС')">
+                                <span class="currency-name">TJS</span>
+                                <span class="currency-symbol">ТЖС</span>
                             </a>
                         </div>
                     </div>
@@ -704,7 +702,7 @@
                 </div>
             </div>
             
-            <!-- Google Map Section -->
+            <!-- Interactive Map Section -->
             <div class="border-t border-gray-600 mt-8 pt-8">
                 <h4 class="font-semibold mb-4 text-white text-center">Наше местоположение:</h4>
                 <div class="w-full h-64 rounded-lg overflow-hidden shadow-lg">
@@ -772,58 +770,38 @@
             }
         }
 
-        // Google Map initialization
+        // Leaflet Map initialization
         function initMap() {
             // Координаты офиса компании в Душанбе
-            const office = { lat: 38.5598, lng: 68.7870 };
+            const officeLocation = [38.5598, 68.7870];
             
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 15,
-                center: office,
-                styles: [
-                    {
-                        "featureType": "all",
-                        "elementType": "geometry.fill",
-                        "stylers": [{"weight": "2.00"}]
-                    },
-                    {
-                        "featureType": "all",
-                        "elementType": "geometry.stroke",
-                        "stylers": [{"color": "#9c9c9c"}]
-                    },
-                    {
-                        "featureType": "all",
-                        "elementType": "labels.text",
-                        "stylers": [{"visibility": "on"}]
-                    }
-                ]
-            });
+            // Создание карты
+            const map = L.map('map').setView(officeLocation, 15);
+            
+            // Добавление тайлов OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
             
             // Маркер офиса
-            const marker = new google.maps.Marker({
-                position: office,
-                map: map,
-                title: "Bunyod-Tour Office"
-            });
+            const marker = L.marker(officeLocation).addTo(map);
             
-            // Информационное окно
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-                    <div style="padding: 10px;">
-                        <h3 style="margin: 0 0 10px 0; color: #333;">Bunyod-Tour</h3>
-                        <p style="margin: 0; color: #666;">Офис туристической компании</p>
-                        <p style="margin: 5px 0 0 0; color: #666;">г. Душанбе, Таджикистан</p>
-                    </div>
-                `
-            });
-            
-            marker.addListener("click", () => {
-                infoWindow.open(map, marker);
-            });
+            // Информационное окно (popup)
+            marker.bindPopup(`
+                <div style="padding: 5px;">
+                    <h3 style="margin: 0 0 10px 0; color: #333; font-size: 16px;">Bunyod-Tour</h3>
+                    <p style="margin: 0; color: #666; font-size: 14px;">Офис туристической компании</p>
+                    <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">г. Душанбе, Таджикистан</p>
+                </div>
+            `);
         }
+        
+        // Инициализация карты после загрузки страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+        });
     </script>
 
-    <!-- Google Maps API -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 </body>
 </html>
