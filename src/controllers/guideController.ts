@@ -4,17 +4,22 @@ import { GuideData } from '../types/booking';
 
 export const createGuide = async (req: Request, res: Response) => {
   try {
-    const guideData: GuideData = req.body;
+    const { name, description, photo, languages, contact, experience, rating, isActive } = req.body;
+    
+    // Convert numeric fields
+    const experienceNumber = experience ? parseInt(experience) : null;
+    const ratingNumber = rating ? parseFloat(rating) : null;
     
     const guide = await prisma.guide.create({
       data: {
-        name: JSON.stringify(guideData.name),
-        description: guideData.description ? JSON.stringify(guideData.description) : null,
-        photo: guideData.photo,
-        languages: JSON.stringify(guideData.languages),
-        contact: guideData.contact ? JSON.stringify(guideData.contact) : null,
-        experience: guideData.experience,
-        rating: guideData.rating,
+        name: typeof name === 'string' ? name : JSON.stringify(name),
+        description: description ? (typeof description === 'string' ? description : JSON.stringify(description)) : null,
+        photo,
+        languages: typeof languages === 'string' ? languages : JSON.stringify(languages),
+        contact: contact ? (typeof contact === 'string' ? contact : JSON.stringify(contact)) : null,
+        experience: experienceNumber,
+        rating: ratingNumber,
+        isActive: isActive !== undefined ? isActive : true
       },
     });
 
