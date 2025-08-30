@@ -3403,7 +3403,8 @@
                         // Загрузка типа тура (format) - используем форму редактирования
                         const tourTypeElement = document.getElementById('eTourType');
                         if (tourTypeElement) {
-                            const tourTypeValue = tour.format || tour.tourType || '';
+                            const tourTypeValue = tour.format || tour.tourType || tour.tourFormat || '';
+                            console.log('🔍 Tour type data from server:', { format: tour.format, tourType: tour.tourType, final: tourTypeValue });
                             tourTypeElement.value = tourTypeValue;
                             console.log('✅ Loaded edit tour type:', tourTypeValue);
                             console.log('📋 Available edit tour type options:', Array.from(tourTypeElement.options).map(o => o.value));
@@ -3413,14 +3414,14 @@
                         const tourTitleRu = document.getElementById('eTourTitleRu');
                         if (tourTitleRu) {
                             tourTitleRu.value = title.ru || '';
-                            console.log('✅ Loaded edit title RU:', title.ru);
+                            console.log('✅ Loaded edit title RU:', title.ru, '-> field value:', tourTitleRu.value);
                         } else {
                             console.error('❌ Element eTourTitleRu not found');
                         }
                         const tourTitleEn = document.getElementById('eTourTitleEn');
                         if (tourTitleEn) {
                             tourTitleEn.value = title.en || '';
-                            console.log('✅ Loaded edit title EN:', title.en);
+                            console.log('✅ Loaded edit title EN:', title.en, '-> field value:', tourTitleEn.value);
                         } else {
                             console.error('❌ Element eTourTitleEn not found');
                         }
@@ -3442,28 +3443,28 @@
                         const tourCountry = document.getElementById('eTourCountry');
                         if (tourCountry) {
                             tourCountry.value = tour.country || '';
-                            console.log('✅ Loaded edit country:', tour.country);
+                            console.log('✅ Loaded edit country:', tour.country, '-> field value:', tourCountry.value);
                         } else {
                             console.error('❌ Element eTourCountry not found');
                         }
                         const tourCity = document.getElementById('eTourCity');
                         if (tourCity) {
                             tourCity.value = tour.city || '';
-                            console.log('✅ Loaded edit city:', tour.city);
+                            console.log('✅ Loaded edit city:', tour.city, '-> field value:', tourCity.value);
                         } else {
                             console.error('❌ Element eTourCity not found');
                         }
                         const tourDurationDays = document.getElementById('eTourDurationDays');
                         if (tourDurationDays) {
                             tourDurationDays.value = tour.durationDays || '';
-                            console.log('✅ Loaded edit duration days:', tour.durationDays);
+                            console.log('✅ Loaded edit duration days:', tour.durationDays, '-> field value:', tourDurationDays.value);
                         } else {
                             console.error('❌ Element eTourDurationDays not found');
                         }
                         const tourPrice = document.getElementById('eTourPrice');
                         if (tourPrice) {
                             tourPrice.value = tour.price || '';
-                            console.log('✅ Loaded edit price:', tour.price);
+                            console.log('✅ Loaded edit price:', tour.price, '-> field value:', tourPrice.value);
                         } else {
                             console.error('❌ Element eTourPrice not found');
                         }
@@ -3477,9 +3478,17 @@
                         const tourPickupInfo = document.getElementById('eTourPickupInfo');
                         if (tourPickupInfo) {
                             tourPickupInfo.value = tour.pickupInfo || '';
-                            console.log('✅ Loaded edit pickup info:', tour.pickupInfo);
+                            console.log('✅ Loaded edit pickup info:', tour.pickupInfo, '-> field value:', tourPickupInfo.value);
                         } else {
                             console.error('❌ Element eTourPickupInfo not found');
+                        }
+                        
+                        const tourFullDesc = document.getElementById('eTourFullDesc');
+                        if (tourFullDesc) {
+                            tourFullDesc.value = description.ru || '';
+                            console.log('✅ Loaded edit full description:', description.ru, '-> field value:', tourFullDesc.value);
+                        } else {
+                            console.error('❌ Element eTourFullDesc not found');
                         }
                         
                         // Обработка языков
@@ -5479,7 +5488,8 @@
                 priceType: document.getElementById('eTourPriceType').value || 'за человека',
                 originalPrice: document.getElementById('eTourOriginalPrice').value ? parseFloat(document.getElementById('eTourOriginalPrice').value) : null,
                 durationDays: parseInt(durationDays),
-                format: document.getElementById('eTourType').value || 'Групповой', // Тип тура
+                format: document.getElementById('eTourType').value, // Тип тура
+                tourType: document.getElementById('eTourType').value, // Для совместимости
                 difficulty: document.getElementById('eTourDifficulty').value || 'Легкий',
                 maxPeople: document.getElementById('eTourMaxPeople').value ? parseInt(document.getElementById('eTourMaxPeople').value) : null,
                 minPeople: document.getElementById('eTourMinPeople').value ? parseInt(document.getElementById('eTourMinPeople').value) : null,
