@@ -3347,6 +3347,11 @@
             console.log('🔵 Set currentTourId to:', currentTourId);
             window.currentTourId = tourId; // Также устанавливаем глобально
             window.tourImageURLs = [];
+            
+            // ИСПРАВЛЕНО: Очищаем выбранные категории при открытии модального окна
+            selectedCategories = [];
+            updateSelectedCategoriesDisplay();
+            
             document.getElementById('tourModal').classList.add('active');
             
             // Initialize the uploader
