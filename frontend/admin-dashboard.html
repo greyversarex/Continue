@@ -7123,12 +7123,11 @@
         // Preview translation
         async function previewTranslation() {
             const primaryLang = document.getElementById('primaryLanguage').value;
-            const targetLang = primaryLang === 'ru' ? 'en' : 'ru';
             const titleText = document.getElementById('tourTitle').value.trim();
             const descText = document.getElementById('tourDesc').value.trim();
             
             if (!titleText && !descText) {
-                alert(primaryLang === 'ru' ? 'Заполните поля для предпросмотра перевода' : 'Fill in the fields to preview translation');
+                alert('Заполните поля для предпросмотра перевода');
                 return;
             }
             
@@ -7138,48 +7137,71 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Переводится...';
             
             try {
-                const translations = {};
+                const allLanguages = ['ru', 'en', 'tj', 'fa', 'de', 'zh'];
+                const targetLanguages = allLanguages.filter(lang => lang !== primaryLang);
+                const allTranslations = {};
                 
-                // Translate title if filled
-                if (titleText) {
-                    const titleResponse = await fetch(`${getApiUrl()}/translate/text`, {
-                        method: 'POST',
-                        headers: getAuthHeaders(),
-                        body: JSON.stringify({
-                            text: titleText,
-                            fromLanguage: primaryLang,
-                            toLanguage: targetLang,
-                            context: 'tour_title'
-                        })
-                    });
-                    
-                    const titleData = await titleResponse.json();
-                    if (titleData.success) {
-                        translations.title = titleData.data.translatedText;
-                    }
-                }
-                
-                // Translate description if filled
-                if (descText) {
-                    const descResponse = await fetch(`${getApiUrl()}/translate/text`, {
-                        method: 'POST',
-                        headers: getAuthHeaders(),
-                        body: JSON.stringify({
-                            text: descText,
-                            fromLanguage: primaryLang,
-                            toLanguage: targetLang,
-                            context: 'tour_description'
-                        })
-                    });
-                    
-                    const descData = await descResponse.json();
-                    if (descData.success) {
-                        translations.description = descData.data.translatedText;
+                // Translate to all target languages
+                for (const targetLang of targetLanguages) {
+                    try {
+                        allTranslations[targetLang] = {};
+                        
+                        // Translate title if filled
+                        if (titleText) {
+                            const titleResponse = await fetch(`${getApiUrl()}/translate/text`, {
+                                method: 'POST',
+                                headers: getAuthHeaders(),
+                                body: JSON.stringify({
+                                    text: titleText,
+                                    fromLanguage: primaryLang,
+                                    toLanguage: targetLang,
+                                    context: 'tour_title'
+                                })
+                            });
+                            
+                            const titleData = await titleResponse.json();
+                            if (titleData.success) {
+                                allTranslations[targetLang].title = titleData.data.translatedText;
+                            } else {
+                                allTranslations[targetLang].title = 'Ошибка перевода';
+                            }
+                        }
+                        
+                        // Translate description if filled
+                        if (descText) {
+                            const descResponse = await fetch(`${getApiUrl()}/translate/text`, {
+                                method: 'POST',
+                                headers: getAuthHeaders(),
+                                body: JSON.stringify({
+                                    text: descText,
+                                    fromLanguage: primaryLang,
+                                    toLanguage: targetLang,
+                                    context: 'tour_description'
+                                })
+                            });
+                            
+                            const descData = await descResponse.json();
+                            if (descData.success) {
+                                allTranslations[targetLang].description = descData.data.translatedText;
+                            } else {
+                                allTranslations[targetLang].description = 'Ошибка перевода';
+                            }
+                        }
+                        
+                        // Small delay between translations
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                        
+                    } catch (langError) {
+                        console.warn(`Failed to translate to ${targetLang}:`, langError);
+                        allTranslations[targetLang] = {
+                            title: 'Ошибка перевода',
+                            description: 'Ошибка перевода'
+                        };
                     }
                 }
                 
                 // Show preview
-                showTranslationPreview(translations, targetLang);
+                showTranslationPreview(allTranslations, primaryLang, titleText, descText);
                 showNotification('Предпросмотр перевода готов!', 'success');
                 
             } catch (error) {
@@ -7192,27 +7214,51 @@
         }
 
         // Show translation preview
-        function showTranslationPreview(translations, targetLang) {
+        function showTranslationPreview(allTranslations, primaryLang, originalTitle, originalDesc) {
             const previewDiv = document.getElementById('translationPreview');
-            const previewTitle = document.getElementById('previewTitle');
-            const previewDesc = document.getElementById('previewDesc');
-            const previewTitleLabel = document.getElementById('previewTitleLabel');
-            const previewDescLabel = document.getElementById('previewDescLabel');
+            const languageNames = {
+                ru: 'Русский',
+                en: 'English', 
+                tj: 'Точикӣ',
+                fa: 'فارسی',
+                de: 'Deutsch',
+                zh: '中文'
+            };
             
-            // Update labels based on target language
-            if (targetLang === 'ru') {
-                previewTitleLabel.textContent = 'Название (Русский):';
-                previewDescLabel.textContent = 'Описание (Русский):';
-            } else {
-                previewTitleLabel.textContent = 'Title (English):';
-                previewDescLabel.textContent = 'Description (English):';
-            }
+            // Create comprehensive preview HTML
+            let previewHTML = `
+                <div class="bg-gray-50 border rounded p-4">
+                    <h4 class="font-bold mb-4 text-lg">Предпросмотр всех переводов</h4>
+                    
+                    <!-- Original content -->
+                    <div class="mb-6 p-3 bg-blue-50 rounded">
+                        <h5 class="font-semibold text-blue-800">${languageNames[primaryLang]} (оригинал):</h5>
+                        <p class="text-sm mt-2"><strong>Название:</strong> ${originalTitle || 'Не заполнено'}</p>
+                        <p class="text-sm mt-1"><strong>Описание:</strong> ${originalDesc || 'Не заполнено'}</p>
+                    </div>
+                    
+                    <!-- Translations -->
+                    <div class="space-y-3">
+            `;
             
-            // Set translated content
-            previewTitle.textContent = translations.title || 'Не переведено';
-            previewDesc.textContent = translations.description || 'Не переведено';
+            // Add each translation
+            Object.keys(allTranslations).forEach(lang => {
+                const translation = allTranslations[lang];
+                previewHTML += `
+                    <div class="p-3 bg-white border rounded">
+                        <h5 class="font-semibold text-gray-700">${languageNames[lang]}:</h5>
+                        <p class="text-sm mt-2"><strong>Название:</strong> ${translation.title || 'Не переведено'}</p>
+                        <p class="text-sm mt-1"><strong>Описание:</strong> ${translation.description || 'Не переведено'}</p>
+                    </div>
+                `;
+            });
             
-            // Show preview
+            previewHTML += `
+                    </div>
+                </div>
+            `;
+            
+            previewDiv.innerHTML = previewHTML;
             previewDiv.style.display = 'block';
         }
 
@@ -7228,9 +7274,19 @@
             showNotification('Автоперевод на все языки...', 'info');
             
             try {
-                // Set values for primary language
-                document.getElementById(`tourTitle${primaryLang.charAt(0).toUpperCase() + primaryLang.slice(1)}`).value = titleText;
-                document.getElementById(`tourDesc${primaryLang.charAt(0).toUpperCase() + primaryLang.slice(1)}`).value = descText;
+                // Set values for primary language in correct field IDs
+                const languageFieldMap = {
+                    'ru': { title: 'tourTitleRu', desc: 'tourDescRu' },
+                    'en': { title: 'tourTitleEn', desc: 'tourDescEn' },
+                    'tj': { title: 'tourTitleTj', desc: 'tourDescTj' },
+                    'fa': { title: 'tourTitleFa', desc: 'tourDescFa' },
+                    'de': { title: 'tourTitleDe', desc: 'tourDescDe' },
+                    'zh': { title: 'tourTitleZh', desc: 'tourDescZh' }
+                };
+                
+                // Set primary language values
+                document.getElementById(languageFieldMap[primaryLang].title).value = titleText;
+                document.getElementById(languageFieldMap[primaryLang].desc).value = descText;
                 
                 // Translate to all target languages
                 for (const targetLang of targetLanguages) {
@@ -7249,8 +7305,7 @@
                             
                             const titleData = await titleResponse.json();
                             if (titleData.success) {
-                                const fieldId = `tourTitle${targetLang.charAt(0).toUpperCase() + targetLang.slice(1)}`;
-                                document.getElementById(fieldId).value = titleData.data.translatedText;
+                                document.getElementById(languageFieldMap[targetLang].title).value = titleData.data.translatedText;
                             }
                         } catch (titleError) {
                             console.warn(`Failed to translate title to ${targetLang}:`, titleError);
@@ -7272,8 +7327,7 @@
                             
                             const descData = await descResponse.json();
                             if (descData.success) {
-                                const fieldId = `tourDesc${targetLang.charAt(0).toUpperCase() + targetLang.slice(1)}`;
-                                document.getElementById(fieldId).value = descData.data.translatedText;
+                                document.getElementById(languageFieldMap[targetLang].desc).value = descData.data.translatedText;
                             }
                         } catch (descError) {
                             console.warn(`Failed to translate description to ${targetLang}:`, descError);
