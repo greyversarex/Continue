@@ -23,14 +23,27 @@ app.use((req, res, next) => {
   next();
 });
 
-// Booking pages - explicit routes BEFORE static middleware
-app.get('/booking.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'booking.html'));
+// NEW Booking system - 3-step process
+app.get('/booking/step1', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'booking-step1.html'));
 });
 
-app.get('/booking-flow.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'booking-flow.html'));
+app.get('/booking/step2', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'booking-step2.html'));
 });
+
+app.get('/booking/step3', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'booking-step3.html'));
+});
+
+// Legacy booking pages - to be removed later
+// app.get('/booking.html', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'frontend', 'booking.html'));
+// });
+
+// app.get('/booking-flow.html', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'frontend', 'booking-flow.html'));
+// });
 
 // React Admin Panel - explicit route BEFORE static middleware
 app.get('/react-admin-panel.html', (req, res) => {

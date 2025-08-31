@@ -1925,8 +1925,8 @@
             // Store in localStorage for booking flow
             localStorage.setItem('bookingData', JSON.stringify(bookingData));
             
-            // Navigate to booking page
-            window.location.href = `booking.html?tour=${encodeURIComponent(tourTitle)}&date=${selectedDate}&time=${encodeURIComponent(selectedTime)}&step=1`;
+            // Navigate to new 3-step booking system
+            window.location.href = `/booking/step1?tourId=${encodeURIComponent(tour.id)}&date=${selectedDate}&tourists=1`;
         }
 
         function closeHotelModal() {
@@ -2084,8 +2084,8 @@
             const diffTime = Math.abs(checkOutDate - checkInDate);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             
-            // Navigate to booking page with hotel selection and calculated days
-            window.location.href = `booking.html?tour=${encodeURIComponent(tourTitle)}&date=${checkIn}&hotel=${encodeURIComponent(hotelName)}&hotelId=${hotelId}&price=${price}&guests=${guests}&days=${diffDays}&step=1`;
+            // Navigate to new 3-step booking system with hotel selection
+            window.location.href = `/booking/step1?tourId=${encodeURIComponent(tour.id)}&date=${checkIn}&tourists=${guests}`;
         }
 
         function backToSearch() {

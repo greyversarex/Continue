@@ -80,6 +80,7 @@ model Tour {
   bookingRequests BookingRequest[]
   orders         Order[]
   reviews        Review[]
+  bookings       Booking[]
   tourHotels     TourHotel[]
   tourGuides     TourGuide[]
   createdAt      DateTime         @default(now())
@@ -107,6 +108,7 @@ model Hotel {
   isActive    Boolean     @default(true)
   tourHotels  TourHotel[]
   orders      Order[]
+  bookings    Booking[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -381,4 +383,29 @@ model Slide {
   updatedAt   DateTime @updatedAt
 
   @@map("slides")
+}
+
+model Booking {
+  id              Int      @id @default(autoincrement())
+  tourId          Int      @map("tour_id")
+  hotelId         Int?     @map("hotel_id")
+  tourists        String   // JSON array of tourist data
+  contactName     String   @map("contact_name")
+  contactPhone    String   @map("contact_phone")
+  contactEmail    String   @map("contact_email")
+  roomSelection   String?  @map("room_selection") // JSON object with selected rooms
+  mealSelection   String?  @map("meal_selection") // JSON object with selected meals
+  totalPrice      Float    @map("total_price")
+  tourDate        String   @map("tour_date")
+  numberOfTourists Int     @map("number_of_tourists")
+  specialRequests String?  @map("special_requests")
+  status          String   @default("draft") // draft, pending, paid, cancelled
+  paymentMethod   String?  @map("payment_method")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  hotel  Hotel? @relation(fields: [hotelId], references: [id])
+
+  @@map("bookings")
 }

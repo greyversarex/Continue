@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование - Данные туриста | Bunyod-Tour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+        .progress-step.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .progress-step.completed {
+            background: #10b981;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .tourist-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Progress Indicator -->
+    <div class="bg-white border-b">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="progress-step completed w-10 h-10 rounded-full flex items-center justify-center font-bold">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="font-medium text-gray-700">Выбор отеля</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="progress-step active w-10 h-10 rounded-full flex items-center justify-center font-bold">2</div>
+                    <span class="font-medium text-gray-700">Данные туриста</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="progress-step w-10 h-10 rounded-full flex items-center justify-center font-bold bg-gray-200">3</div>
+                    <span class="font-medium text-gray-400">Оплата</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Данные для бронирования</h2>
+            
+            <form id="booking-form">
+                <!-- Contact Person Details -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Контактное лицо</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label class="form-label" for="contactName">ФИО контактного лица *</label>
+                            <input type="text" id="contactName" class="form-input" placeholder="Иванов Иван Иванович" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="contactPhone">Телефон *</label>
+                            <input type="tel" id="contactPhone" class="form-input" placeholder="+992 xx xxx xxxx" required>
+                        </div>
+                        
+                        <div class="form-group md:col-span-2">
+                            <label class="form-label" for="contactEmail">Email *</label>
+                            <input type="email" id="contactEmail" class="form-input" placeholder="example@email.com" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tourists -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Список туристов</h3>
+                        <button type="button" id="add-tourist" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Добавить туриста
+                        </button>
+                    </div>
+                    
+                    <div id="tourists-container">
+                        <!-- Tourists will be added here dynamically -->
+                    </div>
+                </div>
+
+                <!-- Special Requests -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Особые пожелания</h3>
+                    <div class="form-group">
+                        <label class="form-label" for="specialRequests">Дополнительные пожелания</label>
+                        <textarea id="specialRequests" class="form-input" rows="4" placeholder="Укажите любые особые пожелания или требования..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Согласие</h3>
+                    
+                    <div class="space-y-4">
+                        <label class="flex items-start">
+                            <input type="checkbox" id="termsAccepted" class="mt-1 mr-3" required>
+                            <span class="text-gray-700">
+                                Принимаю <a href="/oferta-ru.pdf" target="_blank" class="text-blue-600 hover:underline">условия оферты</a> 
+                                и даю согласие на <a href="/privacy-policy-ru.pdf" target="_blank" class="text-blue-600 hover:underline">использование персональных данных</a>
+                            </span>
+                        </label>
+                        
+                        <label class="flex items-start">
+                            <input type="checkbox" id="paymentRulesAccepted" class="mt-1 mr-3" required>
+                            <span class="text-gray-700">
+                                Ознакомлен с <a href="/payment-rules-ru.pdf" target="_blank" class="text-blue-600 hover:underline">правилами оплаты и возврата средств</a>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-between">
+                    <button type="button" id="back-btn" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Назад
+                    </button>
+                    <button type="submit" id="continue-btn" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all">
+                        Подтвердить и перейти к оплате
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let bookingState = {};
+        let touristCount = 0;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+            setupEventListeners();
+        });
+
+        function initializePage() {
+            // Get booking state from localStorage
+            const savedState = localStorage.getItem('bookingState');
+            if (savedState) {
+                bookingState = JSON.parse(savedState);
+            }
+
+            // Get booking ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookingId = urlParams.get('bookingId');
+            
+            if (!bookingId || !bookingState.bookingId) {
+                alert('Ошибка: данные бронирования не найдены');
+                window.location.href = '/tours.html';
+                return;
+            }
+
+            // Initialize with required number of tourists
+            const numberOfTourists = getNumberOfTourists();
+            for (let i = 0; i < numberOfTourists; i++) {
+                addTourist();
+            }
+        }
+
+        function getNumberOfTourists() {
+            // This should come from the tour data or URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            return parseInt(urlParams.get('tourists')) || 1;
+        }
+
+        function setupEventListeners() {
+            document.getElementById('add-tourist').addEventListener('click', addTourist);
+            document.getElementById('back-btn').addEventListener('click', goBack);
+            document.getElementById('booking-form').addEventListener('submit', submitForm);
+        }
+
+        function addTourist() {
+            touristCount++;
+            const container = document.getElementById('tourists-container');
+            
+            const touristCard = document.createElement('div');
+            touristCard.className = 'tourist-card';
+            touristCard.innerHTML = `
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="font-medium text-gray-800">Турист ${touristCount}</h4>
+                    ${touristCount > getNumberOfTourists() ? `
+                        <button type="button" class="text-red-500 hover:text-red-700" onclick="removeTourist(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    ` : ''}
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">ФИО туриста *</label>
+                        <input type="text" class="form-input tourist-name" placeholder="Фамилия Имя Отчество" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Дата рождения</label>
+                        <input type="date" class="form-input tourist-birth">
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(touristCard);
+        }
+
+        function removeTourist(button) {
+            button.closest('.tourist-card').remove();
+            updateTouristNumbers();
+        }
+
+        function updateTouristNumbers() {
+            const cards = document.querySelectorAll('.tourist-card');
+            cards.forEach((card, index) => {
+                const title = card.querySelector('h4');
+                title.textContent = `Турист ${index + 1}`;
+            });
+            touristCount = cards.length;
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        async function submitForm(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Collect form data
+            const formData = {
+                contactName: document.getElementById('contactName').value,
+                contactPhone: document.getElementById('contactPhone').value,
+                contactEmail: document.getElementById('contactEmail').value,
+                specialRequests: document.getElementById('specialRequests').value,
+                tourists: collectTouristsData(),
+                roomSelection: bookingState.roomSelection,
+                mealSelection: bookingState.mealSelection
+            };
+            
+            try {
+                const response = await fetch(`/api/booking/${bookingState.bookingId}/details`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update booking state
+                    bookingState = { ...bookingState, ...formData };
+                    localStorage.setItem('bookingState', JSON.stringify(bookingState));
+                    
+                    // Navigate to step 3
+                    window.location.href = `/booking/step3?bookingId=${bookingState.bookingId}`;
+                } else {
+                    alert('Ошибка: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error updating booking details:', error);
+                alert('Ошибка при сохранении данных');
+            }
+        }
+
+        function validateForm() {
+            // Check required fields
+            const requiredFields = ['contactName', 'contactPhone', 'contactEmail'];
+            for (const field of requiredFields) {
+                const element = document.getElementById(field);
+                if (!element.value.trim()) {
+                    alert(`Пожалуйста, заполните поле: ${element.previousElementSibling.textContent}`);
+                    element.focus();
+                    return false;
+                }
+            }
+            
+            // Check tourists
+            const touristNames = document.querySelectorAll('.tourist-name');
+            for (const nameInput of touristNames) {
+                if (!nameInput.value.trim()) {
+                    alert('Пожалуйста, заполните ФИО всех туристов');
+                    nameInput.focus();
+                    return false;
+                }
+            }
+            
+            // Check checkboxes
+            if (!document.getElementById('termsAccepted').checked) {
+                alert('Необходимо принять условия оферты');
+                return false;
+            }
+            
+            if (!document.getElementById('paymentRulesAccepted').checked) {
+                alert('Необходимо ознакомиться с правилами оплаты');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function collectTouristsData() {
+            const tourists = [];
+            const touristCards = document.querySelectorAll('.tourist-card');
+            
+            touristCards.forEach(card => {
+                const name = card.querySelector('.tourist-name').value;
+                const birthDate = card.querySelector('.tourist-birth').value;
+                
+                tourists.push({
+                    fullName: name,
+                    dateOfBirth: birthDate || null
+                });
+            });
+            
+            return tourists;
+        }
+    </script>
+</body>
+</html>
