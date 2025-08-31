@@ -496,6 +496,7 @@ export class HotelModel {
         city: data.city || null,
         pension: data.pension || 'none',
         amenities: data.amenities ? (typeof data.amenities === 'string' ? data.amenities : JSON.stringify(data.amenities)) : null,
+        roomTypes: data.roomTypes ? (typeof data.roomTypes === 'string' ? data.roomTypes : JSON.stringify(data.roomTypes)) : null, // НОВОЕ: Категории номеров с ценами
         isActive: data.isActive !== undefined ? data.isActive : true
       }
     });
@@ -519,6 +520,7 @@ export class HotelModel {
     if (data.city !== undefined) updateData.city = data.city;
     if (data.pension !== undefined) updateData.pension = data.pension;
     if (data.amenities) updateData.amenities = typeof data.amenities === 'string' ? data.amenities : JSON.stringify(data.amenities);
+    if (data.roomTypes) updateData.roomTypes = typeof data.roomTypes === 'string' ? data.roomTypes : JSON.stringify(data.roomTypes); // НОВОЕ: Категории номеров с ценами
     if (data.isActive !== undefined) updateData.isActive = data.isActive;
 
     const hotel = await prisma.hotel.findUnique({ where: { id } });

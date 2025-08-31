@@ -1351,6 +1351,54 @@
                         </select>
                     </div>
                     
+                    <!-- НОВОЕ: Секция категорий номеров с ценами -->
+                    <div class="form-group">
+                        <label class="form-label">Категории номеров и цены</label>
+                        <div class="bg-gray-50 p-4 rounded-lg border">
+                            <p class="text-sm text-gray-600 mb-3">Настройте цены за ночь для разных типов номеров (в USD)</p>
+                            
+                            <!-- SGL - Одноместный -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="roomSGL" class="rounded">
+                                    <label for="roomSGL" class="font-medium">SGL - Одноместный</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span>$</span>
+                                    <input type="number" id="priceSGL" class="form-input w-20" placeholder="100" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">/ ночь</span>
+                                </div>
+                            </div>
+                            
+                            <!-- TWL - Двухместный -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="roomTWL" class="rounded">
+                                    <label for="roomTWL" class="font-medium">TWL - Двухместный</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span>$</span>
+                                    <input type="number" id="priceTWL" class="form-input w-20" placeholder="150" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">/ ночь</span>
+                                </div>
+                            </div>
+                            
+                            <!-- DBL - Двухспальный -->
+                            <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="roomDBL" class="rounded">
+                                    <label for="roomDBL" class="font-medium">DBL - Двухспальный</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span>$</span>
+                                    <input type="number" id="priceDBL" class="form-input w-20" placeholder="180" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">/ ночь</span>
+                                </div>
+                            </div>
+                        </div>
+                        <small class="text-gray-500 mt-2 block">Отметьте доступные типы номеров и укажите цену за ночь для каждого</small>
+                    </div>
+                    
                     <div class="form-group">
                         <label class="form-label">Город</label>
                         <input type="text" class="form-input" id="hotelCity" placeholder="Душанбе, Самарканд, Бишкек и т.д.">
@@ -4196,6 +4244,7 @@
             } else {
                 document.getElementById('hotelModalTitle').textContent = 'Добавить отель';
                 document.getElementById('hotelForm').reset();
+                clearRoomTypeFields(); // НОВОЕ: Очистить категории номеров для создания нового отеля
                 if (hotelUploader) {
                     hotelUploader.clear('hotel-uploader-container');
                 }
@@ -4214,6 +4263,22 @@
             
             // Reset the hidden input
             document.getElementById('hotelImages').value = '';
+            
+            // НОВОЕ: Очистить категории номеров при закрытии модала
+            clearRoomTypeFields();
+        }
+        
+        // НОВОЕ: Функция очистки полей категорий номеров
+        function clearRoomTypeFields() {
+            document.getElementById('roomSGL').checked = false;
+            document.getElementById('roomTWL').checked = false;
+            document.getElementById('roomDBL').checked = false;
+            document.getElementById('priceSGL').value = '';
+            document.getElementById('priceTWL').value = '';
+            document.getElementById('priceDBL').value = '';
+            document.getElementById('priceSGL').disabled = true;
+            document.getElementById('priceTWL').disabled = true;
+            document.getElementById('priceDBL').disabled = true;
         }
         
         function loadHotelData(hotelId) {
@@ -4269,6 +4334,39 @@
                     if (hotelDescField) {
                         hotelDescField.value = description.ru || description.en || hotel.description || '';
                         console.log('✅ Loaded hotel description:', hotelDescField.value);
+                    }
+                    
+                    // НОВОЕ: Загрузка категорий номеров при редактировании
+                    if (hotel.roomTypes) {
+                        try {
+                            const roomTypes = typeof hotel.roomTypes === 'string' ? JSON.parse(hotel.roomTypes) : hotel.roomTypes;
+                            
+                            // SGL - Одноместный
+                            if (roomTypes.SGL) {
+                                document.getElementById('roomSGL').checked = true;
+                                document.getElementById('priceSGL').disabled = false;
+                                document.getElementById('priceSGL').value = roomTypes.SGL.price || '';
+                                console.log('✅ Loaded SGL room type:', roomTypes.SGL);
+                            }
+                            
+                            // TWL - Двухместный
+                            if (roomTypes.TWL) {
+                                document.getElementById('roomTWL').checked = true;
+                                document.getElementById('priceTWL').disabled = false;
+                                document.getElementById('priceTWL').value = roomTypes.TWL.price || '';
+                                console.log('✅ Loaded TWL room type:', roomTypes.TWL);
+                            }
+                            
+                            // DBL - Двухспальный
+                            if (roomTypes.DBL) {
+                                document.getElementById('roomDBL').checked = true;
+                                document.getElementById('priceDBL').disabled = false;
+                                document.getElementById('priceDBL').value = roomTypes.DBL.price || '';
+                                console.log('✅ Loaded DBL room type:', roomTypes.DBL);
+                            }
+                        } catch (e) {
+                            console.warn('Failed to parse room types:', hotel.roomTypes, e);
+                        }
                     }
                     const addressField = document.getElementById('hotelAddress');
                     const starsField = document.getElementById('hotelStars');
@@ -4499,10 +4597,49 @@
                 tj: descValue
             };
             
-            // Get amenities
+            // НОВОЕ: Обработка категорий номеров с ценами
+            const roomTypes = {};
+            
+            // SGL - Одноместный
+            if (document.getElementById('roomSGL').checked) {
+                const price = document.getElementById('priceSGL').value;
+                if (price && !isNaN(parseFloat(price))) {
+                    roomTypes.SGL = {
+                        name: 'Одноместный',
+                        price: parseFloat(price)
+                    };
+                }
+            }
+            
+            // TWL - Двухместный
+            if (document.getElementById('roomTWL').checked) {
+                const price = document.getElementById('priceTWL').value;
+                if (price && !isNaN(parseFloat(price))) {
+                    roomTypes.TWL = {
+                        name: 'Двухместный', 
+                        price: parseFloat(price)
+                    };
+                }
+            }
+            
+            // DBL - Двухспальный
+            if (document.getElementById('roomDBL').checked) {
+                const price = document.getElementById('priceDBL').value;
+                if (price && !isNaN(parseFloat(price))) {
+                    roomTypes.DBL = {
+                        name: 'Двухспальный',
+                        price: parseFloat(price)
+                    };
+                }
+            }
+            
+            // Get amenities (исключаем чекбоксы категорий номеров)
             const amenities = [];
             document.querySelectorAll('#hotelForm input[type="checkbox"]:checked').forEach(checkbox => {
-                if (checkbox.id !== 'hotelActive') {
+                if (checkbox.id !== 'hotelActive' && 
+                    checkbox.id !== 'roomSGL' && 
+                    checkbox.id !== 'roomTWL' && 
+                    checkbox.id !== 'roomDBL') {
                     amenities.push(checkbox.value);
                 }
             });
@@ -4519,6 +4656,7 @@
                 city: document.getElementById('hotelCity').value || null,
                 pension: document.getElementById('hotelPension').value,
                 amenities: JSON.stringify(amenities),
+                roomTypes: JSON.stringify(roomTypes), // НОВОЕ: Категории номеров с ценами
                 isActive: document.getElementById('hotelActive').checked,
                 images: JSON.stringify(window.hotelImageURLs || []) // Use uploaded images
             };
@@ -4558,6 +4696,25 @@
                 });
         });
         
+        // НОВОЕ: JavaScript для управления полями категорий номеров
+        document.addEventListener('DOMContentLoaded', function() {
+            // Обработчики для включения/выключения полей цены
+            document.getElementById('roomSGL').addEventListener('change', function() {
+                document.getElementById('priceSGL').disabled = !this.checked;
+                if (!this.checked) document.getElementById('priceSGL').value = '';
+            });
+            
+            document.getElementById('roomTWL').addEventListener('change', function() {
+                document.getElementById('priceTWL').disabled = !this.checked;
+                if (!this.checked) document.getElementById('priceTWL').value = '';
+            });
+            
+            document.getElementById('roomDBL').addEventListener('change', function() {
+                document.getElementById('priceDBL').disabled = !this.checked;
+                if (!this.checked) document.getElementById('priceDBL').value = '';
+            });
+        });
+
         // Initialize ObjectUploader for hotels
         let hotelUploader = null;
         let tourUploader = null;

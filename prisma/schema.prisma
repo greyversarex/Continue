@@ -102,6 +102,7 @@ model Hotel {
   country     String?     // Country where hotel is located
   city        String?     // City where hotel is located
   pension     String?     @default("none") // Pension type: "none", "half", "full"
+  roomTypes   String?     // JSON object with room types and prices: {"SGL": {"price": 100, "name": "Одноместный"}, "TWL": {"price": 150, "name": "Двухместный"}, "DBL": {"price": 180, "name": "Двухспальный"}}
   isActive    Boolean     @default(true)
   tourHotels  TourHotel[]
   orders      Order[]
