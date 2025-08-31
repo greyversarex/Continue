@@ -1209,9 +1209,12 @@
             
             // Load reviews
             try {
+                console.log('🎯 About to call loadReviews() from updatePageContent()');
+                console.log('🎯 tourData at this point:', tourData);
                 await loadReviews();
+                console.log('🎯 loadReviews() completed successfully');
             } catch (err) {
-                console.error('Failed to load reviews:', err);
+                console.error('🎯❌ Failed to load reviews:', err);
             }
             
             // Update start time options
@@ -1486,13 +1489,16 @@
         }
 
         async function loadReviews() {
-            console.log('=== loadReviews() called ===');
+            console.log('🎯 === loadReviews() called ===');
+            console.log('🎯 Current tourData:', tourData);
+            console.log('🎯 Current URL:', window.location.href);
+            console.log('🎯 Current search params:', window.location.search);
             
             const reviewsContainer = document.getElementById('reviews-container');
             const reviewsCount = document.getElementById('reviews-count');
             const reviewsLoading = document.getElementById('reviews-loading');
             
-            console.log('DOM elements found:', {
+            console.log('🎯 DOM elements found:', {
                 reviewsContainer: !!reviewsContainer,
                 reviewsCount: !!reviewsCount,
                 reviewsLoading: !!reviewsLoading
@@ -1500,7 +1506,7 @@
             
             // Проверяем наличие элементов DOM
             if (!reviewsContainer || !reviewsCount || !reviewsLoading) {
-                console.log('Reviews elements not found, skipping reviews loading');
+                console.log('🎯 Reviews elements not found, skipping reviews loading');
                 return;
             }
             
@@ -1513,22 +1519,27 @@
                 
                 // Получаем ID тура из глобальных данных или URL
                 const tourId = tourData?.id || getTourIdFromUrl();
-                console.log('URL params:', window.location.search);
-                console.log('Tour data ID:', tourData?.id);
-                console.log('Extracted tour ID:', tourId);
+                console.log('🎯 URL params:', window.location.search);
+                console.log('🎯 Tour data ID:', tourData?.id);
+                console.log('🎯 Final extracted tour ID:', tourId);
+                console.log('🎯 Tour data full object:', tourData);
                 
                 if (!tourId) {
-                    console.log('No tour ID found, hiding reviews section');
+                    console.log('🎯❌ No tour ID found, hiding reviews section');
                     reviewsLoading.classList.add('hidden');
                     reviewsContainer.innerHTML = '';
                     reviewsCount.textContent = '(0)';
                     return;
                 }
                 
-                console.log('Loading reviews for tour ID:', tourId);
+                console.log('🎯✅ Loading reviews for tour ID:', tourId);
                 
-                const response = await fetch(`/api/reviews/tours/${tourId}`);
-                console.log('Fetch response status:', response.status);
+                const apiUrl = `/api/reviews/tours/${tourId}`;
+                console.log('🎯 Making request to:', apiUrl);
+                
+                const response = await fetch(apiUrl);
+                console.log('🎯 Fetch response status:', response.status);
+                console.log('🎯 Fetch response OK:', response.ok);
                 
                 if (!response.ok) {
                     console.error(`HTTP error! status: ${response.status}`);
@@ -1539,7 +1550,9 @@
                 }
                 
                 const data = await response.json();
-                console.log('Reviews API response:', data);
+                console.log('🎯 Reviews API response:', data);
+                console.log('🎯 Response success:', data.success);
+                console.log('🎯 Response data length:', data.data?.length || 0);
                 
                 reviewsLoading.classList.add('hidden');
                 
