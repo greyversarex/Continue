@@ -4958,49 +4958,7 @@
             currentBookingId = null;
         }
         
-        // Hotels functions
-        function loadHotels() {
-            fetch(`${getApiUrl()}/hotels`, {
-                headers: getAuthHeaders()
-            })
-                .then(res => res.json())
-                .then(data => {
-                    const container = document.getElementById('hotelsList');
-                    
-                    const hotels = data.data || data.hotels || [];
-                    if (hotels.length === 0) {
-                        container.innerHTML = '<p class="text-gray-500">Нет отелей</p>';
-                        return;
-                    }
-                    
-                    container.innerHTML = hotels.map(hotel => {
-                        const name = JSON.parse(hotel.name || '{}');
-                        const description = JSON.parse(hotel.description || '{}');
-                        const images = JSON.parse(hotel.images || '[]');
-                        
-                        return `
-                            <div class="bg-white rounded-lg shadow-sm p-4">
-                                ${images[0] ? `<img src="${images[0]}" alt="${name.ru}" class="w-full h-48 object-cover rounded-lg mb-4">` : ''}
-                                <h3 class="font-semibold text-lg mb-2">${name.ru || name.en || 'Отель'}</h3>
-                                <p class="text-gray-600 text-sm mb-3">${(description.ru || description.en || '').substring(0, 100)}...</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-yellow-500">
-                                        ${'★'.repeat(Math.floor(hotel.rating || 4))}${'☆'.repeat(5 - Math.floor(hotel.rating || 4))}
-                                    </span>
-                                    <div>
-                                        <button onclick="editHotel(${hotel.id})" class="text-blue-600 hover:text-blue-800 mr-2">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button onclick="deleteHotel(${hotel.id})" class="text-red-600 hover:text-red-800">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                });
-        }
+        // Hotels functions - moved to line 4302
         
         // Guides functions
         function loadGuides() {
