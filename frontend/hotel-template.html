@@ -597,8 +597,7 @@
             // Hotel gallery
             displayHotelGallery();
             
-            // Set minimum dates
-            setMinimumDates();
+            // Booking functionality removed
         }
 
         // Display hotel stars
@@ -750,30 +749,9 @@
             }
         }
 
-        // Set minimum dates for booking
+        // Set minimum dates for booking - removed since booking section is removed
         function setMinimumDates() {
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            
-            const todayString = today.toISOString().split('T')[0];
-            const tomorrowString = tomorrow.toISOString().split('T')[0];
-            
-            document.getElementById('checkin-date').min = todayString;
-            document.getElementById('checkout-date').min = tomorrowString;
-            
-            // Set checkout date when checkin date changes
-            document.getElementById('checkin-date').addEventListener('change', function() {
-                const checkinDate = new Date(this.value);
-                const minCheckout = new Date(checkinDate);
-                minCheckout.setDate(minCheckout.getDate() + 1);
-                
-                document.getElementById('checkout-date').min = minCheckout.toISOString().split('T')[0];
-                
-                if (document.getElementById('checkout-date').value <= this.value) {
-                    document.getElementById('checkout-date').value = minCheckout.toISOString().split('T')[0];
-                }
-            });
+            // No longer needed - booking section removed
         }
 
         // Lightbox functions
@@ -797,20 +775,7 @@
             document.getElementById('lightbox-img').src = hotelImages[currentImageIndex];
         }
 
-        // Booking functionality
-        document.getElementById('book-hotel-btn').addEventListener('click', function() {
-            const checkinDate = document.getElementById('checkin-date').value;
-            const checkoutDate = document.getElementById('checkout-date').value;
-            const guestsCount = document.getElementById('guests-count').value;
-            
-            if (!checkinDate || !checkoutDate) {
-                alert('Пожалуйста, выберите даты заезда и выезда');
-                return;
-            }
-            
-            // Here you would implement booking logic
-            alert(`Бронирование отеля "${hotelData.name ? JSON.parse(hotelData.name).ru : 'отеля'}" на ${guestsCount} гостей с ${checkinDate} по ${checkoutDate}`);
-        });
+        // Booking functionality removed since booking section is removed
 
         // Keyboard navigation for lightbox
         document.addEventListener('keydown', function(e) {
