@@ -49,6 +49,10 @@ const apiRoutes = require('./src/routes/index.ts').default;
 // Use the API routes
 app.use('/api', apiRoutes);
 
+// Add object storage routes directly (without /api prefix) for image serving
+const objectStorageRoutes = require('./src/routes/objectStorageRoutes.ts').default;
+app.use('/', objectStorageRoutes);
+
 // HTML files will be served by express.static
 
 // Обслуживать статические файлы из папки frontend
