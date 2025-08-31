@@ -1746,6 +1746,12 @@
         }
 
         function setupEventListeners() {
+            console.log("🎯🎯🎯 === setupEventListeners() START ===");
+            
+            // Get date input element
+            const dateInput = document.getElementById('tour-date');
+            console.log("🎯🎯🎯 dateInput element:", dateInput);
+            
             // Navigation arrows
             document.getElementById('prev-btn').addEventListener('click', () => {
                 const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : tourData.images.length - 1;
@@ -1784,7 +1790,8 @@
                 initializeCustomCalendar();
             }, 100);
                 
-                // Handle date change with availability check
+            // Handle date change with availability check
+            if (dateInput) {
                 dateInput.addEventListener('change', function() {
                     if (!this.value) {
                         return; // Если значение пустое, ничего не делаем
@@ -1816,9 +1823,12 @@
                     const formattedDate = selectedDate.toLocaleDateString('ru-RU', options);
                     console.log('Выбрана дата:', formattedDate);
                 });
-                
-                // Убираем дублирующий обработчик input - достаточно change
+            } else {
+                console.warn("🎯🎯🎯 dateInput element not found!");
             }
+            
+            console.log("🎯🎯🎯 === setupEventListeners() END ===");
+        }
 
         function openImageModal(startIndex) {
             currentImageIndex = startIndex;
