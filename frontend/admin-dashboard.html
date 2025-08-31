@@ -2856,7 +2856,7 @@
             
             if (time && !window.editStartTimes.includes(time)) {
                 window.editStartTimes.push(time);
-                updateEditStartTimesList();
+                updateStartTimesList();
                 input.value = '';
             } else if (window.editStartTimes.includes(time)) {
                 alert('Это время уже добавлено');
@@ -2865,7 +2865,7 @@
 
         function removeEditStartTime(index) {
             window.editStartTimes.splice(index, 1);
-            updateEditStartTimesList();
+            updateStartTimesList();
         }
 
         // Функции для работы с языками в форме редактирования
@@ -2936,7 +2936,7 @@
             
             if (imageUrl && !window.tourGalleryImages.includes(imageUrl)) {
                 window.tourGalleryImages.push(imageUrl);
-                updateEditGalleryImagesList();
+                updateGalleryImagesList();
                 input.value = '';
             } else if (window.tourGalleryImages.includes(imageUrl)) {
                 alert('Это изображение уже добавлено');
@@ -2966,7 +2966,7 @@
 
         function removeEditGalleryImage(index) {
             window.tourGalleryImages.splice(index, 1);
-            updateEditGalleryImagesList();
+            updateGalleryImagesList();
         }
 
         // Функция для получения отмеченных услуг
@@ -3309,8 +3309,10 @@
                         
                         const tourType = document.getElementById('tourType');
                         if (tourType) {
-                            tourType.value = tour.format || tour.tourType || '';
-                            console.log('✅ Loaded tour type (main form):', tour.format || tour.tourType);
+                            // ИСПРАВЛЕНО: Улучшенная загрузка типа тура из разных полей
+                            const typeValue = tour.tourType || tour.format || '';
+                            tourType.value = typeValue;
+                            console.log('✅ Loaded tour type (main form):', typeValue, 'from tour.tourType:', tour.tourType, 'tour.format:', tour.format);
                         }
                         
                         // УДАЛЕНО: Заполнение eTourType (поле удалено)
@@ -3319,6 +3321,13 @@
                         if (tourCategory) {
                             tourCategory.value = tour.categoryId || '';
                             console.log('✅ Loaded category (main form):', tour.categoryId);
+                        }
+                        
+                        // ИСПРАВЛЕНО: Загрузка категории в систему выбора
+                        if (tour.categoryId) {
+                            selectedCategories = [tour.categoryId];
+                            updateSelectedCategoriesDisplay();
+                            console.log('✅ Loaded category into selection system:', tour.categoryId);
                         }
                         
                         // УДАЛЕНО: Заполнение eTourCategoryId (поле удалено)
@@ -3607,29 +3616,22 @@
                             }
                         }
                         try {
-                            updateEditGalleryImagesList();
-                            console.log('✅ Updated edit gallery images list with images:', window.tourGalleryImages);
+                            updateGalleryImagesList();
+                            console.log('✅ Updated gallery images list with images:', window.tourGalleryImages);
                             
-                            // Проверяем что галерея видима в форме редактирования
-                            const galleryContainer = document.getElementById('eGalleryImagesList');
+                            // ИСПРАВЛЕНО: Используем правильный контейнер галереи
+                            const galleryContainer = document.getElementById('galleryImagesList');
                             if (galleryContainer) {
                                 if (window.tourGalleryImages && window.tourGalleryImages.length > 0) {
-                                    console.log('✅ Edit gallery container has', window.tourGalleryImages.length, 'images');
+                                    console.log('✅ Gallery container has', window.tourGalleryImages.length, 'images');
                                 } else {
-                                    console.log('✅ Edit gallery container is empty (no images to show)');
+                                    console.log('✅ Gallery container is empty (no images to show)');
                                 }
                             } else {
-                                console.error('❌ Element eGalleryImagesList container not found');
-                                // Попробуем найти альтернативные контейнеры
-                                const altGallery = document.getElementById('editGalleryImagesList') || document.getElementById('galleryImagesList');
-                                if (altGallery) {
-                                    console.log('✅ Found alternative gallery container:', altGallery.id);
-                                } else {
-                                    console.error('❌ No gallery container found at all');
-                                }
+                                console.error('❌ Element galleryImagesList container not found');
                             }
                         } catch (e) {
-                            console.error('❌ Failed to update edit gallery images list:', e);
+                            console.error('❌ Failed to update gallery images list:', e);
                         }
                         
                         // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Загрузка выбранных отелей и гидов
@@ -3794,9 +3796,7 @@
             if (tourUploader) {
                 tourUploader.clear('tour-uploader-container');
             }
-            if (window.tourEditUploader) {
-                window.tourEditUploader.clear('tour-edit-uploader-container');
-            }
+            // ИСПРАВЛЕНО: Используем правильный uploader
             
             // Очищаем скрытое поле ID и переменные
             document.getElementById('tour-id').value = '';
@@ -4681,7 +4681,7 @@
                             }
                             
                             // Update gallery display for edit form
-                            updateEditGalleryImagesList();
+                            updateGalleryImagesList();
                         }
                     })
                     .catch(error => {
@@ -4693,7 +4693,7 @@
                 }
             });
             
-            window.tourEditUploader.createElement('tour-edit-uploader-container');
+            // ИСПРАВЛЕНО: Не используем несуществующий tour-edit-uploader-container
         }
 
         // Bookings functions
