@@ -529,7 +529,7 @@
             const hostname = window.location.hostname;
             const protocol = window.location.protocol;
             if (hostname.includes('replit.dev') || hostname.includes('replit.app')) {
-                return `${protocol}//${hostname}/api`;
+                return `${protocol}//${hostname}:5000/api`;
             }
             return '/api';
         }
@@ -567,6 +567,20 @@
                 console.error('Ошибка загрузки отеля:', error);
                 document.getElementById('hotel-name').textContent = 'Ошибка загрузки отеля';
                 document.getElementById('hotel-location').textContent = `Ошибка: ${error.message}`;
+                
+                // Show more detailed error info
+                const errorDetails = document.createElement('div');
+                errorDetails.className = 'mt-4 p-4 bg-red-50 border border-red-200 rounded-lg';
+                errorDetails.innerHTML = `
+                    <h3 class="text-red-800 font-semibold">Детали ошибки:</h3>
+                    <p class="text-red-600 text-sm mt-1">API URL: ${getApiUrl()}/hotels/${hotelId}</p>
+                    <p class="text-red-600 text-sm">Ошибка: ${error.message}</p>
+                `;
+                
+                const container = document.querySelector('.bg-white.rounded-lg.shadow-md.p-6');
+                if (container) {
+                    container.appendChild(errorDetails);
+                }
             }
         }
 
