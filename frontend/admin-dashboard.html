@@ -4300,12 +4300,17 @@
         let currentHotelId = null;
         
         function loadHotels() {
+            console.log('Loading hotels...');
             const apiUrl = getApiUrl();
             fetch(`${apiUrl}/hotels`)
-                .then(res => res.json())
+                .then(res => {
+                    console.log('Hotels response:', res.status);
+                    return res.json();
+                })
                 .then(data => {
+                    console.log('Hotels data:', data);
                     const container = document.getElementById('hotelsList');
-                    if (!data.data || data.data.length === 0) {
+                    if (!data.success || !data.data || data.data.length === 0) {
                         container.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">Нет отелей</div>';
                         return;
                     }
@@ -4315,15 +4320,15 @@
                 .catch(err => {
                     console.error('Error loading hotels:', err);
                     document.getElementById('hotelsList').innerHTML = 
-                        '<div class="col-span-full text-center py-12 text-red-500">Ошибка загрузки данных</div>';
+                        '<div class="col-span-full text-center py-12 text-red-500">Ошибка загрузки данных: ' + err.message + '</div>';
                 });
         }
         
         function createHotelCard(hotel) {
-            const name = JSON.parse(hotel.name || '{}');
-            const description = JSON.parse(hotel.description || '{}');
-            const amenities = JSON.parse(hotel.amenities || '[]');
-            const images = JSON.parse(hotel.images || '[]');
+            const name = typeof hotel.name === 'object' ? hotel.name : JSON.parse(hotel.name || '{}');
+            const description = typeof hotel.description === 'object' ? hotel.description : JSON.parse(hotel.description || '{}');
+            const amenities = Array.isArray(hotel.amenities) ? hotel.amenities : JSON.parse(hotel.amenities || '[]');
+            const images = Array.isArray(hotel.images) ? hotel.images : JSON.parse(hotel.images || '[]');
             
             return `
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
