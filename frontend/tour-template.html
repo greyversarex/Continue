@@ -1511,8 +1511,10 @@
                 reviewsLoading.classList.remove('hidden');
                 reviewsContainer.innerHTML = '';
                 
-                const tourId = getTourIdFromUrl();
+                // Получаем ID тура из глобальных данных или URL
+                const tourId = tourData?.id || getTourIdFromUrl();
                 console.log('URL params:', window.location.search);
+                console.log('Tour data ID:', tourData?.id);
                 console.log('Extracted tour ID:', tourId);
                 
                 if (!tourId) {
@@ -1665,7 +1667,13 @@
         
         function getTourIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('id');
+            const idFromUrl = urlParams.get('id');
+            console.log('🔍 getTourIdFromUrl called:', {
+                urlParams: window.location.search,
+                idFromUrl: idFromUrl,
+                tourDataId: tourData?.id
+            });
+            return idFromUrl || tourData?.id;
         }
 
         function switchMainImage(index) {
