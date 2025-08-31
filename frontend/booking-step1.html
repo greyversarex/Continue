@@ -267,16 +267,26 @@
 
         async function loadTourHotels(tourId) {
             try {
-                const response = await fetch(`/api/booking/tour/${tourId}/hotels`);
+                console.log('🏨 Loading hotels for tour ID:', tourId);
+                const url = `/api/booking/tour/${tourId}/hotels`;
+                console.log('🔗 API URL:', url);
+                
+                const response = await fetch(url);
+                console.log('📡 Response status:', response.status);
+                
                 const data = await response.json();
+                console.log('📦 Response data:', data);
                 
                 if (data.success) {
+                    console.log('✅ Hotels loaded successfully:', data.data.length);
                     displayHotels(data.data);
                 } else {
+                    console.error('❌ API returned error:', data.message);
                     alert('Ошибка загрузки отелей: ' + data.message);
                 }
             } catch (error) {
-                console.error('Error loading hotels:', error);
+                console.error('❌ Error loading hotels:', error);
+                console.error('❌ Error details:', error.message, error.stack);
                 document.getElementById('hotels-container').innerHTML = `
                     <div class="text-center py-8">
                         <p class="text-red-600">Ошибка загрузки отелей</p>
