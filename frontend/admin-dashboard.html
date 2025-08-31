@@ -2920,9 +2920,9 @@
             
             // НЕ перенаправляем на saveEnhancedTour! Продолжаем с правильной логикой
             
-            const titleRuElement = document.getElementById('tourTitleRu');
-            if (!titleRuElement || !titleRuElement.value || titleRuElement.value.trim() === '') {
-                alert('Пожалуйста, введите название тура на русском языке');
+            const titleElement = document.getElementById('tourTitle');
+            if (!titleElement || !titleElement.value || titleElement.value.trim() === '') {
+                alert('Пожалуйста, введите название тура');
                 return;
             }
             
@@ -4051,12 +4051,30 @@
             
             console.log('💾 Saving tour:', { tourId, isEditing });
             
-            // Автоперевод перед сохранением
-            const translateSuccess = await autoTranslateBeforeSave();
-            if (!translateSuccess) {
-                alert('Ошибка автоперевода. Проверьте подключение к интернету.');
-                return;
-            }
+            // Пропускаем автоперевод из-за ограничений API
+            // const translateSuccess = await autoTranslateBeforeSave();
+            // if (!translateSuccess) {
+            //     alert('Ошибка автоперевода. Проверьте подключение к интернету.');
+            //     return;
+            // }
+            
+            // Устанавливаем значения из основных полей
+            const primaryLang = document.getElementById('primaryLanguage').value;
+            const titleText = document.getElementById('tourTitle').value.trim();
+            const descText = document.getElementById('tourDesc').value.trim();
+            
+            const languageFieldMap = {
+                'ru': { title: 'tourTitleRu', desc: 'tourDescRu' },
+                'en': { title: 'tourTitleEn', desc: 'tourDescEn' },
+                'tj': { title: 'tourTitleTj', desc: 'tourDescTj' },
+                'fa': { title: 'tourTitleFa', desc: 'tourDescFa' },
+                'de': { title: 'tourTitleDe', desc: 'tourDescDe' },
+                'zh': { title: 'tourTitleZh', desc: 'tourDescZh' }
+            };
+            
+            // Устанавливаем значения для выбранного языка
+            document.getElementById(languageFieldMap[primaryLang].title).value = titleText;
+            document.getElementById(languageFieldMap[primaryLang].desc).value = descText;
             
             // Валидация обязательных полей
             const titleRuValue = document.getElementById('tourTitleRu').value;
@@ -4076,8 +4094,9 @@
             const priceValue = document.getElementById('tourPrice').value;
             const durationDaysValue = document.getElementById('tourDurationDays').value;
             
-            if (!titleRuValue || titleRuValue.trim() === '') {
-                alert('Пожалуйста, введите название тура на русском языке');
+            const mainTitleElement = document.getElementById('tourTitle');
+            if (!mainTitleElement || !mainTitleElement.value || mainTitleElement.value.trim() === '') {
+                alert('Пожалуйста, введите название тура');
                 return;
             }
             
@@ -6284,7 +6303,7 @@
             
             const titleRu = document.getElementById('eTourTitleRu').value;
             if (!titleRu || titleRu.trim() === '') {
-                alert('Пожалуйста, введите название тура на русском языке');
+                alert('Пожалуйста, введите название тура');
                 return;
             }
             
