@@ -1590,15 +1590,19 @@
                         try {
                             const photos = Array.isArray(review.photos) ? review.photos : JSON.parse(review.photos);
                             if (Array.isArray(photos) && photos.length > 0) {
+                                // Нормализуем пути к изображениям
+                                const normalizedPhotos = photos.map(photo => normalizeImagePath(photo));
+                                console.log('🎯 Review photos normalized:', { original: photos, normalized: normalizedPhotos });
+                                
                                 photosHtml = `
                                     <div class="mt-3">
                                         <div class="flex flex-wrap gap-2">
-                                            ${photos.slice(0, 4).map(photo => `
+                                            ${normalizedPhotos.slice(0, 4).map(photo => `
                                                 <img src="${photo}" alt="Фото отзыва" 
                                                      class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" 
                                                      onclick="openPhotoModal('${photo}')">
                                             `).join('')}
-                                            ${photos.length > 4 ? `<div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-sm">+${photos.length - 4}</div>` : ''}
+                                            ${normalizedPhotos.length > 4 ? `<div class="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-sm">+${normalizedPhotos.length - 4}</div>` : ''}
                                         </div>
                                     </div>
                                 `;
@@ -1688,6 +1692,25 @@
                 supportedParams: ['id', 'tour']
             });
             return idFromUrl || tourData?.id;
+        }
+
+        // Функция для нормализации путей к изображениям
+        function normalizeImagePath(imagePath) {
+            if (!imagePath) return '';
+            
+            if (imagePath.startsWith('/objects/')) {
+                // Object storage path - construct full URL
+                return `${window.location.origin}${imagePath}`;
+            } else if (imagePath.startsWith('/attached_assets/')) {
+                // Attached assets path - construct full URL
+                return `${window.location.origin}${imagePath}`;
+            } else if (imagePath.startsWith('http')) {
+                // Full URL - use as is
+                return imagePath;
+            } else {
+                // Relative path - make it absolute
+                return `${window.location.origin}/${imagePath}`;
+            }
         }
 
         function switchMainImage(index) {
