@@ -3323,11 +3323,26 @@
                             console.log('✅ Loaded category (main form):', tour.categoryId);
                         }
                         
-                        // ИСПРАВЛЕНО: Загрузка категории в систему выбора
+                        // ИСПРАВЛЕНО: Загрузка категории в систему выбора с правильным форматом
                         if (tour.categoryId) {
-                            selectedCategories = [tour.categoryId];
-                            updateSelectedCategoriesDisplay();
-                            console.log('✅ Loaded category into selection system:', tour.categoryId);
+                            // Нужно найти название категории по ID
+                            fetch(`${getApiUrl()}/categories`)
+                                .then(res => res.json())
+                                .then(data => {
+                                    const categories = data.data || data.categories || [];
+                                    const category = categories.find(cat => cat.id === tour.categoryId);
+                                    if (category) {
+                                        const categoryName = typeof category.name === 'string' ? 
+                                            JSON.parse(category.name) : category.name;
+                                        selectedCategories = [{
+                                            id: tour.categoryId, 
+                                            name: categoryName.ru || categoryName.en || 'Категория'
+                                        }];
+                                        updateSelectedCategoriesDisplay();
+                                        console.log('✅ Loaded category into selection system:', tour.categoryId, categoryName);
+                                    }
+                                })
+                                .catch(e => console.warn('Failed to load category for editing:', e));
                         }
                         
                         // УДАЛЕНО: Заполнение eTourCategoryId (поле удалено)
