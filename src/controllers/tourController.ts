@@ -219,7 +219,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount } = req.body;
+      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -361,6 +361,34 @@ export class TourController {
         rating: ratingNumber,
         reviewsCount: reviewsCountNumber
       });
+
+      // Create hotel associations if provided
+      if (hotelIds && Array.isArray(hotelIds) && hotelIds.length > 0) {
+        console.log('🏨 Creating hotel associations:', hotelIds);
+        const tourHotelData = hotelIds.map(hotelId => ({
+          tourId: tour.id,
+          hotelId: hotelId,
+          isDefault: false
+        }));
+        
+        await prisma.tourHotel.createMany({
+          data: tourHotelData
+        });
+      }
+
+      // Create guide associations if provided
+      if (guideIds && Array.isArray(guideIds) && guideIds.length > 0) {
+        console.log('👨‍🏫 Creating guide associations:', guideIds);
+        const tourGuideData = guideIds.map(guideId => ({
+          tourId: tour.id,
+          guideId: guideId,
+          isDefault: false
+        }));
+        
+        await prisma.tourGuide.createMany({
+          data: tourGuideData
+        });
+      }
 
       // Parse JSON fields for response with safe parsing
       let parsedTour;
