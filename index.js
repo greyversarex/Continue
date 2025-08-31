@@ -58,6 +58,9 @@ app.use('/', objectStorageRoutes);
 // Обслуживать статические файлы из папки frontend
 app.use(express.static(path.join(__dirname, 'frontend')));
 
+// Обслуживать загруженные файлы из папки attached_assets
+app.use('/attached_assets', express.static(path.join(__dirname, 'attached_assets')));
+
 // Tour template page - explicit route BEFORE static middleware
 app.get('/tour-template.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'tour-template.html'));
