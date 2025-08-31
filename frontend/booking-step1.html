@@ -224,26 +224,52 @@
             const numberOfTourists = urlParams.get('tourists');
 
             document.getElementById('tour-details').innerHTML = `
-                <div class="space-y-3">
-                    <div>
-                        <p class="font-medium text-gray-800">${tour.title.ru || tour.title.en}</p>
+                <div class="space-y-4">
+                    <!-- Основная информация о туре -->
+                    <div class="space-y-2">
+                        <h4 class="font-medium text-gray-800 text-base">${tour.title.ru || tour.title.en}</h4>
+                        <div class="text-sm text-gray-600 space-y-1">
+                            <div class="flex justify-between">
+                                <span>Дата тура:</span>
+                                <span class="font-medium">${new Date(tourDate).toLocaleDateString('ru-RU')}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Длительность:</span>
+                                <span class="font-medium">${tour.duration} дней</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Количество туристов:</span>
+                                <span class="font-medium">${numberOfTourists}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Тип тура:</span>
+                                <span class="font-medium">${tour.tourType || 'Групповой'}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">Дата:</span>
-                        <span>${new Date(tourDate).toLocaleDateString('ru-RU')}</span>
+                    
+                    <!-- Разделитель -->
+                    <div class="border-t border-gray-200"></div>
+                    
+                    <!-- Информация об отеле -->
+                    <div id="selected-hotel-info" class="space-y-2" style="display: none;">
+                        <h5 class="font-medium text-gray-800">Выбранный отель</h5>
+                        <div id="hotel-details-content" class="text-sm text-gray-600"></div>
                     </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">Длительность:</span>
-                        <span>${tour.duration}</span>
+                    
+                    <!-- Разделитель (скрытый по умолчанию) -->
+                    <div id="hotel-separator" class="border-t border-gray-200" style="display: none;"></div>
+                    
+                    <!-- Информация о номерах и питании -->
+                    <div id="room-meal-info" class="space-y-2" style="display: none;">
+                        <h5 class="font-medium text-gray-800">Номера и питание</h5>
+                        <div id="room-details-content" class="text-sm text-gray-600 space-y-1"></div>
+                        <div id="meal-details-content" class="text-sm text-gray-600"></div>
+                        <div id="capacity-info" class="text-xs text-gray-500 mt-2"></div>
                     </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">Туристов:</span>
-                        <span>${numberOfTourists}</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">Тип тура:</span>
-                        <span>${tour.tourType || 'Групповой'}</span>
-                    </div>
+                    
+                    <!-- Разделитель для расчетов -->
+                    <div class="border-t border-gray-200"></div>
                 </div>
             `;
 
@@ -297,6 +323,9 @@
 
         function displayHotels(hotels) {
             const container = document.getElementById('hotels-container');
+            
+            // Store hotels in booking state for later use
+            bookingState.availableHotels = [...hotels];
             
             if (hotels.length === 0) {
                 container.innerHTML = `
@@ -432,6 +461,11 @@
             bookingState.roomSelection[hotelId][roomType] = newQuantity;
             document.getElementById(`room-${hotelId}-${roomType}`).textContent = newQuantity;
             
+            // Update room details in sidebar if this is the selected hotel
+            if (bookingState.selectedHotel == hotelId) {
+                updateRoomMealDetails();
+            }
+            
             updatePriceSummary();
         }
 
@@ -443,6 +477,11 @@
             // Clear previous meal selections for this hotel
             bookingState.mealSelection[hotelId] = {};
             bookingState.mealSelection[hotelId][mealType] = price;
+            
+            // Update meal details in sidebar if this is the selected hotel
+            if (bookingState.selectedHotel == hotelId) {
+                updateRoomMealDetails();
+            }
             
             updatePriceSummary();
         }
@@ -456,7 +495,156 @@
             });
             document.querySelector(`[data-hotel-id="${hotelId}"]`).classList.add('ring-2', 'ring-blue-500');
             
+            // Update hotel details in sidebar
+            updateSelectedHotelDetails(hotelId);
+            
             document.getElementById('continue-btn').disabled = false;
+        }
+        
+        function updateSelectedHotelDetails(hotelId) {
+            const hotelData = bookingState.availableHotels.find(h => h.id == hotelId);
+            if (!hotelData) return;
+            
+            const hotelInfoSection = document.getElementById('selected-hotel-info');
+            const hotelSeparator = document.getElementById('hotel-separator');
+            const hotelDetailsContent = document.getElementById('hotel-details-content');
+            
+            // Show hotel info section
+            hotelInfoSection.style.display = 'block';
+            hotelSeparator.style.display = 'block';
+            
+            // Generate stars display
+            const starsHtml = hotelData.stars ? 
+                Array.from({length: hotelData.stars}, () => '⭐').join('') : 
+                'Без рейтинга';
+            
+            hotelDetailsContent.innerHTML = `
+                <div class="space-y-1">
+                    <div class="font-medium text-gray-800">${hotelData.name?.ru || hotelData.name?.en || 'Не указано'}</div>
+                    <div class="flex items-center gap-1">
+                        <span class="text-yellow-500">${starsHtml}</span>
+                        ${hotelData.stars ? `<span class="text-xs text-gray-500">(${hotelData.stars} звезд${hotelData.stars > 4 ? '' : hotelData.stars > 1 ? 'ы' : 'а'})</span>` : ''}
+                    </div>
+                    <div class="flex items-start gap-1">
+                        <i class="fas fa-map-marker-alt text-gray-400 mt-0.5"></i>
+                        <span>${hotelData.address || 'Адрес не указан'}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Update room and meal selection display
+            updateRoomMealDetails();
+        }
+        
+        function updateRoomMealDetails() {
+            const roomDetailsContent = document.getElementById('room-details-content');
+            const mealDetailsContent = document.getElementById('meal-details-content');
+            const roomMealInfo = document.getElementById('room-meal-info');
+            const capacityInfo = document.getElementById('capacity-info');
+            
+            if (!bookingState.selectedHotel || !roomDetailsContent) return;
+            
+            const hotelData = bookingState.availableHotels.find(h => h.id == bookingState.selectedHotel);
+            if (!hotelData) return;
+            
+            // Parse room types
+            let roomTypes = {};
+            try {
+                roomTypes = typeof hotelData.roomTypes === 'string' ? JSON.parse(hotelData.roomTypes) : (hotelData.roomTypes || {});
+            } catch (e) {
+                console.warn('Failed to parse room types:', hotelData.roomTypes);
+                roomTypes = {};
+            }
+            
+            // Parse meal types
+            let mealTypes = {};
+            try {
+                mealTypes = typeof hotelData.mealTypes === 'string' ? JSON.parse(hotelData.mealTypes) : (hotelData.mealTypes || {});
+            } catch (e) {
+                console.warn('Failed to parse meal types:', hotelData.mealTypes);
+                mealTypes = {};
+            }
+            
+            // Check if any rooms are selected
+            const selectedRooms = bookingState.roomSelection[bookingState.selectedHotel] || {};
+            const hasSelectedRooms = Object.values(selectedRooms).some(quantity => quantity > 0);
+            
+            // Check if any meals are selected  
+            const selectedMeals = bookingState.mealSelection[bookingState.selectedHotel] || {};
+            const hasSelectedMeals = Object.keys(selectedMeals).length > 0;
+            
+            if (!hasSelectedRooms && !hasSelectedMeals) {
+                roomMealInfo.style.display = 'none';
+                return;
+            }
+            
+            roomMealInfo.style.display = 'block';
+            
+            // Display selected rooms
+            let roomsHtml = '';
+            let totalCapacity = 0;
+            
+            if (hasSelectedRooms) {
+                for (const [roomType, quantity] of Object.entries(selectedRooms)) {
+                    if (quantity > 0 && roomTypes[roomType]) {
+                        const roomInfo = roomTypes[roomType];
+                        const roomCapacity = getRoomCapacity(roomType);
+                        totalCapacity += roomCapacity * quantity;
+                        
+                        roomsHtml += `
+                            <div class="flex justify-between items-center">
+                                <span>${roomInfo.name} × ${quantity}</span>
+                                <span class="text-green-600 font-medium">$${roomInfo.price}/сутки</span>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            roomDetailsContent.innerHTML = roomsHtml || '<div class="text-gray-500 text-xs">Номера не выбраны</div>';
+            
+            // Display selected meals
+            let mealsHtml = '';
+            if (hasSelectedMeals) {
+                for (const [mealType, price] of Object.entries(selectedMeals)) {
+                    if (mealTypes[mealType]) {
+                        mealsHtml += `
+                            <div class="flex justify-between items-center">
+                                <span>Питание: ${mealTypes[mealType].name}</span>
+                                <span class="text-green-600 font-medium">$${price}/сутки</span>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            mealDetailsContent.innerHTML = mealsHtml || '';
+            
+            // Display capacity info
+            const urlParams = new URLSearchParams(window.location.search);
+            const numberOfTourists = parseInt(urlParams.get('tourists'));
+            
+            if (hasSelectedRooms && totalCapacity > 0) {
+                const capacityStatus = totalCapacity >= numberOfTourists ? 
+                    `<span class="text-green-600">✓ Вместимость: ${totalCapacity} чел. (достаточно)</span>` :
+                    `<span class="text-red-600">⚠ Вместимость: ${totalCapacity} чел. (недостаточно для ${numberOfTourists})</span>`;
+                
+                capacityInfo.innerHTML = capacityStatus;
+            } else {
+                capacityInfo.innerHTML = '';
+            }
+        }
+        
+        function getRoomCapacity(roomType) {
+            // Standard room capacity based on room type
+            const capacities = {
+                'SGL': 1,  // Single
+                'TWL': 2,  // Twin
+                'DBL': 2,  // Double  
+                'TRP': 3,  // Triple
+                'QUD': 4,  // Quad
+            };
+            return capacities[roomType] || 2; // Default 2 people
         }
 
         function updatePriceSummary() {
@@ -470,48 +658,96 @@
             const urlParams = new URLSearchParams(window.location.search);
             const numberOfTourists = parseInt(urlParams.get('tourists'));
             
-            // Calculate room costs
+            // Calculate room costs using real hotel data
             roomCostsContainer.innerHTML = '';
             for (const [hotelId, rooms] of Object.entries(bookingState.roomSelection)) {
                 for (const [roomType, quantity] of Object.entries(rooms)) {
                     if (quantity > 0) {
-                        // Find room price
-                        const hotels = document.querySelectorAll('.hotel-card');
-                        const hotel = Array.from(hotels).find(h => h.getAttribute('data-hotel-id') === hotelId);
-                        if (hotel) {
-                            // This is simplified - in a real app you'd have the room data available
-                            const roomPrice = 100; // You'd get this from hotel data
-                            const roomCost = roomPrice * quantity * tourDuration;
-                            totalRoomCost += roomCost;
+                        // Find hotel data from bookingState
+                        const hotelData = bookingState.availableHotels.find(h => h.id == hotelId);
+                        if (hotelData) {
+                            // Parse room types to get real price
+                            let roomTypes = {};
+                            try {
+                                roomTypes = typeof hotelData.roomTypes === 'string' ? JSON.parse(hotelData.roomTypes) : (hotelData.roomTypes || {});
+                            } catch (e) {
+                                console.warn('Failed to parse room types for pricing:', hotelData.roomTypes);
+                                roomTypes = {};
+                            }
                             
-                            roomCostsContainer.innerHTML += `
-                                <div class="flex justify-between text-sm">
-                                    <span>${roomType} × ${quantity}:</span>
-                                    <span>$${roomCost}</span>
-                                </div>
-                            `;
+                            if (roomTypes[roomType]) {
+                                const roomPrice = parseFloat(roomTypes[roomType].price) || 0;
+                                const roomCost = roomPrice * quantity * tourDuration;
+                                totalRoomCost += roomCost;
+                                
+                                roomCostsContainer.innerHTML += `
+                                    <div class="flex justify-between text-sm">
+                                        <span>${roomTypes[roomType].name} × ${quantity} × ${tourDuration} дн.:</span>
+                                        <span>$${roomCost}</span>
+                                    </div>
+                                `;
+                            }
                         }
                     }
                 }
             }
             
-            // Calculate meal costs
+            // Calculate meal costs using real hotel data
             mealCostsContainer.innerHTML = '';
             for (const [hotelId, meals] of Object.entries(bookingState.mealSelection)) {
+                // Find hotel data to check if meals are included in room
+                const hotelData = bookingState.availableHotels.find(h => h.id == hotelId);
+                let mealTypes = {};
+                
+                if (hotelData) {
+                    try {
+                        mealTypes = typeof hotelData.mealTypes === 'string' ? JSON.parse(hotelData.mealTypes) : (hotelData.mealTypes || {});
+                    } catch (e) {
+                        console.warn('Failed to parse meal types for pricing:', hotelData.mealTypes);
+                        mealTypes = {};
+                    }
+                }
+                
                 for (const [mealType, price] of Object.entries(meals)) {
-                    const mealCost = price * numberOfTourists * tourDuration;
-                    totalMealCost += mealCost;
+                    // Check if meal is included in any selected room type
+                    const isMealIncludedInRoom = checkIfMealIncludedInRoom(hotelId, mealType);
                     
-                    mealCostsContainer.innerHTML += `
-                        <div class="flex justify-between text-sm">
-                            <span>Питание ${mealType}:</span>
-                            <span>$${mealCost}</span>
-                        </div>
-                    `;
+                    if (!isMealIncludedInRoom) {
+                        const mealCost = price * numberOfTourists * tourDuration;
+                        totalMealCost += mealCost;
+                        
+                        const mealName = mealTypes[mealType]?.name || mealType;
+                        mealCostsContainer.innerHTML += `
+                            <div class="flex justify-between text-sm">
+                                <span>Питание ${mealName} × ${numberOfTourists} × ${tourDuration} дн.:</span>
+                                <span>$${mealCost}</span>
+                            </div>
+                        `;
+                    } else {
+                        // Show that meal is included
+                        const mealName = mealTypes[mealType]?.name || mealType;
+                        mealCostsContainer.innerHTML += `
+                            <div class="flex justify-between text-sm text-green-600">
+                                <span>Питание ${mealName} (включено в номер):</span>
+                                <span>$0</span>
+                            </div>
+                        `;
+                    }
                 }
             }
             
+            // Store calculated costs for total calculation
+            bookingState.calculatedRoomCost = totalRoomCost;
+            bookingState.calculatedMealCost = totalMealCost;
+            
             updateTotalPrice();
+        }
+        
+        function checkIfMealIncludedInRoom(hotelId, mealType) {
+            // TODO: This would check if the selected room type includes this meal type
+            // For now, assume no meals are included unless specified
+            // In a real implementation, this would check room type properties
+            return false;
         }
 
         function updateTotalPrice() {
@@ -519,29 +755,72 @@
             const urlParams = new URLSearchParams(window.location.search);
             const numberOfTourists = parseInt(urlParams.get('tourists'));
             
+            // Calculate base tour price
             let tourPrice = parseFloat(tour.price);
             if (tour.priceType === 'за человека') {
                 tourPrice *= numberOfTourists;
             }
             
-            // Add room and meal costs (simplified calculation)
-            // In a real implementation, you'd calculate this properly from the selections
+            // Add calculated room and meal costs
+            const roomCost = bookingState.calculatedRoomCost || 0;
+            const mealCost = bookingState.calculatedMealCost || 0;
             
-            document.getElementById('total-price').textContent = `$${tourPrice}`;
+            const totalPrice = tourPrice + roomCost + mealCost;
+            
+            // Update displays
+            document.getElementById('tour-price').textContent = `$${tourPrice}`;
+            document.getElementById('total-price').textContent = `$${totalPrice}`;
+            
+            // Store total for later use
+            bookingState.totalPrice = totalPrice;
         }
 
         // Continue button handler
-        document.getElementById('continue-btn').addEventListener('click', function() {
+        document.getElementById('continue-btn').addEventListener('click', async function() {
             if (!bookingState.selectedHotel) {
                 alert('Пожалуйста, выберите отель');
                 return;
             }
             
-            // Store booking state in localStorage for step 2
-            localStorage.setItem('bookingState', JSON.stringify(bookingState));
+            // Check if at least one room is selected
+            const selectedRooms = bookingState.roomSelection[bookingState.selectedHotel] || {};
+            const hasSelectedRooms = Object.values(selectedRooms).some(quantity => quantity > 0);
             
-            // Navigate to step 2
-            window.location.href = `/booking/step2?bookingId=${bookingState.bookingId}`;
+            if (!hasSelectedRooms) {
+                alert('Пожалуйста, выберите хотя бы одну категорию номера');
+                return;
+            }
+            
+            try {
+                // Update booking with hotel and room selection in database as draft
+                const updateResponse = await fetch(`/api/booking/${bookingState.bookingId}/update`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        hotelId: parseInt(bookingState.selectedHotel),
+                        roomSelection: bookingState.roomSelection[bookingState.selectedHotel],
+                        mealSelection: bookingState.mealSelection[bookingState.selectedHotel] || {},
+                        totalPrice: bookingState.totalPrice,
+                        status: 'draft' // Mark as draft until payment is completed
+                    })
+                });
+                
+                if (!updateResponse.ok) {
+                    throw new Error('Failed to update booking');
+                }
+                
+                // Store booking state in localStorage for step 2
+                localStorage.setItem('bookingState', JSON.stringify(bookingState));
+                
+                // Navigate to step 2
+                window.location.href = `/booking/step2?bookingId=${bookingState.bookingId}`;
+                
+            } catch (error) {
+                console.error('Error updating booking:', error);
+                alert('Ошибка сохранения выбора. Попробуйте еще раз.');
+            }
         });
     </script>
 </body>

@@ -23,16 +23,19 @@ app.use((req, res, next) => {
   next();
 });
 
-// NEW Booking system - 3-step process
+// NEW Booking system - 3-step process (moved higher for priority)
 app.get('/booking/step1', (req, res) => {
+  console.log('📋 Serving booking step 1 with params:', req.query);
   res.sendFile(path.join(__dirname, 'frontend', 'booking-step1.html'));
 });
 
 app.get('/booking/step2', (req, res) => {
+  console.log('📋 Serving booking step 2 with params:', req.query);
   res.sendFile(path.join(__dirname, 'frontend', 'booking-step2.html'));
 });
 
 app.get('/booking/step3', (req, res) => {
+  console.log('📋 Serving booking step 3 with params:', req.query);
   res.sendFile(path.join(__dirname, 'frontend', 'booking-step3.html'));
 });
 

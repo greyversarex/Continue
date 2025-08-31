@@ -364,6 +364,69 @@ export const bookingController = {
   },
 
   /**
+   * Обновить выбор отеля и номеров (Шаг 1)
+   * PUT /api/booking/:id/update
+   */
+  async updateBookingStep1(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { 
+        hotelId, 
+        roomSelection, 
+        mealSelection,
+        totalPrice,
+        status = 'draft'
+      } = req.body;
+
+      console.log('📝 Updating booking step 1:', { id, hotelId, roomSelection, mealSelection, totalPrice });
+
+      // Validate booking exists
+      const existingBooking = await prisma.booking.findUnique({
+        where: { id: parseInt(id) }
+      });
+
+      if (!existingBooking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found'
+        });
+      }
+
+      // Update booking with hotel and room selection
+      const updatedBooking = await prisma.booking.update({
+        where: { id: parseInt(id) },
+        data: {
+          hotelId: hotelId ? parseInt(hotelId) : null,
+          roomSelection: roomSelection ? JSON.stringify(roomSelection) : null,
+          mealSelection: mealSelection ? JSON.stringify(mealSelection) : null,
+          totalPrice: totalPrice ? parseFloat(totalPrice) : existingBooking.totalPrice,
+          status,
+          updatedAt: new Date()
+        },
+        include: {
+          tour: true,
+          hotel: true
+        }
+      });
+
+      console.log('✅ Booking updated successfully:', updatedBooking.id);
+
+      return res.json({
+        success: true,
+        data: updatedBooking
+      });
+
+    } catch (error) {
+      console.error('Error updating booking step 1:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to update booking',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  },
+
+  /**
    * Получить отели для тура
    * GET /api/booking/tour/:tourId/hotels
    */
