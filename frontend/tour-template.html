@@ -1041,7 +1041,8 @@
         }
 
         async function updatePageContent() {
-            console.log("Updating page content with tour data:", tourData);
+            console.log("🎯🎯🎯 === updatePageContent() START ===");
+            console.log("🎯🎯🎯 tourData:", tourData);
             
             try {
             
@@ -1205,18 +1206,21 @@
             }
             
             // Load images
+            console.log('🎯🎯🎯 About to call loadImages()');
             loadImages();
+            console.log('🎯🎯🎯 loadImages() completed');
             
             // Load reviews
             try {
-                console.log('🎯 About to call loadReviews() from updatePageContent()');
-                console.log('🎯 tourData at this point:', tourData);
-                console.log('🎯 DOM ready state:', document.readyState);
+                console.log('🎯🎯🎯 About to call loadReviews() from updatePageContent()');
+                console.log('🎯🎯🎯 tourData at this point:', tourData);
+                console.log('🎯🎯🎯 DOM ready state:', document.readyState);
+                console.log('🎯🎯🎯 Calling loadReviews() now...');
                 await loadReviews();
-                console.log('🎯 loadReviews() completed successfully');
+                console.log('🎯🎯🎯 loadReviews() completed successfully');
             } catch (err) {
-                console.error('🎯❌ Failed to load reviews:', err);
-                console.error('🎯❌ Error details:', err.message, err.stack);
+                console.error('🎯🎯🎯❌ Failed to load reviews:', err);
+                console.error('🎯🎯🎯❌ Error details:', err.message, err.stack);
             }
             
             // Update start time options
