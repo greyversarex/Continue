@@ -414,9 +414,9 @@
 
     <!-- Hotel Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column - Hotel Info -->
-            <div class="lg:col-span-2 space-y-6">
+        <div class="max-w-4xl mx-auto">
+            <!-- Hotel Info -->
+            <div class="space-y-6">
                 <!-- Hotel Header -->
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex justify-between items-start mb-4">
@@ -448,33 +448,6 @@
                     </div>
                 </div>
 
-                <!-- Hotel Gallery -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-semibold mb-4">Фотогалерея</h2>
-                    <div id="hotel-gallery" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <!-- Фотографии будут добавлены через JS -->
-                        <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
-                        <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
-                        <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
-                    </div>
-                </div>
-
-                <!-- Hotel Description -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-semibold mb-4">Описание отеля</h2>
-                    <div id="hotel-description" class="text-gray-700 leading-relaxed">
-                        <p>Загружается описание отеля...</p>
-                    </div>
-                </div>
-
-                <!-- Hotel Amenities -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-semibold mb-4">Удобства отеля</h2>
-                    <div id="hotel-amenities" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <!-- Удобства будут добавлены через JS -->
-                    </div>
-                </div>
-
                 <!-- Hotel Info Strip -->
                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -497,58 +470,28 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Right Column - Booking -->
-            <div class="lg:col-span-1">
-                <div class="booking-section bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-xl font-semibold mb-4">Забронировать номер</h3>
-                    
-                    <!-- Date Selection -->
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Дата заезда</label>
-                            <input type="date" id="checkin-date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Дата выезда</label>
-                            <input type="date" id="checkout-date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Количество гостей</label>
-                            <select id="guests-count" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="1">1 гость</option>
-                                <option value="2">2 гостя</option>
-                                <option value="3">3 гостя</option>
-                                <option value="4">4 гостя</option>
-                                <option value="5">5+ гостей</option>
-                            </select>
-                        </div>
+                <!-- Main Hotel Content Block -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <!-- Hotel Gallery -->
+                    <h2 class="text-2xl font-semibold mb-4">Фотогалерея</h2>
+                    <div id="hotel-gallery" class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                        <!-- Фотографии будут добавлены через JS -->
+                        <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                        <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                        <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
                     </div>
-                    
-                    <!-- Room Type Selection (будет добавлено через JS) -->
-                    <div id="room-types" class="mt-4">
-                        <!-- Типы номеров будут добавлены через JS -->
+
+                    <!-- Hotel Description -->
+                    <h2 class="text-2xl font-semibold mb-4">Описание отеля</h2>
+                    <div id="hotel-description" class="text-gray-700 leading-relaxed mb-8">
+                        <p>Загружается описание отеля...</p>
                     </div>
-                    
-                    <!-- Pricing -->
-                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-700">Стоимость за ночь:</span>
-                            <span id="room-price" class="text-xl font-semibold text-blue-600">По запросу</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Booking Button -->
-                    <button id="book-hotel-btn" class="w-full mt-6 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
-                        Забронировать сейчас
-                    </button>
-                    
-                    <!-- Contact Info -->
-                    <div class="mt-4 text-center text-sm text-gray-600">
-                        <p>Нужна помощь? <a href="/contact" class="text-blue-600 hover:underline">Свяжитесь с нами</a></p>
+
+                    <!-- Hotel Amenities -->
+                    <h2 class="text-2xl font-semibold mb-4">Удобства отеля</h2>
+                    <div id="hotel-amenities" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- Удобства будут добавлены через JS -->
                     </div>
                 </div>
             </div>
@@ -744,9 +687,9 @@
         function displayHotelAmenities() {
             const amenitiesContainer = document.getElementById('hotel-amenities');
             
-            if (hotelData.amenities) {
+            if (hotelData.amenities && hotelData.amenities.length > 0) {
                 try {
-                    const amenities = JSON.parse(hotelData.amenities);
+                    const amenities = Array.isArray(hotelData.amenities) ? hotelData.amenities : JSON.parse(hotelData.amenities);
                     const amenityIcons = {
                         'WiFi': 'fas fa-wifi',
                         'Завтрак': 'fas fa-coffee',
@@ -784,7 +727,7 @@
             
             if (hotelData.images) {
                 try {
-                    hotelImages = JSON.parse(hotelData.images);
+                    hotelImages = Array.isArray(hotelData.images) ? hotelData.images : JSON.parse(hotelData.images);
                     
                     if (hotelImages.length > 0) {
                         let galleryHTML = '';
