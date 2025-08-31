@@ -1211,10 +1211,12 @@
             try {
                 console.log('🎯 About to call loadReviews() from updatePageContent()');
                 console.log('🎯 tourData at this point:', tourData);
+                console.log('🎯 DOM ready state:', document.readyState);
                 await loadReviews();
                 console.log('🎯 loadReviews() completed successfully');
             } catch (err) {
                 console.error('🎯❌ Failed to load reviews:', err);
+                console.error('🎯❌ Error details:', err.message, err.stack);
             }
             
             // Update start time options
@@ -1493,6 +1495,7 @@
             console.log('🎯 Current tourData:', tourData);
             console.log('🎯 Current URL:', window.location.href);
             console.log('🎯 Current search params:', window.location.search);
+            console.log('🎯 Function called from:', new Error().stack);
             
             const reviewsContainer = document.getElementById('reviews-container');
             const reviewsCount = document.getElementById('reviews-count');
@@ -1506,7 +1509,10 @@
             
             // Проверяем наличие элементов DOM
             if (!reviewsContainer || !reviewsCount || !reviewsLoading) {
-                console.log('🎯 Reviews elements not found, skipping reviews loading');
+                console.log('🎯❌ Reviews elements not found, skipping reviews loading');
+                console.log('🎯❌ reviewsContainer:', reviewsContainer);
+                console.log('🎯❌ reviewsCount:', reviewsCount);  
+                console.log('🎯❌ reviewsLoading:', reviewsLoading);
                 return;
             }
             
