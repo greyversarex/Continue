@@ -5,9 +5,14 @@ declare global {
   var __prisma: PrismaClient | undefined;
 }
 
-// Create Prisma client instance
+// Create Prisma client instance with better error handling
 const prisma = globalThis.__prisma || new PrismaClient({
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL
+    }
+  }
 });
 
 // In development, store the instance globally to prevent multiple instances
