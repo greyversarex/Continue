@@ -446,11 +446,6 @@
                         <i class="fas fa-map-marker-alt mr-2"></i>
                         <span id="hotel-location">Загружается...</span>
                     </div>
-                    
-                    <!-- Hotel Description -->
-                    <div id="hotel-description" class="text-gray-700 leading-relaxed">
-                        <p>Загружается описание отеля...</p>
-                    </div>
                 </div>
 
                 <!-- Hotel Gallery -->
@@ -461,6 +456,14 @@
                         <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
                         <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
                         <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                    </div>
+                </div>
+
+                <!-- Hotel Description -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-semibold mb-4">Описание отеля</h2>
+                    <div id="hotel-description" class="text-gray-700 leading-relaxed">
+                        <p>Загружается описание отеля...</p>
                     </div>
                 </div>
 
@@ -677,22 +680,10 @@
             }
         }
 
-        // Display hotel rating
+        // Display hotel rating - removed as per user request
         function displayHotelRating() {
             const ratingContainer = document.getElementById('hotel-rating-display');
-            
-            if (hotelData.rating) {
-                const rating = parseFloat(hotelData.rating);
-                const starsHTML = generateRatingStars(rating);
-                ratingContainer.innerHTML = `
-                    <div class="rating-stars">
-                        ${starsHTML}
-                        <span class="ml-1 text-sm font-medium">${rating.toFixed(1)}</span>
-                    </div>
-                `;
-            } else {
-                ratingContainer.innerHTML = '<span class="text-gray-500">Рейтинг не указан</span>';
-            }
+            ratingContainer.innerHTML = ''; // Remove rating display completely
         }
 
         // Generate rating stars HTML
@@ -763,7 +754,7 @@
                         'Ресторан': 'fas fa-utensils',
                         'Бассейн': 'fas fa-swimming-pool',
                         'Спа': 'fas fa-spa',
-                        'Фитнес': 'fas fa-dumbbell',
+                        'Фитнес-центр': 'fas fa-dumbbell',
                         'Кондиционер': 'fas fa-snowflake'
                     };
                     

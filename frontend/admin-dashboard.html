@@ -1512,10 +1512,6 @@
                         <input type="text" class="form-input" id="hotelAddress" required>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label">Рейтинг (1-5)</label>
-                        <input type="number" class="form-input" id="hotelRating" min="1" max="5" step="0.1">
-                    </div>
                     
                     <div class="form-group">
                         <label class="form-label">Количество звезд</label>
@@ -4446,7 +4442,6 @@
                     document.getElementById('hotelName').value = name.ru || name.en || hotel.name || '';
                     document.getElementById('hotelDescription').value = description.ru || description.en || hotel.description || '';
                     document.getElementById('hotelAddress').value = hotel.address || '';
-                    document.getElementById('hotelRating').value = hotel.rating || '';
                     document.getElementById('hotelStars').value = hotel.stars || '';
                     // Установка бренда с учетом пользовательского ввода
                     const brandSelect = document.getElementById('hotelBrand');
@@ -4636,7 +4631,6 @@
                 name: JSON.stringify(name),
                 description: JSON.stringify(description),
                 address: document.getElementById('hotelAddress').value,
-                rating: parseFloat(document.getElementById('hotelRating').value) || null,
                 stars: parseInt(document.getElementById('hotelStars').value) || null,
                 brand: getSelectedBrand() || null,
                 category: document.getElementById('hotelCategory').value || null,
