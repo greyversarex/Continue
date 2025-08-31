@@ -3934,10 +3934,19 @@
                 headers: getAuthHeaders(),
                 body: JSON.stringify(formData)
             })
-            .then(res => res.json())
+            .then(res => {
+                console.log('🌐 HTTP Response status:', res.status, 'OK:', res.ok);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
             .then(data => {
                 console.log('📬 Server response:', data);
-                if (data.success) {
+                console.log('🔍 Success check:', 'data.success =', data.success, 'Type:', typeof data.success);
+                
+                if (data.success === true) {
+                    console.log('✅ Success path triggered');
                     const message = isEditing ? '✅ Тур успешно обновлён!' : '✅ Тур успешно создан!';
                     alert(message);
                     
@@ -3945,13 +3954,15 @@
                     closeTourModal();
                     loadTours();
                 } else {
+                    console.log('❌ Error path triggered - data.success:', data.success);
                     const action = isEditing ? 'обновлении' : 'создании';
                     alert(`❌ Ошибка при ${action} тура: ` + (data.message || 'Неизвестная ошибка'));
                 }
             })
             .catch(err => {
                 console.error('❌ Error saving tour:', err);
-                alert('❌ Ошибка соединения с сервером');
+                console.error('❌ Error details:', err.message, err.stack);
+                alert('❌ Ошибка соединения с сервером: ' + err.message);
             });
         }
         
