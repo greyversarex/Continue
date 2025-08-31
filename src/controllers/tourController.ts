@@ -10,6 +10,9 @@ import {
   ApiResponse, 
   MultilingualContent 
 } from '../types';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export class TourController {
   /**
@@ -417,7 +420,7 @@ export class TourController {
         });
       }
 
-      let { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured } = req.body;
+      let { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds } = req.body;
 
       // Parse JSON strings if needed (same as createTour)
       if (typeof title === 'string') {
@@ -506,6 +509,52 @@ export class TourController {
       if (isFeatured !== undefined) updateData.isFeatured = isFeatured;
 
       const tour = await TourModel.update(id, updateData);
+
+      // Update hotel associations if provided
+      if (hotelIds && Array.isArray(hotelIds)) {
+        console.log('🏨 Updating hotel associations:', hotelIds);
+        
+        // Delete existing associations
+        await prisma.tourHotel.deleteMany({
+          where: { tourId: id }
+        });
+        
+        // Create new associations
+        if (hotelIds.length > 0) {
+          const tourHotelData = hotelIds.map(hotelId => ({
+            tourId: id,
+            hotelId: hotelId,
+            isDefault: false
+          }));
+          
+          await prisma.tourHotel.createMany({
+            data: tourHotelData
+          });
+        }
+      }
+
+      // Update guide associations if provided
+      if (guideIds && Array.isArray(guideIds)) {
+        console.log('👨‍🏫 Updating guide associations:', guideIds);
+        
+        // Delete existing associations
+        await prisma.tourGuide.deleteMany({
+          where: { tourId: id }
+        });
+        
+        // Create new associations
+        if (guideIds.length > 0) {
+          const tourGuideData = guideIds.map(guideId => ({
+            tourId: id,
+            guideId: guideId,
+            isDefault: false
+          }));
+          
+          await prisma.tourGuide.createMany({
+            data: tourGuideData
+          });
+        }
+      }
 
       // Parse JSON fields for response with safe parsing
       let parsedTour;

@@ -2838,7 +2838,11 @@
                 categoryId: selectedCategories.length > 0 ? selectedCategories[0].id : null,
                 tourBlockId: document.getElementById('tourBlockId')?.value ? parseInt(document.getElementById('tourBlockId').value) : null,
                 isFeatured: document.getElementById('tourIsFeatured')?.checked || false,
-                isActive: true
+                isActive: true,
+                // Собираем выбранные отели
+                hotelIds: Array.from(document.querySelectorAll('input[name="selectedHotels"]:checked')).map(cb => parseInt(cb.value)),
+                // Собираем выбранных гидов 
+                guideIds: Array.from(document.querySelectorAll('input[name="selectedGuides"]:checked')).map(cb => parseInt(cb.value))
             };
             
             console.log('📤 Sending tour data:', formData);
@@ -4130,7 +4134,7 @@
                     }
                         return `
                             <label class="checkbox-item">
-                                <input type="checkbox" value="${hotel.id}"> ${name.ru || name.en || 'Отель'}
+                                <input type="checkbox" name="selectedHotels" value="${hotel.id}"> ${name.ru || name.en || 'Отель'}
                             </label>
                         `;
                     }).join('');
@@ -4155,7 +4159,7 @@
                         }
                         return `
                             <label class="checkbox-item">
-                                <input type="checkbox" value="${guide.id}"> ${name.ru || name.en || 'Гид'}
+                                <input type="checkbox" name="selectedGuides" value="${guide.id}"> ${name.ru || name.en || 'Гид'}
                             </label>
                         `;
                     }).join('');
