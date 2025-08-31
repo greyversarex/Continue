@@ -1003,6 +1003,7 @@
                     
                     // Convert API data to our format
                     tourData = {
+                        id: apiTour.id,
                         title: apiTour.title?.ru || apiTour.title || '',
                         location: `${apiTour.city || ''}, ${apiTour.country || ''}`.replace(/^, |, $/, '') || '',
                         price: apiTour.price || '0',
