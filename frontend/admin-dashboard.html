@@ -3875,7 +3875,7 @@
                 }),
                 price: parseFloat(priceValue),
                 priceType: document.getElementById('tourPriceType').value || 'за человека',
-                categoryId: parseInt(categoryValue),
+                categoryId: parseInt(categoryValue) || null,
                 tourBlockId: document.getElementById('tourBlockId').value ? parseInt(document.getElementById('tourBlockId').value) : null,
                 country: document.getElementById('tourCountry').value || '',
                 city: document.getElementById('tourCity').value || '',
