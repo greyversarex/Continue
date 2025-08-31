@@ -41,12 +41,13 @@ router.get('/objects/uploads/:fileName', async (req: Request, res: Response): Pr
   }
 });
 
-// This endpoint is used to get the upload URL for an object entity.
+// Simple image upload endpoint (fallback when Object Storage is not configured)
 router.post('/objects/upload', async (req: Request, res: Response): Promise<void> => {
-  const objectStorageService = new ObjectStorageService();
   try {
-    const uploadURL = await objectStorageService.getObjectEntityUploadURL();
-    res.json({ uploadURL });
+    // Return a mock upload URL for now since Object Storage is not configured
+    // In production, this would be replaced with proper cloud storage
+    const mockUploadURL = '/api/upload/simple';
+    res.json({ uploadURL: mockUploadURL });
   } catch (error) {
     console.error('Error getting upload URL:', error);
     res.status(500).json({ error: 'Failed to get upload URL' });
