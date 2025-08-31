@@ -324,9 +324,19 @@
                 tourPrice *= numberOfTourists;
             }
 
-            document.getElementById('tour-price').textContent = `$${tourPrice}`;
+            // Safely update elements if they exist
+            const tourPriceCalcElement = document.getElementById('tour-price-calc');
+            if (tourPriceCalcElement) {
+                tourPriceCalcElement.textContent = `$${tourPrice}`;
+            }
+            
+            const totalPriceElement = document.getElementById('total-price');
+            if (totalPriceElement) {
+                totalPriceElement.textContent = `$${tourPrice}`;
+            }
+            
             bookingState.totalPrice = tourPrice;
-            updateTotalPrice();
+            bookingState.calculatedTourPrice = tourPrice;
         }
 
         async function loadTourHotels(tourId) {
@@ -815,9 +825,16 @@
             
             const totalPrice = tourPrice + roomCost + mealCost;
             
-            // Update displays
-            document.getElementById('tour-price').textContent = `$${tourPrice}`;
-            document.getElementById('total-price').textContent = `$${totalPrice}`;
+            // Safely update displays if elements exist
+            const tourPriceCalcElement = document.getElementById('tour-price-calc');
+            if (tourPriceCalcElement) {
+                tourPriceCalcElement.textContent = `$${tourPrice}`;
+            }
+            
+            const totalPriceElement = document.getElementById('total-price');
+            if (totalPriceElement) {
+                totalPriceElement.textContent = `$${totalPrice}`;
+            }
             
             // Store total for later use
             bookingState.totalPrice = totalPrice;
