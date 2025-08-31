@@ -1671,62 +1671,24 @@
                         </select>
                     </div>
                     
-                    <!-- Language selector for auto-translation -->
                     <div class="form-group col-span-2">
-                        <label class="form-label">Язык заполнения</label>
-                        <div class="flex gap-3">
-                            <select class="form-input flex-1" id="primaryLanguage" onchange="switchLanguageFields()">
-                                <option value="ru">🇷🇺 Русский (автоперевод на все языки при сохранении)</option>
-                                <option value="en">🇺🇸 English (auto-translate to all languages on save)</option>
-                                <option value="tj">🇹🇯 Точикӣ (Тоҷикӣ) - автотарҷума ба ҳамаи забонҳо</option>
-                                <option value="fa">🇮🇷 فارسی (ترجمه خودکار به همه زبان‌ها)</option>
-                                <option value="de">🇩🇪 Deutsch (automatische Übersetzung in alle Sprachen)</option>
-                                <option value="zh">🇨🇳 中文 (保存时自动翻译为所有语言)</option>
-                            </select>
-                            <button type="button" class="btn btn-primary" onclick="previewTranslation()" title="Предпросмотр перевода">
-                                <i class="fas fa-eye"></i> Предпросмотр перевода
-                            </button>
-                        </div>
-                        <small class="text-gray-500">Заполните поля на выбранном языке. Перевод на все остальные языки будет создан автоматически при сохранении.</small>
+                        <label class="form-label">Название тура (Русский)</label>
+                        <input type="text" class="form-input" id="tourTitleRu" required>
                     </div>
                     
                     <div class="form-group col-span-2">
-                        <label class="form-label" id="titleLabel">Название тура</label>
-                        <input type="text" class="form-input" id="tourTitle" required placeholder="Введите название тура">
-                        <!-- Скрытые поля для хранения переводов -->
-                        <input type="hidden" id="tourTitleRu">
-                        <input type="hidden" id="tourTitleEn">
-                        <input type="hidden" id="tourTitleTj">
-                        <input type="hidden" id="tourTitleFa">
-                        <input type="hidden" id="tourTitleDe">
-                        <input type="hidden" id="tourTitleZh">
+                        <label class="form-label">Название тура (English)</label>
+                        <input type="text" class="form-input" id="tourTitleEn" required>
                     </div>
                     
                     <div class="form-group col-span-2">
-                        <label class="form-label" id="descLabel">Описание тура</label>
-                        <textarea class="form-input" rows="4" id="tourDesc" required placeholder="Введите описание тура"></textarea>
-                        <!-- Скрытые поля для хранения переводов -->
-                        <input type="hidden" id="tourDescRu">
-                        <input type="hidden" id="tourDescEn">
-                        <input type="hidden" id="tourDescTj">
-                        <input type="hidden" id="tourDescFa">
-                        <input type="hidden" id="tourDescDe">
-                        <input type="hidden" id="tourDescZh">
+                        <label class="form-label">Описание (Русский)</label>
+                        <textarea class="form-input" rows="4" id="tourDescRu" required></textarea>
                     </div>
                     
-                    <!-- Preview translation area (hidden by default) -->
-                    <div class="form-group col-span-2" id="translationPreview" style="display: none;">
-                        <label class="form-label">Предпросмотр перевода</label>
-                        <div class="bg-gray-50 border rounded p-4">
-                            <div class="mb-3">
-                                <strong id="previewTitleLabel">Название:</strong>
-                                <p id="previewTitle" class="text-sm text-gray-700 mt-1"></p>
-                            </div>
-                            <div>
-                                <strong id="previewDescLabel">Описание:</strong>
-                                <p id="previewDesc" class="text-sm text-gray-700 mt-1"></p>
-                            </div>
-                        </div>
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Описание (English)</label>
+                        <textarea class="form-input" rows="4" id="tourDescEn" required></textarea>
                     </div>
 
                     <!-- Что включено -->
@@ -2714,24 +2676,12 @@
                 console.warn('galleryImagesList container not found');
                 return;
             }
-            
-            console.log('Updating gallery images list with:', window.tourGalleryImages);
-            
-            if (!window.tourGalleryImages || window.tourGalleryImages.length === 0) {
-                galleryContainer.innerHTML = '<div class="text-gray-500 text-sm">Нет загруженных изображений</div>';
-                return;
-            }
-            
             galleryContainer.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
                 <div class="flex items-center justify-between bg-gray-50 p-3 rounded border">
                     <div class="flex items-center gap-3">
-                        <img src="${imageUrl}" alt="Preview" class="w-16 h-16 object-cover rounded border" 
-                             onerror="console.error('Image failed to load:', '${imageUrl}'); this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMiAyNkMyMiAyNC44OTU0IDIyLjg5NTQgMjQgMjQgMjRIMzZDMzcuMTA0NiAyNCAzOCAyNC44OTU0IDM4IDI2VjM0QzM4IDM1LjEwNDYgMzcuMTA0NiAzNiAzNiAzNkgyNEMyMi44OTU0IDM2IDIyIDM1LjEwNDYgMjIgMzRWMjZaIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIvPgo8Y2lyY2xlIGN4PSIyNyIgY3k9IjI5IiByPSIyIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0yOCAzM0wzMCAzMUwzMiAzM0gzNlYzNkgyNFYzM0gyOFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';">
+                        <img src="${imageUrl}" alt="Preview" class="w-12 h-12 object-cover rounded" onerror="this.style.display='none';">
                         <div class="flex-1 min-w-0">
-                            <div class="text-sm font-medium text-gray-900 truncate" title="${imageUrl}">
-                                ${imageUrl.length > 40 ? '...' + imageUrl.slice(-40) : imageUrl}
-                            </div>
-                            <div class="text-xs text-gray-500">Изображение #${index + 1}</div>
+                            <div class="text-sm font-medium text-gray-900 truncate">${imageUrl}</div>
                         </div>
                     </div>
                     <button type="button" onclick="removeGalleryImage(${index})" class="text-red-500 hover:text-red-700 ml-2">
@@ -2865,19 +2815,11 @@
             const tourData = {
                 title: {
                     ru: document.getElementById('tourTitleRu')?.value || '',
-                    en: document.getElementById('tourTitleEn')?.value || '',
-                    tj: document.getElementById('tourTitleTj')?.value || '',
-                    fa: document.getElementById('tourTitleFa')?.value || '',
-                    de: document.getElementById('tourTitleDe')?.value || '',
-                    zh: document.getElementById('tourTitleZh')?.value || ''
+                    en: document.getElementById('tourTitleEn')?.value || ''
                 },
                 description: {
                     ru: document.getElementById('tourDescRu')?.value || '',
-                    en: document.getElementById('tourDescEn')?.value || '',
-                    tj: document.getElementById('tourDescTj')?.value || '',
-                    fa: document.getElementById('tourDescFa')?.value || '',
-                    de: document.getElementById('tourDescDe')?.value || '',
-                    zh: document.getElementById('tourDescZh')?.value || ''
+                    en: document.getElementById('tourDescEn')?.value || ''
                 },
                 duration: '',  // Поле удалено из формы
                 durationDays: parseInt(document.getElementById('tourDurationDays')?.value) || 1,
@@ -2920,9 +2862,9 @@
             
             // НЕ перенаправляем на saveEnhancedTour! Продолжаем с правильной логикой
             
-            const titleElement = document.getElementById('tourTitle');
-            if (!titleElement || !titleElement.value || titleElement.value.trim() === '') {
-                alert('Пожалуйста, введите название тура');
+            const titleRuElement = document.getElementById('tourTitleRu');
+            if (!titleRuElement || !titleRuElement.value || titleRuElement.value.trim() === '') {
+                alert('Пожалуйста, введите название тура на русском языке');
                 return;
             }
             
@@ -2937,24 +2879,6 @@
                 alert('Пожалуйста, введите длительность тура в днях');
                 return;
             }
-            
-            // СНАЧАЛА переносим данные из основных полей в языковые поля
-            const primaryLang = document.getElementById('primaryLanguage').value;
-            const titleText = document.getElementById('tourTitle').value.trim();
-            const descText = document.getElementById('tourDesc').value.trim();
-            
-            const languageFieldMap = {
-                'ru': { title: 'tourTitleRu', desc: 'tourDescRu' },
-                'en': { title: 'tourTitleEn', desc: 'tourDescEn' },
-                'tj': { title: 'tourTitleTj', desc: 'tourDescTj' },
-                'fa': { title: 'tourTitleFa', desc: 'tourDescFa' },
-                'de': { title: 'tourTitleDe', desc: 'tourDescDe' },
-                'zh': { title: 'tourTitleZh', desc: 'tourDescZh' }
-            };
-            
-            // Устанавливаем значения для выбранного языка
-            document.getElementById(languageFieldMap[primaryLang].title).value = titleText;
-            document.getElementById(languageFieldMap[primaryLang].desc).value = descText;
             
             // Получаем ID тура из скрытого поля
             const tourId = document.getElementById('tour-id').value || '';
@@ -3580,31 +3504,6 @@
                             console.log('✅ Loaded title EN:', title.en);
                         }
                         
-                        // Load all additional languages
-                        const tourTitleTj = document.getElementById('tourTitleTj');
-                        if (tourTitleTj) {
-                            tourTitleTj.value = title.tj || '';
-                            console.log('✅ Loaded title TJ:', title.tj);
-                        }
-                        
-                        const tourTitleFa = document.getElementById('tourTitleFa');
-                        if (tourTitleFa) {
-                            tourTitleFa.value = title.fa || '';
-                            console.log('✅ Loaded title FA:', title.fa);
-                        }
-                        
-                        const tourTitleDe = document.getElementById('tourTitleDe');
-                        if (tourTitleDe) {
-                            tourTitleDe.value = title.de || '';
-                            console.log('✅ Loaded title DE:', title.de);
-                        }
-                        
-                        const tourTitleZh = document.getElementById('tourTitleZh');
-                        if (tourTitleZh) {
-                            tourTitleZh.value = title.zh || '';
-                            console.log('✅ Loaded title ZH:', title.zh);
-                        }
-                        
                         const tourDescRu = document.getElementById('tourDescRu');
                         if (tourDescRu) {
                             tourDescRu.value = description.ru || '';
@@ -3615,30 +3514,6 @@
                         if (tourDescEn) {
                             tourDescEn.value = description.en || '';
                             console.log('✅ Loaded description EN');
-                        }
-                        
-                        const tourDescTj = document.getElementById('tourDescTj');
-                        if (tourDescTj) {
-                            tourDescTj.value = description.tj || '';
-                            console.log('✅ Loaded description TJ');
-                        }
-                        
-                        const tourDescFa = document.getElementById('tourDescFa');
-                        if (tourDescFa) {
-                            tourDescFa.value = description.fa || '';
-                            console.log('✅ Loaded description FA');
-                        }
-                        
-                        const tourDescDe = document.getElementById('tourDescDe');
-                        if (tourDescDe) {
-                            tourDescDe.value = description.de || '';
-                            console.log('✅ Loaded description DE');
-                        }
-                        
-                        const tourDescZh = document.getElementById('tourDescZh');
-                        if (tourDescZh) {
-                            tourDescZh.value = description.zh || '';
-                            console.log('✅ Loaded description ZH');
                         }
                         
                         const tourType = document.getElementById('tourType');
@@ -4062,22 +3937,16 @@
         }
         
         // Новая функция сохранения для основной формы tourForm
-        async function saveTourForm() {
+        function saveTourForm() {
             // Получаем ID тура из скрытого поля
             const tourId = document.getElementById('tour-id').value;
             const isEditing = tourId && tourId.trim() !== '';
             
             console.log('💾 Saving tour:', { tourId, isEditing });
             
-            // Эта логика теперь выполняется в saveTourForm перед вызовом этой функции
-            
             // Валидация обязательных полей
             const titleRuValue = document.getElementById('tourTitleRu').value;
             const titleEnValue = document.getElementById('tourTitleEn').value;
-            const titleTjValue = document.getElementById('tourTitleTj').value;
-            const titleFaValue = document.getElementById('tourTitleFa').value;
-            const titleDeValue = document.getElementById('tourTitleDe').value;
-            const titleZhValue = document.getElementById('tourTitleZh').value;
             
             // Проверяем выбранные категории вместо dropdown
             if (!selectedCategories || selectedCategories.length === 0) {
@@ -4089,9 +3958,8 @@
             const priceValue = document.getElementById('tourPrice').value;
             const durationDaysValue = document.getElementById('tourDurationDays').value;
             
-            const mainTitleElement = document.getElementById('tourTitle');
-            if (!mainTitleElement || !mainTitleElement.value || mainTitleElement.value.trim() === '') {
-                alert('Пожалуйста, введите название тура');
+            if (!titleRuValue || titleRuValue.trim() === '') {
+                alert('Пожалуйста, введите название тура на русском языке');
                 return;
             }
             
@@ -4114,31 +3982,14 @@
             const formData = {
                 title: JSON.stringify({
                     ru: titleRuValue,
-                    en: titleEnValue || titleRuValue,
-                    tj: titleTjValue || '',
-                    fa: titleFaValue || '',
-                    de: titleDeValue || '',
-                    zh: titleZhValue || ''
+                    en: titleEnValue || titleRuValue
                 }),
                 description: JSON.stringify({
                     ru: document.getElementById('tourDescRu').value || '',
-                    en: document.getElementById('tourDescEn').value || '',
-                    tj: document.getElementById('tourDescTj').value || '',
-                    fa: document.getElementById('tourDescFa').value || '',
-                    de: document.getElementById('tourDescDe').value || '',
-                    zh: document.getElementById('tourDescZh').value || ''
-                }),
-                shortDescription: JSON.stringify({
-                    ru: document.getElementById('tourDescRu').value || '',
-                    en: document.getElementById('tourDescEn').value || '',
-                    tj: document.getElementById('tourDescTj').value || '',
-                    fa: document.getElementById('tourDescFa').value || '',
-                    de: document.getElementById('tourDescDe').value || '',
-                    zh: document.getElementById('tourDescZh').value || ''
+                    en: document.getElementById('tourDescEn').value || ''
                 }),
                 price: parseFloat(priceValue),
                 priceType: document.getElementById('tourPriceType').value || 'за человека',
-                originalPrice: null,
                 categoryId: parseInt(categoryValue),
                 tourBlockId: document.getElementById('tourBlockId').value ? parseInt(document.getElementById('tourBlockId').value) : null,
                 country: document.getElementById('tourCountry').value || '',
@@ -4150,8 +4001,6 @@
                 pickupInfo: document.getElementById('tourPickupInfo').value || '',
                 minPeople: document.getElementById('tourMinPeople').value ? parseInt(document.getElementById('tourMinPeople').value) : null,
                 maxPeople: document.getElementById('tourMaxPeople').value ? parseInt(document.getElementById('tourMaxPeople').value) : null,
-                mainImage: window.tourGalleryImages && window.tourGalleryImages.length > 0 ? window.tourGalleryImages[0] : null,
-                images: JSON.stringify(window.tourGalleryImages || []),
                 highlights: JSON.stringify(window.tourHighlights || []),
                 itinerary: JSON.stringify(window.tourItinerary || []),
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
@@ -6298,7 +6147,7 @@
             
             const titleRu = document.getElementById('eTourTitleRu').value;
             if (!titleRu || titleRu.trim() === '') {
-                alert('Пожалуйста, введите название тура');
+                alert('Пожалуйста, введите название тура на русском языке');
                 return;
             }
             
@@ -7061,355 +6910,6 @@
         function loadBannerManagement() {
             loadCurrentSlides();
         }
-
-        // ===== АВТОПЕРЕВОД ФУНКЦИИ =====
-
-        // Language configurations
-        const languageConfig = {
-            ru: {
-                label: 'Название тура (Русский)',
-                descLabel: 'Описание тура (Русский)',
-                titlePlaceholder: 'Введите название тура на русском языке',
-                descPlaceholder: 'Введите описание тура на русском языке',
-                borderColor: '#3b82f6'
-            },
-            en: {
-                label: 'Tour Title (English)',
-                descLabel: 'Tour Description (English)', 
-                titlePlaceholder: 'Enter tour title in English',
-                descPlaceholder: 'Enter tour description in English',
-                borderColor: '#10b981'
-            },
-            tj: {
-                label: 'Номи сафар (Тоҷикӣ)',
-                descLabel: 'Тавсифи сафар (Тоҷикӣ)',
-                titlePlaceholder: 'Номи сафарро ба забони тоҷикӣ ворид кунед',
-                descPlaceholder: 'Тавсифи сафарро ба забони тоҷикӣ ворид кунед',
-                borderColor: '#8b5cf6'
-            },
-            fa: {
-                label: 'عنوان تور (فارسی)',
-                descLabel: 'توضیح تور (فارسی)',
-                titlePlaceholder: 'عنوان تور را به فارسی وارد کنید',
-                descPlaceholder: 'توضیح تور را به فارسی وارد کنید',
-                borderColor: '#f59e0b'
-            },
-            de: {
-                label: 'Tour Titel (Deutsch)',
-                descLabel: 'Tour Beschreibung (Deutsch)',
-                titlePlaceholder: 'Tour Titel auf Deutsch eingeben',
-                descPlaceholder: 'Tour Beschreibung auf Deutsch eingeben',
-                borderColor: '#ef4444'
-            },
-            zh: {
-                label: '旅游标题 (中文)',
-                descLabel: '旅游描述 (中文)', 
-                titlePlaceholder: '请输入中文旅游标题',
-                descPlaceholder: '请输入中文旅游描述',
-                borderColor: '#06b6d4'
-            }
-        };
-
-        // Switch language fields
-        function switchLanguageFields() {
-            const primaryLang = document.getElementById('primaryLanguage').value;
-            const config = languageConfig[primaryLang];
-            
-            if (!config) return;
-            
-            const titleLabel = document.getElementById('titleLabel');
-            const descLabel = document.getElementById('descLabel');
-            const titleField = document.getElementById('tourTitle');
-            const descField = document.getElementById('tourDesc');
-            
-            // Hide translation preview when switching language
-            document.getElementById('translationPreview').style.display = 'none';
-            
-            // Update labels and placeholders
-            titleLabel.textContent = config.label;
-            descLabel.textContent = config.descLabel;
-            titleField.placeholder = config.titlePlaceholder;
-            descField.placeholder = config.descPlaceholder;
-            titleField.style.borderColor = config.borderColor;
-            descField.style.borderColor = config.borderColor;
-        }
-
-        // Preview translation
-        async function previewTranslation() {
-            const primaryLang = document.getElementById('primaryLanguage').value;
-            const titleText = document.getElementById('tourTitle').value.trim();
-            const descText = document.getElementById('tourDesc').value.trim();
-            
-            if (!titleText && !descText) {
-                alert('Заполните поля для предпросмотра перевода');
-                return;
-            }
-            
-            const btn = event.target.closest('button');
-            const originalHTML = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Переводится...';
-            
-            try {
-                const allLanguages = ['ru', 'en', 'tj', 'fa', 'de', 'zh'];
-                const targetLanguages = allLanguages.filter(lang => lang !== primaryLang);
-                const allTranslations = {};
-                
-                // Translate to all target languages
-                for (const targetLang of targetLanguages) {
-                    try {
-                        allTranslations[targetLang] = {};
-                        
-                        // Translate title if filled
-                        if (titleText) {
-                            const titleResponse = await fetch(`${getApiUrl()}/translate/text`, {
-                                method: 'POST',
-                                headers: getAuthHeaders(),
-                                body: JSON.stringify({
-                                    text: titleText,
-                                    fromLanguage: primaryLang,
-                                    toLanguage: targetLang,
-                                    context: 'tour_title'
-                                })
-                            });
-                            
-                            const titleData = await titleResponse.json();
-                            if (titleData.success) {
-                                allTranslations[targetLang].title = titleData.data.translatedText;
-                            } else {
-                                allTranslations[targetLang].title = 'Ошибка перевода';
-                            }
-                        }
-                        
-                        // Translate description if filled
-                        if (descText) {
-                            const descResponse = await fetch(`${getApiUrl()}/translate/text`, {
-                                method: 'POST',
-                                headers: getAuthHeaders(),
-                                body: JSON.stringify({
-                                    text: descText,
-                                    fromLanguage: primaryLang,
-                                    toLanguage: targetLang,
-                                    context: 'tour_description'
-                                })
-                            });
-                            
-                            const descData = await descResponse.json();
-                            if (descData.success) {
-                                allTranslations[targetLang].description = descData.data.translatedText;
-                            } else {
-                                allTranslations[targetLang].description = 'Ошибка перевода';
-                            }
-                        }
-                        
-                        // Small delay between translations
-                        await new Promise(resolve => setTimeout(resolve, 200));
-                        
-                    } catch (langError) {
-                        console.warn(`Failed to translate to ${targetLang}:`, langError);
-                        allTranslations[targetLang] = {
-                            title: 'Ошибка перевода',
-                            description: 'Ошибка перевода'
-                        };
-                    }
-                }
-                
-                // Show preview
-                showTranslationPreview(allTranslations, primaryLang, titleText, descText);
-                showNotification('Предпросмотр перевода готов!', 'success');
-                
-            } catch (error) {
-                console.error('Translation preview error:', error);
-                alert('Ошибка при создании предпросмотра перевода');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalHTML;
-            }
-        }
-
-        // Show translation preview
-        function showTranslationPreview(allTranslations, primaryLang, originalTitle, originalDesc) {
-            const previewDiv = document.getElementById('translationPreview');
-            const languageNames = {
-                ru: 'Русский',
-                en: 'English', 
-                tj: 'Точикӣ',
-                fa: 'فارسی',
-                de: 'Deutsch',
-                zh: '中文'
-            };
-            
-            // Create comprehensive preview HTML
-            let previewHTML = `
-                <div class="bg-gray-50 border rounded p-4">
-                    <h4 class="font-bold mb-4 text-lg">Предпросмотр всех переводов</h4>
-                    
-                    <!-- Original content -->
-                    <div class="mb-6 p-3 bg-blue-50 rounded">
-                        <h5 class="font-semibold text-blue-800">${languageNames[primaryLang]} (оригинал):</h5>
-                        <p class="text-sm mt-2"><strong>Название:</strong> ${originalTitle || 'Не заполнено'}</p>
-                        <p class="text-sm mt-1"><strong>Описание:</strong> ${originalDesc || 'Не заполнено'}</p>
-                    </div>
-                    
-                    <!-- Translations -->
-                    <div class="space-y-3">
-            `;
-            
-            // Add each translation
-            Object.keys(allTranslations).forEach(lang => {
-                const translation = allTranslations[lang];
-                previewHTML += `
-                    <div class="p-3 bg-white border rounded">
-                        <h5 class="font-semibold text-gray-700">${languageNames[lang]}:</h5>
-                        <p class="text-sm mt-2"><strong>Название:</strong> ${translation.title || 'Не переведено'}</p>
-                        <p class="text-sm mt-1"><strong>Описание:</strong> ${translation.description || 'Не переведено'}</p>
-                    </div>
-                `;
-            });
-            
-            previewHTML += `
-                    </div>
-                </div>
-            `;
-            
-            previewDiv.innerHTML = previewHTML;
-            previewDiv.style.display = 'block';
-        }
-
-        // Auto-translate before saving tour
-        async function autoTranslateBeforeSave() {
-            const primaryLang = document.getElementById('primaryLanguage').value;
-            const titleText = document.getElementById('tourTitle').value.trim();
-            const descText = document.getElementById('tourDesc').value.trim();
-            
-            const allLanguages = ['ru', 'en', 'tj', 'fa', 'de', 'zh'];
-            const targetLanguages = allLanguages.filter(lang => lang !== primaryLang);
-            
-            showNotification('Автоперевод на все языки...', 'info');
-            
-            try {
-                // Set values for primary language in correct field IDs
-                const languageFieldMap = {
-                    'ru': { title: 'tourTitleRu', desc: 'tourDescRu' },
-                    'en': { title: 'tourTitleEn', desc: 'tourDescEn' },
-                    'tj': { title: 'tourTitleTj', desc: 'tourDescTj' },
-                    'fa': { title: 'tourTitleFa', desc: 'tourDescFa' },
-                    'de': { title: 'tourTitleDe', desc: 'tourDescDe' },
-                    'zh': { title: 'tourTitleZh', desc: 'tourDescZh' }
-                };
-                
-                // Set primary language values
-                document.getElementById(languageFieldMap[primaryLang].title).value = titleText;
-                document.getElementById(languageFieldMap[primaryLang].desc).value = descText;
-                
-                // Translate to all target languages
-                for (const targetLang of targetLanguages) {
-                    if (titleText) {
-                        try {
-                            const titleResponse = await fetch(`${getApiUrl()}/translate/text`, {
-                                method: 'POST',
-                                headers: getAuthHeaders(),
-                                body: JSON.stringify({
-                                    text: titleText,
-                                    fromLanguage: primaryLang,
-                                    toLanguage: targetLang,
-                                    context: 'tour_title'
-                                })
-                            });
-                            
-                            const titleData = await titleResponse.json();
-                            if (titleData.success) {
-                                document.getElementById(languageFieldMap[targetLang].title).value = titleData.data.translatedText;
-                            }
-                        } catch (titleError) {
-                            console.warn(`Failed to translate title to ${targetLang}:`, titleError);
-                        }
-                    }
-                    
-                    if (descText) {
-                        try {
-                            const descResponse = await fetch(`${getApiUrl()}/translate/text`, {
-                                method: 'POST',
-                                headers: getAuthHeaders(),
-                                body: JSON.stringify({
-                                    text: descText,
-                                    fromLanguage: primaryLang,
-                                    toLanguage: targetLang,
-                                    context: 'tour_description'
-                                })
-                            });
-                            
-                            const descData = await descResponse.json();
-                            if (descData.success) {
-                                document.getElementById(languageFieldMap[targetLang].desc).value = descData.data.translatedText;
-                            }
-                        } catch (descError) {
-                            console.warn(`Failed to translate description to ${targetLang}:`, descError);
-                        }
-                    }
-                    
-                    // Small delay between translations to avoid rate limiting
-                    await new Promise(resolve => setTimeout(resolve, 200));
-                }
-                
-                showNotification('Автоперевод на все языки завершен!', 'success');
-                return true;
-                
-            } catch (error) {
-                console.error('Auto-translation error:', error);
-                showNotification('Ошибка автоперевода', 'error');
-                return false;
-            }
-        }
-
-        // Show notification helper
-        function showNotification(message, type = 'info') {
-            // Create notification element if it doesn't exist
-            let notification = document.getElementById('translationNotification');
-            if (!notification) {
-                notification = document.createElement('div');
-                notification.id = 'translationNotification';
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    padding: 12px 20px;
-                    border-radius: 6px;
-                    color: white;
-                    font-weight: 500;
-                    z-index: 10000;
-                    transition: all 0.3s ease;
-                `;
-                document.body.appendChild(notification);
-            }
-            
-            // Set style based on type
-            const colors = {
-                success: '#10b981',
-                error: '#ef4444',
-                info: '#3b82f6'
-            };
-            
-            notification.style.backgroundColor = colors[type] || colors.info;
-            notification.textContent = message;
-            notification.style.display = 'block';
-            notification.style.opacity = '1';
-            
-            // Auto-hide after 3 seconds
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 300);
-            }, 3000);
-        }
-
-        // Initialize language fields on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                switchLanguageFields();
-            }, 100);
-        });
     </script>
 </body>
 </html>

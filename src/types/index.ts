@@ -1,11 +1,8 @@
 // Multilingual content type
 export interface MultilingualContent {
-  ru: string;     // Russian
-  en: string;     // English
-  tj?: string;    // Tajik (Точикӣ)
-  fa?: string;    // Persian/Farsi (فارسی)
-  de?: string;    // German (Deutsch)
-  zh?: string;    // Chinese (中文)
+  en: string;
+  ru: string;
+  tj?: string;
 }
 
 // Category types

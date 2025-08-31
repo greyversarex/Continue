@@ -325,11 +325,11 @@ export class TourController {
       const tour = await TourModel.create({
         title,
         description,
-        shortDescription: shortDescription || undefined,
+        shortDescription: shortDescription || null,
         duration: String(finalDuration), // Convert to string for Prisma
         price: String(price),
         priceType: priceType || 'за человека',
-        originalPrice: originalPrice ? String(originalPrice) : undefined,
+        originalPrice: originalPrice || null,
         categoryId: categoryIdNumber,
         tourBlockId: tourBlockIdNumber,
         country: country || null,
@@ -392,35 +392,13 @@ export class TourController {
 
       return res.status(201).json(response);
     } catch (error) {
-      console.error('Error creating tour:', error);
-      
       if (error instanceof Error && error.message === 'Category not found') {
         return res.status(400).json({
           success: false,
           error: 'Invalid category ID'
         });
       }
-      
-      // Handle database connection errors specifically
-      if (error instanceof Error && (
-        error.message.includes('terminating connection') ||
-        error.message.includes('Connection terminated') ||
-        error.message.includes('Client has encountered a connection error')
-      )) {
-        console.log('🔄 Database connection lost');
-        return res.status(500).json({
-          success: false,
-          error: 'Database connection lost. Please try again in a moment.',
-          message: 'Failed to create tour due to database connection issues'
-        });
-      }
-      
-      // Return a proper error response for other errors
-      return res.status(500).json({
-        success: false,
-        error: error instanceof Error ? error.message : 'Internal server error',
-        message: 'Failed to create tour'
-      });
+      return next(error);
     }
   }
 
