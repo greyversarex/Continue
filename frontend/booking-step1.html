@@ -706,18 +706,25 @@
         }
 
         function updatePriceSummary() {
-            const roomCostsContainer = document.getElementById('room-costs');
-            const mealCostsContainer = document.getElementById('meal-costs');
+            const roomCostsCalc = document.getElementById('room-costs-calc');
+            const mealCostsCalc = document.getElementById('meal-costs-calc');
             
             let totalRoomCost = 0;
             let totalMealCost = 0;
             
-            const tourDuration = parseInt(bookingState.tour.duration.replace(/\D/g, '')) || 1;
+            const tourDuration = parseInt(bookingState.tour.duration.replace(/\D/g, '')) || parseInt(bookingState.tour.durationDays) || 1;
             const urlParams = new URLSearchParams(window.location.search);
             const numberOfTourists = parseInt(urlParams.get('tourists'));
             
+            // Update hotel information display first
+            updateSelectedHotelDisplay();
+            updateRoomMealDisplay();
+            
+            // Clear calculation areas
+            if (roomCostsCalc) roomCostsCalc.innerHTML = '';
+            if (mealCostsCalc) mealCostsCalc.innerHTML = '';
+            
             // Calculate room costs using real hotel data
-            roomCostsContainer.innerHTML = '';
             for (const [hotelId, rooms] of Object.entries(bookingState.roomSelection)) {
                 for (const [roomType, quantity] of Object.entries(rooms)) {
                     if (quantity > 0) {
@@ -738,12 +745,14 @@
                                 const roomCost = roomPrice * quantity * tourDuration;
                                 totalRoomCost += roomCost;
                                 
-                                roomCostsContainer.innerHTML += `
-                                    <div class="flex justify-between text-sm">
-                                        <span>${roomTypes[roomType].name} × ${quantity} × ${tourDuration} дн.:</span>
-                                        <span>$${roomCost}</span>
-                                    </div>
-                                `;
+                                if (roomCostsCalc) {
+                                    roomCostsCalc.innerHTML += `
+                                        <div class="flex justify-between text-sm">
+                                            <span>Номера ${roomTypes[roomType].name} × ${quantity} × ${tourDuration} дн.:</span>
+                                            <span>$${roomCost}</span>
+                                        </div>
+                                    `;
+                                }
                             }
                         }
                     }
@@ -751,7 +760,6 @@
             }
             
             // Calculate meal costs using real hotel data
-            mealCostsContainer.innerHTML = '';
             for (const [hotelId, meals] of Object.entries(bookingState.mealSelection)) {
                 // Find hotel data to check if meals are included in room
                 const hotelData = bookingState.availableHotels.find(h => h.id == hotelId);
@@ -775,21 +783,25 @@
                         totalMealCost += mealCost;
                         
                         const mealName = mealTypes[mealType]?.name || mealType;
-                        mealCostsContainer.innerHTML += `
-                            <div class="flex justify-between text-sm">
-                                <span>Питание ${mealName} × ${numberOfTourists} × ${tourDuration} дн.:</span>
-                                <span>$${mealCost}</span>
-                            </div>
-                        `;
+                        if (mealCostsCalc) {
+                            mealCostsCalc.innerHTML += `
+                                <div class="flex justify-between text-sm">
+                                    <span>Питание ${mealName} × ${numberOfTourists} × ${tourDuration} дн.:</span>
+                                    <span>$${mealCost}</span>
+                                </div>
+                            `;
+                        }
                     } else {
                         // Show that meal is included
                         const mealName = mealTypes[mealType]?.name || mealType;
-                        mealCostsContainer.innerHTML += `
-                            <div class="flex justify-between text-sm text-green-600">
-                                <span>Питание ${mealName} (включено в номер):</span>
-                                <span>$0</span>
-                            </div>
-                        `;
+                        if (mealCostsCalc) {
+                            mealCostsCalc.innerHTML += `
+                                <div class="flex justify-between text-sm text-green-600">
+                                    <span>Питание ${mealName} (включено в номер):</span>
+                                    <span>$0</span>
+                                </div>
+                            `;
+                        }
                     }
                 }
             }
@@ -801,6 +813,130 @@
             updateTotalPrice();
         }
         
+        function updateSelectedHotelDisplay() {
+            const selectedHotelInfo = document.getElementById('selected-hotel-info');
+            const hotelDetailsContent = document.getElementById('hotel-details-content');
+            const hotelSeparator = document.getElementById('hotel-separator');
+            
+            if (!bookingState.selectedHotel || !selectedHotelInfo || !hotelDetailsContent) {
+                if (selectedHotelInfo) selectedHotelInfo.style.display = 'none';
+                if (hotelSeparator) hotelSeparator.style.display = 'none';
+                return;
+            }
+            
+            // Find selected hotel data
+            const hotelData = bookingState.availableHotels.find(h => h.id == bookingState.selectedHotel);
+            if (hotelData) {
+                // Show hotel information
+                selectedHotelInfo.style.display = 'block';
+                hotelSeparator.style.display = 'block';
+                
+                // Get hotel stars display
+                const starsDisplay = hotelData.stars ? '★'.repeat(hotelData.stars) : '';
+                
+                hotelDetailsContent.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="font-medium">${hotelData.name.ru || hotelData.name.en}</div>
+                        <div class="text-xs text-gray-500">${hotelData.address || ''}</div>
+                        ${starsDisplay ? `<div class="text-yellow-500 text-sm">${starsDisplay}</div>` : ''}
+                    </div>
+                `;
+            }
+        }
+
+        function updateRoomMealDisplay() {
+            const roomMealInfo = document.getElementById('room-meal-info');
+            const roomDetailsContent = document.getElementById('room-details-content');
+            const mealDetailsContent = document.getElementById('meal-details-content');
+            const capacityInfo = document.getElementById('capacity-info');
+            
+            if (!roomMealInfo || !roomDetailsContent) return;
+            
+            // Check if there are any selected rooms
+            const hasSelectedRooms = Object.values(bookingState.roomSelection).some(rooms => 
+                Object.values(rooms).some(quantity => quantity > 0)
+            );
+            
+            if (!hasSelectedRooms) {
+                roomMealInfo.style.display = 'none';
+                return;
+            }
+            
+            roomMealInfo.style.display = 'block';
+            
+            // Display selected rooms
+            let roomsHtml = '';
+            let totalCapacity = 0;
+            
+            for (const [hotelId, rooms] of Object.entries(bookingState.roomSelection)) {
+                for (const [roomType, quantity] of Object.entries(rooms)) {
+                    if (quantity > 0) {
+                        const hotelData = bookingState.availableHotels.find(h => h.id == hotelId);
+                        if (hotelData) {
+                            let roomTypes = {};
+                            try {
+                                roomTypes = typeof hotelData.roomTypes === 'string' ? JSON.parse(hotelData.roomTypes) : (hotelData.roomTypes || {});
+                            } catch (e) {
+                                roomTypes = {};
+                            }
+                            
+                            if (roomTypes[roomType]) {
+                                const roomCapacity = getRoomCapacity(roomType);
+                                const totalRoomCapacity = roomCapacity * quantity;
+                                totalCapacity += totalRoomCapacity;
+                                
+                                roomsHtml += `
+                                    <div class="flex justify-between">
+                                        <span>${roomTypes[roomType].name} × ${quantity}</span>
+                                        <span>$${roomTypes[roomType].price}/сутки</span>
+                                    </div>
+                                `;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            roomDetailsContent.innerHTML = roomsHtml;
+            
+            // Display capacity info
+            const urlParams = new URLSearchParams(window.location.search);
+            const numberOfTourists = parseInt(urlParams.get('tourists'));
+            
+            if (capacityInfo) {
+                const capacityColor = totalCapacity >= numberOfTourists ? 'text-green-600' : 'text-red-600';
+                capacityInfo.innerHTML = `
+                    <div class="${capacityColor}">
+                        Общая вместимость: ${totalCapacity} чел. (требуется: ${numberOfTourists} чел.)
+                    </div>
+                `;
+            }
+            
+            // Display meal selection if any
+            let mealsHtml = '';
+            for (const [hotelId, meals] of Object.entries(bookingState.mealSelection)) {
+                const hotelData = bookingState.availableHotels.find(h => h.id == hotelId);
+                if (hotelData) {
+                    let mealTypes = {};
+                    try {
+                        mealTypes = typeof hotelData.mealTypes === 'string' ? JSON.parse(hotelData.mealTypes) : (hotelData.mealTypes || {});
+                    } catch (e) {
+                        mealTypes = {};
+                    }
+                    
+                    for (const [mealType, price] of Object.entries(meals)) {
+                        if (mealTypes[mealType]) {
+                            mealsHtml += `<div class="text-xs">Питание: ${mealTypes[mealType].name}</div>`;
+                        }
+                    }
+                }
+            }
+            
+            if (mealDetailsContent) {
+                mealDetailsContent.innerHTML = mealsHtml;
+            }
+        }
+
         function checkIfMealIncludedInRoom(hotelId, mealType) {
             // TODO: This would check if the selected room type includes this meal type
             // For now, assume no meals are included unless specified
@@ -896,12 +1032,18 @@
             }
         }
 
-        // Continue button handler 
+        // Initialize page when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            const continueBtn = document.getElementById('continue-btn');
-            if (continueBtn) {
-                continueBtn.addEventListener('click', saveBookingDraft);
-            }
+            // Set up continue button handler
+            setTimeout(() => {
+                const continueBtn = document.getElementById('continue-btn');
+                if (continueBtn) {
+                    continueBtn.addEventListener('click', saveBookingDraft);
+                    console.log('✅ Continue button handler attached');
+                } else {
+                    console.warn('⚠️ Continue button not found');
+                }
+            }, 1000); // Give time for DOM elements to be created
         });
     </script>
 </body>
