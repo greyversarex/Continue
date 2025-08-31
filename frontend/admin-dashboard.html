@@ -3932,9 +3932,47 @@
                                 }
                             } else {
                                 console.error('❌ Element eGalleryImagesList container not found');
+                                // Попробуем найти альтернативные контейнеры
+                                const altGallery = document.getElementById('editGalleryImagesList') || document.getElementById('galleryImagesList');
+                                if (altGallery) {
+                                    console.log('✅ Found alternative gallery container:', altGallery.id);
+                                } else {
+                                    console.error('❌ No gallery container found at all');
+                                }
                             }
                         } catch (e) {
                             console.error('❌ Failed to update edit gallery images list:', e);
+                        }
+                        
+                        // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Загрузка выбранных отелей и гидов
+                        // Загрузка выбранных отелей
+                        if (tour.hotels && Array.isArray(tour.hotels)) {
+                            console.log('✅ Loading selected hotels:', tour.hotels.map(h => h.id || h.hotelId));
+                            tour.hotels.forEach(hotelRelation => {
+                                const hotelId = hotelRelation.id || hotelRelation.hotelId;
+                                const checkbox = document.querySelector(`input[name="selectedHotels"][value="${hotelId}"]`);
+                                if (checkbox) {
+                                    checkbox.checked = true;
+                                    console.log('✅ Checked hotel:', hotelId);
+                                } else {
+                                    console.warn('❌ Hotel checkbox not found for:', hotelId);
+                                }
+                            });
+                        }
+                        
+                        // Загрузка выбранных гидов
+                        if (tour.guides && Array.isArray(tour.guides)) {
+                            console.log('✅ Loading selected guides:', tour.guides.map(g => g.id || g.guideId));
+                            tour.guides.forEach(guideRelation => {
+                                const guideId = guideRelation.id || guideRelation.guideId;
+                                const checkbox = document.querySelector(`input[name="selectedGuides"][value="${guideId}"]`);
+                                if (checkbox) {
+                                    checkbox.checked = true;
+                                    console.log('✅ Checked guide:', guideId);
+                                } else {
+                                    console.warn('❌ Guide checkbox not found for:', guideId);
+                                }
+                            });
                         }
                         
                         console.log('✅ Tour data loaded successfully for editing:', tour.id);
@@ -4443,10 +4481,31 @@
                     const description = JSON.parse(hotel.description || '{}');
                     const amenities = JSON.parse(hotel.amenities || '[]');
                     
-                    document.getElementById('hotelName').value = name.ru || name.en || hotel.name || '';
-                    document.getElementById('hotelDescription').value = description.ru || description.en || hotel.description || '';
-                    document.getElementById('hotelAddress').value = hotel.address || '';
-                    document.getElementById('hotelStars').value = hotel.stars || '';
+                    // УЛУЧШЕНИЕ: Лучшая обработка многоязычных полей
+                    const hotelNameField = document.getElementById('hotelName');
+                    const hotelDescField = document.getElementById('hotelDescription');
+                    
+                    if (hotelNameField) {
+                        hotelNameField.value = name.ru || name.en || hotel.name || '';
+                        console.log('✅ Loaded hotel name:', hotelNameField.value);
+                    }
+                    
+                    if (hotelDescField) {
+                        hotelDescField.value = description.ru || description.en || hotel.description || '';
+                        console.log('✅ Loaded hotel description:', hotelDescField.value);
+                    }
+                    const addressField = document.getElementById('hotelAddress');
+                    const starsField = document.getElementById('hotelStars');
+                    
+                    if (addressField) {
+                        addressField.value = hotel.address || '';
+                        console.log('✅ Loaded hotel address:', hotel.address);
+                    }
+                    
+                    if (starsField) {
+                        starsField.value = hotel.stars || '';
+                        console.log('✅ Loaded hotel stars:', hotel.stars);
+                    }
                     // Установка бренда с учетом пользовательского ввода
                     const brandSelect = document.getElementById('hotelBrand');
                     const brandCustom = document.getElementById('hotelBrandCustom');
@@ -4479,6 +4538,47 @@
                             checkbox.checked = amenities.includes(checkbox.value);
                         }
                     });
+                    
+                    // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Загрузка изображений отеля
+                    if (hotel.images) {
+                        try {
+                            const images = typeof hotel.images === 'string' ? JSON.parse(hotel.images) : hotel.images;
+                            if (Array.isArray(images) && images.length > 0) {
+                                window.hotelImageURLs = [...images]; // Восстанавливаем изображения
+                                document.getElementById('hotelImages').value = JSON.stringify(images); // Заполняем скрытое поле
+                                console.log('✅ Loaded hotel images:', images);
+                                
+                                // Показываем загруженные изображения в интерфейсе
+                                // Показываем загруженные изображения в интерфейсе  
+                                setTimeout(() => {
+                                    const uploaderContainer = document.getElementById('hotel-uploader-container');
+                                    if (uploaderContainer) {
+                                        let imagesHtml = '<div class="uploaded-images-preview mb-3"><h4 class="text-sm font-semibold mb-2">Загруженные изображения:</h4><div class="flex gap-2 flex-wrap">';
+                                        images.forEach((img, index) => {
+                                            imagesHtml += `<div class="image-preview-item relative">
+                                                <img src="${img}" alt="Hotel image ${index + 1}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb;">
+                                                <div class="text-xs text-gray-500 text-center mt-1">Изображение ${index + 1}</div>
+                                            </div>`;
+                                        });
+                                        imagesHtml += '</div></div>';
+                                        uploaderContainer.insertAdjacentHTML('afterbegin', imagesHtml);
+                                    }
+                                }, 500); // Задержка чтобы uploader успел загрузиться
+                            } else {
+                                console.log('✅ No images found for hotel');
+                                window.hotelImageURLs = [];
+                                document.getElementById('hotelImages').value = '';
+                            }
+                        } catch (e) {
+                            console.error('Error parsing hotel images:', e);
+                            window.hotelImageURLs = [];
+                            document.getElementById('hotelImages').value = '';
+                        }
+                    } else {
+                        console.log('✅ No images field found for hotel');
+                        window.hotelImageURLs = [];
+                        document.getElementById('hotelImages').value = '';
+                    }
                 })
                 .catch(err => {
                     console.error('Error loading hotel data:', err);
@@ -5234,6 +5334,9 @@
         // Additional functions
         function editTour(id) {
             console.log('🎯 editTour called with ID:', id);
+            // Очищаем все чекбоксы перед загрузкой новых данных
+            document.querySelectorAll('input[name="selectedHotels"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="selectedGuides"]').forEach(cb => cb.checked = false);
             openTourModal(id);
         }
         
