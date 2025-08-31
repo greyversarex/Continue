@@ -16,6 +16,7 @@ import newsRoutes from './newsRoutes';
 import slideRoutes from './slideRoutes';
 import objectStorageRoutes from './objectStorageRoutes';
 import bookingRoutes from './bookingRoutes';
+import uploadRoutes from './uploadRoutes';
 
 // Remove old SQLite database routes (now using Prisma)
 
@@ -38,6 +39,7 @@ router.use('/translate', translationRoutes);
 router.use('/news', newsRoutes);
 router.use('/slides', slideRoutes);
 router.use('/booking', bookingRoutes);
+router.use('/images', uploadRoutes); // Add images endpoint for frontend compatibility
 router.use('/', objectStorageRoutes);
 
 // All data access now through Prisma models

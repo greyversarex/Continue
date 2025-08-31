@@ -3742,6 +3742,13 @@
                         
                         // УДАЛЕНО: дублирующая загрузка турблока (уже обработано выше)
                         
+                        // Загрузка главного изображения
+                        const tourMainImageField = document.getElementById('tourMainImage');
+                        if (tourMainImageField && tour.mainImage) {
+                            tourMainImageField.value = tour.mainImage;
+                            console.log('✅ Loaded main image:', tour.mainImage);
+                        }
+                        
                         // Загрузка галереи изображений
                         window.tourGalleryImages = [];
                         if (tour.images) {
@@ -3829,12 +3836,12 @@
             console.log('💾 Saving tour:', { tourId, isEditing });
             
             // Валидация обязательных полей
-            const titleRuValue = document.getElementById('eTourTitleRu').value;
-            const titleEnValue = document.getElementById('eTourTitleEn').value;
+            const titleRuValue = document.getElementById('tourTitleRu').value;
+            const titleEnValue = document.getElementById('tourTitleEn').value;
             
-            const categoryValue = document.getElementById('eTourCategoryId').value;
-            const priceValue = document.getElementById('eTourPrice').value;
-            const durationDaysValue = document.getElementById('eTourDurationDays').value;
+            const categoryValue = document.getElementById('tourCategory').value;
+            const priceValue = document.getElementById('tourPrice').value;
+            const durationDaysValue = document.getElementById('tourDurationDays').value;
             
             if (!titleRuValue || titleRuValue.trim() === '') {
                 alert('Пожалуйста, введите название тура на русском языке');
@@ -3863,28 +3870,30 @@
                     en: titleEnValue || titleRuValue
                 }),
                 description: JSON.stringify({
-                    ru: document.getElementById('eTourDescRu').value || '',
-                    en: document.getElementById('eTourDescEn').value || ''
+                    ru: document.getElementById('tourDescRu').value || '',
+                    en: document.getElementById('tourDescEn').value || ''
                 }),
                 price: parseFloat(priceValue),
-                priceType: document.getElementById('eTourPriceType').value || 'за человека',
+                priceType: document.getElementById('tourPriceType').value || 'за человека',
                 categoryId: parseInt(categoryValue),
-                tourBlockId: document.getElementById('eTourBlockId').value ? parseInt(document.getElementById('eTourBlockId').value) : null,
-                country: document.getElementById('eTourCountry').value || '',
-                city: document.getElementById('eTourCity').value || '',
+                tourBlockId: document.getElementById('tourBlockId').value ? parseInt(document.getElementById('tourBlockId').value) : null,
+                country: document.getElementById('tourCountry').value || '',
+                city: document.getElementById('tourCity').value || '',
                 durationDays: parseInt(durationDaysValue),
                 duration: durationDaysValue.toString(),
-                format: document.getElementById('eTourType').value || '',
-                tourType: document.getElementById('eTourType').value || '',
-                pickupInfo: document.getElementById('eTourPickupInfo').value || '',
-                minPeople: document.getElementById('eTourMinPeople').value ? parseInt(document.getElementById('eTourMinPeople').value) : null,
-                maxPeople: document.getElementById('eTourMaxPeople').value ? parseInt(document.getElementById('eTourMaxPeople').value) : null,
+                format: document.getElementById('tourType').value || '',
+                tourType: document.getElementById('tourType').value || '',
+                pickupInfo: document.getElementById('tourPickupInfo').value || '',
+                minPeople: document.getElementById('tourMinPeople').value ? parseInt(document.getElementById('tourMinPeople').value) : null,
+                maxPeople: document.getElementById('tourMaxPeople').value ? parseInt(document.getElementById('tourMaxPeople').value) : null,
                 highlights: JSON.stringify(window.tourHighlights || []),
                 itinerary: JSON.stringify(window.tourItinerary || []),
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
                 languages: JSON.stringify(window.tourLanguages || ['Русский']),
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
+                mainImage: document.getElementById('tourMainImage')?.value || '',
+                images: JSON.stringify(window.tourGalleryImages || []),
                 isActive: true,
                 isFeatured: false
             };
