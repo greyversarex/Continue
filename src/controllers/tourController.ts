@@ -327,7 +327,9 @@ export class TourController {
 
       console.log('🔄 Starting tour creation in database...');
       
-      const tour = await TourModel.create({
+      let tour;
+      try {
+        tour = await TourModel.create({
         title,
         description,
         shortDescription: shortDescription || null,
@@ -363,6 +365,10 @@ export class TourController {
         rating: ratingNumber,
         reviewsCount: reviewsCountNumber
       });
+      } catch (createError) {
+        console.error('❌ Error in TourModel.create:', createError);
+        throw createError;
+      }
       
       console.log('✅ Tour created successfully in database with ID:', tour.id);
 
