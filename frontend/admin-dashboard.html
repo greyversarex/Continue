@@ -3768,10 +3768,10 @@
                         
                         // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Загрузка выбранных отелей и гидов
                         // Загрузка выбранных отелей
-                        if (tour.hotels && Array.isArray(tour.hotels)) {
-                            console.log('✅ Loading selected hotels:', tour.hotels.map(h => h.id || h.hotelId));
-                            tour.hotels.forEach(hotelRelation => {
-                                const hotelId = hotelRelation.id || hotelRelation.hotelId;
+                        if (tour.tourHotels && Array.isArray(tour.tourHotels)) {
+                            console.log('✅ Loading selected hotels:', tour.tourHotels.map(th => th.hotelId));
+                            tour.tourHotels.forEach(tourHotel => {
+                                const hotelId = tourHotel.hotelId;
                                 const checkbox = document.querySelector(`input[name="selectedHotels"][value="${hotelId}"]`);
                                 if (checkbox) {
                                     checkbox.checked = true;
@@ -3780,13 +3780,15 @@
                                     console.warn('❌ Hotel checkbox not found for:', hotelId);
                                 }
                             });
+                        } else {
+                            console.log('❌ No tourHotels found or not array:', tour.tourHotels);
                         }
                         
                         // Загрузка выбранных гидов
-                        if (tour.guides && Array.isArray(tour.guides)) {
-                            console.log('✅ Loading selected guides:', tour.guides.map(g => g.id || g.guideId));
-                            tour.guides.forEach(guideRelation => {
-                                const guideId = guideRelation.id || guideRelation.guideId;
+                        if (tour.tourGuides && Array.isArray(tour.tourGuides)) {
+                            console.log('✅ Loading selected guides:', tour.tourGuides.map(tg => tg.guideId));
+                            tour.tourGuides.forEach(tourGuide => {
+                                const guideId = tourGuide.guideId;
                                 const checkbox = document.querySelector(`input[name="selectedGuides"][value="${guideId}"]`);
                                 if (checkbox) {
                                     checkbox.checked = true;
@@ -3795,6 +3797,8 @@
                                     console.warn('❌ Guide checkbox not found for:', guideId);
                                 }
                             });
+                        } else {
+                            console.log('❌ No tourGuides found or not array:', tour.tourGuides);
                         }
                         
                         console.log('✅ Tour data loaded successfully for editing:', tour.id);

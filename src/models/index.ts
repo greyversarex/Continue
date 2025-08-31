@@ -30,7 +30,17 @@ export class TourModel {
     return await prisma.tour.findUnique({
       where: { id },
       include: {
-        category: true
+        category: true,
+        tourHotels: {
+          include: {
+            hotel: true
+          }
+        },
+        tourGuides: {
+          include: {
+            guide: true
+          }
+        }
       }
     });
   }
