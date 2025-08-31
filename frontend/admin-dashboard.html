@@ -759,232 +759,7 @@
                         </div>
                     </div>
 
-                    <!-- УДАЛЕНО: Enhanced Tours Form Tab - дублирование полей -->
-                        
-                        <div class="bg-white rounded-xl shadow-sm p-6">
-                            <form id="enhancedTourForm">
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <!-- Basic Info -->
-                                    <div class="lg:col-span-2">
-                                        <h3 class="text-lg font-semibold mb-4">Основная информация</h3>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Название тура (RU)</label>
-                                        <input type="text" class="form-input" id="eTourTitleRu" required>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Название тура (EN)</label>
-                                        <input type="text" class="form-input" id="eTourTitleEn" required>
-                                    </div>
-                                    
-                                    <div class="form-group lg:col-span-2">
-                                        <label class="form-label">Краткое описание (для карточек)</label>
-                                        <textarea class="form-input" rows="3" id="eTourShortDesc" placeholder="Краткое описание для отображения на карточке тура"></textarea>
-                                    </div>
-                                    
-                                    <div class="form-group lg:col-span-2">
-                                        <label class="form-label">Полное описание</label>
-                                        <textarea class="form-input" rows="5" id="eTourFullDesc"></textarea>
-                                    </div>
-                                    
-                                    <!-- Pricing -->
-                                    <div class="lg:col-span-2">
-                                        <h3 class="text-lg font-semibold mb-4 mt-6">Цены и детали</h3>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Цена</label>
-                                        <input type="number" class="form-input" id="eTourPrice" required>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Тип цены</label>
-                                        <select class="form-input" id="eTourPriceType" required>
-                                            <option value="за человека">За человека</option>
-                                            <option value="за группу">За группу</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Оригинальная цена (для скидки)</label>
-                                        <input type="number" class="form-input" id="eTourOriginalPrice">
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Количество дней</label>
-                                        <input type="number" class="form-input" id="eTourDurationDays" required>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Тип тура</label>
-                                        <select class="form-input" id="eTourType">
-                                            <option value="">Выберите тип тура</option>
-                                            <option value="Персональный">Персональный</option>
-                                            <option value="Групповой персональный">Групповой персональный</option>
-                                            <option value="Групповой общий">Групповой общий</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Сложность</label>
-                                        <select class="form-input" id="eTourDifficulty">
-                                            <option value="">Выберите сложность</option>
-                                            <option value="Easy">Легкий</option>
-                                            <option value="Medium">Средний</option>
-                                            <option value="Hard">Сложный</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Максимум людей</label>
-                                        <input type="number" class="form-input" id="eTourMaxPeople">
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Минимум людей</label>
-                                        <input type="number" class="form-input" id="eTourMinPeople">
-                                    </div>
-                                    
-                                    <!-- Location -->
-                                    <div class="form-group">
-                                        <label class="form-label">Страна</label>
-                                        <select class="form-input" id="eTourCountry">
-                                            <option value="">Выберите страну</option>
-                                            <option value="Uzbekistan">Узбекистан</option>
-                                            <option value="Tajikistan">Таджикистан</option>
-                                            <option value="Kyrgyzstan">Кыргызстан</option>
-                                            <option value="Kazakhstan">Казахстан</option>
-                                            <option value="Turkmenistan">Туркменистан</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Город</label>
-                                        <input type="text" class="form-input" id="eTourCity">
-                                    </div>
-                                    
-                                    <!-- Images -->
-                                    <div class="lg:col-span-2">
-                                        <h3 class="text-lg font-semibold mb-4 mt-6">Изображения</h3>
-                                    </div>
-                                    
-                                    <div class="form-group lg:col-span-2">
-                                        <label class="form-label">Главное изображение (URL)</label>
-                                        <input type="url" class="form-input" id="eTourMainImage" placeholder="https://example.com/image.jpg">
-                                    </div>
-                                    
-                                    <div class="form-group lg:col-span-2">
-                                        <label class="form-label">Загрузка изображений</label>
-                                        <div id="tour-edit-uploader-container"></div>
-                                        <label class="form-label">Галерея изображений тура</label>
-                                        <div class="flex gap-2 mb-3">
-                                            <input type="url" class="form-input flex-1" id="eNewImageUrl" placeholder="https://example.com/image.jpg">
-                                            <button type="button" onclick="addEditGalleryImage()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
-                                                <i class="fas fa-plus"></i>
-                                                Добавить
-                                            </button>
-                                        </div>
-                                        <div id="eGalleryImagesList" class="space-y-2">
-                                            <!-- Загруженные изображения для редактирования появятся здесь -->
-                                        </div>
-                                        <small class="text-gray-500">Добавьте URL изображений для галереи тура</small>
-                                    </div>
-                                    
-                                    <!-- Block Assignment -->
-                                    <div class="lg:col-span-2">
-                                        <h3 class="text-lg font-semibold mb-4 mt-6">Размещение в блоке</h3>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Блок туров</label>
-                                        <select class="form-input" id="eTourBlockId">
-                                            <option value="">Выберите блок туров</option>
-                                            <!-- Tour blocks will be loaded here -->
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">Категория</label>
-                                        <select class="form-input" id="eTourCategoryId" required>
-                                            <option value="">Выберите категорию</option>
-                                            <!-- Categories will be loaded here -->
-                                        </select>
-                                    </div>
-                                    
-                                    <!-- Дополнительная информация -->
-                                    <div class="lg:col-span-2">
-                                        <h3 class="text-lg font-semibold mb-4 mt-6">Дополнительная информация</h3>
-                                    </div>
-                                    
-                                    <div class="form-group lg:col-span-2">
-                                        <label class="form-label">Информация о приёме/сборе</label>
-                                        <input type="text" class="form-input" id="eTourPickupInfo" placeholder="Например: Приём включён, Место сбора: отель">
-                                        <small class="text-gray-500">Укажите информацию о приёме/месте сбора для туристов</small>
-                                    </div>
-                                    
-                                    <div class="form-group lg:col-span-2">
-                                        <label class="form-label">Языки тура</label>
-                                        <div class="flex gap-2 mb-2">
-                                            <select class="form-input flex-1" id="eAvailableLanguages">
-                                                <option value="">Выберите язык для добавления</option>
-                                                <option value="Русский">Русский</option>
-                                                <option value="Английский">Английский</option>
-                                                <option value="Таджикский">Таджикский</option>
-                                                <option value="Узбекский">Узбекский</option>
-                                                <option value="Киргизский">Киргизский</option>
-                                                <option value="Казахский">Казахский</option>
-                                                <option value="Туркменский">Туркменский</option>
-                                                <option value="Персидский">Персидский</option>
-                                                <option value="Арабский">Арабский</option>
-                                                <option value="Китайский">Китайский</option>
-                                                <option value="Французский">Французский</option>
-                                                <option value="Немецкий">Немецкий</option>
-                                                <option value="Испанский">Испанский</option>
-                                                <option value="Итальянский">Итальянский</option>
-                                            </select>
-                                            <button type="button" onclick="addEditLanguageToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                        <div id="eSelectedLanguages" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
-                                            <small class="text-gray-500">Выбранные языки появятся здесь</small>
-                                        </div>
-                                        <input type="hidden" id="eTourLanguages">
-                                    </div>
-                                    
-                                    <div class="form-group lg:col-span-2">
-                                        <label class="form-label">Доступное время начала тура</label>
-                                        <div id="editStartTimesList" class="space-y-2 mb-3">
-                                            <!-- Динамически добавляемые варианты времени -->
-                                        </div>
-                                        <div class="flex gap-2">
-                                            <input type="time" class="form-input flex-1" id="editNewStartTime" placeholder="07:30">
-                                            <button type="button" onclick="addEditStartTime()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
-                                                Добавить время
-                                            </button>
-                                        </div>
-                                        <small class="text-gray-500">Добавьте возможные варианты времени начала тура</small>
-                                    </div>
-                                    
-                                    <div class="form-group lg:col-span-2">
-                                        <label class="form-label flex items-center">
-                                            <input type="checkbox" id="eTourIsFeatured" class="mr-2">
-                                            Рекомендуемый тур
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-6">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save"></i>
-                                        Создать тур
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    <!-- УДАЛЕНО: Вся Enhanced Tours Form Tab полностью удалена -->
                 </section>
 
                 <!-- Translations Section -->
@@ -4382,7 +4157,7 @@
         }
         
         // Hotels functions
-        let currentHotelId = null;
+        // Удалено: currentHotelId - используем hotel-id
         
         function loadHotels() {
             console.log('Loading hotels...');
@@ -4481,7 +4256,8 @@
         }
         
         function openHotelModal(hotelId = null) {
-            currentHotelId = hotelId;
+            // ИСПРАВЛЕНО: установка hotel-id вместо currentHotelId
+            document.getElementById('hotel-id').value = hotelId;
             window.hotelImageURLs = [];
             document.getElementById('hotelModal').classList.add('active');
             
@@ -4512,7 +4288,8 @@
                 hotelUploader.clear('hotel-uploader-container');
             }
             window.hotelImageURLs = [];
-            currentHotelId = null;
+            // ИСПРАВЛЕНО: очистка hotel-id вместо currentHotelId
+            document.getElementById('hotel-id').value = '';
             
             // Reset the hidden input
             document.getElementById('hotelImages').value = '';
@@ -4803,9 +4580,13 @@
             
             console.log('📝 Отправляем отель с данными:', hotelData);
             
+            // ИСПРАВЛЕНО: Используем hotel-id для единой логики POST/PUT
+            const hotelId = document.getElementById('hotel-id').value;
+            const isEditing = hotelId && hotelId.trim() !== '';
+            
             const apiUrl = getApiUrl();
-            const url = currentHotelId ? `${apiUrl}/hotels/${currentHotelId}` : `${apiUrl}/hotels`;
-            const method = currentHotelId ? 'PUT' : 'POST';
+            const url = isEditing ? `${apiUrl}/hotels/${hotelId}` : `${apiUrl}/hotels`;
+            const method = isEditing ? 'PUT' : 'POST';
             
             // For now, send as JSON instead of FormData (images handled separately)
             fetch(url, {
@@ -4819,7 +4600,7 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        alert(currentHotelId ? 'Отель успешно обновлен' : 'Отель успешно создан');
+                        alert(isEditing ? 'Отель успешно обновлен' : 'Отель успешно создан');
                         closeHotelModal();
                         loadHotels();
                     } else {
@@ -5697,9 +5478,9 @@
         // CMS FUNCTIONS
         // =============================================
         
-        // CMS Tab switching
-        // УДАЛЕНО: CMS tabs - больше нет дублированных форм
-        // function switchCMSTab(tab) {
+        // CMS Tab switching - ИСПРАВЛЕНО
+        function switchCMSTab(tab) {
+            // Удалено: cmsToursTab больше не существует
             document.getElementById('cmsBlocksTab').style.display = 'none';
             document.getElementById('cmsSettingsTab').style.display = 'none';
             document.getElementById('cmsHomepageTab').style.display = 'none';
@@ -6321,29 +6102,12 @@
 
             // Load categories for selection
             loadCategories().then(categories => {
-                const select = document.getElementById('eTourCategoryId');
-                if (select && categories) {
-                    select.innerHTML = '<option value="">Выберите категорию</option>' +
-                        categories.map(cat => {
-                            const title = JSON.parse(cat.title || '{}');
-                            return `<option value="${cat.id}">${title.ru || title.en || cat.name}</option>`;
-                        }).join('');
-                }
+                // Удалено: eTourCategoryId больше не существует
+                // Удалено: логика заполнения eTourCategoryId
             });
         }
 
-        // Initialize Enhanced Tour Form Handler
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                const form = document.getElementById('enhancedTourForm');
-                if (form) {
-                    form.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        // УДАЛЕНО: Ссылка на saveEnhancedTour заменена на saveTourForm
-                    });
-                }
-            }, 100);
-        });
+        // УДАЛЕНО: Enhanced Tour Form Handler - больше не нужен
 
         // УДАЛЕНО: function saveEnhancedTour() - заменена единой логикой
         // function saveEnhancedTour() {
