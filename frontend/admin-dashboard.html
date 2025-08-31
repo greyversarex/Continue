@@ -1404,13 +1404,78 @@
                         <input type="text" class="form-input" id="hotelCity" placeholder="Душанбе, Самарканд, Бишкек и т.д.">
                     </div>
                     
+                    <!-- НОВОЕ: Секция типов питания с ценами -->
                     <div class="form-group">
-                        <label class="form-label">Тип питания</label>
-                        <select class="form-input" id="hotelPension">
-                            <option value="none">Не включено</option>
-                            <option value="half">Полупансион (завтрак)</option>
-                            <option value="full">Полный пансион (завтрак + обед)</option>
-                        </select>
+                        <label class="form-label">Типы питания и цены</label>
+                        <div class="bg-gray-50 p-4 rounded-lg border">
+                            <p class="text-sm text-gray-600 mb-3">Настройте доплату за питание в сутки (в USD)</p>
+                            
+                            <!-- RO - Без питания -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="mealRO" class="rounded">
+                                    <label for="mealRO" class="font-medium">RO - Без питания</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span>$</span>
+                                    <input type="number" id="priceMealRO" class="form-input w-20" placeholder="0" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">/ сутки</span>
+                                </div>
+                            </div>
+                            
+                            <!-- BB - Завтрак -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="mealBB" class="rounded">
+                                    <label for="mealBB" class="font-medium">BB - Завтрак</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span>$</span>
+                                    <input type="number" id="priceMealBB" class="form-input w-20" placeholder="25" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">/ сутки</span>
+                                </div>
+                            </div>
+                            
+                            <!-- HB - Полупансион -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="mealHB" class="rounded">
+                                    <label for="mealHB" class="font-medium">HB - Полупансион (завтрак + ужин)</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span>$</span>
+                                    <input type="number" id="priceMealHB" class="form-input w-20" placeholder="45" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">/ сутки</span>
+                                </div>
+                            </div>
+                            
+                            <!-- FB - Полный пансион -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="mealFB" class="rounded">
+                                    <label for="mealFB" class="font-medium">FB - Полный пансион (завтрак + обед + ужин)</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span>$</span>
+                                    <input type="number" id="priceMealFB" class="form-input w-20" placeholder="65" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">/ сутки</span>
+                                </div>
+                            </div>
+                            
+                            <!-- AI - Все включено -->
+                            <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="mealAI" class="rounded">
+                                    <label for="mealAI" class="font-medium">AI - Все включено</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span>$</span>
+                                    <input type="number" id="priceMealAI" class="form-input w-20" placeholder="85" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">/ сутки</span>
+                                </div>
+                            </div>
+                        </div>
+                        <small class="text-gray-500 mt-2 block">Отметьте доступные типы питания и укажите доплату за питание в сутки</small>
                     </div>
                     
                     <div class="form-group">
@@ -4245,6 +4310,7 @@
                 document.getElementById('hotelModalTitle').textContent = 'Добавить отель';
                 document.getElementById('hotelForm').reset();
                 clearRoomTypeFields(); // НОВОЕ: Очистить категории номеров для создания нового отеля
+                clearMealTypeFields(); // НОВОЕ: Очистить типы питания для создания нового отеля
                 if (hotelUploader) {
                     hotelUploader.clear('hotel-uploader-container');
                 }
@@ -4264,8 +4330,9 @@
             // Reset the hidden input
             document.getElementById('hotelImages').value = '';
             
-            // НОВОЕ: Очистить категории номеров при закрытии модала
+            // НОВОЕ: Очистить категории номеров и типы питания при закрытии модала
             clearRoomTypeFields();
+            clearMealTypeFields();
         }
         
         // НОВОЕ: Функция очистки полей категорий номеров
@@ -4279,6 +4346,25 @@
             document.getElementById('priceSGL').disabled = true;
             document.getElementById('priceTWL').disabled = true;
             document.getElementById('priceDBL').disabled = true;
+        }
+        
+        // НОВОЕ: Функция очистки полей типов питания
+        function clearMealTypeFields() {
+            document.getElementById('mealRO').checked = false;
+            document.getElementById('mealBB').checked = false;
+            document.getElementById('mealHB').checked = false;
+            document.getElementById('mealFB').checked = false;
+            document.getElementById('mealAI').checked = false;
+            document.getElementById('priceMealRO').value = '';
+            document.getElementById('priceMealBB').value = '';
+            document.getElementById('priceMealHB').value = '';
+            document.getElementById('priceMealFB').value = '';
+            document.getElementById('priceMealAI').value = '';
+            document.getElementById('priceMealRO').disabled = true;
+            document.getElementById('priceMealBB').disabled = true;
+            document.getElementById('priceMealHB').disabled = true;
+            document.getElementById('priceMealFB').disabled = true;
+            document.getElementById('priceMealAI').disabled = true;
         }
         
         function loadHotelData(hotelId) {
@@ -4366,6 +4452,55 @@
                             }
                         } catch (e) {
                             console.warn('Failed to parse room types:', hotel.roomTypes, e);
+                        }
+                    }
+                    
+                    // НОВОЕ: Загрузка типов питания при редактировании
+                    if (hotel.mealTypes) {
+                        try {
+                            const mealTypes = typeof hotel.mealTypes === 'string' ? JSON.parse(hotel.mealTypes) : hotel.mealTypes;
+                            
+                            // RO - Без питания
+                            if (mealTypes.RO) {
+                                document.getElementById('mealRO').checked = true;
+                                document.getElementById('priceMealRO').disabled = false;
+                                document.getElementById('priceMealRO').value = mealTypes.RO.price || '';
+                                console.log('✅ Loaded RO meal type:', mealTypes.RO);
+                            }
+                            
+                            // BB - Завтрак
+                            if (mealTypes.BB) {
+                                document.getElementById('mealBB').checked = true;
+                                document.getElementById('priceMealBB').disabled = false;
+                                document.getElementById('priceMealBB').value = mealTypes.BB.price || '';
+                                console.log('✅ Loaded BB meal type:', mealTypes.BB);
+                            }
+                            
+                            // HB - Полупансион
+                            if (mealTypes.HB) {
+                                document.getElementById('mealHB').checked = true;
+                                document.getElementById('priceMealHB').disabled = false;
+                                document.getElementById('priceMealHB').value = mealTypes.HB.price || '';
+                                console.log('✅ Loaded HB meal type:', mealTypes.HB);
+                            }
+                            
+                            // FB - Полный пансион
+                            if (mealTypes.FB) {
+                                document.getElementById('mealFB').checked = true;
+                                document.getElementById('priceMealFB').disabled = false;
+                                document.getElementById('priceMealFB').value = mealTypes.FB.price || '';
+                                console.log('✅ Loaded FB meal type:', mealTypes.FB);
+                            }
+                            
+                            // AI - Все включено
+                            if (mealTypes.AI) {
+                                document.getElementById('mealAI').checked = true;
+                                document.getElementById('priceMealAI').disabled = false;
+                                document.getElementById('priceMealAI').value = mealTypes.AI.price || '';
+                                console.log('✅ Loaded AI meal type:', mealTypes.AI);
+                            }
+                        } catch (e) {
+                            console.warn('Failed to parse meal types:', hotel.mealTypes, e);
                         }
                     }
                     const addressField = document.getElementById('hotelAddress');
@@ -4633,13 +4768,74 @@
                 }
             }
             
-            // Get amenities (исключаем чекбоксы категорий номеров)
+            // НОВОЕ: Обработка типов питания с ценами
+            const mealTypes = {};
+            
+            // RO - Без питания
+            if (document.getElementById('mealRO').checked) {
+                const price = document.getElementById('priceMealRO').value;
+                mealTypes.RO = {
+                    name: 'Без питания',
+                    price: price && !isNaN(parseFloat(price)) ? parseFloat(price) : 0
+                };
+            }
+            
+            // BB - Завтрак
+            if (document.getElementById('mealBB').checked) {
+                const price = document.getElementById('priceMealBB').value;
+                if (price && !isNaN(parseFloat(price))) {
+                    mealTypes.BB = {
+                        name: 'Завтрак',
+                        price: parseFloat(price)
+                    };
+                }
+            }
+            
+            // HB - Полупансион
+            if (document.getElementById('mealHB').checked) {
+                const price = document.getElementById('priceMealHB').value;
+                if (price && !isNaN(parseFloat(price))) {
+                    mealTypes.HB = {
+                        name: 'Полупансион',
+                        price: parseFloat(price)
+                    };
+                }
+            }
+            
+            // FB - Полный пансион
+            if (document.getElementById('mealFB').checked) {
+                const price = document.getElementById('priceMealFB').value;
+                if (price && !isNaN(parseFloat(price))) {
+                    mealTypes.FB = {
+                        name: 'Полный пансион',
+                        price: parseFloat(price)
+                    };
+                }
+            }
+            
+            // AI - Все включено
+            if (document.getElementById('mealAI').checked) {
+                const price = document.getElementById('priceMealAI').value;
+                if (price && !isNaN(parseFloat(price))) {
+                    mealTypes.AI = {
+                        name: 'Все включено',
+                        price: parseFloat(price)
+                    };
+                }
+            }
+            
+            // Get amenities (исключаем чекбоксы категорий номеров и типов питания)
             const amenities = [];
             document.querySelectorAll('#hotelForm input[type="checkbox"]:checked').forEach(checkbox => {
                 if (checkbox.id !== 'hotelActive' && 
                     checkbox.id !== 'roomSGL' && 
                     checkbox.id !== 'roomTWL' && 
-                    checkbox.id !== 'roomDBL') {
+                    checkbox.id !== 'roomDBL' &&
+                    checkbox.id !== 'mealRO' &&
+                    checkbox.id !== 'mealBB' &&
+                    checkbox.id !== 'mealHB' &&
+                    checkbox.id !== 'mealFB' &&
+                    checkbox.id !== 'mealAI') {
                     amenities.push(checkbox.value);
                 }
             });
@@ -4654,9 +4850,10 @@
                 category: document.getElementById('hotelCategory').value || null,
                 country: document.getElementById('hotelCountry').value || null,
                 city: document.getElementById('hotelCity').value || null,
-                pension: document.getElementById('hotelPension').value,
+                pension: 'none', // Legacy field - теперь используем mealTypes
                 amenities: JSON.stringify(amenities),
-                roomTypes: JSON.stringify(roomTypes), // НОВОЕ: Категории номеров с ценами
+                roomTypes: JSON.stringify(roomTypes), // Категории номеров с ценами
+                mealTypes: JSON.stringify(mealTypes), // НОВОЕ: Типы питания с ценами
                 isActive: document.getElementById('hotelActive').checked,
                 images: JSON.stringify(window.hotelImageURLs || []) // Use uploaded images
             };
@@ -4696,9 +4893,9 @@
                 });
         });
         
-        // НОВОЕ: JavaScript для управления полями категорий номеров
+        // НОВОЕ: JavaScript для управления полями категорий номеров и типов питания
         document.addEventListener('DOMContentLoaded', function() {
-            // Обработчики для включения/выключения полей цены
+            // Обработчики для включения/выключения полей цены категорий номеров
             document.getElementById('roomSGL').addEventListener('change', function() {
                 document.getElementById('priceSGL').disabled = !this.checked;
                 if (!this.checked) document.getElementById('priceSGL').value = '';
@@ -4712,6 +4909,32 @@
             document.getElementById('roomDBL').addEventListener('change', function() {
                 document.getElementById('priceDBL').disabled = !this.checked;
                 if (!this.checked) document.getElementById('priceDBL').value = '';
+            });
+            
+            // НОВОЕ: Обработчики для включения/выключения полей цены типов питания
+            document.getElementById('mealRO').addEventListener('change', function() {
+                document.getElementById('priceMealRO').disabled = !this.checked;
+                if (!this.checked) document.getElementById('priceMealRO').value = '';
+            });
+            
+            document.getElementById('mealBB').addEventListener('change', function() {
+                document.getElementById('priceMealBB').disabled = !this.checked;
+                if (!this.checked) document.getElementById('priceMealBB').value = '';
+            });
+            
+            document.getElementById('mealHB').addEventListener('change', function() {
+                document.getElementById('priceMealHB').disabled = !this.checked;
+                if (!this.checked) document.getElementById('priceMealHB').value = '';
+            });
+            
+            document.getElementById('mealFB').addEventListener('change', function() {
+                document.getElementById('priceMealFB').disabled = !this.checked;
+                if (!this.checked) document.getElementById('priceMealFB').value = '';
+            });
+            
+            document.getElementById('mealAI').addEventListener('change', function() {
+                document.getElementById('priceMealAI').disabled = !this.checked;
+                if (!this.checked) document.getElementById('priceMealAI').value = '';
             });
         });
 

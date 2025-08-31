@@ -101,8 +101,9 @@ model Hotel {
   category    String?     // Luxury, Premium, Budget
   country     String?     // Country where hotel is located
   city        String?     // City where hotel is located
-  pension     String?     @default("none") // Pension type: "none", "half", "full"
+  pension     String?     @default("none") // Legacy pension field (deprecated)
   roomTypes   String?     // JSON object with room types and prices: {"SGL": {"price": 100, "name": "Одноместный"}, "TWL": {"price": 150, "name": "Двухместный"}, "DBL": {"price": 180, "name": "Двухспальный"}}
+  mealTypes   String?     // JSON object with meal types and prices: {"RO": {"price": 0, "name": "Без питания"}, "BB": {"price": 25, "name": "Завтрак"}, "HB": {"price": 45, "name": "Полупансион"}, "FB": {"price": 65, "name": "Полный пансион"}, "AI": {"price": 85, "name": "Все включено"}}
   isActive    Boolean     @default(true)
   tourHotels  TourHotel[]
   orders      Order[]
