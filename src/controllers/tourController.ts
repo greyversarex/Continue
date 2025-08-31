@@ -395,13 +395,17 @@ export class TourController {
 
       return res.status(201).json(response);
     } catch (error) {
+      console.error('❌ Error creating tour:', error);
       if (error instanceof Error && error.message === 'Category not found') {
         return res.status(400).json({
           success: false,
           error: 'Invalid category ID'
         });
       }
-      return next(error);
+      return res.status(500).json({
+        success: false,
+        error: 'Database error: ' + (error instanceof Error ? error.message : 'Unknown error')
+      });
     }
   }
 
