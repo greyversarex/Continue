@@ -325,6 +325,8 @@ export class TourController {
         reviewsCount: reviewsCountNumber
       });
 
+      console.log('🔄 Starting tour creation in database...');
+      
       const tour = await TourModel.create({
         title,
         description,
@@ -361,33 +363,53 @@ export class TourController {
         rating: ratingNumber,
         reviewsCount: reviewsCountNumber
       });
+      
+      console.log('✅ Tour created successfully in database with ID:', tour.id);
 
       // Create hotel associations if provided
       if (hotelIds && Array.isArray(hotelIds) && hotelIds.length > 0) {
         console.log('🏨 Creating hotel associations:', hotelIds);
-        const tourHotelData = hotelIds.map(hotelId => ({
-          tourId: tour.id,
-          hotelId: hotelId,
-          isDefault: false
-        }));
-        
-        await prisma.tourHotel.createMany({
-          data: tourHotelData
-        });
+        try {
+          const tourHotelData = hotelIds.map((hotelId: number) => ({
+            tourId: tour.id,
+            hotelId: hotelId,
+            isDefault: false
+          }));
+          
+          console.log('🏨 TourHotel data to create:', tourHotelData);
+          
+          await prisma.tourHotel.createMany({
+            data: tourHotelData
+          });
+          
+          console.log('✅ Hotel associations created successfully');
+        } catch (hotelError) {
+          console.error('❌ Error creating hotel associations:', hotelError);
+          throw hotelError;
+        }
       }
 
       // Create guide associations if provided
       if (guideIds && Array.isArray(guideIds) && guideIds.length > 0) {
         console.log('👨‍🏫 Creating guide associations:', guideIds);
-        const tourGuideData = guideIds.map(guideId => ({
-          tourId: tour.id,
-          guideId: guideId,
-          isDefault: false
-        }));
-        
-        await prisma.tourGuide.createMany({
-          data: tourGuideData
-        });
+        try {
+          const tourGuideData = guideIds.map((guideId: number) => ({
+            tourId: tour.id,
+            guideId: guideId,
+            isDefault: false
+          }));
+          
+          console.log('👨‍🏫 TourGuide data to create:', tourGuideData);
+          
+          await prisma.tourGuide.createMany({
+            data: tourGuideData
+          });
+          
+          console.log('✅ Guide associations created successfully');
+        } catch (guideError) {
+          console.error('❌ Error creating guide associations:', guideError);
+          throw guideError;
+        }
       }
 
       // Parse JSON fields for response with safe parsing
