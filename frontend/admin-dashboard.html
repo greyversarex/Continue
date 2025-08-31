@@ -1671,24 +1671,59 @@
                         </select>
                     </div>
                     
+                    <!-- Language selector for auto-translation -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Основной язык заполнения</label>
+                        <div class="flex gap-3">
+                            <select class="form-input flex-1" id="primaryLanguage" onchange="updatePrimaryLanguage()">
+                                <option value="ru">Русский (заполнить и автоперевести на английский)</option>
+                                <option value="en">English (fill and auto-translate to Russian)</option>
+                            </select>
+                            <button type="button" class="btn btn-primary" onclick="autoTranslateAll()" title="Автоперевести все поля разом">
+                                <i class="fas fa-magic"></i> Автоперевод всех полей
+                            </button>
+                        </div>
+                        <small class="text-gray-500">Заполните поля на основном языке, затем нажмите кнопки автоперевода</small>
+                    </div>
+                    
                     <div class="form-group col-span-2">
                         <label class="form-label">Название тура (Русский)</label>
-                        <input type="text" class="form-input" id="tourTitleRu" required>
+                        <div class="flex gap-2">
+                            <input type="text" class="form-input flex-1" id="tourTitleRu" required>
+                            <button type="button" class="btn btn-secondary" onclick="translateTitleField('ru')" title="Автоперевод названия">
+                                <i class="fas fa-language"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="form-group col-span-2">
                         <label class="form-label">Название тура (English)</label>
-                        <input type="text" class="form-input" id="tourTitleEn" required>
+                        <div class="flex gap-2">
+                            <input type="text" class="form-input flex-1" id="tourTitleEn" required>
+                            <button type="button" class="btn btn-secondary" onclick="translateTitleField('en')" title="Auto-translate title">
+                                <i class="fas fa-language"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="form-group col-span-2">
                         <label class="form-label">Описание (Русский)</label>
-                        <textarea class="form-input" rows="4" id="tourDescRu" required></textarea>
+                        <div class="flex gap-2">
+                            <textarea class="form-input flex-1" rows="4" id="tourDescRu" required></textarea>
+                            <button type="button" class="btn btn-secondary" onclick="translateDescField('ru')" title="Автоперевод описания">
+                                <i class="fas fa-language"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="form-group col-span-2">
                         <label class="form-label">Описание (English)</label>
-                        <textarea class="form-input" rows="4" id="tourDescEn" required></textarea>
+                        <div class="flex gap-2">
+                            <textarea class="form-input flex-1" rows="4" id="tourDescEn" required></textarea>
+                            <button type="button" class="btn btn-secondary" onclick="translateDescField('en')" title="Auto-translate description">
+                                <i class="fas fa-language"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Что включено -->
@@ -6929,6 +6964,218 @@
         function loadBannerManagement() {
             loadCurrentSlides();
         }
+
+        // ===== АВТОПЕРЕВОД ФУНКЦИИ =====
+
+        // Update primary language
+        function updatePrimaryLanguage() {
+            const primaryLang = document.getElementById('primaryLanguage').value;
+            const ruFields = document.querySelectorAll('#tourTitleRu, #tourDescRu');
+            const enFields = document.querySelectorAll('#tourTitleEn, #tourDescEn');
+            
+            if (primaryLang === 'ru') {
+                ruFields.forEach(field => {
+                    field.style.borderColor = '#3b82f6';
+                    field.style.backgroundColor = '#f0f9ff';
+                });
+                enFields.forEach(field => {
+                    field.style.borderColor = '#d1d5db';
+                    field.style.backgroundColor = '#f9f9f9';
+                });
+            } else {
+                enFields.forEach(field => {
+                    field.style.borderColor = '#3b82f6';
+                    field.style.backgroundColor = '#f0f9ff';
+                });
+                ruFields.forEach(field => {
+                    field.style.borderColor = '#d1d5db';
+                    field.style.backgroundColor = '#f9f9f9';
+                });
+            }
+        }
+
+        // Translate title field
+        async function translateTitleField(targetLang) {
+            const primaryLang = document.getElementById('primaryLanguage').value;
+            let sourceText, sourceField, targetField;
+            
+            if (targetLang === 'ru') {
+                // Translate from English to Russian
+                sourceField = document.getElementById('tourTitleEn');
+                targetField = document.getElementById('tourTitleRu');
+                sourceText = sourceField.value.trim();
+            } else {
+                // Translate from Russian to English
+                sourceField = document.getElementById('tourTitleRu');
+                targetField = document.getElementById('tourTitleEn');
+                sourceText = sourceField.value.trim();
+            }
+            
+            if (!sourceText) {
+                alert(targetLang === 'ru' ? 'Заполните название на английском языке' : 'Fill in the title in Russian');
+                return;
+            }
+            
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/translate/text`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        text: sourceText,
+                        fromLanguage: targetLang === 'ru' ? 'en' : 'ru',
+                        toLanguage: targetLang,
+                        context: 'tour_title'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    targetField.value = data.data.translatedText;
+                    showNotification(targetLang === 'ru' ? 'Название переведено на русский!' : 'Title translated to English!', 'success');
+                } else {
+                    throw new Error(data.error || 'Translation failed');
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+                alert(targetLang === 'ru' ? 'Ошибка перевода названия' : 'Title translation error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+        // Translate description field
+        async function translateDescField(targetLang) {
+            const primaryLang = document.getElementById('primaryLanguage').value;
+            let sourceText, sourceField, targetField;
+            
+            if (targetLang === 'ru') {
+                // Translate from English to Russian
+                sourceField = document.getElementById('tourDescEn');
+                targetField = document.getElementById('tourDescRu');
+                sourceText = sourceField.value.trim();
+            } else {
+                // Translate from Russian to English
+                sourceField = document.getElementById('tourDescRu');
+                targetField = document.getElementById('tourDescEn');
+                sourceText = sourceField.value.trim();
+            }
+            
+            if (!sourceText) {
+                alert(targetLang === 'ru' ? 'Заполните описание на английском языке' : 'Fill in the description in Russian');
+                return;
+            }
+            
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/translate/text`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        text: sourceText,
+                        fromLanguage: targetLang === 'ru' ? 'en' : 'ru',
+                        toLanguage: targetLang,
+                        context: 'tour_description'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    targetField.value = data.data.translatedText;
+                    showNotification(targetLang === 'ru' ? 'Описание переведено на русский!' : 'Description translated to English!', 'success');
+                } else {
+                    throw new Error(data.error || 'Translation failed');
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+                alert(targetLang === 'ru' ? 'Ошибка перевода описания' : 'Description translation error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+        // Auto-translate both title and description from primary language
+        async function autoTranslateAll() {
+            const primaryLang = document.getElementById('primaryLanguage').value;
+            const targetLang = primaryLang === 'ru' ? 'en' : 'ru';
+            
+            showNotification('Начинаю автоперевод всех полей...', 'info');
+            
+            try {
+                // Translate title
+                await translateTitleField(targetLang);
+                await new Promise(resolve => setTimeout(resolve, 500)); // Small delay
+                
+                // Translate description
+                await translateDescField(targetLang);
+                
+                showNotification('Автоперевод завершен!', 'success');
+            } catch (error) {
+                console.error('Auto-translation error:', error);
+                showNotification('Ошибка автоперевода', 'error');
+            }
+        }
+
+        // Show notification helper
+        function showNotification(message, type = 'info') {
+            // Create notification element if it doesn't exist
+            let notification = document.getElementById('translationNotification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'translationNotification';
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    color: white;
+                    font-weight: 500;
+                    z-index: 10000;
+                    transition: all 0.3s ease;
+                `;
+                document.body.appendChild(notification);
+            }
+            
+            // Set style based on type
+            const colors = {
+                success: '#10b981',
+                error: '#ef4444',
+                info: '#3b82f6'
+            };
+            
+            notification.style.backgroundColor = colors[type] || colors.info;
+            notification.textContent = message;
+            notification.style.display = 'block';
+            notification.style.opacity = '1';
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize primary language styling on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                updatePrimaryLanguage();
+            }, 100);
+        });
     </script>
 </body>
 </html>
