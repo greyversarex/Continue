@@ -1270,12 +1270,17 @@
                     }
                     
                     if (timeOptions && timeOptions.length > 0) {
-                        timeOptionsContainer.innerHTML = timeOptions.map(time => 
-                            `<div class="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer" onclick="selectTime('${time}')">
-                                <input type="radio" id="time-${time}" name="tourTime" value="${time}" class="w-4 h-4 text-blue-600">
+                        timeOptionsContainer.innerHTML = timeOptions.map((time, index) => 
+                            `<div class="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer ${index === 0 ? 'border-teal-500 bg-teal-50' : 'border-gray-300'}" onclick="selectTime('${time}', this)">
+                                <input type="radio" id="time-${time}" name="tourTime" value="${time}" ${index === 0 ? 'checked' : ''} class="w-4 h-4 text-blue-600">
                                 <label for="time-${time}" class="text-sm text-gray-700 font-medium cursor-pointer">${time}</label>
                             </div>`
                         ).join('');
+                        
+                        // Auto-select first time
+                        selectedTime = timeOptions[0];
+                        console.log('Автоматически выбрано время:', selectedTime);
+                        
                         timeSelectionSection.style.display = 'block';
                     } else {
                         timeSelectionSection.style.display = 'none';
@@ -1290,27 +1295,39 @@
         }
         
         // Function to handle time selection
-        function selectTime(time) {
+        function selectTime(time, element) {
+            // Update selected time variable
+            selectedTime = time;
+            
             // Update selected time visually
             const timeInputs = document.querySelectorAll('input[name="tourTime"]');
             timeInputs.forEach(input => {
                 input.checked = (input.value === time);
             });
+            
+            // Update visual styling
+            document.querySelectorAll('#time-options > div').forEach(div => {
+                div.classList.remove('border-teal-500', 'bg-teal-50');
+                div.classList.add('border-gray-300');
+            });
+            
+            if (element) {
+                element.classList.remove('border-gray-300');
+                element.classList.add('border-teal-500', 'bg-teal-50');
+            }
+            
             console.log('Selected time:', time);
         }
         
         // Function to check if time selection should be shown
         function shouldShowTimeSelection() {
             const dateInput = document.getElementById('tour-date');
-            const travelerSummary = document.getElementById('traveler-summary');
             
             // Check if date is selected (has value)
             const dateSelected = dateInput && dateInput.value && dateInput.value.trim() !== '';
             
-            // Check if travelers are selected (total > 0)
-            const travelersSelected = travelers && (travelers.adults + travelers.children + travelers.infants) > 0;
-            
-            return dateSelected && travelersSelected;
+            // Show time selection if date is selected (travelers selection is not required)
+            return dateSelected;
         }
         
         // Custom Calendar Variables
