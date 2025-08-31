@@ -99,28 +99,6 @@
                         </div>
                     </div>
 
-                    <!-- Price Summary -->
-                    <div id="price-summary" class="border-t pt-4 mt-6">
-                        <div class="space-y-2">
-                            <div class="flex justify-between">
-                                <span>Стоимость тура:</span>
-                                <span id="tour-price">$0</span>
-                            </div>
-                            <div id="room-costs" class="space-y-1">
-                                <!-- Room costs will appear here -->
-                            </div>
-                            <div id="meal-costs" class="space-y-1">
-                                <!-- Meal costs will appear here -->
-                            </div>
-                            <div class="border-t pt-2 mt-2">
-                                <div class="flex justify-between font-bold text-lg">
-                                    <span>Итого:</span>
-                                    <span id="total-price">$0</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Support Contacts -->
                     <div class="border-t pt-4 mt-6">
                         <h4 class="font-medium text-gray-800 mb-2">Служба поддержки</h4>
@@ -235,7 +213,7 @@
                             </div>
                             <div class="flex justify-between">
                                 <span>Длительность:</span>
-                                <span class="font-medium">${tour.duration} дней</span>
+                                <span class="font-medium">${tour.duration || tour.durationDays || 1} дн.</span>
                             </div>
                             <div class="flex justify-between">
                                 <span>Количество туристов:</span>
@@ -243,7 +221,7 @@
                             </div>
                             <div class="flex justify-between">
                                 <span>Тип тура:</span>
-                                <span class="font-medium">${tour.tourType || 'Групповой'}</span>
+                                <span class="font-medium">${tour.tourType || tour.format || 'Групповой'}</span>
                             </div>
                         </div>
                     </div>
@@ -270,6 +248,56 @@
                     
                     <!-- Разделитель для расчетов -->
                     <div class="border-t border-gray-200"></div>
+                    
+                    <!-- Расчёт стоимости -->
+                    <div id="price-calculation" class="space-y-2">
+                        <h5 class="font-medium text-gray-800">Расчёт стоимости</h5>
+                        <div class="text-sm text-gray-600 space-y-1">
+                            <div class="flex justify-between">
+                                <span>Цена тура ${tour.priceType === 'за группу' ? '(за группу)' : '× ' + numberOfTourists + ' чел.'}:</span>
+                                <span id="tour-price-calc">$0</span>
+                            </div>
+                            <div id="room-costs-calc" class="space-y-1">
+                                <!-- Room costs calculation will appear here -->
+                            </div>
+                            <div id="meal-costs-calc" class="space-y-1">
+                                <!-- Meal costs calculation will appear here -->
+                            </div>
+                        </div>
+                        <div class="border-t pt-2 mt-2">
+                            <div class="flex justify-between font-bold text-lg text-blue-600">
+                                <span>Итоговая сумма:</span>
+                                <span id="total-price">$0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Разделитель -->
+                    <div class="border-t border-gray-200"></div>
+                    
+                    <!-- Служба поддержки -->
+                    <div class="space-y-2">
+                        <h5 class="font-medium text-gray-800">Служба поддержки</h5>
+                        <div class="text-sm text-gray-600 space-y-1">
+                            <div class="flex items-center">
+                                <i class="fas fa-phone text-blue-500 mr-2 w-4"></i>
+                                <span>+992 935 888 000</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope text-blue-500 mr-2 w-4"></i>
+                                <span>info@bunyod-tour.com</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-clock text-blue-500 mr-2 w-4"></i>
+                                <span>Пн-Пт: 9:00-18:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Кнопка продолжить -->
+                    <button id="continue-btn" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        Продолжить
+                    </button>
                 </div>
             `;
 
@@ -487,6 +515,15 @@
         }
 
         function selectHotel(hotelId) {
+            // Check if at least one room is selected
+            const selectedRooms = bookingState.roomSelection[hotelId] || {};
+            const hasRoomsSelected = Object.values(selectedRooms).some(quantity => quantity > 0);
+            
+            if (!hasRoomsSelected) {
+                alert('Пожалуйста, выберите хотя бы один номер');
+                return;
+            }
+            
             bookingState.selectedHotel = hotelId;
             
             // Highlight selected hotel
@@ -498,7 +535,8 @@
             // Update hotel details in sidebar
             updateSelectedHotelDetails(hotelId);
             
-            document.getElementById('continue-btn').disabled = false;
+            // Save booking draft and proceed to next step
+            saveBookingDraft();
         }
         
         function updateSelectedHotelDetails(hotelId) {
@@ -775,8 +813,8 @@
             bookingState.totalPrice = totalPrice;
         }
 
-        // Continue button handler
-        document.getElementById('continue-btn').addEventListener('click', async function() {
+        // Save booking draft function
+        async function saveBookingDraft() {
             if (!bookingState.selectedHotel) {
                 alert('Пожалуйста, выберите отель');
                 return;
@@ -793,33 +831,49 @@
             
             try {
                 // Update booking with hotel and room selection in database as draft
-                const updateResponse = await fetch(`/api/booking/${bookingState.bookingId}/update`, {
+                const updateData = {
+                    hotelId: parseInt(bookingState.selectedHotel),
+                    roomSelection: bookingState.roomSelection[bookingState.selectedHotel],
+                    mealSelection: bookingState.mealSelection[bookingState.selectedHotel] || {},
+                    totalPrice: bookingState.totalPrice,
+                    status: 'draft' // Mark as draft until payment is completed
+                };
+                
+                console.log('🔄 Saving booking draft:', updateData);
+                
+                const updateResponse = await fetch(`/api/booking/${bookingState.bookingId}/step1`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        hotelId: parseInt(bookingState.selectedHotel),
-                        roomSelection: bookingState.roomSelection[bookingState.selectedHotel],
-                        mealSelection: bookingState.mealSelection[bookingState.selectedHotel] || {},
-                        totalPrice: bookingState.totalPrice,
-                        status: 'draft' // Mark as draft until payment is completed
-                    })
+                    body: JSON.stringify(updateData)
                 });
                 
-                if (!updateResponse.ok) {
-                    throw new Error('Failed to update booking');
+                const responseData = await updateResponse.json();
+                
+                if (responseData.success) {
+                    console.log('✅ Booking draft saved successfully');
+                    
+                    // Store booking state in localStorage for step 2
+                    localStorage.setItem('bookingState', JSON.stringify(bookingState));
+                    
+                    // Navigate to step 2
+                    window.location.href = `/booking/step2?bookingId=${bookingState.bookingId}`;
+                } else {
+                    throw new Error(responseData.message || 'Failed to save booking');
                 }
                 
-                // Store booking state in localStorage for step 2
-                localStorage.setItem('bookingState', JSON.stringify(bookingState));
-                
-                // Navigate to step 2
-                window.location.href = `/booking/step2?bookingId=${bookingState.bookingId}`;
-                
             } catch (error) {
-                console.error('Error updating booking:', error);
-                alert('Ошибка сохранения выбора. Попробуйте еще раз.');
+                console.error('❌ Error saving booking draft:', error);
+                alert('Ошибка сохранения выбора: ' + error.message);
+            }
+        }
+
+        // Continue button handler 
+        document.addEventListener('DOMContentLoaded', function() {
+            const continueBtn = document.getElementById('continue-btn');
+            if (continueBtn) {
+                continueBtn.addEventListener('click', saveBookingDraft);
             }
         });
     </script>
