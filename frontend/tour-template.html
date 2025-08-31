@@ -578,9 +578,121 @@
                         <div class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700">
                             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
                             Загрузка отзывов...
+                        </div>
+                    </div>
+
+                    <!-- Форма для оставления отзыва -->
+                    <div class="border-t border-gray-200 pt-8 mt-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-6">Оставить отзыв</h3>
+                        
+                        <form id="review-form" class="space-y-6">
+                            <!-- Имя -->
+                            <div>
+                                <label for="reviewer-name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Ваше имя *
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="reviewer-name" 
+                                    name="reviewerName"
+                                    required 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="Введите ваше имя"
+                                >
+                            </div>
+
+                            <!-- Рейтинг -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Оценка *
+                                </label>
+                                <div class="flex items-center space-x-1" id="rating-stars">
+                                    <button type="button" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-rating="1">★</button>
+                                    <button type="button" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-rating="2">★</button>
+                                    <button type="button" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-rating="3">★</button>
+                                    <button type="button" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-rating="4">★</button>
+                                    <button type="button" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-rating="5">★</button>
+                                    <span id="rating-text" class="ml-3 text-sm text-gray-600"></span>
+                                </div>
+                                <input type="hidden" id="rating-value" name="rating" value="" required>
+                            </div>
+
+                            <!-- Текст отзыва -->
+                            <div>
+                                <label for="review-text" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Ваш отзыв *
+                                </label>
+                                <textarea 
+                                    id="review-text" 
+                                    name="text"
+                                    rows="4" 
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="Поделитесь впечатлениями о туре..."
+                                ></textarea>
+                            </div>
+
+                            <!-- Фотографии (опционально) -->
+                            <div>
+                                <label for="review-photos" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Фотографии (необязательно)
+                                </label>
+                                <input 
+                                    type="file" 
+                                    id="review-photos" 
+                                    multiple 
+                                    accept="image/*"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                >
+                                <p class="text-sm text-gray-500 mt-1">Максимум 3 фотографии, до 5 МБ каждая</p>
+                                <div id="photo-preview" class="mt-3 flex space-x-2"></div>
+                            </div>
+
+                            <!-- Кнопки -->
+                            <div class="flex items-center justify-between pt-4">
+                                <p class="text-sm text-gray-500">
+                                    * Обязательные поля. Отзыв будет опубликован после модерации.
+                                </p>
+                                <div class="flex space-x-3">
+                                    <button 
+                                        type="button" 
+                                        id="reset-review-form"
+                                        class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                                    >
+                                        Очистить
+                                    </button>
+                                    <button 
+                                        type="submit" 
+                                        id="submit-review"
+                                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                                    >
+                                        Отправить отзыв
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Сообщения -->
+                        <div id="review-message" class="mt-4 hidden">
+                            <div id="review-success" class="hidden bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>Спасибо за отзыв! Он будет опубликован после модерации.</span>
+                                </div>
+                            </div>
+                            <div id="review-error" class="hidden bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span id="review-error-text">Произошла ошибка при отправке отзыва</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2307,6 +2419,253 @@
                     dropdown.classList.add('hidden');
                 }
             }
+        });
+        
+        
+        // ===== ФУНКЦИИ ДЛЯ РАБОТЫ С ФОРМОЙ ОТЗЫВА =====
+        
+        // Обработка рейтинга (звездочки)
+        function initializeReviewForm() {
+            const starButtons = document.querySelectorAll('.star-btn');
+            const ratingValue = document.getElementById('rating-value');
+            const ratingText = document.getElementById('rating-text');
+            const reviewForm = document.getElementById('review-form');
+            const resetButton = document.getElementById('reset-review-form');
+            const photoInput = document.getElementById('review-photos');
+            
+            // Обработчики для звездочек
+            starButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    setRating(rating);
+                });
+                
+                button.addEventListener('mouseenter', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    highlightStars(rating);
+                });
+            });
+            
+            // Сброс подсветки при покидании области звездочек
+            document.getElementById('rating-stars').addEventListener('mouseleave', function() {
+                const currentRating = parseInt(ratingValue.value) || 0;
+                highlightStars(currentRating);
+            });
+            
+            // Обработчик отправки формы
+            reviewForm.addEventListener('submit', handleReviewSubmit);
+            
+            // Обработчик кнопки очистки
+            resetButton.addEventListener('click', resetReviewForm);
+            
+            // Обработчик загрузки фото
+            photoInput.addEventListener('change', handlePhotoPreview);
+        }
+        
+        function setRating(rating) {
+            const ratingValue = document.getElementById('rating-value');
+            const ratingText = document.getElementById('rating-text');
+            
+            ratingValue.value = rating;
+            
+            const ratingTexts = {
+                1: 'Очень плохо',
+                2: 'Плохо', 
+                3: 'Нормально',
+                4: 'Хорошо',
+                5: 'Отлично'
+            };
+            
+            ratingText.textContent = ratingTexts[rating];
+            highlightStars(rating);
+        }
+        
+        function highlightStars(rating) {
+            const starButtons = document.querySelectorAll('.star-btn');
+            starButtons.forEach((button, index) => {
+                if (index < rating) {
+                    button.classList.remove('text-gray-300');
+                    button.classList.add('text-yellow-400');
+                } else {
+                    button.classList.remove('text-yellow-400');
+                    button.classList.add('text-gray-300');
+                }
+            });
+        }
+        
+        function handlePhotoPreview() {
+            const photoInput = document.getElementById('review-photos');
+            const photoPreview = document.getElementById('photo-preview');
+            
+            photoPreview.innerHTML = '';
+            
+            if (photoInput.files.length > 3) {
+                alert('Можно загрузить максимум 3 фотографии');
+                photoInput.value = '';
+                return;
+            }
+            
+            Array.from(photoInput.files).forEach((file, index) => {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert(`Файл "${file.name}" слишком большой. Максимальный размер: 5 МБ`);
+                    photoInput.value = '';
+                    photoPreview.innerHTML = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative';
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" class="w-20 h-20 object-cover rounded-lg border">
+                        <button type="button" onclick="removePhotoPreview(${index})" 
+                                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                            ×
+                        </button>
+                    `;
+                    photoPreview.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        function removePhotoPreview(index) {
+            const photoInput = document.getElementById('review-photos');
+            const photoPreview = document.getElementById('photo-preview');
+            
+            // Создаем новый FileList без удаленного файла
+            const dt = new DataTransfer();
+            Array.from(photoInput.files).forEach((file, i) => {
+                if (i !== index) {
+                    dt.items.add(file);
+                }
+            });
+            photoInput.files = dt.files;
+            
+            // Обновляем превью
+            handlePhotoPreview();
+        }
+        
+        async function handleReviewSubmit(event) {
+            event.preventDefault();
+            
+            const submitButton = document.getElementById('submit-review');
+            const reviewMessage = document.getElementById('review-message');
+            const reviewSuccess = document.getElementById('review-success');
+            const reviewError = document.getElementById('review-error');
+            const reviewErrorText = document.getElementById('review-error-text');
+            
+            // Скрываем предыдущие сообщения
+            reviewMessage.classList.add('hidden');
+            reviewSuccess.classList.add('hidden');
+            reviewError.classList.add('hidden');
+            
+            // Показываем загрузку
+            submitButton.disabled = true;
+            submitButton.textContent = 'Отправляем...';
+            
+            try {
+                const formData = new FormData();
+                formData.append('tourId', tourData?.id || getTourIdFromUrl());
+                formData.append('reviewerName', document.getElementById('reviewer-name').value);
+                formData.append('rating', document.getElementById('rating-value').value);
+                formData.append('text', document.getElementById('review-text').value);
+                
+                // Загрузка фотографий (если есть)
+                const photoInput = document.getElementById('review-photos');
+                if (photoInput.files.length > 0) {
+                    const photos = [];
+                    for (let file of photoInput.files) {
+                        const uploadResponse = await uploadReviewPhoto(file);
+                        if (uploadResponse.success) {
+                            photos.push(uploadResponse.url);
+                        }
+                    }
+                    formData.append('photos', JSON.stringify(photos));
+                }
+                
+                // Отправка отзыва
+                const response = await fetch(`${getApiUrl()}/reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tourId: parseInt(tourData?.id || getTourIdFromUrl()),
+                        reviewerName: document.getElementById('reviewer-name').value,
+                        rating: parseInt(document.getElementById('rating-value').value),
+                        text: document.getElementById('review-text').value,
+                        photos: photoInput.files.length > 0 ? await processPhotosForUpload(photoInput.files) : null
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Показываем успех
+                    reviewMessage.classList.remove('hidden');
+                    reviewSuccess.classList.remove('hidden');
+                    
+                    // Очищаем форму
+                    resetReviewForm();
+                } else {
+                    throw new Error(result.message || 'Ошибка при отправке отзыва');
+                }
+                
+            } catch (error) {
+                console.error('Ошибка отправки отзыва:', error);
+                reviewMessage.classList.remove('hidden');
+                reviewError.classList.remove('hidden');
+                reviewErrorText.textContent = error.message || 'Произошла ошибка при отправке отзыва';
+            } finally {
+                // Восстанавливаем кнопку
+                submitButton.disabled = false;
+                submitButton.textContent = 'Отправить отзыв';
+            }
+        }
+        
+        async function processPhotosForUpload(files) {
+            // В данной реализации мы просто возвращаем null, так как загрузка фото через object storage требует дополнительной настройки
+            // В будущем можно добавить интеграцию с системой загрузки фотографий
+            return null;
+        }
+        
+        function resetReviewForm() {
+            const reviewForm = document.getElementById('review-form');
+            const photoPreview = document.getElementById('photo-preview');
+            const ratingValue = document.getElementById('rating-value');
+            const ratingText = document.getElementById('rating-text');
+            
+            // Очищаем форму
+            reviewForm.reset();
+            
+            // Сбрасываем рейтинг
+            ratingValue.value = '';
+            ratingText.textContent = '';
+            highlightStars(0);
+            
+            // Очищаем превью фото
+            photoPreview.innerHTML = '';
+            
+            // Скрываем сообщения
+            document.getElementById('review-message').classList.add('hidden');
+            document.getElementById('review-success').classList.add('hidden');
+            document.getElementById('review-error').classList.add('hidden');
+        }
+        
+        function getTourIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id') || '1';
+        }
+        
+        function getApiUrl() {
+            return 'http://localhost:5000/api/tours';
+        }
+        
+        // Инициализация формы отзыва при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeReviewForm();
         });
         
         
