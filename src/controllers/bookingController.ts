@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { emailService } from '../services/emailService';
 
 const prisma = new PrismaClient();
 
@@ -8,6 +9,8 @@ interface BookingStartData {
   hotelId?: number;
   tourDate: string;
   numberOfTourists: number;
+  roomSelection?: any;
+  mealSelection?: any;
 }
 
 interface BookingDetailsData {
@@ -87,6 +90,43 @@ export const bookingController = {
         }
       }
 
+      const { roomSelection, mealSelection } = req.body;
+
+      // Рассчитать базовую стоимость тура
+      let totalPrice = 0;
+      const tourPrice = parseFloat(tour.price);
+      const tourPriceType = tour.priceType;
+      
+      if (tourPriceType === 'за человека') {
+        totalPrice += tourPrice * parseInt(numberOfTourists.toString());
+      } else {
+        totalPrice += tourPrice; // За группу
+      }
+
+      // Добавить стоимость номеров (если выбраны)
+      if (roomSelection && hotel) {
+        const tourDuration = parseInt(tour.duration.replace(/\D/g, '')) || 1;
+        
+        for (const [roomType, roomData] of Object.entries(roomSelection as any)) {
+          const room = roomData as any;
+          if (room.quantity > 0) {
+            totalPrice += room.price * room.quantity * tourDuration;
+          }
+        }
+      }
+
+      // Добавить стоимость питания (если выбрано)
+      if (mealSelection && hotel) {
+        const tourDuration = parseInt(tour.duration.replace(/\D/g, '')) || 1;
+        
+        for (const [mealType, mealData] of Object.entries(mealSelection as any)) {
+          const meal = mealData as any;
+          if (meal.selected) {
+            totalPrice += meal.price * parseInt(numberOfTourists.toString()) * tourDuration;
+          }
+        }
+      }
+
       // Создать черновик бронирования
       const booking = await prisma.booking.create({
         data: {
@@ -95,10 +135,12 @@ export const bookingController = {
           tourDate,
           numberOfTourists: parseInt(numberOfTourists.toString()),
           tourists: JSON.stringify([]), // Пустой массив для начала
-          contactName: '',
-          contactPhone: '',
-          contactEmail: '',
-          totalPrice: 0, // Будет рассчитана позже
+          contactName: null,
+          contactPhone: null,
+          contactEmail: null,
+          roomSelection: roomSelection ? JSON.stringify(roomSelection) : null,
+          mealSelection: mealSelection ? JSON.stringify(mealSelection) : null,
+          totalPrice,
           status: 'draft'
         }
       });
@@ -250,9 +292,13 @@ export const bookingController = {
       const { id } = req.params;
       const { paymentMethod }: BookingPaymentData = req.body;
 
-      // Найти бронирование
+      // Найти бронирование с связанными данными
       const booking = await prisma.booking.findUnique({
-        where: { id: parseInt(id) }
+        where: { id: parseInt(id) },
+        include: {
+          tour: true,
+          hotel: true
+        }
       });
 
       if (!booking) {
@@ -275,13 +321,49 @@ export const bookingController = {
           }
         });
 
+        try {
+          // Отправить email уведомления
+          if (booking.contactEmail && booking.tour) {
+            // Create customer object for email service
+            const customerData = {
+              id: 0, // Mock ID for email service
+              fullName: booking.contactName || 'Клиент',
+              email: booking.contactEmail,
+              phone: booking.contactPhone || null,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            };
+            
+            // Create order object with correct structure
+            const orderData = {
+              ...updatedBooking,
+              orderNumber: `BT-${updatedBooking.id}`,
+              totalAmount: updatedBooking.totalPrice,
+              tourists: updatedBooking.tourists || '[]'
+            };
+            
+            await emailService.sendBookingConfirmation(orderData, customerData, booking.tour);
+            console.log('✅ Booking confirmation email sent successfully');
+          }
+        } catch (emailError) {
+          console.error('⚠️ Failed to send email notifications:', emailError);
+          // Не прерываем основной процесс из-за ошибки email
+        }
+
         return res.json({
           success: true,
           data: updatedBooking,
-          message: 'Payment processed successfully'
+          message: 'Payment processed successfully and confirmation emails sent'
         });
       } else {
         // Ошибка оплаты
+        await prisma.booking.update({
+          where: { id: parseInt(id) },
+          data: {
+            status: 'error'
+          }
+        });
+
         return res.status(400).json({
           success: false,
           message: 'Payment failed. Please try again.'
@@ -441,7 +523,7 @@ export const bookingController = {
         }
       });
 
-      const hotels = tourHotels.map(th => ({
+      const hotels = tourHotels.map((th: any) => ({
         ...th.hotel,
         name: JSON.parse(th.hotel.name),
         description: th.hotel.description ? JSON.parse(th.hotel.description) : null,

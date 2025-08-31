@@ -3,12 +3,13 @@ import { bookingController } from '../controllers/bookingController';
 
 const router = express.Router();
 
-// Booking routes
-router.post('/start', bookingController.startBooking);
-router.put('/:id/update', bookingController.updateBookingStep1);
-router.put('/:id/details', bookingController.updateBookingDetails);
-router.put('/:id/pay', bookingController.processPayment);
-router.get('/:id', bookingController.getBooking);
+// Booking routes - 3-step booking system
+router.post('/start', bookingController.startBooking);              // Step 1: Hotel/room selection
+router.put('/:id/details', bookingController.updateBookingDetails); // Step 2: Tourist details
+router.put('/:id/pay', bookingController.processPayment);           // Step 3: Payment
+router.get('/:id', bookingController.getBooking);                   // Get booking details
+
+// Helper routes
 router.get('/tour/:tourId/hotels', bookingController.getTourHotels);
 
 export default router;

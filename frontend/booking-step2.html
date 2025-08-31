@@ -290,7 +290,7 @@
                     localStorage.setItem('bookingState', JSON.stringify(bookingState));
                     
                     // Navigate to step 3
-                    window.location.href = `/booking/step3?bookingId=${bookingState.bookingId}`;
+                    window.location.href = `/booking-step3.html?bookingId=${bookingState.bookingId}`;
                 } else {
                     alert('Ошибка: ' + data.message);
                 }
