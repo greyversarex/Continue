@@ -2676,12 +2676,24 @@
                 console.warn('galleryImagesList container not found');
                 return;
             }
+            
+            console.log('Updating gallery images list with:', window.tourGalleryImages);
+            
+            if (!window.tourGalleryImages || window.tourGalleryImages.length === 0) {
+                galleryContainer.innerHTML = '<div class="text-gray-500 text-sm">Нет загруженных изображений</div>';
+                return;
+            }
+            
             galleryContainer.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
                 <div class="flex items-center justify-between bg-gray-50 p-3 rounded border">
                     <div class="flex items-center gap-3">
-                        <img src="${imageUrl}" alt="Preview" class="w-12 h-12 object-cover rounded" onerror="this.style.display='none';">
+                        <img src="${imageUrl}" alt="Preview" class="w-16 h-16 object-cover rounded border" 
+                             onerror="console.error('Image failed to load:', '${imageUrl}'); this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMiAyNkMyMiAyNC44OTU0IDIyLjg5NTQgMjQgMjQgMjRIMzZDMzcuMTA0NiAyNCAzOCAyNC44OTU0IDM4IDI2VjM0QzM4IDM1LjEwNDYgMzcuMTA0NiAzNiAzNiAzNkgyNEMyMi44OTU0IDM2IDIyIDM1LjEwNDYgMjIgMzRWMjZaIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIvPgo8Y2lyY2xlIGN4PSIyNyIgY3k9IjI5IiByPSIyIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0yOCAzM0wzMCAzMUwzMiAzM0gzNlYzNkgyNFYzM0gyOFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';">
                         <div class="flex-1 min-w-0">
-                            <div class="text-sm font-medium text-gray-900 truncate">${imageUrl}</div>
+                            <div class="text-sm font-medium text-gray-900 truncate" title="${imageUrl}">
+                                ${imageUrl.length > 40 ? '...' + imageUrl.slice(-40) : imageUrl}
+                            </div>
+                            <div class="text-xs text-gray-500">Изображение #${index + 1}</div>
                         </div>
                     </div>
                     <button type="button" onclick="removeGalleryImage(${index})" class="text-red-500 hover:text-red-700 ml-2">
@@ -3988,8 +4000,13 @@
                     ru: document.getElementById('tourDescRu').value || '',
                     en: document.getElementById('tourDescEn').value || ''
                 }),
+                shortDescription: JSON.stringify({
+                    ru: document.getElementById('tourDescRu').value || '',
+                    en: document.getElementById('tourDescEn').value || ''
+                }),
                 price: parseFloat(priceValue),
                 priceType: document.getElementById('tourPriceType').value || 'за человека',
+                originalPrice: null,
                 categoryId: parseInt(categoryValue),
                 tourBlockId: document.getElementById('tourBlockId').value ? parseInt(document.getElementById('tourBlockId').value) : null,
                 country: document.getElementById('tourCountry').value || '',
@@ -4001,6 +4018,8 @@
                 pickupInfo: document.getElementById('tourPickupInfo').value || '',
                 minPeople: document.getElementById('tourMinPeople').value ? parseInt(document.getElementById('tourMinPeople').value) : null,
                 maxPeople: document.getElementById('tourMaxPeople').value ? parseInt(document.getElementById('tourMaxPeople').value) : null,
+                mainImage: window.tourGalleryImages && window.tourGalleryImages.length > 0 ? window.tourGalleryImages[0] : null,
+                images: JSON.stringify(window.tourGalleryImages || []),
                 highlights: JSON.stringify(window.tourHighlights || []),
                 itinerary: JSON.stringify(window.tourItinerary || []),
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),

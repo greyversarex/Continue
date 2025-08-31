@@ -325,11 +325,11 @@ export class TourController {
       const tour = await TourModel.create({
         title,
         description,
-        shortDescription: shortDescription || null,
+        shortDescription: shortDescription || undefined,
         duration: String(finalDuration), // Convert to string for Prisma
         price: String(price),
         priceType: priceType || 'за человека',
-        originalPrice: originalPrice || null,
+        originalPrice: originalPrice ? String(originalPrice) : undefined,
         categoryId: categoryIdNumber,
         tourBlockId: tourBlockIdNumber,
         country: country || null,
@@ -392,13 +392,20 @@ export class TourController {
 
       return res.status(201).json(response);
     } catch (error) {
+      console.error('Error creating tour:', error);
       if (error instanceof Error && error.message === 'Category not found') {
         return res.status(400).json({
           success: false,
           error: 'Invalid category ID'
         });
       }
-      return next(error);
+      
+      // Return a proper error response instead of using next(error)
+      return res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
+        message: 'Failed to create tour'
+      });
     }
   }
 
