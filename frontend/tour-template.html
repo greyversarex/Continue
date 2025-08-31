@@ -1680,11 +1680,12 @@
         
         function getTourIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
-            const idFromUrl = urlParams.get('id');
+            const idFromUrl = urlParams.get('id') || urlParams.get('tour');
             console.log('🔍 getTourIdFromUrl called:', {
                 urlParams: window.location.search,
                 idFromUrl: idFromUrl,
-                tourDataId: tourData?.id
+                tourDataId: tourData?.id,
+                supportedParams: ['id', 'tour']
             });
             return idFromUrl || tourData?.id;
         }
