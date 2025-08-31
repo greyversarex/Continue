@@ -4549,12 +4549,19 @@
                     document.getElementById('hotelPension').value = hotel.pension || 'none';
                     document.getElementById('hotelActive').checked = hotel.isActive;
                     
-                    // Set amenities
-                    document.querySelectorAll('#hotelForm input[type="checkbox"]').forEach(checkbox => {
-                        if (checkbox.id !== 'hotelActive') {
-                            checkbox.checked = amenities.includes(checkbox.value);
-                        }
-                    });
+                    // Set amenities - убеждаемся что amenities определен
+                    if (amenities && Array.isArray(amenities)) {
+                        document.querySelectorAll('#hotelForm input[type="checkbox"]').forEach(checkbox => {
+                            if (checkbox.id !== 'hotelActive') {
+                                checkbox.checked = amenities.includes(checkbox.value);
+                                if (checkbox.checked) {
+                                    console.log('✅ Set amenity checked:', checkbox.value);
+                                }
+                            }
+                        });
+                    } else {
+                        console.warn('❌ Amenities not loaded properly:', amenities);
+                    }
                     
                     // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Загрузка изображений отеля
                     if (hotel.images) {
