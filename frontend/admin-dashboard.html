@@ -3868,6 +3868,21 @@
                 return;
             }
             
+            // Собираем выбранные отели
+            const selectedHotels = [];
+            document.querySelectorAll('input[name="selectedHotels"]:checked').forEach(checkbox => {
+                selectedHotels.push(parseInt(checkbox.value));
+            });
+            
+            // Собираем выбранных гидов
+            const selectedGuides = [];
+            document.querySelectorAll('input[name="selectedGuides"]:checked').forEach(checkbox => {
+                selectedGuides.push(parseInt(checkbox.value));
+            });
+            
+            console.log('🏨 Selected hotels:', selectedHotels);
+            console.log('👨‍🏫 Selected guides:', selectedGuides);
+            
             // Формируем данные для отправки
             const formData = {
                 title: JSON.stringify({
@@ -3899,6 +3914,8 @@
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
                 mainImage: document.getElementById('tourMainImage')?.value || '',
                 images: JSON.stringify(window.tourGalleryImages || []),
+                hotelIds: selectedHotels,
+                guideIds: selectedGuides,
                 isActive: true,
                 isFeatured: false
             };
