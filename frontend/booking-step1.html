@@ -345,11 +345,25 @@
                             ` : ''}
 
                             <!-- Room Types -->
-                            ${Object.keys(hotel.roomTypes).length > 0 ? `
+                            ${(() => {
+                                let roomTypes = {};
+                                try {
+                                    roomTypes = hotel.roomTypes ? JSON.parse(hotel.roomTypes) : {};
+                                } catch (e) {
+                                    console.warn('Failed to parse roomTypes:', hotel.roomTypes);
+                                }
+                                return Object.keys(roomTypes).length > 0;
+                            })() ? `
                                 <div class="mb-4">
                                     <h4 class="font-medium text-gray-800 mb-3">Категории номеров:</h4>
                                     <div class="space-y-3">
-                                        ${Object.entries(hotel.roomTypes).map(([type, room]) => `
+                                        ${Object.entries((() => {
+                                            try {
+                                                return hotel.roomTypes ? JSON.parse(hotel.roomTypes) : {};
+                                            } catch (e) {
+                                                return {};
+                                            }
+                                        })()).map(([type, room]) => `
                                             <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
                                                 <div>
                                                     <span class="font-medium">${type} - ${room.name}</span>
@@ -367,11 +381,25 @@
                             ` : ''}
 
                             <!-- Meal Types -->
-                            ${Object.keys(hotel.mealTypes).length > 0 ? `
+                            ${(() => {
+                                let mealTypes = {};
+                                try {
+                                    mealTypes = hotel.mealTypes ? JSON.parse(hotel.mealTypes) : {};
+                                } catch (e) {
+                                    console.warn('Failed to parse mealTypes:', hotel.mealTypes);
+                                }
+                                return Object.keys(mealTypes).length > 0;
+                            })() ? `
                                 <div class="mb-4">
                                     <h4 class="font-medium text-gray-800 mb-3">Типы питания:</h4>
                                     <div class="space-y-2">
-                                        ${Object.entries(hotel.mealTypes).map(([type, meal]) => `
+                                        ${Object.entries((() => {
+                                            try {
+                                                return hotel.mealTypes ? JSON.parse(hotel.mealTypes) : {};
+                                            } catch (e) {
+                                                return {};
+                                            }
+                                        })()).map(([type, meal]) => `
                                             <label class="flex items-center justify-between bg-gray-50 p-3 rounded-lg cursor-pointer">
                                                 <div class="flex items-center">
                                                     <input type="radio" name="meal-${hotel.id}" value="${type}" class="mr-3" onchange="selectMeal('${hotel.id}', '${type}', ${meal.price})">
