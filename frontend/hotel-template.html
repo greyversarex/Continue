@@ -448,12 +448,20 @@
                     </div>
                     
                     <!-- Hotel Gallery -->
-                    <div id="hotel-gallery" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                    <div id="hotel-gallery" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                         <!-- Фотографии будут добавлены через JS -->
                         <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
                         <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
                         <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
                         <div class="aspect-w-16 aspect-h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+                    </div>
+                    
+                    <!-- Hotel Description -->
+                    <div class="border-t pt-6">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-800">Описание отеля</h3>
+                        <div id="hotel-description" class="text-gray-700 leading-relaxed">
+                            <p>Загружается описание отеля...</p>
+                        </div>
                     </div>
                 </div>
 
@@ -484,13 +492,6 @@
                     </div>
                 </div>
 
-                <!-- Hotel Description -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Описание отеля</h2>
-                    <div id="hotel-description" class="text-gray-700 leading-relaxed">
-                        <p>Загружается описание отеля...</p>
-                    </div>
-                </div>
                 
                 <!-- Hotel Amenities -->
                 <div class="bg-white rounded-lg shadow-md p-6">
@@ -526,8 +527,9 @@
         // API configuration
         function getApiUrl() {
             const hostname = window.location.hostname;
+            const protocol = window.location.protocol;
             if (hostname.includes('replit.dev') || hostname.includes('replit.app')) {
-                return `https://${hostname}:5000/api`;
+                return `${protocol}//${hostname}/api`;
             }
             return '/api';
         }
@@ -541,11 +543,22 @@
             }
 
             try {
-                const response = await fetch(`${getApiUrl()}/hotels/${hotelId}`);
-                const result = await response.json();
+                const apiUrl = `${getApiUrl()}/hotels/${hotelId}`;
+                console.log('Loading hotel data from:', apiUrl);
                 
-                if (result.success) {
+                const response = await fetch(apiUrl);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('API result:', result);
+                
+                if (result.success && result.data) {
                     hotelData = result.data;
+                    console.log('Hotel data loaded:', hotelData);
                     displayHotelData();
                 } else {
                     throw new Error(result.message || 'Ошибка загрузки данных отеля');
@@ -553,6 +566,7 @@
             } catch (error) {
                 console.error('Ошибка загрузки отеля:', error);
                 document.getElementById('hotel-name').textContent = 'Ошибка загрузки отеля';
+                document.getElementById('hotel-location').textContent = `Ошибка: ${error.message}`;
             }
         }
 
