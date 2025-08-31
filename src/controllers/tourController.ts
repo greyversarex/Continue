@@ -10,9 +10,7 @@ import {
   ApiResponse, 
   MultilingualContent 
 } from '../types';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../config/database';
 
 export class TourController {
   /**
@@ -452,12 +450,21 @@ export class TourController {
       return res.status(201).json(response);
     } catch (error) {
       console.error('❌ Error creating tour:', error);
+      
+      // Detailed error logging
+      if (error instanceof Error) {
+        console.error('❌ Error name:', error.name);
+        console.error('❌ Error message:', error.message);
+        console.error('❌ Error stack:', error.stack);
+      }
+      
       if (error instanceof Error && error.message === 'Category not found') {
         return res.status(400).json({
           success: false,
           error: 'Invalid category ID'
         });
       }
+      
       return res.status(500).json({
         success: false,
         error: 'Database error: ' + (error instanceof Error ? error.message : 'Unknown error')
