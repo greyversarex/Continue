@@ -58,13 +58,21 @@ export const getAllGuides = async (req: Request, res: Response) => {
       },
     });
 
-    const formattedGuides = guides.map(guide => ({
-      ...guide,
-      name: guide.name.startsWith('{') ? JSON.parse(guide.name) : guide.name,
-      description: guide.description ? (guide.description.startsWith('{') ? JSON.parse(guide.description) : guide.description) : null,
-      languages: guide.languages.startsWith('[') || guide.languages.startsWith('"[') ? JSON.parse(guide.languages.replace(/^"|"$/g, '')) : guide.languages,
-      contact: guide.contact ? (guide.contact.startsWith('{') ? JSON.parse(guide.contact) : guide.contact) : null,
-    }));
+    const formattedGuides = guides.map(guide => {
+      try {
+        return {
+          ...guide,
+          name: typeof guide.name === 'string' && guide.name.startsWith('{') ? JSON.parse(guide.name) : guide.name,
+          description: guide.description && typeof guide.description === 'string' && guide.description.startsWith('{') ? JSON.parse(guide.description) : guide.description,
+          languages: typeof guide.languages === 'string' && (guide.languages.startsWith('[') || guide.languages.startsWith('"[')) ? 
+            JSON.parse(guide.languages.replace(/^"(.+)"$/, '$1')) : guide.languages,
+          contact: guide.contact && typeof guide.contact === 'string' && guide.contact.startsWith('{') ? JSON.parse(guide.contact) : guide.contact,
+        };
+      } catch (error) {
+        console.error('Error parsing guide data:', error, guide);
+        return guide;
+      }
+    });
 
     return res.json({
       success: true,
