@@ -1498,33 +1498,13 @@
             <form id="hotelForm">
                 <div class="grid grid-cols-1 gap-4">
                     <div class="form-group">
-                        <label class="form-label">Название отеля (Русский)</label>
-                        <input type="text" class="form-input" id="hotelNameRu" required>
+                        <label class="form-label">Название отеля</label>
+                        <input type="text" class="form-input" id="hotelName" placeholder="Hilton Dushanbe, Serena Hotel и т.д." required>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Название отеля (English)</label>
-                        <input type="text" class="form-input" id="hotelNameEn" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Название отеля (Таджикский)</label>
-                        <input type="text" class="form-input" id="hotelNameTj">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Описание (Русский)</label>
-                        <textarea class="form-input" rows="4" id="hotelDescRu" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Описание (English)</label>
-                        <textarea class="form-input" rows="4" id="hotelDescEn" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Описание (Таджикский)</label>
-                        <textarea class="form-input" rows="4" id="hotelDescTj"></textarea>
+                        <label class="form-label">Описание отеля</label>
+                        <textarea class="form-input" rows="4" id="hotelDescription" placeholder="Краткое описание отеля, расположения и особенностей..." required></textarea>
                     </div>
                     
                     <div class="form-group">
@@ -1551,14 +1531,40 @@
                     
                     <div class="form-group">
                         <label class="form-label">Бренд отеля</label>
-                        <input type="text" class="form-input" id="hotelBrand" placeholder="Hilton, Marriott, Radisson и т.д.">
+                        <div class="flex gap-2">
+                            <select class="form-input flex-1" id="hotelBrand">
+                                <option value="">Выберите бренд</option>
+                                <option value="Four Seasons">Four Seasons</option>
+                                <option value="Ritz-Carlton">Ritz-Carlton</option>
+                                <option value="St. Regis">St. Regis</option>
+                                <option value="Waldorf Astoria">Waldorf Astoria</option>
+                                <option value="Conrad">Conrad</option>
+                                <option value="Hilton">Hilton</option>
+                                <option value="Marriott">Marriott</option>
+                                <option value="Sheraton">Sheraton</option>
+                                <option value="Westin">Westin</option>
+                                <option value="Hyatt">Hyatt</option>
+                                <option value="InterContinental">InterContinental</option>
+                                <option value="Crowne Plaza">Crowne Plaza</option>
+                                <option value="Holiday Inn">Holiday Inn</option>
+                                <option value="Radisson">Radisson</option>
+                                <option value="Novotel">Novotel</option>
+                                <option value="Ibis">Ibis</option>
+                                <option value="Best Western">Best Western</option>
+                                <option value="Serena Hotels">Serena Hotels</option>
+                                <option value="Golden Tulip">Golden Tulip</option>
+                                <option value="Независимый отель">Независимый отель</option>
+                                <option value="custom">+ Добавить новый бренд</option>
+                            </select>
+                        </div>
+                        <input type="text" class="form-input mt-2" id="hotelBrandCustom" placeholder="Введите название нового бренда" style="display: none;">
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Категория отеля</label>
                         <select class="form-input" id="hotelCategory">
                             <option value="">Выберите категорию</option>
-                            <option value="Budget">Бюджетный</option>
+                            <option value="Economy">Эконом</option>
                             <option value="Premium">Премиум</option>
                             <option value="Luxury">Люкс</option>
                         </select>
@@ -1598,7 +1604,7 @@
                     
                     <div class="form-group">
                         <label class="form-label">Удобства</label>
-                        <div class="checkbox-group">
+                        <div class="checkbox-group" id="hotelAmenities">
                             <label class="checkbox-item">
                                 <input type="checkbox" value="WiFi"> WiFi
                             </label>
@@ -1618,11 +1624,23 @@
                                 <input type="checkbox" value="Спа"> Спа
                             </label>
                             <label class="checkbox-item">
-                                <input type="checkbox" value="Фитнес"> Фитнес-центр
+                                <input type="checkbox" value="Фитнес-центр"> Фитнес-центр
                             </label>
                             <label class="checkbox-item">
                                 <input type="checkbox" value="Кондиционер"> Кондиционер
                             </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="Мини-бар"> Мини-бар
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="Трансфер"> Трансфер
+                            </label>
+                        </div>
+                        <div class="mt-3 flex gap-2">
+                            <input type="text" class="form-input flex-1" id="newAmenity" placeholder="Введите название нового удобства">
+                            <button type="button" onclick="addNewAmenity()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md">
+                                <i class="fas fa-plus"></i> Добавить
+                            </button>
                         </div>
                     </div>
                     
@@ -4425,16 +4443,31 @@
                     const description = JSON.parse(hotel.description || '{}');
                     const amenities = JSON.parse(hotel.amenities || '[]');
                     
-                    document.getElementById('hotelNameRu').value = name.ru || '';
-                    document.getElementById('hotelNameEn').value = name.en || '';
-                    document.getElementById('hotelNameTj').value = name.tj || '';
-                    document.getElementById('hotelDescRu').value = description.ru || '';
-                    document.getElementById('hotelDescEn').value = description.en || '';
-                    document.getElementById('hotelDescTj').value = description.tj || '';
+                    document.getElementById('hotelName').value = name.ru || name.en || hotel.name || '';
+                    document.getElementById('hotelDescription').value = description.ru || description.en || hotel.description || '';
                     document.getElementById('hotelAddress').value = hotel.address || '';
                     document.getElementById('hotelRating').value = hotel.rating || '';
                     document.getElementById('hotelStars').value = hotel.stars || '';
-                    document.getElementById('hotelBrand').value = hotel.brand || '';
+                    // Установка бренда с учетом пользовательского ввода
+                    const brandSelect = document.getElementById('hotelBrand');
+                    const brandCustom = document.getElementById('hotelBrandCustom');
+                    
+                    if (hotel.brand) {
+                        // Проверить, есть ли бренд в списке
+                        const brandOption = Array.from(brandSelect.options).find(option => option.value === hotel.brand);
+                        if (brandOption) {
+                            brandSelect.value = hotel.brand;
+                            brandCustom.style.display = 'none';
+                        } else {
+                            // Бренд не в списке, использовать пользовательский ввод
+                            brandSelect.value = 'custom';
+                            brandCustom.value = hotel.brand;
+                            brandCustom.style.display = 'block';
+                        }
+                    } else {
+                        brandSelect.value = '';
+                        brandCustom.style.display = 'none';
+                    }
                     document.getElementById('hotelCategory').value = hotel.category || '';
                     document.getElementById('hotelCountry').value = hotel.country || '';
                     document.getElementById('hotelCity').value = hotel.city || '';
@@ -4510,22 +4543,84 @@
             });
         }
         
+        // Функция для получения выбранного бренда
+        function getSelectedBrand() {
+            const brandSelect = document.getElementById('hotelBrand');
+            const brandCustom = document.getElementById('hotelBrandCustom');
+            
+            if (brandSelect.value === 'custom') {
+                return brandCustom.value.trim() || null;
+            }
+            return brandSelect.value || null;
+        }
+        
+        // Функция для добавления нового удобства
+        function addNewAmenity() {
+            const newAmenityInput = document.getElementById('newAmenity');
+            const amenityName = newAmenityInput.value.trim();
+            
+            if (!amenityName) {
+                alert('Введите название удобства');
+                return;
+            }
+            
+            // Проверить, не существует ли уже такое удобство
+            const existingAmenities = document.querySelectorAll('#hotelAmenities input[type="checkbox"]');
+            for (let checkbox of existingAmenities) {
+                if (checkbox.value === amenityName) {
+                    alert('Такое удобство уже существует');
+                    return;
+                }
+            }
+            
+            // Создать новый чекбокс
+            const amenitiesContainer = document.getElementById('hotelAmenities');
+            const newCheckbox = document.createElement('label');
+            newCheckbox.className = 'checkbox-item';
+            newCheckbox.innerHTML = `
+                <input type="checkbox" value="${amenityName}" checked> ${amenityName}
+            `;
+            
+            amenitiesContainer.appendChild(newCheckbox);
+            newAmenityInput.value = '';
+        }
+        
+        // Обработчик изменения селекта бренда
+        document.addEventListener('DOMContentLoaded', function() {
+            const brandSelect = document.getElementById('hotelBrand');
+            const brandCustomInput = document.getElementById('hotelBrandCustom');
+            
+            if (brandSelect && brandCustomInput) {
+                brandSelect.addEventListener('change', function() {
+                    if (this.value === 'custom') {
+                        brandCustomInput.style.display = 'block';
+                        brandCustomInput.focus();
+                    } else {
+                        brandCustomInput.style.display = 'none';
+                        brandCustomInput.value = '';
+                    }
+                });
+            }
+        });
+        
         // Hotel form submit handler
         document.getElementById('hotelForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Build name object
+            // Build name object (русский приоритетный)
+            const nameValue = document.getElementById('hotelName').value;
             const name = {
-                ru: document.getElementById('hotelNameRu').value,
-                en: document.getElementById('hotelNameEn').value,
-                tj: document.getElementById('hotelNameTj').value
+                ru: nameValue,
+                en: nameValue,
+                tj: nameValue
             };
             
-            // Build description object
+            // Build description object (русский приоритетный)
+            const descValue = document.getElementById('hotelDescription').value;
             const description = {
-                ru: document.getElementById('hotelDescRu').value,
-                en: document.getElementById('hotelDescEn').value,
-                tj: document.getElementById('hotelDescTj').value
+                ru: descValue,
+                en: descValue,
+                tj: descValue
             };
             
             // Get amenities
@@ -4543,7 +4638,7 @@
                 address: document.getElementById('hotelAddress').value,
                 rating: parseFloat(document.getElementById('hotelRating').value) || null,
                 stars: parseInt(document.getElementById('hotelStars').value) || null,
-                brand: document.getElementById('hotelBrand').value || null,
+                brand: getSelectedBrand() || null,
                 category: document.getElementById('hotelCategory').value || null,
                 country: document.getElementById('hotelCountry').value || null,
                 city: document.getElementById('hotelCity').value || null,
