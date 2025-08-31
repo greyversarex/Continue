@@ -174,10 +174,16 @@
                 });
 
                 console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 console.log('Response data:', data);
                 
-                if (data.success) {
+                if (data.success && data.data) {
+                    console.log('✅ Booking started successfully');
                     bookingState.bookingId = data.data.bookingId;
                     bookingState.tour = data.data.tour;
                     
@@ -187,11 +193,15 @@
                     // Load hotels for this tour
                     loadTourHotels(tourId);
                 } else {
-                    alert('Ошибка: ' + data.message);
+                    throw new Error(data.message || 'Неизвестная ошибка при создании бронирования');
                 }
             } catch (error) {
-                console.error('Error starting booking:', error);
-                alert('Ошибка при начале бронирования');
+                console.error('❌ Error starting booking:', error);
+                alert('Ошибка при начале бронирования: ' + error.message);
+                // Redirect back to tours page on error
+                setTimeout(() => {
+                    window.location.href = '/tours.html';
+                }, 2000);
             }
         }
 
