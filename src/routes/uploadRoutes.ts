@@ -82,6 +82,30 @@ router.get('/images/:filename', async (req: Request, res: Response): Promise<voi
   }
 });
 
+// Add PUT endpoint for ObjectUploader compatibility
+router.put('/', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { imageURL } = req.body;
+    
+    if (!imageURL) {
+      res.status(400).json({ error: 'No image URL provided' });
+      return;
+    }
+
+    // Normalize the path for database storage
+    const objectPath = imageURL.replace(/^.*\/uploads\//, '/uploads/');
+    
+    res.json({
+      success: true,
+      objectPath: objectPath,
+      imageURL: imageURL
+    });
+  } catch (error) {
+    console.error('Error processing image URL:', error);
+    res.status(500).json({ error: 'Failed to process image URL' });
+  }
+});
+
 // Add POST endpoint for /api/images (frontend compatibility)
 router.post('/', upload.single('image'), async (req: Request, res: Response): Promise<void> => {
   try {

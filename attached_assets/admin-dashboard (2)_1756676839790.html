@@ -2303,28 +2303,22 @@
         }
         
         function loadDashboardStats() {
-            // Load real stats from existing endpoints
-            Promise.all([
-                fetch(`${getApiUrl()}/tours`, { headers: getAuthHeaders() }),
-                fetch(`${getApiUrl()}/orders`, { headers: getAuthHeaders() }),
-                fetch(`${getApiUrl()}/customers`, { headers: getAuthHeaders() })
-            ])
-                .then(responses => Promise.all(responses.map(res => res.json())))
-                .then(([toursData, ordersData, customersData]) => {
-                    // Calculate real stats
-                    const toursCount = toursData.success ? toursData.data.length : 0;
-                    const ordersCount = ordersData.success ? ordersData.data.length : 0;
-                    const customersCount = customersData.success ? customersData.data.length : 0;
-                    const revenue = ordersData.success ? 
-                        ordersData.data.reduce((total, order) => total + (parseFloat(order.totalAmount) || 0), 0) : 0;
-                    
-                    // Обновить статистические карточки
-                    const statsCards = document.querySelectorAll('.stat-card h3');
-                    if (statsCards.length >= 4) {
-                        statsCards[0].textContent = toursCount;
-                        statsCards[1].textContent = ordersCount; 
-                        statsCards[2].textContent = '$' + revenue.toFixed(2);
-                        statsCards[3].textContent = customersCount;
+            fetch(`${getApiUrl()}/sqlite/stats`, {
+                headers: getAuthHeaders()
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        const stats = data.data;
+                        
+                        // Обновить статистические карточки
+                        const statsCards = document.querySelectorAll('.stat-card h3');
+                        if (statsCards.length >= 4) {
+                            statsCards[0].textContent = stats.tours || 0;
+                            statsCards[1].textContent = stats.bookings || 0; 
+                            statsCards[2].textContent = '$' + (stats.revenue || 0);
+                            statsCards[3].textContent = stats.users || 0;
+                        }
                     }
                 })
                 .catch(err => {
@@ -3742,13 +3736,6 @@
                         
                         // УДАЛЕНО: дублирующая загрузка турблока (уже обработано выше)
                         
-                        // Загрузка главного изображения
-                        const tourMainImageField = document.getElementById('tourMainImage');
-                        if (tourMainImageField && tour.mainImage) {
-                            tourMainImageField.value = tour.mainImage;
-                            console.log('✅ Loaded main image:', tour.mainImage);
-                        }
-                        
                         // Загрузка галереи изображений
                         window.tourGalleryImages = [];
                         if (tour.images) {
@@ -3839,6 +3826,12 @@
             const titleRuValue = document.getElementById('tourTitleRu').value;
             const titleEnValue = document.getElementById('tourTitleEn').value;
             
+            // Проверяем выбранные категории вместо dropdown
+            if (!selectedCategories || selectedCategories.length === 0) {
+                alert('Пожалуйста, добавьте хотя бы одну категорию тура');
+                return;
+            }
+            
             const categoryValue = document.getElementById('tourCategory').value;
             const priceValue = document.getElementById('tourPrice').value;
             const durationDaysValue = document.getElementById('tourDurationDays').value;
@@ -3892,8 +3885,6 @@
                 languages: JSON.stringify(window.tourLanguages || ['Русский']),
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
-                mainImage: document.getElementById('tourMainImage')?.value || '',
-                images: JSON.stringify(window.tourGalleryImages || []),
                 isActive: true,
                 isFeatured: false
             };
@@ -4556,13 +4547,7 @@
                     document.getElementById('hotelCountry').value = hotel.country || '';
                     document.getElementById('hotelCity').value = hotel.city || '';
                     document.getElementById('hotelPension').value = hotel.pension || 'none';
-                    const hotelActiveField = document.getElementById('hotelActive');
-                    if (hotelActiveField) {
-                        hotelActiveField.checked = hotel.isActive;
-                        console.log('✅ Set hotel active status:', hotel.isActive);
-                    } else {
-                        console.warn('❌ hotelActive field not found');
-                    }
+                    document.getElementById('hotelActive').checked = hotel.isActive;
                     
                     // Set amenities - убеждаемся что amenities определен
                     if (amenities && Array.isArray(amenities)) {
@@ -4994,14 +4979,9 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            window.hotelImageURLs = window.hotelImageURLs || [];
                             window.hotelImageURLs.push(data.objectPath);
                             // Update hidden input for form submission
-                            const hiddenField = document.getElementById('hotelImages');
-                            if (hiddenField) {
-                                hiddenField.value = JSON.stringify(window.hotelImageURLs);
-                            }
-                            console.log('Hotel image processed:', data.objectPath);
+                            document.getElementById('hotelImages').value = JSON.stringify(window.hotelImageURLs);
                         }
                     })
                     .catch(error => {
@@ -5036,30 +5016,32 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            window.tourImageURLs = window.tourImageURLs || [];
-                            window.tourGalleryImages = window.tourGalleryImages || [];
-                            
                             window.tourImageURLs.push(data.objectPath);
-                            window.tourGalleryImages.push(data.objectPath);
-                            
                             // Update hidden input for form submission
-                            const hiddenField = document.getElementById('tourImages');
-                            if (hiddenField) {
-                                hiddenField.value = JSON.stringify(window.tourImageURLs);
-                            }
+                            document.getElementById('tourImages').value = JSON.stringify(window.tourImageURLs);
+                            // Also update gallery images array
+                            window.tourGalleryImages = window.tourGalleryImages || [];
+                            window.tourGalleryImages.push(data.objectPath);
                             
                             // Set as main image if it's the first one
                             if (window.tourGalleryImages.length === 1) {
+                                // For create form
                                 const mainImageInput = document.getElementById('tourMainImage');
                                 if (mainImageInput) {
                                     mainImageInput.value = data.objectPath;
                                     console.log('Set main image for create:', data.objectPath);
                                 }
+                                
+                                // For edit form  
+                                const editMainImageInput = document.getElementById('eTourMainImage');
+                                if (editMainImageInput) {
+                                    editMainImageInput.value = data.objectPath;
+                                    console.log('Set main image for edit:', data.objectPath);
+                                }
                             }
                             
                             // Update gallery display
                             updateGalleryImagesList();
-                            console.log('Tour image processed:', data.objectPath);
                         }
                     })
                     .catch(error => {
