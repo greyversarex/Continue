@@ -1942,8 +1942,12 @@
             // Store in localStorage for booking flow
             localStorage.setItem('bookingData', JSON.stringify(bookingData));
             
+            const bookingUrl = `/booking/step1?tourId=${encodeURIComponent(tourData.id)}&date=${encodeURIComponent(selectedDate)}&tourists=1`;
+            console.log('Переход к бронированию:', bookingUrl);
+            console.log('Данные тура:', { id: tourData.id, date: selectedDate, tourists: 1 });
+            
             // Navigate to new 3-step booking system
-            window.location.href = `/booking/step1?tourId=${encodeURIComponent(tourData.id)}&date=${selectedDate}&tourists=1`;
+            window.location.href = bookingUrl;
         }
 
         function closeHotelModal() {

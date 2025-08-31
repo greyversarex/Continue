@@ -163,7 +163,11 @@
             const tourDate = urlParams.get('date');
             const numberOfTourists = urlParams.get('tourists');
 
+            console.log('URL параметры:', { tourId, tourDate, numberOfTourists });
+            console.log('URL:', window.location.href);
+
             if (!tourId || !tourDate || !numberOfTourists) {
+                console.error('Отсутствуют параметры:', { tourId, tourDate, numberOfTourists });
                 alert('Недостаточно данных для бронирования');
                 window.location.href = '/tours.html';
                 return;
@@ -175,19 +179,25 @@
 
         async function startBooking(tourId, tourDate, numberOfTourists) {
             try {
+                const requestData = {
+                    tourId: parseInt(tourId),
+                    tourDate,
+                    numberOfTourists: parseInt(numberOfTourists)
+                };
+                
+                console.log('Отправляем запрос на бронирование:', requestData);
+                
                 const response = await fetch('/api/booking/start', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        tourId: parseInt(tourId),
-                        tourDate,
-                        numberOfTourists: parseInt(numberOfTourists)
-                    })
+                    body: JSON.stringify(requestData)
                 });
 
+                console.log('Response status:', response.status);
                 const data = await response.json();
+                console.log('Response data:', data);
                 
                 if (data.success) {
                     bookingState.bookingId = data.data.bookingId;

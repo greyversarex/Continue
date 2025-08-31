@@ -36,8 +36,16 @@ export const bookingController = {
     try {
       const { tourId, hotelId, tourDate, numberOfTourists }: BookingStartData = req.body;
 
+      console.log('📋 startBooking получил данные:', { tourId, hotelId, tourDate, numberOfTourists });
+      console.log('📋 Типы данных:', { 
+        tourIdType: typeof tourId, 
+        tourDateType: typeof tourDate, 
+        numberOfTouristsType: typeof numberOfTourists 
+      });
+
       // Валидация обязательных полей
       if (!tourId || !tourDate || !numberOfTourists) {
+        console.log('❌ Валидация не прошла:', { tourId, tourDate, numberOfTourists });
         return res.status(400).json({
           success: false,
           message: 'Tour ID, tour date, and number of tourists are required'
