@@ -69,6 +69,9 @@ app.use('/api', apiRoutes);
 const objectStorageRoutes = require('./src/routes/objectStorageRoutes.ts').default;
 app.use('/', objectStorageRoutes);
 
+// Add direct route for /api/objects/direct/* to serve uploaded images
+app.use('/api/objects/direct', express.static(path.join(__dirname, 'uploads/images')));
+
 // Add upload routes for simple image handling
 const uploadRoutes = require('./src/routes/uploadRoutes.ts').default;
 app.use('/upload', uploadRoutes);
