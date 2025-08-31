@@ -60,10 +60,10 @@ export const getAllGuides = async (req: Request, res: Response) => {
 
     const formattedGuides = guides.map(guide => ({
       ...guide,
-      name: JSON.parse(guide.name),
-      description: guide.description ? JSON.parse(guide.description) : null,
-      languages: JSON.parse(guide.languages),
-      contact: guide.contact ? JSON.parse(guide.contact) : null,
+      name: guide.name.startsWith('{') ? JSON.parse(guide.name) : guide.name,
+      description: guide.description ? (guide.description.startsWith('{') ? JSON.parse(guide.description) : guide.description) : null,
+      languages: guide.languages.startsWith('[') || guide.languages.startsWith('"[') ? JSON.parse(guide.languages.replace(/^"|"$/g, '')) : guide.languages,
+      contact: guide.contact ? (guide.contact.startsWith('{') ? JSON.parse(guide.contact) : guide.contact) : null,
     }));
 
     return res.json({
@@ -75,6 +75,55 @@ export const getAllGuides = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: 'Failed to fetch guides',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};
+
+export const getGuideById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    
+    const guide = await prisma.guide.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        tourGuides: {
+          include: {
+            tour: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!guide) {
+      return res.status(404).json({
+        success: false,
+        message: 'Guide not found',
+      });
+    }
+
+    const formattedGuide = {
+      ...guide,
+      name: JSON.parse(guide.name),
+      description: guide.description ? JSON.parse(guide.description) : null,
+      languages: JSON.parse(guide.languages),
+      contact: guide.contact ? JSON.parse(guide.contact) : null,
+    };
+
+    return res.json({
+      success: true,
+      data: formattedGuide,
+    });
+  } catch (error) {
+    console.error('Error fetching guide:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch guide',
       error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
@@ -129,11 +178,20 @@ export const updateGuide = async (req: Request, res: Response) => {
 
     const updateData: any = {};
     
-    if (guideData.name) updateData.name = JSON.stringify(guideData.name);
-    if (guideData.description) updateData.description = JSON.stringify(guideData.description);
+    // Handle JSON fields properly - check if already string
+    if (guideData.name) {
+      updateData.name = typeof guideData.name === 'string' ? guideData.name : JSON.stringify(guideData.name);
+    }
+    if (guideData.description) {
+      updateData.description = typeof guideData.description === 'string' ? guideData.description : JSON.stringify(guideData.description);
+    }
     if (guideData.photo !== undefined) updateData.photo = guideData.photo;
-    if (guideData.languages) updateData.languages = JSON.stringify(guideData.languages);
-    if (guideData.contact) updateData.contact = JSON.stringify(guideData.contact);
+    if (guideData.languages) {
+      updateData.languages = typeof guideData.languages === 'string' ? guideData.languages : JSON.stringify(guideData.languages);
+    }
+    if (guideData.contact) {
+      updateData.contact = typeof guideData.contact === 'string' ? guideData.contact : JSON.stringify(guideData.contact);
+    }
     if (guideData.experience !== undefined) updateData.experience = guideData.experience;
     if (guideData.rating !== undefined) updateData.rating = guideData.rating;
 

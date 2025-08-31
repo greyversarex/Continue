@@ -23,5 +23,6 @@ router.delete('/:id', deleteHotel);
 // Tour-Hotel association routes
 router.post('/tours/:tourId/hotels/:hotelId', addHotelToTour);
 router.delete('/tours/:tourId/hotels/:hotelId', removeHotelFromTour);
+router.post('/link', addHotelToTour);
 
 export default router;

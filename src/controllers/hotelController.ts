@@ -140,7 +140,9 @@ export const deleteHotel = async (req: Request, res: Response): Promise<Response
 // Add hotel to tour
 export const addHotelToTour = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { tourId, hotelId } = req.params;
+    // Support both URL params and body data
+    const tourId = req.params.tourId || req.body.tourId;
+    const hotelId = req.params.hotelId || req.body.hotelId;
     const { pricePerNight, isDefault } = req.body;
     
     const tourHotel = await HotelModel.addToTour(
