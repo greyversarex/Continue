@@ -586,50 +586,86 @@
 
         // Display hotel data
         function displayHotelData() {
-            // Parse multilingual content
-            const name = typeof hotelData.name === 'string' ? JSON.parse(hotelData.name || '{}') : hotelData.name || {};
-            const description = typeof hotelData.description === 'string' ? JSON.parse(hotelData.description || '{}') : hotelData.description || {};
-            
-            // Set page title and hotel name
-            const hotelName = name.ru || name.en || 'Отель';
-            document.getElementById('page-title').textContent = `${hotelName} - Bunyod-Tour`;
-            document.getElementById('hotel-name').textContent = hotelName;
-            
-            // Hotel description
-            const hotelDesc = description.ru || description.en || 'Описание отеля не указано';
-            document.getElementById('hotel-description').innerHTML = `<p>${hotelDesc}</p>`;
-            
-            // Location (country + city + address)
-            const locationParts = [];
-            if (hotelData.country) locationParts.push(hotelData.country);
-            if (hotelData.city) locationParts.push(hotelData.city);
-            if (hotelData.address) locationParts.push(hotelData.address);
-            document.getElementById('hotel-location').textContent = locationParts.join(', ') || 'Адрес не указан';
-            
-            // Hotel stars
-            displayHotelStars();
-            
-            // Hotel rating
-            displayHotelRating();
-            
-            // Hotel category
-            displayHotelCategory();
-            
-            // Hotel brand
-            document.getElementById('hotel-brand').textContent = hotelData.brand || '';
-            
-            // Hotel address removed from info strip
-            
-            // Hotel pension type
-            displayPensionType();
-            
-            // Hotel amenities
-            displayHotelAmenities();
-            
-            // Hotel gallery
-            displayHotelGallery();
-            
-            // Booking functionality removed
+            try {
+                console.log('Starting displayHotelData with:', hotelData);
+                
+                // Parse multilingual content
+                const name = typeof hotelData.name === 'string' ? JSON.parse(hotelData.name || '{}') : hotelData.name || {};
+                const description = typeof hotelData.description === 'string' ? JSON.parse(hotelData.description || '{}') : hotelData.description || {};
+                
+                // Set page title and hotel name
+                const hotelName = name.ru || name.en || 'Отель';
+                const pageTitleEl = document.getElementById('page-title');
+                const hotelNameEl = document.getElementById('hotel-name');
+                
+                if (pageTitleEl) pageTitleEl.textContent = `${hotelName} - Bunyod-Tour`;
+                if (hotelNameEl) hotelNameEl.textContent = hotelName;
+                
+                // Hotel description
+                const hotelDesc = description.ru || description.en || 'Описание отеля не указано';
+                const descEl = document.getElementById('hotel-description');
+                if (descEl) descEl.innerHTML = `<p>${hotelDesc}</p>`;
+                
+                // Location (country + city + address)
+                const locationParts = [];
+                if (hotelData.country) locationParts.push(hotelData.country);
+                if (hotelData.city) locationParts.push(hotelData.city);
+                if (hotelData.address) locationParts.push(hotelData.address);
+                
+                const locationEl = document.getElementById('hotel-location');
+                if (locationEl) locationEl.textContent = locationParts.join(', ') || 'Адрес не указан';
+                
+                // Hotel brand
+                const brandEl = document.getElementById('hotel-brand');
+                if (brandEl) brandEl.textContent = hotelData.brand || '';
+                
+                // Hotel stars
+                try {
+                    displayHotelStars();
+                } catch (e) {
+                    console.error('Error in displayHotelStars:', e);
+                }
+                
+                // Hotel rating
+                try {
+                    displayHotelRating();
+                } catch (e) {
+                    console.error('Error in displayHotelRating:', e);
+                }
+                
+                // Hotel category
+                try {
+                    displayHotelCategory();
+                } catch (e) {
+                    console.error('Error in displayHotelCategory:', e);
+                }
+                
+                // Hotel pension type
+                try {
+                    displayPensionType();
+                } catch (e) {
+                    console.error('Error in displayPensionType:', e);
+                }
+                
+                // Hotel amenities
+                try {
+                    displayHotelAmenities();
+                } catch (e) {
+                    console.error('Error in displayHotelAmenities:', e);
+                }
+                
+                // Hotel gallery
+                try {
+                    displayHotelGallery();
+                } catch (e) {
+                    console.error('Error in displayHotelGallery:', e);
+                }
+                
+                console.log('Hotel data display completed successfully');
+            } catch (error) {
+                console.error('Error in displayHotelData:', error);
+                throw error; // Re-throw to be caught by the outer try-catch
+            }
         }
 
         // Display hotel stars
@@ -637,20 +673,23 @@
             const starsContainer = document.getElementById('hotel-stars');
             const starsTextContainer = document.getElementById('hotel-stars-text');
             
-            if (hotelData.stars) {
+            if (starsContainer && hotelData.stars) {
                 let starsHTML = '';
                 for (let i = 1; i <= 5; i++) {
                     if (i <= hotelData.stars) {
-                        starsHTML += '<i class="fas fa-star stars"></i>';
+                        starsHTML += '<i class="fas fa-star text-yellow-500"></i>';
                     } else {
                         starsHTML += '<i class="far fa-star text-gray-300"></i>';
                     }
                 }
                 starsContainer.innerHTML = starsHTML;
-                starsTextContainer.textContent = `Категория: ${hotelData.stars} ${hotelData.stars === 1 ? 'звезда' : hotelData.stars < 5 ? 'звезды' : 'звезд'}`;
-            } else {
+            } else if (starsContainer) {
                 starsContainer.innerHTML = '<span class="text-gray-500">Звезды не указаны</span>';
-                starsTextContainer.textContent = 'Категория: Не указана';
+            }
+            
+            // Don't show stars in text format anymore - only show category
+            if (starsTextContainer) {
+                starsTextContainer.textContent = 'Не указана';
             }
         }
 
@@ -732,6 +771,11 @@
         function displayHotelAmenities() {
             const amenitiesContainer = document.getElementById('hotel-amenities');
             
+            if (!amenitiesContainer) {
+                console.error('Amenities container not found');
+                return;
+            }
+            
             if (hotelData.amenities && hotelData.amenities.length > 0) {
                 try {
                     const amenities = Array.isArray(hotelData.amenities) ? hotelData.amenities : JSON.parse(hotelData.amenities);
@@ -761,6 +805,7 @@
                     
                     amenitiesContainer.innerHTML = amenitiesHTML;
                 } catch (e) {
+                    console.error('Error parsing amenities:', e);
                     amenitiesContainer.innerHTML = '<p class="text-gray-500 text-center py-8">Ошибка загрузки удобств</p>';
                 }
             } else {
