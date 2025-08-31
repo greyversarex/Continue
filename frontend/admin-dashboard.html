@@ -3505,41 +3505,76 @@
                             description = { ru: tour.description || '', en: '' };
                         }
                         
+                        // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Заполняем ОБЕ формы одновременно!
+                        
                         // Заполняем поля ОСНОВНОЙ формы tourForm
                         const tourTitleRu = document.getElementById('tourTitleRu');
                         if (tourTitleRu) {
                             tourTitleRu.value = title.ru || '';
-                            console.log('✅ Loaded title RU:', title.ru);
+                            console.log('✅ Loaded title RU (main form):', title.ru);
                         }
                         
                         const tourTitleEn = document.getElementById('tourTitleEn');
                         if (tourTitleEn) {
                             tourTitleEn.value = title.en || '';
-                            console.log('✅ Loaded title EN:', title.en);
+                            console.log('✅ Loaded title EN (main form):', title.en);
                         }
                         
                         const tourDescRu = document.getElementById('tourDescRu');
                         if (tourDescRu) {
                             tourDescRu.value = description.ru || '';
-                            console.log('✅ Loaded description RU');
+                            console.log('✅ Loaded description RU (main form)');
                         }
                         
                         const tourDescEn = document.getElementById('tourDescEn');
                         if (tourDescEn) {
                             tourDescEn.value = description.en || '';
-                            console.log('✅ Loaded description EN');
+                            console.log('✅ Loaded description EN (main form)');
+                        }
+                        
+                        // Заполняем поля ФОРМЫ РЕДАКТИРОВАНИЯ (e-префикс)
+                        const eTourTitleRu = document.getElementById('eTourTitleRu');
+                        if (eTourTitleRu) {
+                            eTourTitleRu.value = title.ru || '';
+                            console.log('✅ Loaded title RU (edit form):', title.ru);
+                        }
+                        
+                        const eTourTitleEn = document.getElementById('eTourTitleEn');
+                        if (eTourTitleEn) {
+                            eTourTitleEn.value = title.en || '';
+                            console.log('✅ Loaded title EN (edit form):', title.en);
+                        }
+                        
+                        const eTourShortDesc = document.getElementById('eTourShortDesc');
+                        if (eTourShortDesc) {
+                            eTourShortDesc.value = description.ru || '';
+                            console.log('✅ Loaded short description (edit form):', description.ru);
                         }
                         
                         const tourType = document.getElementById('tourType');
                         if (tourType) {
                             tourType.value = tour.format || tour.tourType || '';
-                            console.log('✅ Loaded tour type:', tour.format || tour.tourType);
+                            console.log('✅ Loaded tour type (main form):', tour.format || tour.tourType);
+                        }
+                        
+                        // И для формы редактирования
+                        const eTourType = document.getElementById('eTourType');
+                        if (eTourType) {
+                            eTourType.value = tour.format || tour.tourType || '';
+                            console.log('✅ Loaded tour type (edit form):', tour.format || tour.tourType);
                         }
                         
                         const tourCategory = document.getElementById('tourCategory');
                         if (tourCategory) {
                             tourCategory.value = tour.categoryId || '';
-                            console.log('✅ Loaded category:', tour.categoryId);
+                            console.log('✅ Loaded category (main form):', tour.categoryId);
+                        }
+                        
+                        // И для формы редактирования
+                        const eTourCategoryId = document.getElementById('eTourCategoryId');
+                        if (eTourCategoryId) {
+                            eTourCategoryId.value = tour.categoryId || '';
+                            console.log('✅ Loaded category (edit form):', tour.categoryId);
                         }
                         
                         const tourBlockIdElement = document.getElementById('tourBlockId');
@@ -3563,13 +3598,27 @@
                         const tourDurationDays = document.getElementById('tourDurationDays');
                         if (tourDurationDays) {
                             tourDurationDays.value = tour.durationDays || '';
-                            console.log('✅ Loaded duration days:', tour.durationDays);
+                            console.log('✅ Loaded duration days (main form):', tour.durationDays);
+                        }
+                        
+                        // И для формы редактирования
+                        const eTourDurationDays = document.getElementById('eTourDurationDays');
+                        if (eTourDurationDays) {
+                            eTourDurationDays.value = tour.durationDays || '';
+                            console.log('✅ Loaded duration days (edit form):', tour.durationDays);
                         }
                         
                         const tourPrice = document.getElementById('tourPrice');
                         if (tourPrice) {
                             tourPrice.value = tour.price || '';
-                            console.log('✅ Loaded price:', tour.price);
+                            console.log('✅ Loaded price (main form):', tour.price);
+                        }
+                        
+                        // И для формы редактирования
+                        const eTourPrice = document.getElementById('eTourPrice');
+                        if (eTourPrice) {
+                            eTourPrice.value = tour.price || '';
+                            console.log('✅ Loaded price (edit form):', tour.price);
                         }
                         
                         const tourPriceTypeElement = document.getElementById('tourPriceType');
@@ -4473,8 +4522,15 @@
         
         function loadHotelData(hotelId) {
             const apiUrl = getApiUrl();
-            fetch(`${apiUrl}/hotels/${hotelId}`)
-                .then(res => res.json())
+            fetch(`${apiUrl}/hotels/${hotelId}`, {
+                headers: getAuthHeaders()  // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Добавлена авторизация!
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then(data => {
                     const hotel = data.data;
                     const name = JSON.parse(hotel.name || '{}');
@@ -4582,7 +4638,8 @@
                 })
                 .catch(err => {
                     console.error('Error loading hotel data:', err);
-                    alert('Ошибка загрузки данных отеля');
+                    console.error('Error details:', err.message, err.stack);
+                    alert('Ошибка загрузки данных отеля: ' + err.message);
                 });
         }
         
