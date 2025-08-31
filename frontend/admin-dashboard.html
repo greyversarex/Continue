@@ -3993,7 +3993,13 @@
                     const container = document.getElementById('hotelCheckboxes');
                     const hotels = data.data || data.hotels || [];
                     container.innerHTML = hotels.map(hotel => {
-                        const name = typeof hotel.name === 'string' ? JSON.parse(hotel.name || '{}') : hotel.name || {};
+                        let name;
+                    try {
+                        name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
+                    } catch (e) {
+                        console.warn('Failed to parse hotel name in checkboxes:', hotel.name);
+                        name = hotel.name || {};
+                    }
                         return `
                             <label class="checkbox-item">
                                 <input type="checkbox" value="${hotel.id}"> ${name.ru || name.en || 'Отель'}
@@ -4012,7 +4018,13 @@
                     const container = document.getElementById('guideCheckboxes');
                     const guides = data.data || data.guides || [];
                     container.innerHTML = guides.map(guide => {
-                        const name = typeof guide.name === 'string' ? JSON.parse(guide.name || '{}') : guide.name || {};
+                        let name;
+                        try {
+                            name = typeof guide.name === 'string' ? JSON.parse(guide.name) : (guide.name || {});
+                        } catch (e) {
+                            console.warn('Failed to parse guide name in checkboxes:', guide.name);
+                            name = guide.name || {};
+                        }
                         return `
                             <label class="checkbox-item">
                                 <input type="checkbox" value="${guide.id}"> ${name.ru || name.en || 'Гид'}
@@ -4051,10 +4063,38 @@
         }
         
         function createHotelCard(hotel) {
-            const name = typeof hotel.name === 'object' ? hotel.name : JSON.parse(hotel.name || '{}');
-            const description = typeof hotel.description === 'object' ? hotel.description : JSON.parse(hotel.description || '{}');
-            const amenities = Array.isArray(hotel.amenities) ? hotel.amenities : JSON.parse(hotel.amenities || '[]');
-            const images = Array.isArray(hotel.images) ? hotel.images : JSON.parse(hotel.images || '[]');
+            // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Безопасный парсинг JSON
+            let name, description, amenities, images;
+            
+            try {
+                name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
+            } catch (e) {
+                console.warn('Failed to parse hotel name in card:', hotel.name);
+                name = hotel.name || {};
+            }
+            
+            try {
+                description = typeof hotel.description === 'string' ? JSON.parse(hotel.description) : (hotel.description || {});
+            } catch (e) {
+                console.warn('Failed to parse hotel description in card:', hotel.description);
+                description = hotel.description || {};
+            }
+            
+            try {
+                amenities = typeof hotel.amenities === 'string' ? JSON.parse(hotel.amenities) : (hotel.amenities || []);
+                if (!Array.isArray(amenities)) amenities = [];
+            } catch (e) {
+                console.warn('Failed to parse hotel amenities in card:', hotel.amenities);
+                amenities = [];
+            }
+            
+            try {
+                images = typeof hotel.images === 'string' ? JSON.parse(hotel.images) : (hotel.images || []);
+                if (!Array.isArray(images)) images = [];
+            } catch (e) {
+                console.warn('Failed to parse hotel images in card:', hotel.images);
+                images = [];
+            }
             
             return `
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -4173,10 +4213,34 @@
                     return res.json();
                 })
                 .then(data => {
+                    console.log('✅ Hotel data received:', data);
                     const hotel = data.data;
-                    const name = JSON.parse(hotel.name || '{}');
-                    const description = JSON.parse(hotel.description || '{}');
-                    const amenities = JSON.parse(hotel.amenities || '[]');
+                    
+                    // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Правильный парсинг JSON
+                    let name, description, amenities;
+                    try {
+                        name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
+                        console.log('✅ Parsed hotel name:', name);
+                    } catch (e) {
+                        console.warn('Failed to parse hotel name, using as object:', hotel.name);
+                        name = hotel.name || {};
+                    }
+                    
+                    try {
+                        description = typeof hotel.description === 'string' ? JSON.parse(hotel.description) : (hotel.description || {});
+                        console.log('✅ Parsed hotel description:', description);
+                    } catch (e) {
+                        console.warn('Failed to parse hotel description, using as object:', hotel.description);
+                        description = hotel.description || {};
+                    }
+                    
+                    try {
+                        amenities = typeof hotel.amenities === 'string' ? JSON.parse(hotel.amenities) : (hotel.amenities || []);
+                        console.log('✅ Parsed hotel amenities:', amenities);
+                    } catch (e) {
+                        console.warn('Failed to parse hotel amenities, using as array:', hotel.amenities);
+                        amenities = Array.isArray(hotel.amenities) ? hotel.amenities : [];
+                    }
                     
                     // УЛУЧШЕНИЕ: Лучшая обработка многоязычных полей
                     const hotelNameField = document.getElementById('hotelName');
