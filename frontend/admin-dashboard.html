@@ -4552,10 +4552,17 @@
                         brandSelect.value = '';
                         brandCustom.style.display = 'none';
                     }
-                    document.getElementById('hotelCategory').value = hotel.category || '';
-                    document.getElementById('hotelCountry').value = hotel.country || '';
-                    document.getElementById('hotelCity').value = hotel.city || '';
-                    document.getElementById('hotelPension').value = hotel.pension || 'none';
+                    const categoryField = document.getElementById('hotelCategory');
+                    if (categoryField) categoryField.value = hotel.category || '';
+                    
+                    const countryField = document.getElementById('hotelCountry');
+                    if (countryField) countryField.value = hotel.country || '';
+                    
+                    const cityField = document.getElementById('hotelCity');
+                    if (cityField) cityField.value = hotel.city || '';
+                    
+                    const pensionField = document.getElementById('hotelPension');
+                    if (pensionField) pensionField.value = hotel.pension || 'none';
                     const hotelActiveField = document.getElementById('hotelActive');
                     if (hotelActiveField) {
                         hotelActiveField.checked = hotel.isActive;
@@ -4877,9 +4884,9 @@
                 address: document.getElementById('hotelAddress').value,
                 stars: parseInt(document.getElementById('hotelStars').value) || null,
                 brand: getSelectedBrand() || null,
-                category: document.getElementById('hotelCategory').value || null,
-                country: document.getElementById('hotelCountry').value || null,
-                city: document.getElementById('hotelCity').value || null,
+                category: document.getElementById('hotelCategory')?.value || null,
+                country: document.getElementById('hotelCountry')?.value || null,
+                city: document.getElementById('hotelCity')?.value || null,
                 pension: 'none', // Legacy field - теперь используем mealTypes
                 amenities: JSON.stringify(amenities),
                 roomTypes: JSON.stringify(roomTypes), // Категории номеров с ценами
