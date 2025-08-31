@@ -4556,7 +4556,13 @@
                     document.getElementById('hotelCountry').value = hotel.country || '';
                     document.getElementById('hotelCity').value = hotel.city || '';
                     document.getElementById('hotelPension').value = hotel.pension || 'none';
-                    document.getElementById('hotelActive').checked = hotel.isActive;
+                    const hotelActiveField = document.getElementById('hotelActive');
+                    if (hotelActiveField) {
+                        hotelActiveField.checked = hotel.isActive;
+                        console.log('✅ Set hotel active status:', hotel.isActive);
+                    } else {
+                        console.warn('❌ hotelActive field not found');
+                    }
                     
                     // Set amenities - убеждаемся что amenities определен
                     if (amenities && Array.isArray(amenities)) {
@@ -4977,25 +4983,19 @@
                 onComplete: (fileInfo, allFiles) => {
                     console.log('Hotel image uploaded:', fileInfo);
                     
-                    // Normalize the object path for database storage
-                    fetch('/api/images', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ imageURL: fileInfo.url })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.hotelImageURLs.push(data.objectPath);
-                            // Update hidden input for form submission
-                            document.getElementById('hotelImages').value = JSON.stringify(window.hotelImageURLs);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error processing uploaded image:', error);
-                    });
+                    // Store the direct file URL
+                    const imagePath = fileInfo.url;
+                    window.hotelImageURLs = window.hotelImageURLs || [];
+                    window.hotelImageURLs.push(imagePath);
+                    
+                    // Update the hidden field
+                    const hiddenField = document.getElementById('hotelImages');
+                    if (hiddenField) {
+                        hiddenField.value = JSON.stringify(window.hotelImageURLs);
+                    }
+                    
+                    console.log('Hotel image stored:', imagePath);
+                    console.log('Total hotel images:', window.hotelImageURLs.length);
                 },
                 onError: (error) => {
                     alert('Ошибка загрузки: ' + error);
@@ -5014,48 +5014,34 @@
                 onComplete: (fileInfo, allFiles) => {
                     console.log('Tour image uploaded:', fileInfo);
                     
-                    // Normalize the object path for database storage
-                    fetch('/api/images', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ imageURL: fileInfo.url })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.tourImageURLs.push(data.objectPath);
-                            // Update hidden input for form submission
-                            document.getElementById('tourImages').value = JSON.stringify(window.tourImageURLs);
-                            // Also update gallery images array
-                            window.tourGalleryImages = window.tourGalleryImages || [];
-                            window.tourGalleryImages.push(data.objectPath);
-                            
-                            // Set as main image if it's the first one
-                            if (window.tourGalleryImages.length === 1) {
-                                // For create form
-                                const mainImageInput = document.getElementById('tourMainImage');
-                                if (mainImageInput) {
-                                    mainImageInput.value = data.objectPath;
-                                    console.log('Set main image for create:', data.objectPath);
-                                }
-                                
-                                // For edit form  
-                                const editMainImageInput = document.getElementById('eTourMainImage');
-                                if (editMainImageInput) {
-                                    editMainImageInput.value = data.objectPath;
-                                    console.log('Set main image for edit:', data.objectPath);
-                                }
-                            }
-                            
-                            // Update gallery display
-                            updateGalleryImagesList();
+                    // Store the direct file URL  
+                    const imagePath = fileInfo.url;
+                    window.tourImageURLs = window.tourImageURLs || [];
+                    window.tourGalleryImages = window.tourGalleryImages || [];
+                    
+                    window.tourImageURLs.push(imagePath);
+                    window.tourGalleryImages.push(imagePath);
+                    
+                    // Update the hidden fields
+                    const hiddenField = document.getElementById('tourImages');
+                    if (hiddenField) {
+                        hiddenField.value = JSON.stringify(window.tourImageURLs);
+                    }
+                    
+                    // Set as main image if it's the first one
+                    if (window.tourGalleryImages.length === 1) {
+                        const mainImageInput = document.getElementById('tourMainImage');
+                        if (mainImageInput) {
+                            mainImageInput.value = imagePath;
+                            console.log('Set main image:', imagePath);
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error processing uploaded image:', error);
-                    });
+                    }
+                    
+                    // Update gallery display
+                    updateGalleryImagesList();
+                    
+                    console.log('Tour image stored:', imagePath);
+                    console.log('Total tour images:', window.tourGalleryImages.length);
                 },
                 onError: (error) => {
                     alert('Ошибка загрузки: ' + error);
