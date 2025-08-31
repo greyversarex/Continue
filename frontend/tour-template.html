@@ -1943,7 +1943,7 @@
             localStorage.setItem('bookingData', JSON.stringify(bookingData));
             
             // Navigate to new 3-step booking system
-            window.location.href = `/booking/step1?tourId=${encodeURIComponent(tour.id)}&date=${selectedDate}&tourists=1`;
+            window.location.href = `/booking/step1?tourId=${encodeURIComponent(tourData.id)}&date=${selectedDate}&tourists=1`;
         }
 
         function closeHotelModal() {
@@ -2102,7 +2102,7 @@
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             
             // Navigate to new 3-step booking system with hotel selection
-            window.location.href = `/booking/step1?tourId=${encodeURIComponent(tour.id)}&date=${checkIn}&tourists=${guests}`;
+            window.location.href = `/booking/step1?tourId=${encodeURIComponent(tourData.id)}&date=${checkIn}&tourists=${guests}`;
         }
 
         function backToSearch() {
