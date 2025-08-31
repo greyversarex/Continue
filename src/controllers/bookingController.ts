@@ -173,6 +173,7 @@ export const bookingController = {
     }
   },
 
+
   /**
    * Обновить детали бронирования (Шаг 2)
    * PUT /api/booking/:id/details

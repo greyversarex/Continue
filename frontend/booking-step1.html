@@ -1021,7 +1021,7 @@
                     localStorage.setItem('bookingState', JSON.stringify(bookingState));
                     
                     // Navigate to step 2
-                    window.location.href = `/booking/step2?bookingId=${bookingState.bookingId}`;
+                    window.location.href = `/booking-step2.html?bookingId=${bookingState.bookingId}`;
                 } else {
                     throw new Error(responseData.message || 'Failed to save booking');
                 }
