@@ -7453,7 +7453,7 @@
                 
                 if (data.success) {
                     const result = document.getElementById('calcResult');
-                    result.textContent = `${data.data.symbol}${data.data.convertedAmount}`;
+                    result.textContent = `${data.data.convertedAmount} ${targetCurrency}`;
                 } else {
                     showErrorMessage('Ошибка при конвертации');
                 }

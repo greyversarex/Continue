@@ -424,24 +424,24 @@
                     <!-- Валютный селектор -->
                     <div class="language-dropdown">
                         <button class="lang-selector-btn" onclick="toggleCurrencyDropdown()">
-                            <span class="selected-currency">USD</span>
-                            <span class="currency-symbol">$</span>
+                            <span class="selected-currency">TJS</span>
+                            <span class="currency-symbol">TJS</span>
                             <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
                         <div class="lang-dropdown-content" id="currencyDropdown">
-                            <a href="#" class="lang-option active" data-currency="usd" onclick="selectCurrency('USD', '$')">
+                            <a href="#" class="lang-option active" data-currency="usd" onclick="selectCurrency('USD', 'USD')">
                                 <span class="currency-name">USD</span>
-                                <span class="currency-symbol">$</span>
+                                <span class="currency-symbol">USD</span>
                             </a>
-                            <a href="#" class="lang-option" data-currency="tjs" onclick="selectCurrency('TJS', 'с.')">
+                            <a href="#" class="lang-option" data-currency="tjs" onclick="selectCurrency('TJS', 'TJS')">
                                 <span class="currency-name">TJS</span>
-                                <span class="currency-symbol">с.</span>
+                                <span class="currency-symbol">TJS</span>
                             </a>
-                            <a href="#" class="lang-option" data-currency="eur" onclick="selectCurrency('EUR', '€')">
+                            <a href="#" class="lang-option" data-currency="eur" onclick="selectCurrency('EUR', 'EUR')">
                                 <span class="currency-name">EUR</span>
-                                <span class="currency-symbol">€</span>
+                                <span class="currency-symbol">EUR</span>
                             </a>
                         </div>
                     </div>
@@ -985,15 +985,18 @@
             dropdown.classList.toggle('show');
         }
         
-        function selectCurrency(currencyCode, symbol) {
+        function selectCurrency(currencyCode, currencyLabel) {
             document.querySelector('.selected-currency').textContent = currencyCode;
-            document.querySelector('.currency-symbol').textContent = symbol;
+            document.querySelector('.currency-symbol').textContent = currencyLabel;
             
             document.querySelectorAll('#currencyDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
             document.querySelector(`[data-currency="${currencyCode.toLowerCase()}"]`).classList.add('active');
             
             document.getElementById('currencyDropdown').classList.remove('show');
             console.log(`Переключена валюта: ${currencyCode}`);
+            
+            // Save to localStorage for consistency with other pages
+            localStorage.setItem('selectedCurrency', currencyCode);
             
             event.preventDefault();
             return false;
