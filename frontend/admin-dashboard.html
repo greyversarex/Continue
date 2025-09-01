@@ -1482,6 +1482,10 @@
                         <label class="form-label">Фотографии отеля</label>
                         <div id="hotel-uploader-container"></div>
                         <input type="hidden" id="hotelImages">
+                        <!-- Список загруженных изображений отеля -->
+                        <div id="hotelImagesList" class="mt-3">
+                            <p class="text-gray-500 text-sm">Нет загруженных изображений</p>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -3089,7 +3093,7 @@
 
         function removeEditGalleryImage(index) {
             window.tourGalleryImages.splice(index, 1);
-            updateGalleryImagesList();
+            updateEditGalleryImagesList();
         }
 
         // Функция для получения отмеченных услуг
@@ -4348,6 +4352,9 @@
             // Reset the hidden input
             document.getElementById('hotelImages').value = '';
             
+            // Очистить список изображений
+            updateHotelImagesList();
+            
             // Initialize the uploader
             setTimeout(() => {
                 initializeHotelUploader();
@@ -4379,6 +4386,9 @@
             
             // Reset the hidden input
             document.getElementById('hotelImages').value = '';
+            
+            // Очистить список изображений
+            updateHotelImagesList();
             
             // НОВОЕ: Очистить категории номеров и типы питания при закрытии модала
             clearRoomTypeFields();
@@ -4628,7 +4638,7 @@
                                 console.log('✅ Loaded hotel images:', images);
                                 
                                 // Показываем загруженные изображения в интерфейсе
-                                // Показываем загруженные изображения в интерфейсе  
+                                updateHotelImagesList();  
                                 setTimeout(() => {
                                     const uploaderContainer = document.getElementById('hotel-uploader-container');
                                     if (uploaderContainer) {
@@ -5014,6 +5024,44 @@
         window.hotelImageURLs = [];
         window.tourImageURLs = [];
 
+        // Функции управления изображениями отелей
+        function removeHotelImage(index) {
+            window.hotelImageURLs.splice(index, 1);
+            updateHotelImagesList();
+            // Update hidden input
+            const hiddenField = document.getElementById('hotelImages');
+            if (hiddenField) {
+                hiddenField.value = JSON.stringify(window.hotelImageURLs);
+            }
+        }
+
+        function updateHotelImagesList() {
+            const container = document.getElementById('hotelImagesList');
+            if (!container) {
+                console.warn('hotelImagesList container not found');
+                return;
+            }
+            
+            if (!window.hotelImageURLs || window.hotelImageURLs.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm">Нет загруженных изображений</p>';
+                return;
+            }
+            
+            container.innerHTML = window.hotelImageURLs.map((imageUrl, index) => `
+                <div class="flex items-center justify-between bg-gray-50 p-3 rounded border mb-2">
+                    <div class="flex items-center gap-3">
+                        <img src="${imageUrl}" alt="Hotel image" class="w-16 h-16 object-cover rounded" onerror="this.style.display='none';">
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm font-medium text-gray-900 truncate">${imageUrl}</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="removeHotelImage(${index})" class="text-red-500 hover:text-red-700 ml-2">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
         function initializeHotelUploader() {
             if (hotelUploader) return;
             
@@ -5041,6 +5089,8 @@
                             if (hiddenField) {
                                 hiddenField.value = JSON.stringify(window.hotelImageURLs);
                             }
+                            // Update the display
+                            updateHotelImagesList();
                             console.log('Hotel image processed:', data.objectPath);
                         }
                     })
