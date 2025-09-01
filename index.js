@@ -39,6 +39,11 @@ app.get('/booking/step3', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'booking-step3.html'));
 });
 
+app.get('/booking-step3.html', (req, res) => {
+  console.log('📋 Serving booking-step3.html with params:', req.query);
+  res.sendFile(path.join(__dirname, 'frontend', 'booking-step3.html'));
+});
+
 // Legacy booking pages - to be removed later
 // app.get('/booking.html', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'frontend', 'booking.html'));
