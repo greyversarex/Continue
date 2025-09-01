@@ -1771,13 +1771,12 @@
                         <label class="form-label">Длительность (дней)</label>
                         <input type="number" class="form-input" id="tourDurationDays" min="1" required>
                     </div>
-                    
-                    
-                    
-                    <!-- Составляющие цены тура -->
-                    <div class="form-group">
-                        <label class="form-label">Составляющие цены тура (в TJS)</label>
-                        <div id="priceComponents" class="space-y-3 border rounded-md p-4 bg-gray-50">
+                </div>
+                
+                <!-- Составляющие цены тура - отдельный блок -->
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Составляющие цены тура (в TJS)</h3>
+                    <div id="priceComponents" class="space-y-3 border rounded-md p-4 bg-gray-50">
                             
                             <!-- Транспорт -->
                             <div class="component-category">
@@ -1962,6 +1961,10 @@
                         <input type="hidden" id="tourPriceComponents" name="tourPriceComponents">
                         <input type="hidden" id="tourTotalPriceTJS" name="tourTotalPriceTJS">
                     </div>
+                </div>
+                
+                <!-- Продолжение формы -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     <div class="form-group">
                         <label class="form-label">Тип цены</label>
