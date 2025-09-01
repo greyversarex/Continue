@@ -265,7 +265,7 @@
                         <div class="text-sm text-gray-600 space-y-1">
                             <div class="flex justify-between">
                                 <span>Цена тура ${tour.priceType === 'за группу' ? '(за группу)' : '× ' + numberOfTourists + ' чел.'}:</span>
-                                <span id="tour-price-calc">$0</span>
+                                <span id="tour-price-calc" class="price-display" data-original-price="0">SM0</span>
                             </div>
                             <div id="room-costs-calc" class="space-y-1">
                                 <!-- Room costs calculation will appear here -->
@@ -277,7 +277,7 @@
                         <div class="border-t pt-2 mt-2">
                             <div class="flex justify-between font-bold text-lg text-blue-600">
                                 <span>Итоговая сумма:</span>
-                                <span id="total-price">$0</span>
+                                <span id="total-price" class="price-display" data-original-price="0">SM0</span>
                             </div>
                         </div>
                     </div>
@@ -327,12 +327,14 @@
             // Safely update elements if they exist
             const tourPriceCalcElement = document.getElementById('tour-price-calc');
             if (tourPriceCalcElement) {
-                tourPriceCalcElement.textContent = `$${tourPrice}`;
+                tourPriceCalcElement.dataset.originalPrice = tourPrice;
+                tourPriceCalcElement.textContent = `SM${tourPrice}`;
             }
             
             const totalPriceElement = document.getElementById('total-price');
             if (totalPriceElement) {
-                totalPriceElement.textContent = `$${tourPrice}`;
+                totalPriceElement.dataset.originalPrice = tourPrice;
+                totalPriceElement.textContent = `SM${tourPrice}`;
             }
             
             bookingState.totalPrice = tourPrice;
@@ -1032,8 +1034,69 @@
             }
         }
 
+        // Глобальная система валют (копия из index.html)
+        let globalCurrency = 'TJS';
+        let exchangeRates = {
+            TJS: { rate: 1, symbol: 'SM' },
+            USD: { rate: 0.091, symbol: '$' },
+            EUR: { rate: 0.084, symbol: '€' }
+        };
+
+        // Функция конвертации цен
+        function convertPrice(priceInTJS, targetCurrency) {
+            if (!exchangeRates[targetCurrency]) return priceInTJS;
+            return Math.round(priceInTJS * exchangeRates[targetCurrency].rate);
+        }
+
+        function convertAllPrices() {
+            document.querySelectorAll('.price-display').forEach(element => {
+                if (element.dataset.originalPrice) {
+                    const originalPrice = parseInt(element.dataset.originalPrice);
+                    const convertedPrice = convertPrice(originalPrice, globalCurrency);
+                    element.textContent = `${exchangeRates[globalCurrency].symbol}${convertedPrice}`;
+                }
+            });
+        }
+
+        // Загрузка курсов валют с сервера
+        async function loadExchangeRates() {
+            try {
+                const response = await fetch('/api/exchange-rates');
+                const data = await response.json();
+                
+                if (data.success) {
+                    data.data.forEach(rate => {
+                        exchangeRates[rate.currency] = {
+                            rate: parseFloat(rate.rate),
+                            symbol: rate.symbol
+                        };
+                    });
+                    
+                    // Применяем конвертацию после загрузки курсов
+                    convertAllPrices();
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки курсов валют:', error);
+            }
+        }
+
+        // Инициализация валютной системы
+        function initializeCurrency() {
+            // Восстанавливаем выбранную валюту из localStorage
+            const savedCurrency = localStorage.getItem('selectedCurrency');
+            if (savedCurrency && exchangeRates[savedCurrency]) {
+                globalCurrency = savedCurrency;
+            }
+            
+            // Загружаем актуальные курсы валют
+            loadExchangeRates();
+        }
+
         // Initialize page when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize currency system
+            initializeCurrency();
+            
             // Set up continue button handler
             setTimeout(() => {
                 const continueBtn = document.getElementById('continue-btn');

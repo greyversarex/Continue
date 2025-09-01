@@ -436,7 +436,7 @@
                     <div class="bg-blue-50 p-3 rounded-lg">
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-gray-800">Итого к оплате:</span>
-                            <span class="font-bold text-xl text-blue-600">$${booking.totalPrice || (tourBasePrice + roomCost + mealCost)}</span>
+                            <span class="font-bold text-xl text-blue-600 price-display" data-original-price="${booking.totalPrice || (tourBasePrice + roomCost + mealCost)}">SM${booking.totalPrice || (tourBasePrice + roomCost + mealCost)}</span>
                         </div>
                     </div>
                 </div>
@@ -541,6 +541,69 @@
             alert('Спасибо за ваше бронирование! Детали отправлены на ваш email.');
             window.location.href = '/tours.html';
         }
+
+        // Глобальная система валют (копия из booking-step1.html)
+        let globalCurrency = 'TJS';
+        let exchangeRates = {
+            TJS: { rate: 1, symbol: 'SM' },
+            USD: { rate: 0.091, symbol: '$' },
+            EUR: { rate: 0.084, symbol: '€' }
+        };
+
+        // Функция конвертации цен
+        function convertPrice(priceInTJS, targetCurrency) {
+            if (!exchangeRates[targetCurrency]) return priceInTJS;
+            return Math.round(priceInTJS * exchangeRates[targetCurrency].rate);
+        }
+
+        function convertAllPrices() {
+            document.querySelectorAll('.price-display').forEach(element => {
+                if (element.dataset.originalPrice) {
+                    const originalPrice = parseInt(element.dataset.originalPrice);
+                    const convertedPrice = convertPrice(originalPrice, globalCurrency);
+                    element.textContent = `${exchangeRates[globalCurrency].symbol}${convertedPrice}`;
+                }
+            });
+        }
+
+        // Загрузка курсов валют с сервера
+        async function loadExchangeRates() {
+            try {
+                const response = await fetch('/api/exchange-rates');
+                const data = await response.json();
+                
+                if (data.success) {
+                    data.data.forEach(rate => {
+                        exchangeRates[rate.currency] = {
+                            rate: parseFloat(rate.rate),
+                            symbol: rate.symbol
+                        };
+                    });
+                    
+                    // Применяем конвертацию после загрузки курсов
+                    convertAllPrices();
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки курсов валют:', error);
+            }
+        }
+
+        // Инициализация валютной системы
+        function initializeCurrency() {
+            // Восстанавливаем выбранную валюту из localStorage
+            const savedCurrency = localStorage.getItem('selectedCurrency');
+            if (savedCurrency && exchangeRates[savedCurrency]) {
+                globalCurrency = savedCurrency;
+            }
+            
+            // Загружаем актуальные курсы валют
+            loadExchangeRates();
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCurrency(); // Добавляем инициализацию валютной системы
+        });
     </script>
 </body>
 </html>

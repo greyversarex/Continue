@@ -385,6 +385,10 @@
                     <i class="fas fa-credit-card"></i>
                     <span>Платежи</span>
                 </a>
+                <a href="#" class="nav-item" data-section="exchange-rates">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Курсы валют</span>
+                </a>
                 <a href="#" class="nav-item" data-section="cms">
                     <i class="fas fa-edit"></i>
                     <span>CMS - Контент</span>
@@ -1251,8 +1255,124 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Exchange Rates Section -->
+                <section id="exchange-ratesSection" style="display: none;">
+                    <div class="mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800">Управление курсами валют</h2>
+                        <p class="text-gray-600 mt-2">Настройка курсов валют для конвертации цен на сайте</p>
+                    </div>
+
+                    <!-- Exchange Rates Table -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-semibold">Текущие курсы валют</h3>
+                            <button onclick="loadExchangeRates()" class="btn btn-secondary">
+                                <i class="fas fa-sync-alt"></i>
+                                Обновить
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Валюта</th>
+                                        <th>Название</th>
+                                        <th>Символ</th>
+                                        <th>Курс к TJS</th>
+                                        <th>Последнее обновление</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="exchangeRatesTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-center py-8 text-gray-500">
+                                            <i class="fas fa-spinner fa-spin"></i>
+                                            Загрузка курсов валют...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Exchange Rate Calculator -->
+                    <div class="mt-6 bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-lg font-semibold mb-4">Калькулятор валют</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Сумма в TJS</label>
+                                <input type="number" class="form-input" id="calcAmount" placeholder="100" min="0" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Конвертировать в</label>
+                                <select class="form-input" id="calcTargetCurrency">
+                                    <option value="USD">USD - Доллар США</option>
+                                    <option value="EUR">EUR - Евро</option>
+                                    <option value="TJS">TJS - Сомони</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Результат</label>
+                                <div class="form-input bg-gray-50" id="calcResult">0</div>
+                            </div>
+                        </div>
+                        <button onclick="calculateCurrency()" class="btn btn-primary mt-4">
+                            <i class="fas fa-calculator"></i>
+                            Рассчитать
+                        </button>
+                    </div>
+                </section>
             </div>
         </main>
+    </div>
+
+    <!-- Exchange Rate Modal -->
+    <div id="exchangeRateModal" class="modal">
+        <div class="modal-content" style="width: 500px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold" id="exchangeRateModalTitle">Редактировать курс валюты</h2>
+                <button onclick="closeExchangeRateModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="exchangeRateForm">
+                <input type="hidden" id="editCurrency">
+                
+                <div class="form-group">
+                    <label class="form-label">Валюта</label>
+                    <input type="text" class="form-input" id="editCurrencyCode" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Название</label>
+                    <input type="text" class="form-input" id="editCurrencyName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Символ</label>
+                    <input type="text" class="form-input" id="editCurrencySymbol" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Курс к TJS</label>
+                    <input type="number" class="form-input" id="editCurrencyRate" step="0.0001" min="0" required>
+                    <small class="text-gray-500 mt-1">1 TJS = ? единиц этой валюты</small>
+                </div>
+                
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" onclick="closeExchangeRateModal()" class="btn btn-secondary">
+                        Отмена
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Сохранить
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Hotel Modal -->
@@ -7195,6 +7315,9 @@
                 case 'translations':
                     showTranslations();
                     break;
+                case 'exchange-rates':
+                    loadExchangeRates();
+                    break;
                 case 'settings':
                     // Load settings if needed
                     break;
@@ -7219,6 +7342,159 @@
         function loadBannerManagement() {
             loadCurrentSlides();
         }
+
+        // Exchange Rates Functions
+        async function loadExchangeRates() {
+            try {
+                const response = await fetch(`${getApiUrl()}/exchange-rates`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayExchangeRates(data.data);
+                } else {
+                    console.error('Error loading exchange rates:', data.message);
+                }
+            } catch (error) {
+                console.error('Error loading exchange rates:', error);
+                showErrorMessage('Ошибка при загрузке курсов валют');
+            }
+        }
+
+        function displayExchangeRates(rates) {
+            const tbody = document.getElementById('exchangeRatesTableBody');
+            
+            if (!rates || rates.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-8 text-gray-500">
+                            Курсы валют не найдены
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = rates.map(rate => `
+                <tr>
+                    <td>
+                        <span class="font-semibold">${rate.currency}</span>
+                    </td>
+                    <td>${rate.name}</td>
+                    <td>
+                        <span class="bg-gray-100 px-2 py-1 rounded text-sm">${rate.symbol}</span>
+                    </td>
+                    <td>
+                        <span class="font-mono">${rate.rate}</span>
+                        ${rate.currency === 'TJS' ? '<small class="text-gray-500 block">Базовая валюта</small>' : ''}
+                    </td>
+                    <td>
+                        <span class="text-sm text-gray-600">
+                            ${new Date(rate.updatedAt).toLocaleDateString('ru-RU', { 
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })}
+                        </span>
+                    </td>
+                    <td>
+                        ${rate.currency !== 'TJS' ? `
+                            <button onclick="editExchangeRate('${rate.currency}')" class="btn btn-sm btn-primary">
+                                <i class="fas fa-edit"></i>
+                                Редактировать
+                            </button>
+                        ` : '<span class="text-gray-400 text-sm">Базовая</span>'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editExchangeRate(currency) {
+            fetch(`${getApiUrl()}/exchange-rates`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const rate = data.data.find(r => r.currency === currency);
+                        if (rate) {
+                            document.getElementById('editCurrency').value = rate.currency;
+                            document.getElementById('editCurrencyCode').value = rate.currency;
+                            document.getElementById('editCurrencyName').value = rate.name;
+                            document.getElementById('editCurrencySymbol').value = rate.symbol;
+                            document.getElementById('editCurrencyRate').value = rate.rate;
+                            
+                            document.getElementById('exchangeRateModal').classList.add('active');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading exchange rate:', error);
+                    showErrorMessage('Ошибка при загрузке курса валюты');
+                });
+        }
+
+        function closeExchangeRateModal() {
+            document.getElementById('exchangeRateModal').classList.remove('active');
+            document.getElementById('exchangeRateForm').reset();
+        }
+
+        async function calculateCurrency() {
+            const amount = document.getElementById('calcAmount').value;
+            const targetCurrency = document.getElementById('calcTargetCurrency').value;
+            
+            if (!amount || amount <= 0) {
+                showErrorMessage('Введите корректную сумму');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/exchange-rates/convert?amount=${amount}&targetCurrency=${targetCurrency}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const result = document.getElementById('calcResult');
+                    result.textContent = `${data.data.symbol}${data.data.convertedAmount}`;
+                } else {
+                    showErrorMessage('Ошибка при конвертации');
+                }
+            } catch (error) {
+                console.error('Error calculating currency:', error);
+                showErrorMessage('Ошибка при конвертации валюты');
+            }
+        }
+
+        // Exchange Rate Form Handler
+        document.getElementById('exchangeRateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const currency = document.getElementById('editCurrency').value;
+            const rate = parseFloat(document.getElementById('editCurrencyRate').value);
+            const symbol = document.getElementById('editCurrencySymbol').value;
+            const name = document.getElementById('editCurrencyName').value;
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/exchange-rates/${currency}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ rate, symbol, name })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccessMessage('Курс валюты обновлен');
+                    closeExchangeRateModal();
+                    loadExchangeRates();
+                } else {
+                    showErrorMessage(data.message || 'Ошибка при обновлении курса валюты');
+                }
+            } catch (error) {
+                console.error('Error updating exchange rate:', error);
+                showErrorMessage('Ошибка при обновлении курса валюты');
+            }
+        });
     </script>
 </body>
 </html>

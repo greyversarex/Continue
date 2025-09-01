@@ -386,26 +386,41 @@ model Slide {
 }
 
 model Booking {
-  id              Int      @id @default(autoincrement())
-  tourId          Int      @map("tour_id")
-  hotelId         Int?     @map("hotel_id")
-  tourists        String   // JSON array of tourist data
-  contactName     String?  @map("contact_name")
-  contactPhone    String?  @map("contact_phone")
-  contactEmail    String?  @map("contact_email")
-  roomSelection   String?  @map("room_selection") // JSON object with selected rooms
-  mealSelection   String?  @map("meal_selection") // JSON object with selected meals
-  totalPrice      Float    @map("total_price")
-  tourDate        String   @map("tour_date")
-  numberOfTourists Int     @map("number_of_tourists")
-  specialRequests String?  @map("special_requests")
-  status          String   @default("draft") // draft, paid, error, cancelled
-  paymentMethod   String?  @map("payment_method")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                   Int      @id @default(autoincrement())
+  tourId               Int      @map("tour_id")
+  hotelId              Int?     @map("hotel_id")
+  tourists             String   // JSON array of tourist data
+  contactName          String?  @map("contact_name")
+  contactPhone         String?  @map("contact_phone")
+  contactEmail         String?  @map("contact_email")
+  roomSelection        String?  @map("room_selection") // JSON object with selected rooms
+  mealSelection        String?  @map("meal_selection") // JSON object with selected meals
+  totalPrice           Float    @map("total_price") // Всегда в TJS (основная валюта)
+  selectedCurrency     String   @default("TJS") @map("selected_currency") // Выбранная пользователем валюта
+  totalPriceConverted  Float?   @map("total_price_converted") // Цена в выбранной валюте (для UI)
+  tourDate             String   @map("tour_date")
+  numberOfTourists     Int      @map("number_of_tourists")
+  specialRequests      String?  @map("special_requests")
+  status               String   @default("draft") // draft, paid, error, cancelled
+  paymentMethod        String?  @map("payment_method")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
   tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
   hotel  Hotel? @relation(fields: [hotelId], references: [id])
 
   @@map("bookings")
+}
+
+model ExchangeRate {
+  id        Int      @id @default(autoincrement())
+  currency  String   @unique // "TJS", "USD", "EUR"
+  rate      Float    // курс относительно TJS (для TJS = 1, для USD = 0.091, для EUR = 0.084)
+  symbol    String   // Символ валюты: "SM", "$", "€"
+  name      String   // Название валюты: "Сомони", "Доллар США", "Евро"
+  isActive  Boolean  @default(true)
+  updatedAt DateTime @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+
+  @@map("exchange_rates")
 }

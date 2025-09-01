@@ -940,22 +940,22 @@
                     <!-- Валютный селектор -->
                     <div class="language-dropdown">
                         <button class="lang-selector-btn" onclick="toggleCurrencyDropdown()">
-                            <span class="selected-currency">USD</span>
-                            <span class="currency-symbol">$</span>
+                            <span class="selected-currency">TJS</span>
+                            <span class="currency-symbol">SM</span>
                             <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
                         <div class="lang-dropdown-content" id="currencyDropdown">
-                            <a href="#" class="lang-option active" data-currency="usd" onclick="selectCurrency('USD', '$')">
+                            <a href="#" class="lang-option active" data-currency="TJS" onclick="selectCurrency('TJS', 'SM')">
+                                <span class="currency-name">TJS</span>
+                                <span class="currency-symbol">SM</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="USD" onclick="selectCurrency('USD', '$')">
                                 <span class="currency-name">USD</span>
                                 <span class="currency-symbol">$</span>
                             </a>
-                            <a href="#" class="lang-option" data-currency="tjs" onclick="selectCurrency('TJS', 'с.')">
-                                <span class="currency-name">TJS</span>
-                                <span class="currency-symbol">с.</span>
-                            </a>
-                            <a href="#" class="lang-option" data-currency="eur" onclick="selectCurrency('EUR', '€')">
+                            <a href="#" class="lang-option" data-currency="EUR" onclick="selectCurrency('EUR', '€')">
                                 <span class="currency-name">EUR</span>
                                 <span class="currency-symbol">€</span>
                             </a>
@@ -2441,32 +2441,6 @@
             toggleLanguageDropdown();
         }
 
-        // Функции для валютного селектора
-        function toggleCurrencyDropdown() {
-            const dropdown = document.getElementById('currencyDropdown');
-            dropdown.classList.toggle('show');
-        }
-        
-        function selectCurrency(currencyCode, symbol) {
-            // Обновляем кнопку селектора
-            document.querySelector('.selected-currency').textContent = currencyCode;
-            document.querySelector('.currency-symbol').textContent = symbol;
-            
-            // Убираем активный класс со всех опций
-            document.querySelectorAll('#currencyDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
-            
-            // Добавляем активный класс к выбранной опции
-            document.querySelector(`[data-currency="${currencyCode.toLowerCase()}"]`).classList.add('active');
-            
-            // Закрываем выпадающий список
-            document.getElementById('currencyDropdown').classList.remove('show');
-            
-            console.log(`Переключена валюта: ${currencyCode}`);
-            
-            // Предотвращаем переход по ссылке
-            event.preventDefault();
-            return false;
-        }
 
         // Отель availability checker
         function checkHotelAvailability() {
@@ -2719,9 +2693,9 @@
                         <div class="flex items-center justify-between mt-auto">
                             <div class="text-lg font-bold text-gray-900">
                                 ${tour.originalPrice ? `
-                                    <span class="text-sm line-through text-gray-400 mr-2">${tour.originalPrice}₽</span>
+                                    <span class="text-sm line-through text-gray-400 mr-2 price-display" data-original-price="${tour.originalPrice}">SM${tour.originalPrice}</span>
                                 ` : ''}
-                                ${tour.price}₽
+                                <span class="tour-price price-display" data-original-price="${tour.price}">SM${tour.price}</span>
                                 <div class="text-xs text-gray-500">${tour.priceType}</div>
                             </div>
                             <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" 
@@ -2912,6 +2886,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadTourBlocks();
             loadSlides();
+            initializeCurrency();
         });
 
         function formatImageUrl(imageUrl) {
@@ -2928,6 +2903,123 @@
                 return `${window.location.origin}/${imageUrl}`;
             }
         }
+
+        // Глобальная система валют
+        let globalCurrency = 'TJS';
+        let exchangeRates = {
+            TJS: { rate: 1, symbol: 'SM' },
+            USD: { rate: 0.091, symbol: '$' },
+            EUR: { rate: 0.084, symbol: '€' }
+        };
+
+        // Функции переключения валют
+        function toggleCurrencyDropdown() {
+            const dropdown = document.getElementById('currencyDropdown');
+            dropdown.classList.toggle('show');
+            
+            // Закрываем языковой dropdown если открыт
+            const langDropdown = document.getElementById('langDropdown');
+            if (langDropdown.classList.contains('show')) {
+                langDropdown.classList.remove('show');
+            }
+        }
+
+        function selectCurrency(currency, symbol) {
+            globalCurrency = currency;
+            
+            // Обновляем кнопку селектора
+            document.querySelector('.selected-currency').textContent = currency;
+            document.querySelector('.currency-symbol').textContent = symbol;
+            
+            // Обновляем активный элемент в dropdown
+            document.querySelectorAll('#currencyDropdown .lang-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`[data-currency="${currency}"]`).classList.add('active');
+            
+            // Скрываем dropdown
+            document.getElementById('currencyDropdown').classList.remove('show');
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('selectedCurrency', currency);
+            
+            // Конвертируем все цены на странице
+            convertAllPrices();
+        }
+
+        // Функция конвертации цен
+        function convertPrice(priceInTJS, targetCurrency) {
+            if (!exchangeRates[targetCurrency]) return priceInTJS;
+            return Math.round(priceInTJS * exchangeRates[targetCurrency].rate);
+        }
+
+        function convertAllPrices() {
+            // Конвертируем цены в карточках туров
+            document.querySelectorAll('.tour-card').forEach(card => {
+                const priceElement = card.querySelector('.tour-price');
+                if (priceElement && priceElement.dataset.originalPrice) {
+                    const originalPrice = parseInt(priceElement.dataset.originalPrice);
+                    const convertedPrice = convertPrice(originalPrice, globalCurrency);
+                    priceElement.textContent = `${exchangeRates[globalCurrency].symbol}${convertedPrice}`;
+                }
+            });
+            
+            // Конвертируем другие цены на странице
+            document.querySelectorAll('.price-display').forEach(element => {
+                if (element.dataset.originalPrice) {
+                    const originalPrice = parseInt(element.dataset.originalPrice);
+                    const convertedPrice = convertPrice(originalPrice, globalCurrency);
+                    element.textContent = `${exchangeRates[globalCurrency].symbol}${convertedPrice}`;
+                }
+            });
+        }
+
+        // Загрузка курсов валют с сервера
+        async function loadExchangeRates() {
+            try {
+                const response = await fetch('/api/exchange-rates');
+                const data = await response.json();
+                
+                if (data.success) {
+                    data.data.forEach(rate => {
+                        exchangeRates[rate.currency] = {
+                            rate: parseFloat(rate.rate),
+                            symbol: rate.symbol
+                        };
+                    });
+                    
+                    // Применяем конвертацию после загрузки курсов
+                    convertAllPrices();
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки курсов валют:', error);
+            }
+        }
+
+        // Инициализация валютной системы
+        function initializeCurrency() {
+            // Восстанавливаем выбранную валюту из localStorage
+            const savedCurrency = localStorage.getItem('selectedCurrency');
+            if (savedCurrency && exchangeRates[savedCurrency]) {
+                globalCurrency = savedCurrency;
+                selectCurrency(savedCurrency, exchangeRates[savedCurrency].symbol);
+            }
+            
+            // Загружаем актуальные курсы валют
+            loadExchangeRates();
+        }
+
+
+        // Закрытие dropdown при клике вне их
+        document.addEventListener('click', function(event) {
+            const langDropdown = document.getElementById('langDropdown');
+            const currencyDropdown = document.getElementById('currencyDropdown');
+            
+            if (!event.target.closest('.language-dropdown')) {
+                langDropdown.classList.remove('show');
+                currencyDropdown.classList.remove('show');
+            }
+        });
     </script>
 </body>
 </html>
