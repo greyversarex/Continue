@@ -1808,175 +1808,196 @@
                 </div>
                 
                 <!-- Калькулятор цены тура -->
-                <div class="bg-gray-50 rounded-lg p-4 mb-6">
-                    <h3 class="text-md font-semibold mb-3 text-gray-800 flex items-center">
-                        <i class="fas fa-calculator mr-2 text-blue-600"></i>
-                        Калькулятор цены тура
-                    </h3>
-                    <div id="priceComponents" class="space-y-4">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Калькулятор цены тура</h3>
+                    <div class="form-group">
+                        <label class="form-label">Компоненты тура и цены</label>
+                        <div class="bg-gray-50 p-4 rounded-lg border">
+                            <p class="text-sm text-gray-600 mb-3">Выберите компоненты тура и укажите цены (в TJS)</p>
                             
-                        <!-- Транспорт -->
-                        <div class="bg-white rounded-md p-3 border">
-                            <h4 class="font-medium text-gray-700 mb-2 text-sm">🚗 Транспорт</h4>
-                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="transport_suv" class="price-component-checkbox">
-                                    <label for="transport_suv" class="text-xs">Внедорожник</label>
-                                    <input type="number" id="price_transport_suv" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                            <!-- Внедорожник -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="transport_suv" class="price-component-checkbox rounded">
+                                    <label for="transport_suv" class="font-medium">Внедорожник</label>
                                 </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="transport_crossover" class="price-component-checkbox">
-                                    <label for="transport_crossover" class="text-xs">Кроссовер</label>
-                                    <input type="number" id="price_transport_crossover" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
-                                </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="transport_minibus" class="price-component-checkbox">
-                                    <label for="transport_minibus" class="text-xs">Микроавтобус</label>
-                                    <input type="number" id="price_transport_minibus" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
-                                </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="transport_bus" class="price-component-checkbox">
-                                    <label for="transport_bus" class="text-xs">Автобус</label>
-                                    <input type="number" id="price_transport_bus" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_transport_suv" class="form-input w-20" placeholder="500" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Гостиницы -->
-                        <div class="bg-white rounded-md p-3 border">
-                            <h4 class="font-medium text-gray-700 mb-2 text-sm">🏨 Гостиницы</h4>
-                            <div class="grid grid-cols-2 lg:grid-cols-3 gap-2">
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="hotel_5star_double" class="price-component-checkbox">
-                                    <label for="hotel_5star_double" class="text-xs">5*, двухместный</label>
-                                    <input type="number" id="price_hotel_5star_double" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                            
+                            <!-- Кроссовер -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="transport_crossover" class="price-component-checkbox rounded">
+                                    <label for="transport_crossover" class="font-medium">Кроссовер</label>
                                 </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="hotel_4star_double" class="price-component-checkbox">
-                                    <label for="hotel_4star_double" class="text-xs">4*, двухместный</label>
-                                    <input type="number" id="price_hotel_4star_double" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
-                                </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="hotel_3star_double" class="price-component-checkbox">
-                                    <label for="hotel_3star_double" class="text-xs">3*, двухместный</label>
-                                    <input type="number" id="price_hotel_3star_double" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
-                                </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="hotel_2star_double" class="price-component-checkbox">
-                                    <label for="hotel_2star_double" class="text-xs">2*, двухместный</label>
-                                    <input type="number" id="price_hotel_2star_double" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
-                                </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="hotel_hostel" class="price-component-checkbox">
-                                    <label for="hotel_hostel" class="text-xs">Хостел</label>
-                                    <input type="number" id="price_hotel_hostel" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_transport_crossover" class="form-input w-20" placeholder="400" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Питание -->
-                        <div class="bg-white rounded-md p-3 border">
-                            <h4 class="font-medium text-gray-700 mb-2 text-sm">🍽️ Питание</h4>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="meals_lunch" class="price-component-checkbox">
-                                    <label for="meals_lunch" class="text-xs">Обед</label>
-                                    <input type="number" id="price_meals_lunch" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                            
+                            <!-- Микроавтобус -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="transport_minibus" class="price-component-checkbox rounded">
+                                    <label for="transport_minibus" class="font-medium">Микроавтобус</label>
                                 </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="meals_dinner" class="price-component-checkbox">
-                                    <label for="meals_dinner" class="text-xs">Ужин</label>
-                                    <input type="number" id="price_meals_dinner" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_transport_minibus" class="form-input w-20" placeholder="600" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Проводники -->
-                        <div class="bg-white rounded-md p-3 border">
-                            <h4 class="font-medium text-gray-700 mb-2 text-sm">👨‍🦯 Проводники</h4>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="guide_russian" class="price-component-checkbox">
-                                    <label for="guide_russian" class="text-xs">Русскоговорящий</label>
-                                    <input type="number" id="price_guide_russian" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                            
+                            <!-- Автобус -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="transport_bus" class="price-component-checkbox rounded">
+                                    <label for="transport_bus" class="font-medium">Автобус</label>
                                 </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="guide_english" class="price-component-checkbox">
-                                    <label for="guide_english" class="text-xs">Англоговорящий</label>
-                                    <input type="number" id="price_guide_english" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_transport_bus" class="form-input w-20" placeholder="800" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Входные билеты -->
-                        <div class="bg-white rounded-md p-3 border">
-                            <h4 class="font-medium text-gray-700 mb-2 text-sm">🎫 Входные билеты</h4>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="tickets_local" class="price-component-checkbox">
-                                    <label for="tickets_local" class="text-xs">В объектах-тадж</label>
-                                    <input type="number" id="price_tickets_local" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                            
+                            <!-- Отель 5* -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="hotel_5star_double" class="price-component-checkbox rounded">
+                                    <label for="hotel_5star_double" class="font-medium">Отель 5*, двухместный</label>
                                 </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="tickets_international" class="price-component-checkbox">
-                                    <label for="tickets_international" class="text-xs">В объектах-инт</label>
-                                    <input type="number" id="price_tickets_international" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_hotel_5star_double" class="form-input w-20" placeholder="1000" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Трансферы -->
-                        <div class="bg-white rounded-md p-3 border">
-                            <h4 class="font-medium text-gray-700 mb-2 text-sm">🚐 Трансферы</h4>
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="transfer_local" class="price-component-checkbox">
-                                    <label for="transfer_local" class="text-xs">Аэропорт-дом гостиницы-тадж</label>
-                                    <input type="number" id="price_transfer_local" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                            
+                            <!-- Отель 4* -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="hotel_4star_double" class="price-component-checkbox rounded">
+                                    <label for="hotel_4star_double" class="font-medium">Отель 4*, двухместный</label>
                                 </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="transfer_international" class="price-component-checkbox">
-                                    <label for="transfer_international" class="text-xs">Аэропорт-дом гостиницы-инт</label>
-                                    <input type="number" id="price_transfer_international" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_hotel_4star_double" class="form-input w-20" placeholder="700" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Документы -->
-                        <div class="bg-white rounded-md p-3 border">
-                            <h4 class="font-medium text-gray-700 mb-2 text-sm">📄 Документы</h4>
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="documents_gbao" class="price-component-checkbox">
-                                    <label for="documents_gbao" class="text-xs">Разрешение на выезд в ГБАО</label>
-                                    <input type="number" id="price_documents_gbao" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                            
+                            <!-- Отель 3* -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="hotel_3star_double" class="price-component-checkbox rounded">
+                                    <label for="hotel_3star_double" class="font-medium">Отель 3*, двухместный</label>
                                 </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="documents_visa_support" class="price-component-checkbox">
-                                    <label for="documents_visa_support" class="text-xs">Виза-поддержка, офиц. приглашение</label>
-                                    <input type="number" id="price_documents_visa_support" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
-                                </div>
-                                <div class="flex items-center space-x-1">
-                                    <input type="checkbox" id="documents_foreign_visa" class="price-component-checkbox">
-                                    <label for="documents_foreign_visa" class="text-xs">Виза в зарубежные страны</label>
-                                    <input type="number" id="price_documents_foreign_visa" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_hotel_3star_double" class="form-input w-20" placeholder="500" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Итоговая цена -->
-                        <div class="bg-blue-50 rounded-md p-4 border border-blue-200">
-                            <div class="flex items-center justify-between">
-                                <span class="text-lg font-semibold text-blue-700">💰 Итоговая цена:</span>
-                                <span id="totalPriceTJS" class="text-2xl font-bold text-blue-800">0 TJS</span>
+                            
+                            <!-- Обед -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="meals_lunch" class="price-component-checkbox rounded">
+                                    <label for="meals_lunch" class="font-medium">Обед</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_meals_lunch" class="form-input w-20" placeholder="100" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
+                                </div>
                             </div>
-                        </div>
+                            
+                            <!-- Ужин -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="meals_dinner" class="price-component-checkbox rounded">
+                                    <label for="meals_dinner" class="font-medium">Ужин</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_meals_dinner" class="form-input w-20" placeholder="150" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Гид русскоговорящий -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="guide_russian" class="price-component-checkbox rounded">
+                                    <label for="guide_russian" class="font-medium">Гид русскоговорящий</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_guide_russian" class="form-input w-20" placeholder="300" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Гид англоговорящий -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="guide_english" class="price-component-checkbox rounded">
+                                    <label for="guide_english" class="font-medium">Гид англоговорящий</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_guide_english" class="form-input w-20" placeholder="400" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Трансфер аэропорт -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="transfer_local" class="price-component-checkbox rounded">
+                                    <label for="transfer_local" class="font-medium">Трансфер аэропорт-отель</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_transfer_local" class="form-input w-20" placeholder="50" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Входные билеты -->
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="tickets_local" class="price-component-checkbox rounded">
+                                    <label for="tickets_local" class="font-medium">Входные билеты</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_tickets_local" class="form-input w-20" placeholder="75" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Разрешение ГБАО -->
+                            <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="documents_gbao" class="price-component-checkbox rounded">
+                                    <label for="documents_gbao" class="font-medium">Разрешение ГБАО</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" id="price_documents_gbao" class="form-input w-20" placeholder="25" min="0" step="1" disabled>
+                                    <span class="text-sm text-gray-500">TJS</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Итоговая цена -->
+                            <div class="bg-blue-50 rounded-lg p-4 mt-4 border border-blue-200">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-lg font-semibold text-blue-700">Итоговая цена:</span>
+                                    <span id="totalPriceTJS" class="text-2xl font-bold text-blue-800">0 TJS</span>
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Скрытые поля для сохранения -->
                         <input type="hidden" id="tourPrice" name="tourPrice">
                         <input type="hidden" id="tourPriceComponents" name="tourPriceComponents">
                         <input type="hidden" id="tourTotalPriceTJS" name="tourTotalPriceTJS">
+                        
+                        <small class="text-gray-500 mt-2 block">Отметьте нужные компоненты и укажите цену для каждого</small>
                     </div>
                 </div>
                 
