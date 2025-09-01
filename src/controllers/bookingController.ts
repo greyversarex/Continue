@@ -291,7 +291,10 @@ export const bookingController = {
   async processPayment(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { paymentMethod }: BookingPaymentData = req.body;
+      const { paymentMethod, totalAmount }: BookingPaymentData & { totalAmount?: number } = req.body;
+
+      console.log('💳 Processing payment for booking ID:', id);
+      console.log('💰 Payment data:', { paymentMethod, totalAmount });
 
       // Найти бронирование с связанными данными
       const booking = await prisma.booking.findUnique({
@@ -318,7 +321,9 @@ export const bookingController = {
           where: { id: parseInt(id) },
           data: {
             status: 'paid',
-            paymentMethod
+            paymentMethod,
+            // Обновляем totalPrice если передан в запросе
+            totalPrice: totalAmount || booking.totalPrice
           }
         });
 
@@ -411,7 +416,7 @@ export const bookingController = {
       // Парсим JSON поля для ответа
       const formattedBooking = {
         ...booking,
-        tourists: JSON.parse(booking.tourists),
+        tourists: booking.tourists ? JSON.parse(booking.tourists) : [],
         roomSelection: booking.roomSelection ? JSON.parse(booking.roomSelection) : null,
         mealSelection: booking.mealSelection ? JSON.parse(booking.mealSelection) : null,
         tour: {
@@ -428,6 +433,8 @@ export const bookingController = {
           name: JSON.parse(booking.hotel.name),
           description: booking.hotel.description ? JSON.parse(booking.hotel.description) : null,
           amenities: booking.hotel.amenities ? JSON.parse(booking.hotel.amenities) : [],
+          roomTypes: booking.hotel.roomTypes,
+          mealTypes: booking.hotel.mealTypes
         } : null
       };
 
