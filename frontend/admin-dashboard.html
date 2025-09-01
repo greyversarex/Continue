@@ -2561,7 +2561,7 @@
         function updateHighlightsList() {
             const highlightsContainer = document.getElementById('highlightsList');
             if (!highlightsContainer) {
-                console.warn('highlightsList container not found');
+                console.warn('highlightsList container not found - using simplified form');
                 return;
             }
             highlightsContainer.innerHTML = window.tourHighlights.map((highlight, index) => `
@@ -2944,7 +2944,7 @@
         function updateItineraryList() {
             const itineraryContainer = document.getElementById('itineraryList');
             if (!itineraryContainer) {
-                console.warn('itineraryList container not found');
+                console.warn('itineraryList container not found - using simplified form');
                 return;
             }
             itineraryContainer.innerHTML = window.tourItinerary.map((item, index) => `
@@ -2984,6 +2984,10 @@
 
         function updateStartTimesList() {
             const container = document.getElementById('startTimesList');
+            if (!container) {
+                console.warn('startTimesList container not found - using simplified form');
+                return;
+            }
             container.innerHTML = window.tourStartTimes.map((time, index) => `
                 <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
                     <span>🕐 ${time}</span>
@@ -3238,6 +3242,12 @@
             const container = document.getElementById('selectedCategories');
             const categoryHiddenInput = document.getElementById('tourCategory');
             
+            // Проверяем существование элементов (для новой упрощенной формы они могут отсутствовать)
+            if (!container || !categoryHiddenInput) {
+                console.warn('Category display elements not found - using simplified form');
+                return;
+            }
+            
             if (selectedCategories.length === 0) {
                 container.innerHTML = '<small class="text-gray-500">Выбранные категории появятся здесь</small>';
                 categoryHiddenInput.value = '';
@@ -3292,6 +3302,12 @@
             const container = document.getElementById('selectedLanguages');
             const languagesHiddenInput = document.getElementById('tourLanguages');
             
+            // Проверяем существование элементов (для новой упрощенной формы они могут отсутствовать)
+            if (!container || !languagesHiddenInput) {
+                console.warn('Languages display elements not found - using simplified form');
+                return;
+            }
+            
             if (selectedLanguages.length === 0) {
                 container.innerHTML = '<small class="text-gray-500">Выбранные языки появятся здесь</small>';
                 languagesHiddenInput.value = '';
@@ -3305,7 +3321,7 @@
                     </div>`
                 ).join('');
                 
-                hiddenInput.value = JSON.stringify(selectedLanguages);
+                languagesHiddenInput.value = JSON.stringify(selectedLanguages);
             }
         }
         
@@ -4108,7 +4124,10 @@
         
         function updateSelectedLanguages() {
             const container = document.getElementById('selectedLanguages');
-            if (!container) return;
+            if (!container) {
+                console.warn('selectedLanguages container not found - using simplified form');
+                return;
+            }
             
             const languages = window.tourLanguages || [];
             if (languages.length === 0) {
