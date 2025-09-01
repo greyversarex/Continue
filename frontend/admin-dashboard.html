@@ -122,86 +122,26 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             background: rgba(0,0,0,0.5);
             z-index: 1000;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            box-sizing: border-box;
         }
         
         .modal.active {
-            display: flex !important;
+            display: flex;
         }
         
         .modal-content {
             background: white;
             border-radius: 16px;
-            width: 100%;
-            max-width: 900px;
-            max-height: calc(100vh - 40px);
+            max-width: 90%;
+            max-height: 90vh;
             overflow-y: auto;
             padding: 32px;
             position: relative;
-            box-sizing: border-box;
-            margin: auto;
-        }
-        
-        /* ПРИНУДИТЕЛЬНЫЕ СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА ТУРА */
-        #tourModal.tour-modal-overlay {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            background: rgba(255, 0, 0, 0.8) !important; /* Красный фон для теста */
-            z-index: 9999 !important;
-            display: none !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 20px !important;
-            box-sizing: border-box !important;
-        }
-        
-        #tourModal.tour-modal-overlay.show {
-            display: flex !important;
-        }
-        
-        #tourModal .tour-modal-content {
-            background: white !important;
-            border: 5px solid red !important; /* Красная рамка для теста */
-            border-radius: 8px !important;
-            width: 100% !important;
-            max-width: 800px !important;
-            max-height: 90vh !important;
-            overflow-y: auto !important;
-            padding: 24px !important;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
-            position: relative !important;
-        }
-        
-        #tourModal .tour-modal-header {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            margin-bottom: 20px !important;
-            padding-bottom: 12px !important;
-            border-bottom: 1px solid #e5e7eb !important;
-        }
-        
-        #tourModal .tour-modal-close {
-            background: red !important; /* Красная кнопка для теста */
-            border: none !important;
-            font-size: 24px !important;
-            cursor: pointer !important;
-            color: white !important;
-            padding: 5px 10px !important;
-        }
-        
-        #tourModal .tour-modal-close:hover {
-            background: darkred !important;
         }
         
         .form-group {
@@ -1686,570 +1626,518 @@
         </div>
     </div>
 
-    <!-- Tour Modal - НОВОЕ -->
-    <div id="tourModal" class="tour-modal-overlay">
-        <div class="tour-modal-content">
-            <div class="tour-modal-header">
-                <h2 style="font-size: 20px; font-weight: 600; color: #1f2937;">Добавить/Редактировать тур</h2>
-                <button onclick="closeTourModal()" class="tour-modal-close">×</button>
+    <!-- Tour Modal -->
+    <div id="tourModal" class="modal">
+        <div class="modal-content" style="width: 800px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold">Добавить/Редактировать тур</h2>
+                <button onclick="closeTourModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
             </div>
             
             <form id="tourForm">
                 <!-- Скрытое поле для ID тура -->
                 <input type="hidden" id="tour-id">
                 
-                <!-- Основная информация о туре -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Основная информация</h3>
-                    <div class="space-y-4">
-                        <div class="form-group">
-                            <label class="form-label">Тип тура</label>
-                            <select class="form-input" id="tourType" required>
-                                <option value="">Выберите тип тура</option>
-                                <option value="Персональный">Персональный</option>
-                                <option value="Групповой персональный">Групповой персональный</option>
-                                <option value="Групповой общий">Групповой общий</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Название тура (Русский)</label>
-                            <input type="text" class="form-input" id="tourTitleRu" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Название тура (English)</label>
-                            <input type="text" class="form-input" id="tourTitleEn" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Описание (Русский)</label>
-                            <textarea class="form-input" rows="4" id="tourDescRu" required></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Описание (English)</label>
-                            <textarea class="form-input" rows="4" id="tourDescEn" required></textarea>
-                        </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Тип тура</label>
+                        <select class="form-input" id="tourType" required>
+                            <option value="">Выберите тип тура</option>
+                            <option value="Персональный">Персональный</option>
+                            <option value="Групповой персональный">Групповой персональный</option>
+                            <option value="Групповой общий">Групповой общий</option>
+                        </select>
                     </div>
-                </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Название тура (Русский)</label>
+                        <input type="text" class="form-input" id="tourTitleRu" required>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Название тура (English)</label>
+                        <input type="text" class="form-input" id="tourTitleEn" required>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Описание (Русский)</label>
+                        <textarea class="form-input" rows="4" id="tourDescRu" required></textarea>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Описание (English)</label>
+                        <textarea class="form-input" rows="4" id="tourDescEn" required></textarea>
+                    </div>
 
-                <!-- Детали тура -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Детали тура</h3>
-                    <div class="space-y-4">
-                        <!-- Что включено -->
-                        <div class="form-group">
-                            <label class="form-label">Что включено в тур</label>
-                            <div id="highlightsList" class="space-y-2 mb-3">
-                                <!-- Динамически добавляемые элементы -->
-                            </div>
-                            <div class="flex gap-2">
-                                <input type="text" class="form-input flex-1" id="newHighlight" placeholder="Например: Профессиональный гид">
-                                <button type="button" onclick="addHighlight()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                    <!-- Что включено -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Что включено в тур</label>
+                        <div id="highlightsList" class="space-y-2 mb-3">
+                            <!-- Динамически добавляемые элементы -->
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" class="form-input flex-1" id="newHighlight" placeholder="Например: Профессиональный гид">
+                            <button type="button" onclick="addHighlight()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                                Добавить
+                            </button>
+                        </div>
+                        <small class="text-gray-500">Добавьте пункты списка "Что включено"</small>
+                    </div>
+
+                    <!-- Программа тура -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Программа тура</label>
+                        <div id="itineraryList" class="space-y-3 mb-3">
+                            <!-- Динамически добавляемые элементы -->
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded border">
+                            <div class="grid grid-cols-4 gap-3 mb-3">
+                                <input type="time" class="form-input" id="newItineraryTime" placeholder="08:00">
+                                <input type="text" class="form-input col-span-2" id="newItineraryTitle" placeholder="Встреча с гидом">
+                                <button type="button" onclick="addItinerary()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
                                     Добавить
                                 </button>
                             </div>
-                            <small class="text-gray-500">Добавьте пункты списка "Что включено"</small>
+                            <textarea class="form-input" rows="2" id="newItineraryDesc" placeholder="Подробное описание этапа программы"></textarea>
                         </div>
+                        <small class="text-gray-500">Создайте расписание тура по времени</small>
+                    </div>
 
-                        <!-- Программа тура -->
-                        <div class="form-group">
-                            <label class="form-label">Программа тура</label>
-                            <div id="itineraryList" class="space-y-3 mb-3">
-                                <!-- Динамически добавляемые элементы -->
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded border">
-                                <div class="grid grid-cols-4 gap-3 mb-3">
-                                    <input type="time" class="form-input" id="newItineraryTime" placeholder="08:00">
-                                    <input type="text" class="form-input col-span-2" id="newItineraryTitle" placeholder="Встреча с гидом">
-                                    <button type="button" onclick="addItinerary()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-                                        Добавить
-                                    </button>
-                                </div>
-                                <textarea class="form-input" rows="2" id="newItineraryDesc" placeholder="Подробное описание этапа программы"></textarea>
-                            </div>
-                            <small class="text-gray-500">Создайте расписание тура по времени</small>
+                    <!-- Доступное время начала тура -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Доступное время начала тура</label>
+                        <div id="startTimesList" class="space-y-2 mb-3">
+                            <!-- Динамически добавляемые варианты времени -->
                         </div>
+                        <div class="flex gap-2">
+                            <input type="time" class="form-input flex-1" id="newStartTime" placeholder="07:30">
+                            <button type="button" onclick="addStartTime()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                                Добавить время
+                            </button>
+                        </div>
+                        <small class="text-gray-500">Добавьте возможные варианты времени начала тура</small>
+                    </div>
 
-                        <!-- Доступное время начала тура -->
-                        <div class="form-group">
-                            <label class="form-label">Доступное время начала тура</label>
-                            <div id="startTimesList" class="space-y-2 mb-3">
-                                <!-- Динамически добавляемые варианты времени -->
-                            </div>
-                            <div class="flex gap-2">
-                                <input type="time" class="form-input flex-1" id="newStartTime" placeholder="07:30">
-                                <button type="button" onclick="addStartTime()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
-                                    Добавить время
-                                </button>
-                            </div>
-                            <small class="text-gray-500">Добавьте возможные варианты времени начала тура</small>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Категории тура</label>
+                        <div class="flex gap-2 mb-2">
+                            <select class="form-input flex-1" id="availableCategories">
+                                <option value="">Выберите категорию для добавления</option>
+                            </select>
+                            <button type="button" onclick="addCategoryToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                <i class="fas fa-plus"></i>
+                            </button>
                         </div>
+                        <div id="selectedCategories" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                            <small class="text-gray-500">Выбранные категории появятся здесь</small>
+                        </div>
+                        <input type="hidden" id="tourCategory" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Блок тура</label>
+                        <select class="form-input" id="tourBlockId">
+                            <option value="">Выберите блок</option>
+                            <option value="1">Популярные туры</option>
+                            <option value="2">Рекомендованные туры по Центральной Азии</option>
+                            <option value="3">Туры по Таджикистану</option>
+                            <option value="4">Туры по Узбекистану</option>
+                            <option value="5">Туры по Киргизстану</option>
+                            <option value="6">Туры по Туркменистану</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Страна</label>
+                        <select class="form-input" id="tourCountry" required>
+                            <option value="">Выберите страну</option>
+                            <option value="Таджикистан">Таджикистан</option>
+                            <option value="Узбекистан">Узбекистан</option>
+                            <option value="Казахстан">Казахстан</option>
+                            <option value="Кыргызстан">Кыргызстан</option>
+                            <option value="Туркменистан">Туркменистан</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Город</label>
+                        <input type="text" class="form-input" id="tourCity" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Длительность (дней)</label>
+                        <input type="number" class="form-input" id="tourDurationDays" min="1" required>
                     </div>
                 </div>
-
-                <!-- Местоположение и категоризация -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Местоположение и категоризация</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-group">
-                            <label class="form-label">Категории тура</label>
-                            <div class="flex gap-2 mb-2">
-                                <select class="form-input flex-1" id="availableCategories">
-                                    <option value="">Выберите категорию для добавления</option>
-                                </select>
-                                <button type="button" onclick="addCategoryToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                            <div id="selectedCategories" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
-                                <small class="text-gray-500">Выбранные категории появятся здесь</small>
-                            </div>
-                            <input type="hidden" id="tourCategory" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Блок тура</label>
-                            <select class="form-input" id="tourBlockId">
-                                <option value="">Выберите блок</option>
-                                <option value="1">Популярные туры</option>
-                                <option value="2">Рекомендованные туры по Центральной Азии</option>
-                                <option value="3">Туры по Таджикистану</option>
-                                <option value="4">Туры по Узбекистану</option>
-                                <option value="5">Туры по Киргизстану</option>
-                                <option value="6">Туры по Туркменистану</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Страна</label>
-                            <select class="form-input" id="tourCountry" required>
-                                <option value="">Выберите страну</option>
-                                <option value="Таджикистан">Таджикистан</option>
-                                <option value="Узбекистан">Узбекистан</option>
-                                <option value="Казахстан">Казахстан</option>
-                                <option value="Кыргызстан">Кыргызстан</option>
-                                <option value="Туркменистан">Туркменистан</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Город</label>
-                            <input type="text" class="form-input" id="tourCity" required>
-                        </div>
+                
+                <!-- Основная информация продолжение -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label class="form-label">Тип цены</label>
+                        <select class="form-input" id="tourPriceType" required>
+                            <option value="за человека">За человека</option>
+                            <option value="за группу">За группу</option>
+                        </select>
                     </div>
-                </div>
-
-                <!-- Основные параметры -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Основные параметры</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="form-group">
-                            <label class="form-label">Длительность (дней)</label>
-                            <input type="number" class="form-input" id="tourDurationDays" min="1" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Тип цены</label>
-                            <select class="form-input" id="tourPriceType" required>
-                                <option value="за человека">За человека</option>
-                                <option value="за группу">За группу</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Информация о приёме/сборе</label>
-                            <input type="text" class="form-input" id="tourPickupInfo" placeholder="Место сбора: отель" required>
-                        </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Информация о приёме/сборе</label>
+                        <input type="text" class="form-input" id="tourPickupInfo" placeholder="Например: Приём включён, Место сбора: отель, и т.д." required>
+                        <small class="text-gray-500">Укажите информацию о приёме/месте сбора для туристов</small>
                     </div>
                 </div>
                 
                 <!-- Калькулятор цены тура -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Калькулятор цены тура</h3>
-                    <div class="form-group">
-                        <label class="form-label">Компоненты тура и цены</label>
-                        <div class="bg-gray-50 p-4 rounded-lg border">
-                            <p class="text-sm text-gray-600 mb-3">Выберите компоненты тура и укажите цены (в TJS)</p>
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <h3 class="text-md font-semibold mb-3 text-gray-800 flex items-center">
+                        <i class="fas fa-calculator mr-2 text-blue-600"></i>
+                        Калькулятор цены тура
+                    </h3>
+                    <div id="priceComponents" class="space-y-4">
                             
-                            <!-- Внедорожник -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="transport_suv" class="price-component-checkbox rounded">
-                                    <label for="transport_suv" class="font-medium">Внедорожник</label>
+                        <!-- Транспорт -->
+                        <div class="bg-white rounded-md p-3 border">
+                            <h4 class="font-medium text-gray-700 mb-2 text-sm">🚗 Транспорт</h4>
+                            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="transport_suv" class="price-component-checkbox">
+                                    <label for="transport_suv" class="text-xs">Внедорожник</label>
+                                    <input type="number" id="price_transport_suv" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_transport_suv" class="form-input w-20" placeholder="500" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="transport_crossover" class="price-component-checkbox">
+                                    <label for="transport_crossover" class="text-xs">Кроссовер</label>
+                                    <input type="number" id="price_transport_crossover" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="transport_minibus" class="price-component-checkbox">
+                                    <label for="transport_minibus" class="text-xs">Микроавтобус</label>
+                                    <input type="number" id="price_transport_minibus" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="transport_bus" class="price-component-checkbox">
+                                    <label for="transport_bus" class="text-xs">Автобус</label>
+                                    <input type="number" id="price_transport_bus" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
                             </div>
-                            
-                            <!-- Кроссовер -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="transport_crossover" class="price-component-checkbox rounded">
-                                    <label for="transport_crossover" class="font-medium">Кроссовер</label>
+                        </div>
+
+                        <!-- Гостиницы -->
+                        <div class="bg-white rounded-md p-3 border">
+                            <h4 class="font-medium text-gray-700 mb-2 text-sm">🏨 Гостиницы</h4>
+                            <div class="grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="hotel_5star_double" class="price-component-checkbox">
+                                    <label for="hotel_5star_double" class="text-xs">5*, двухместный</label>
+                                    <input type="number" id="price_hotel_5star_double" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_transport_crossover" class="form-input w-20" placeholder="400" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="hotel_4star_double" class="price-component-checkbox">
+                                    <label for="hotel_4star_double" class="text-xs">4*, двухместный</label>
+                                    <input type="number" id="price_hotel_4star_double" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                            </div>
-                            
-                            <!-- Микроавтобус -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="transport_minibus" class="price-component-checkbox rounded">
-                                    <label for="transport_minibus" class="font-medium">Микроавтобус</label>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="hotel_3star_double" class="price-component-checkbox">
+                                    <label for="hotel_3star_double" class="text-xs">3*, двухместный</label>
+                                    <input type="number" id="price_hotel_3star_double" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_transport_minibus" class="form-input w-20" placeholder="600" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="hotel_2star_double" class="price-component-checkbox">
+                                    <label for="hotel_2star_double" class="text-xs">2*, двухместный</label>
+                                    <input type="number" id="price_hotel_2star_double" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                            </div>
-                            
-                            <!-- Автобус -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="transport_bus" class="price-component-checkbox rounded">
-                                    <label for="transport_bus" class="font-medium">Автобус</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_transport_bus" class="form-input w-20" placeholder="800" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="hotel_hostel" class="price-component-checkbox">
+                                    <label for="hotel_hostel" class="text-xs">Хостел</label>
+                                    <input type="number" id="price_hotel_hostel" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
                             </div>
-                            
-                            <!-- Отель 5* -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="hotel_5star_double" class="price-component-checkbox rounded">
-                                    <label for="hotel_5star_double" class="font-medium">Отель 5*, двухместный</label>
+                        </div>
+
+                        <!-- Питание -->
+                        <div class="bg-white rounded-md p-3 border">
+                            <h4 class="font-medium text-gray-700 mb-2 text-sm">🍽️ Питание</h4>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="meals_lunch" class="price-component-checkbox">
+                                    <label for="meals_lunch" class="text-xs">Обед</label>
+                                    <input type="number" id="price_meals_lunch" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_hotel_5star_double" class="form-input w-20" placeholder="1000" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Отель 4* -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="hotel_4star_double" class="price-component-checkbox rounded">
-                                    <label for="hotel_4star_double" class="font-medium">Отель 4*, двухместный</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_hotel_4star_double" class="form-input w-20" placeholder="700" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="meals_dinner" class="price-component-checkbox">
+                                    <label for="meals_dinner" class="text-xs">Ужин</label>
+                                    <input type="number" id="price_meals_dinner" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
                             </div>
-                            
-                            <!-- Отель 3* -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="hotel_3star_double" class="price-component-checkbox rounded">
-                                    <label for="hotel_3star_double" class="font-medium">Отель 3*, двухместный</label>
+                        </div>
+
+                        <!-- Проводники -->
+                        <div class="bg-white rounded-md p-3 border">
+                            <h4 class="font-medium text-gray-700 mb-2 text-sm">👨‍🦯 Проводники</h4>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="guide_russian" class="price-component-checkbox">
+                                    <label for="guide_russian" class="text-xs">Русскоговорящий</label>
+                                    <input type="number" id="price_guide_russian" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_hotel_3star_double" class="form-input w-20" placeholder="500" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Обед -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="meals_lunch" class="price-component-checkbox rounded">
-                                    <label for="meals_lunch" class="font-medium">Обед</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_meals_lunch" class="form-input w-20" placeholder="100" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="guide_english" class="price-component-checkbox">
+                                    <label for="guide_english" class="text-xs">Англоговорящий</label>
+                                    <input type="number" id="price_guide_english" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
                             </div>
-                            
-                            <!-- Ужин -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="meals_dinner" class="price-component-checkbox rounded">
-                                    <label for="meals_dinner" class="font-medium">Ужин</label>
+                        </div>
+
+                        <!-- Входные билеты -->
+                        <div class="bg-white rounded-md p-3 border">
+                            <h4 class="font-medium text-gray-700 mb-2 text-sm">🎫 Входные билеты</h4>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="tickets_local" class="price-component-checkbox">
+                                    <label for="tickets_local" class="text-xs">В объектах-тадж</label>
+                                    <input type="number" id="price_tickets_local" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_meals_dinner" class="form-input w-20" placeholder="150" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Гид русскоговорящий -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="guide_russian" class="price-component-checkbox rounded">
-                                    <label for="guide_russian" class="font-medium">Гид русскоговорящий</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_guide_russian" class="form-input w-20" placeholder="300" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="tickets_international" class="price-component-checkbox">
+                                    <label for="tickets_international" class="text-xs">В объектах-инт</label>
+                                    <input type="number" id="price_tickets_international" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
                             </div>
-                            
-                            <!-- Гид англоговорящий -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="guide_english" class="price-component-checkbox rounded">
-                                    <label for="guide_english" class="font-medium">Гид англоговорящий</label>
+                        </div>
+
+                        <!-- Трансферы -->
+                        <div class="bg-white rounded-md p-3 border">
+                            <h4 class="font-medium text-gray-700 mb-2 text-sm">🚐 Трансферы</h4>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="transfer_local" class="price-component-checkbox">
+                                    <label for="transfer_local" class="text-xs">Аэропорт-дом гостиницы-тадж</label>
+                                    <input type="number" id="price_transfer_local" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_guide_english" class="form-input w-20" placeholder="400" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Трансфер аэропорт -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="transfer_local" class="price-component-checkbox rounded">
-                                    <label for="transfer_local" class="font-medium">Трансфер аэропорт-отель</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_transfer_local" class="form-input w-20" placeholder="50" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="transfer_international" class="price-component-checkbox">
+                                    <label for="transfer_international" class="text-xs">Аэропорт-дом гостиницы-инт</label>
+                                    <input type="number" id="price_transfer_international" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
                             </div>
-                            
-                            <!-- Входные билеты -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="tickets_local" class="price-component-checkbox rounded">
-                                    <label for="tickets_local" class="font-medium">Входные билеты</label>
+                        </div>
+
+                        <!-- Документы -->
+                        <div class="bg-white rounded-md p-3 border">
+                            <h4 class="font-medium text-gray-700 mb-2 text-sm">📄 Документы</h4>
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="documents_gbao" class="price-component-checkbox">
+                                    <label for="documents_gbao" class="text-xs">Разрешение на выезд в ГБАО</label>
+                                    <input type="number" id="price_documents_gbao" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_tickets_local" class="form-input w-20" placeholder="75" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="documents_visa_support" class="price-component-checkbox">
+                                    <label for="documents_visa_support" class="text-xs">Виза-поддержка, офиц. приглашение</label>
+                                    <input type="number" id="price_documents_visa_support" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
-                            </div>
-                            
-                            <!-- Разрешение ГБАО -->
-                            <div class="flex items-center justify-between py-2">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="documents_gbao" class="price-component-checkbox rounded">
-                                    <label for="documents_gbao" class="font-medium">Разрешение ГБАО</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" id="price_documents_gbao" class="form-input w-20" placeholder="25" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">TJS</span>
+                                <div class="flex items-center space-x-1">
+                                    <input type="checkbox" id="documents_foreign_visa" class="price-component-checkbox">
+                                    <label for="documents_foreign_visa" class="text-xs">Виза в зарубежные страны</label>
+                                    <input type="number" id="price_documents_foreign_visa" class="form-input w-16 text-xs" min="0" step="0.01" disabled>
                                 </div>
                             </div>
-                            
-                            <!-- Итоговая цена -->
-                            <div class="bg-blue-50 rounded-lg p-4 mt-4 border border-blue-200">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-lg font-semibold text-blue-700">Итоговая цена:</span>
-                                    <span id="totalPriceTJS" class="text-2xl font-bold text-blue-800">0 TJS</span>
-                                </div>
+                        </div>
+
+                        <!-- Итоговая цена -->
+                        <div class="bg-blue-50 rounded-md p-4 border border-blue-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-lg font-semibold text-blue-700">💰 Итоговая цена:</span>
+                                <span id="totalPriceTJS" class="text-2xl font-bold text-blue-800">0 TJS</span>
                             </div>
+                        </div>
                         </div>
                         
                         <!-- Скрытые поля для сохранения -->
                         <input type="hidden" id="tourPrice" name="tourPrice">
                         <input type="hidden" id="tourPriceComponents" name="tourPriceComponents">
                         <input type="hidden" id="tourTotalPriceTJS" name="tourTotalPriceTJS">
-                        
-                        <small class="text-gray-500 mt-2 block">Отметьте нужные компоненты и укажите цену для каждого</small>
                     </div>
                 </div>
                 
-                <!-- Дополнительные параметры -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Дополнительные параметры</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-group">
-                            <label class="form-label">Языки тура</label>
-                            <div class="flex gap-2 mb-2">
-                                <select class="form-input flex-1" id="availableLanguages">
-                                    <option value="">Выберите язык для добавления</option>
-                                    <option value="Русский">Русский</option>
-                                    <option value="Английский">Английский</option>
-                                    <option value="Таджикский">Таджикский</option>
-                                    <option value="Узбекский">Узбекский</option>
-                                    <option value="Киргизский">Киргизский</option>
-                                    <option value="Казахский">Казахский</option>
-                                    <option value="Туркменский">Туркменский</option>
-                                    <option value="Персидский">Персидский</option>
-                                    <option value="Арабский">Арабский</option>
-                                    <option value="Китайский">Китайский</option>
-                                    <option value="Французский">Французский</option>
-                                    <option value="Немецкий">Немецкий</option>
-                                    <option value="Испанский">Испанский</option>
-                                    <option value="Итальянский">Итальянский</option>
-                                </select>
-                                <button type="button" onclick="addLanguageToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                            <div id="selectedLanguages" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
-                                <small class="text-gray-500">Выбранные языки появятся здесь</small>
-                            </div>
-                            <input type="hidden" id="tourLanguages">
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div class="form-group">
-                                <label class="form-label">Минимальное количество людей</label>
-                                <input type="number" class="form-input" id="tourMinPeople" min="1" placeholder="2">
-                                <small class="text-gray-500">Минимальное количество участников</small>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Максимальное количество людей</label>
-                                <input type="number" class="form-input" id="tourMaxPeople" min="1" placeholder="12">
-                                <small class="text-gray-500">Максимальное количество участников</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Продолжение формы -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
-                <!-- Доступность тура -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Доступность тура</h3>
-                    <div class="space-y-4">
-                        <div class="form-group">
-                            <label class="form-label">Доступные месяцы</label>
-                            <div class="grid grid-cols-4 gap-2 mt-2">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="1" id="month-1"> Январь
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="2" id="month-2"> Февраль
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="3" id="month-3"> Март
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="4" id="month-4"> Апрель
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="5" id="month-5"> Май
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="6" id="month-6"> Июнь
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="7" id="month-7"> Июль
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="8" id="month-8"> Август
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="9" id="month-9"> Сентябрь
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="10" id="month-10"> Октябрь
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="11" id="month-11"> Ноябрь
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="12" id="month-12"> Декабрь
-                                </label>
-                            </div>
+                    <div class="form-group">
+                        <label class="form-label">Языки тура</label>
+                        <div class="flex gap-2 mb-2">
+                            <select class="form-input flex-1" id="availableLanguages">
+                                <option value="">Выберите язык для добавления</option>
+                                <option value="Русский">Русский</option>
+                                <option value="Английский">Английский</option>
+                                <option value="Таджикский">Таджикский</option>
+                                <option value="Узбекский">Узбекский</option>
+                                <option value="Киргизский">Киргизский</option>
+                                <option value="Казахский">Казахский</option>
+                                <option value="Туркменский">Туркменский</option>
+                                <option value="Персидский">Персидский</option>
+                                <option value="Арабский">Арабский</option>
+                                <option value="Китайский">Китайский</option>
+                                <option value="Французский">Французский</option>
+                                <option value="Немецкий">Немецкий</option>
+                                <option value="Испанский">Испанский</option>
+                                <option value="Итальянский">Итальянский</option>
+                            </select>
+                            <button type="button" onclick="addLanguageToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                <i class="fas fa-plus"></i>
+                            </button>
                         </div>
+                        <div id="selectedLanguages" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                            <small class="text-gray-500">Выбранные языки появятся здесь</small>
+                        </div>
+                        <input type="hidden" id="tourLanguages">
                     </div>
                     
-                        <div class="form-group">
-                            <label class="form-label">Доступные дни недели</label>
-                            <div class="grid grid-cols-4 gap-2 mt-2">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="1" id="day-1"> Понедельник
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="2" id="day-2"> Вторник
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="3" id="day-3"> Среда
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="4" id="day-4"> Четверг
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="5" id="day-5"> Пятница
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="6" id="day-6"> Суббота
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="0" id="day-0"> Воскресенье
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                     
-                <!-- Медиа и контент -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Медиа и контент</h3>
-                    <div class="space-y-4">
-                        <!-- Галерея изображений -->
-                        <div class="form-group">
-                            <label class="form-label">
-                                <i class="fas fa-images text-blue-600 mr-2"></i>
-                                Фотографии тура
+                    <!-- Дополнительная информация о туре -->
+                    
+                    
+                    <!-- Поле сложности тура удалено по требованию пользователя -->
+                    
+                    <div class="form-group">
+                        <label class="form-label">Минимальное количество людей</label>
+                        <input type="number" class="form-input" id="tourMinPeople" min="1" placeholder="2">
+                        <small class="text-gray-500">Минимальное количество участников</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Максимальное количество людей</label>
+                        <input type="number" class="form-input" id="tourMaxPeople" min="1" placeholder="12">
+                        <small class="text-gray-500">Максимальное количество участников</small>
+                    </div>
+                    
+                    <!-- Доступность тура -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Доступные месяцы</label>
+                        <div class="grid grid-cols-4 gap-2 mt-2">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="1" id="month-1"> Январь
                             </label>
-                            
-                            <div id="tour-uploader-container"></div>
-                            <p class="text-gray-500 text-sm mt-2">
-                                Первая загруженная фотография автоматически станет главной для карточки тура
-                            </p>
-                            <input type="hidden" id="tourImages">
-                            
-                            <!-- Список галереи для редактирования -->
-                            <div id="galleryImagesList" class="space-y-2 mt-4">
-                                <!-- Загруженные изображения для редактирования появятся здесь -->
-                            </div>
-                        </div>
-                    
-                        <div class="form-group">
-                            <label class="form-label">Услуги включенные в тур</label>
-                            <div class="checkbox-group" id="includesOptions">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="Трансфер"> Трансфер
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="Проживание"> Проживание
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="Питание"> Питание
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="Гид"> Гид
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="Входные билеты"> Входные билеты
-                                </label>
-                                <label class="checkbox-item">
-                                    <input type="checkbox" value="Страховка"> Страховка
-                                </label>
-                            </div>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="2" id="month-2"> Февраль
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="3" id="month-3"> Март
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="4" id="month-4"> Апрель
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="5" id="month-5"> Май
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="6" id="month-6"> Июнь
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="7" id="month-7"> Июль
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="8" id="month-8"> Август
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="9" id="month-9"> Сентябрь
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="10" id="month-10"> Октябрь
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="11" id="month-11"> Ноябрь
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="12" id="month-12"> Декабрь
+                            </label>
                         </div>
                     </div>
-                </div>
                     
-                <!-- Связанные ресурсы -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Связанные ресурсы</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-group">
-                            <label class="form-label">Связанные отели</label>
-                            <div class="checkbox-group" id="hotelCheckboxes">
-                                <!-- Hotels will be loaded here -->
-                            </div>
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Доступные дни недели</label>
+                        <div class="grid grid-cols-4 gap-2 mt-2">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="1" id="day-1"> Понедельник
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="2" id="day-2"> Вторник
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="3" id="day-3"> Среда
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="4" id="day-4"> Четверг
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="5" id="day-5"> Пятница
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="6" id="day-6"> Суббота
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="0" id="day-0"> Воскресенье
+                            </label>
                         </div>
+                    </div>
+                    
+                    <!-- Галерея изображений -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">
+                            <i class="fas fa-images text-blue-600 mr-2"></i>
+                            Фотографии тура
+                        </label>
                         
-                        <div class="form-group">
-                            <label class="form-label">Доступные гиды</label>
-                            <div class="checkbox-group" id="guideCheckboxes">
-                                <!-- Guides will be loaded here -->
-                            </div>
+                        <div id="tour-uploader-container"></div>
+                        <p class="text-gray-500 text-sm mt-2">
+                            Первая загруженная фотография автоматически станет главной для карточки тура
+                        </p>
+                        <input type="hidden" id="tourImages">
+                        
+                        <!-- Список галереи для редактирования -->
+                        <div id="galleryImagesList" class="space-y-2 mt-4">
+                            <!-- Загруженные изображения для редактирования появятся здесь -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Услуги включенные в тур</label>
+                        <div class="checkbox-group" id="includesOptions">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="Трансфер"> Трансфер
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="Проживание"> Проживание
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="Питание"> Питание
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="Гид"> Гид
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="Входные билеты"> Входные билеты
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="Страховка"> Страховка
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Связанные отели</label>
+                        <div class="checkbox-group" id="hotelCheckboxes">
+                            <!-- Hotels will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Доступные гиды</label>
+                        <div class="checkbox-group" id="guideCheckboxes">
+                            <!-- Guides will be loaded here -->
                         </div>
                     </div>
                 </div>
@@ -3231,7 +3119,7 @@
                 if (data.success) {
                     console.log('✅ Tour saved successfully');
                     alert(isEditing ? 'Тур успешно обновлён!' : 'Тур успешно создан!');
-                    document.getElementById('tourModal').classList.remove('show');
+                    document.getElementById('tourModal').style.display = 'none';
                     loadTours(); // Обновляем список туров
                     resetTourForm(); // Очищаем форму
                 } else {
@@ -3716,7 +3604,7 @@
             selectedCategories = [];
             updateSelectedCategoriesDisplay();
             
-            document.getElementById('tourModal').classList.add('show');
+            document.getElementById('tourModal').classList.add('active');
             
             // Initialize the uploader
             setTimeout(() => {
@@ -4350,7 +4238,7 @@
         }
         
         function closeTourModal() {
-            document.getElementById('tourModal').classList.remove('show');
+            document.getElementById('tourModal').classList.remove('active');
             document.getElementById('tourForm').reset();
             
             // Clear the uploader
