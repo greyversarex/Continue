@@ -38,6 +38,8 @@ export interface CreateTourData {
   price: string;
   priceType?: string;
   originalPrice?: string;
+  priceComponents?: string;
+  totalPriceTJS?: number;
   categoryId: number;
   tourBlockId?: number;
   country?: string;

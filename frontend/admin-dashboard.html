@@ -381,6 +381,11 @@
                     <i class="fas fa-star"></i>
                     <span>Отзывы</span>
                 </a>
+                
+                <a href="#" class="nav-item" data-section="price-calculator">
+                    <i class="fas fa-calculator"></i>
+                    <span>Калькулятор цен</span>
+                </a>
                 <a href="#" class="nav-item" data-section="payments">
                     <i class="fas fa-credit-card"></i>
                     <span>Платежи</span>
@@ -673,6 +678,31 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </section>
+
+                <!-- Price Calculator Section -->
+                <section id="price-calculatorSection" style="display: none;">
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-semibold">Управление ценами компонентов туров</h2>
+                            <button class="btn btn-primary" onclick="refreshPriceComponents()">
+                                <i class="fas fa-sync"></i>
+                                Обновить
+                            </button>
+                        </div>
+                        
+                        <div class="mb-4 p-4 bg-blue-50 rounded-lg">
+                            <p class="text-sm text-blue-700">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Здесь вы можете управлять базовыми ценами компонентов, которые используются при создании туров. 
+                                Изменения повлияют на новые туры, но не на уже созданные.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div id="priceComponentsList" class="space-y-6">
+                        <!-- Price components will be loaded here -->
                     </div>
                 </section>
 
@@ -1744,9 +1774,193 @@
                     
                     
                     
+                    <!-- Составляющие цены тура -->
                     <div class="form-group">
-                        <label class="form-label">Цена (USD)</label>
-                        <input type="number" class="form-input" id="tourPrice" min="0" step="0.01" required>
+                        <label class="form-label">Составляющие цены тура (в TJS)</label>
+                        <div id="priceComponents" class="space-y-3 border rounded-md p-4 bg-gray-50">
+                            
+                            <!-- Транспорт -->
+                            <div class="component-category">
+                                <h4 class="font-semibold text-gray-700 mb-2">Транспорт</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="transport_suv" class="price-component-checkbox">
+                                        <label for="transport_suv" class="text-sm">Внедорожник</label>
+                                        <input type="number" id="price_transport_suv" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="transport_crossover" class="price-component-checkbox">
+                                        <label for="transport_crossover" class="text-sm">Кроссовер</label>
+                                        <input type="number" id="price_transport_crossover" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="transport_minibus" class="price-component-checkbox">
+                                        <label for="transport_minibus" class="text-sm">Микроавтобус</label>
+                                        <input type="number" id="price_transport_minibus" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="transport_bus" class="price-component-checkbox">
+                                        <label for="transport_bus" class="text-sm">Автобус</label>
+                                        <input type="number" id="price_transport_bus" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Гостиницы -->
+                            <div class="component-category">
+                                <h4 class="font-semibold text-gray-700 mb-2">Гостиницы</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="hotel_5star_double" class="price-component-checkbox">
+                                        <label for="hotel_5star_double" class="text-sm">5*, двухместный</label>
+                                        <input type="number" id="price_hotel_5star_double" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="hotel_4star_double" class="price-component-checkbox">
+                                        <label for="hotel_4star_double" class="text-sm">4*, двухместный</label>
+                                        <input type="number" id="price_hotel_4star_double" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="hotel_3star_double" class="price-component-checkbox">
+                                        <label for="hotel_3star_double" class="text-sm">3*, двухместный</label>
+                                        <input type="number" id="price_hotel_3star_double" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="hotel_2star_double" class="price-component-checkbox">
+                                        <label for="hotel_2star_double" class="text-sm">2*, двухместный</label>
+                                        <input type="number" id="price_hotel_2star_double" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="hotel_hostel" class="price-component-checkbox">
+                                        <label for="hotel_hostel" class="text-sm">Хостел</label>
+                                        <input type="number" id="price_hotel_hostel" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Питание -->
+                            <div class="component-category">
+                                <h4 class="font-semibold text-gray-700 mb-2">Питание</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="meals_lunch" class="price-component-checkbox">
+                                        <label for="meals_lunch" class="text-sm">Обед</label>
+                                        <input type="number" id="price_meals_lunch" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="meals_dinner" class="price-component-checkbox">
+                                        <label for="meals_dinner" class="text-sm">Ужин</label>
+                                        <input type="number" id="price_meals_dinner" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Проводники -->
+                            <div class="component-category">
+                                <h4 class="font-semibold text-gray-700 mb-2">Проводники</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="guide_russian" class="price-component-checkbox">
+                                        <label for="guide_russian" class="text-sm">Русскоговорящий</label>
+                                        <input type="number" id="price_guide_russian" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="guide_english" class="price-component-checkbox">
+                                        <label for="guide_english" class="text-sm">Англоговорящий</label>
+                                        <input type="number" id="price_guide_english" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Входные билеты -->
+                            <div class="component-category">
+                                <h4 class="font-semibold text-gray-700 mb-2">Входные билеты</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="tickets_local" class="price-component-checkbox">
+                                        <label for="tickets_local" class="text-sm">В объектах-тадж</label>
+                                        <input type="number" id="price_tickets_local" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="tickets_international" class="price-component-checkbox">
+                                        <label for="tickets_international" class="text-sm">В объектах-инт</label>
+                                        <input type="number" id="price_tickets_international" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Трансферы -->
+                            <div class="component-category">
+                                <h4 class="font-semibold text-gray-700 mb-2">Трансферы</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="transfer_local" class="price-component-checkbox">
+                                        <label for="transfer_local" class="text-sm">Аэропорт-дом гостиницы-тадж</label>
+                                        <input type="number" id="price_transfer_local" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="transfer_international" class="price-component-checkbox">
+                                        <label for="transfer_international" class="text-sm">Аэропорт-дом гостиницы-инт</label>
+                                        <input type="number" id="price_transfer_international" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Документы -->
+                            <div class="component-category">
+                                <h4 class="font-semibold text-gray-700 mb-2">Документы</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="documents_gbao" class="price-component-checkbox">
+                                        <label for="documents_gbao" class="text-sm">Разрешение на выезд в ГБАО</label>
+                                        <input type="number" id="price_documents_gbao" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="documents_visa_support" class="price-component-checkbox">
+                                        <label for="documents_visa_support" class="text-sm">Виза-поддержка, офиц. приглашение</label>
+                                        <input type="number" id="price_documents_visa_support" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" id="documents_foreign_visa" class="price-component-checkbox">
+                                        <label for="documents_foreign_visa" class="text-sm">Виза в зарубежные страны</label>
+                                        <input type="number" id="price_documents_foreign_visa" class="form-input w-20 text-sm" min="0" step="0.01" disabled>
+                                        <span class="text-xs text-gray-500">TJS</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Итоговая цена -->
+                            <div class="mt-4 pt-4 border-t border-gray-300">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-lg font-semibold text-gray-700">Цена за тур:</span>
+                                    <span id="totalPriceTJS" class="text-xl font-bold text-green-600">0 TJS</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Скрытые поля для сохранения -->
+                        <input type="hidden" id="tourPrice" name="tourPrice">
+                        <input type="hidden" id="tourPriceComponents" name="tourPriceComponents">
+                        <input type="hidden" id="tourTotalPriceTJS" name="tourTotalPriceTJS">
                     </div>
                     
                     <div class="form-group">
@@ -3414,6 +3628,20 @@
             loadHotelsForCheckboxes();
             loadGuidesForCheckboxes();
             
+            // Add city filter for hotels
+            const tourCityInput = document.getElementById('tourCity');
+            if (tourCityInput) {
+                tourCityInput.addEventListener('input', function() {
+                    const city = this.value.trim();
+                    console.log('City changed to:', city);
+                    // Filter hotels by city with a small delay
+                    clearTimeout(window.cityFilterTimeout);
+                    window.cityFilterTimeout = setTimeout(() => {
+                        loadHotelsForCheckboxes(city || null);
+                    }, 500); // 500ms delay to avoid too many requests
+                });
+            }
+            
             // Load categories for tour form
             loadCategories();
             
@@ -3895,8 +4123,11 @@
             const titleEnValue = document.getElementById('tourTitleEn').value;
             
             const categoryValue = document.getElementById('tourCategory').value;
-            const priceValue = document.getElementById('tourPrice').value;
             const durationDaysValue = document.getElementById('tourDurationDays').value;
+            
+            // Получаем данные о ценовых компонентах
+            const totalPriceTJS = parseFloat(document.getElementById('tourTotalPriceTJS').value) || 0;
+            const priceComponents = document.getElementById('tourPriceComponents').value || '[]';
             
             if (!titleRuValue || titleRuValue.trim() === '') {
                 alert('Пожалуйста, введите название тура на русском языке');
@@ -3908,8 +4139,8 @@
                 return;
             }
             
-            if (!priceValue || isNaN(parseFloat(priceValue))) {
-                alert('Пожалуйста, введите корректную цену тура');
+            if (totalPriceTJS <= 0) {
+                alert('Пожалуйста, выберите хотя бы один компонент тура с ценой');
                 return;
             }
             
@@ -3943,8 +4174,10 @@
                     ru: document.getElementById('tourDescRu').value || '',
                     en: document.getElementById('tourDescEn').value || ''
                 }),
-                price: parseFloat(priceValue),
+                price: totalPriceTJS.toString(),
                 priceType: document.getElementById('tourPriceType').value || 'за человека',
+                priceComponents: priceComponents,
+                totalPriceTJS: totalPriceTJS,
                 categoryId: categoryValue ? parseInt(categoryValue) : null,
                 tourBlockId: document.getElementById('tourBlockId').value ? parseInt(document.getElementById('tourBlockId').value) : null,
                 country: document.getElementById('tourCountry').value || '',
@@ -4212,28 +4445,51 @@
             updateSelectedLanguages();
         }
         
-        function loadHotelsForCheckboxes() {
+        function loadHotelsForCheckboxes(filterByCity = null) {
             fetch(`${getApiUrl()}/hotels`, {
                 headers: getAuthHeaders()
             })
                 .then(res => res.json())
                 .then(data => {
                     const container = document.getElementById('hotelCheckboxes');
-                    const hotels = data.data || data.hotels || [];
+                    let hotels = data.data || data.hotels || [];
+                    
+                    // Filter hotels by city if provided
+                    if (filterByCity) {
+                        hotels = hotels.filter(hotel => {
+                            const hotelCity = hotel.city || '';
+                            return hotelCity.toLowerCase().includes(filterByCity.toLowerCase());
+                        });
+                    }
+                    
+                    if (hotels.length === 0) {
+                        container.innerHTML = filterByCity 
+                            ? `<div class="text-gray-500 text-sm">Нет отелей в городе "${filterByCity}"</div>`
+                            : '<div class="text-gray-500 text-sm">Нет доступных отелей</div>';
+                        return;
+                    }
+                    
                     container.innerHTML = hotels.map(hotel => {
                         let name;
-                    try {
-                        name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
-                    } catch (e) {
-                        console.warn('Failed to parse hotel name in checkboxes:', hotel.name);
-                        name = hotel.name || {};
-                    }
+                        try {
+                            name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
+                        } catch (e) {
+                            console.warn('Failed to parse hotel name in checkboxes:', hotel.name);
+                            name = hotel.name || {};
+                        }
+                        const hotelDisplayName = name.ru || name.en || 'Отель';
+                        const cityInfo = hotel.city ? ` (${hotel.city})` : '';
                         return `
                             <label class="checkbox-item">
-                                <input type="checkbox" name="selectedHotels" value="${hotel.id}"> ${name.ru || name.en || 'Отель'}
+                                <input type="checkbox" name="selectedHotels" value="${hotel.id}"> ${hotelDisplayName}${cityInfo}
                             </label>
                         `;
                     }).join('');
+                })
+                .catch(err => {
+                    console.error('Error loading hotels for checkboxes:', err);
+                    document.getElementById('hotelCheckboxes').innerHTML = 
+                        '<div class="text-red-500 text-sm">Ошибка загрузки отелей</div>';
                 });
         }
         
@@ -4435,9 +4691,8 @@
             // Очистить список изображений
             updateHotelImagesList();
             
-            // НОВОЕ: Очистить категории номеров и типы питания при закрытии модала
+            // НОВОЕ: Очистить категории номеров при закрытии модала
             clearRoomTypeFields();
-            clearMealTypeFields();
         }
         
         // НОВОЕ: Функция очистки полей категорий номеров
@@ -4890,7 +5145,7 @@
                 });
         });
         
-        // НОВОЕ: JavaScript для управления полями категорий номеров и типов питания
+        // JavaScript для управления полями категорий номеров
         document.addEventListener('DOMContentLoaded', function() {
             // Обработчики для включения/выключения полей цены категорий номеров
             document.getElementById('roomSGL').addEventListener('change', function() {
@@ -4907,8 +5162,114 @@
                 document.getElementById('priceDBL').disabled = !this.checked;
                 if (!this.checked) document.getElementById('priceDBL').value = '';
             });
-            
+
+            // НОВОЕ: Инициализация системы ценовых компонентов тура
+            initializePriceComponents();
         });
+
+        // Функция инициализации ценовых компонентов
+        function initializePriceComponents() {
+            // Список всех компонентов
+            const componentIds = [
+                'transport_suv', 'transport_crossover', 'transport_minibus', 'transport_bus',
+                'hotel_5star_double', 'hotel_4star_double', 'hotel_3star_double', 'hotel_2star_double', 'hotel_hostel',
+                'meals_lunch', 'meals_dinner',
+                'guide_russian', 'guide_english',
+                'tickets_local', 'tickets_international',
+                'transfer_local', 'transfer_international',
+                'documents_gbao', 'documents_visa_support', 'documents_foreign_visa'
+            ];
+
+            // Добавляем обработчики для всех компонентов
+            componentIds.forEach(componentId => {
+                const checkbox = document.getElementById(componentId);
+                const priceInput = document.getElementById('price_' + componentId);
+                
+                if (checkbox && priceInput) {
+                    // Обработчик для чекбокса
+                    checkbox.addEventListener('change', function() {
+                        priceInput.disabled = !this.checked;
+                        if (!this.checked) {
+                            priceInput.value = '';
+                        }
+                        calculateTotalPrice();
+                    });
+                    
+                    // Обработчик для поля цены
+                    priceInput.addEventListener('input', calculateTotalPrice);
+                }
+            });
+
+            // Загружаем базовые цены из калькулятора
+            loadBasePrices();
+        }
+
+        // Функция загрузки базовых цен из калькулятора
+        function loadBasePrices() {
+            fetch(`${getApiUrl()}/price-calculator`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        const basePrices = data.data;
+                        basePrices.forEach(item => {
+                            const priceInput = document.getElementById('price_' + item.componentKey);
+                            if (priceInput && !priceInput.value) {
+                                priceInput.value = item.basePrice;
+                            }
+                        });
+                    }
+                })
+                .catch(err => console.log('Базовые цены не загружены:', err));
+        }
+
+        // Функция расчета общей стоимости
+        function calculateTotalPrice() {
+            let total = 0;
+            const componentsList = [];
+
+            // Список всех компонентов
+            const componentIds = [
+                'transport_suv', 'transport_crossover', 'transport_minibus', 'transport_bus',
+                'hotel_5star_double', 'hotel_4star_double', 'hotel_3star_double', 'hotel_2star_double', 'hotel_hostel',
+                'meals_lunch', 'meals_dinner',
+                'guide_russian', 'guide_english',
+                'tickets_local', 'tickets_international',
+                'transfer_local', 'transfer_international',
+                'documents_gbao', 'documents_visa_support', 'documents_foreign_visa'
+            ];
+
+            componentIds.forEach(componentId => {
+                const checkbox = document.getElementById(componentId);
+                const priceInput = document.getElementById('price_' + componentId);
+                
+                if (checkbox && checkbox.checked && priceInput && priceInput.value) {
+                    const price = parseFloat(priceInput.value);
+                    if (!isNaN(price)) {
+                        total += price;
+                        
+                        // Получаем название компонента
+                        const label = document.querySelector(`label[for="${componentId}"]`);
+                        const componentName = label ? label.textContent.trim() : componentId;
+                        
+                        componentsList.push({
+                            key: componentId,
+                            name: componentName,
+                            price: price
+                        });
+                    }
+                }
+            });
+
+            // Обновляем отображение общей суммы
+            document.getElementById('totalPriceTJS').textContent = total.toFixed(2) + ' TJS';
+            
+            // Обновляем скрытые поля для отправки формы
+            document.getElementById('tourPrice').value = total;
+            document.getElementById('tourPriceComponents').value = JSON.stringify(componentsList);
+            document.getElementById('tourTotalPriceTJS').value = total;
+
+            return total;
+        }
 
         // Initialize ObjectUploader for hotels
         let hotelUploader = null;
@@ -7031,7 +7392,7 @@
         // Show section function
         function showSection(sectionName) {
             // Hide all sections
-            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'reviewsSection', 'cmsSection', 'translationSection', 'settingsSection'];
+            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'reviewsSection', 'price-calculatorSection', 'cmsSection', 'translationSection', 'settingsSection'];
             sections.forEach(sectionId => {
                 const element = document.getElementById(sectionId);
                 if (element) element.style.display = 'none';
@@ -7098,17 +7459,157 @@
 
         // Load functions for new sections
         function loadPriceCalculator() {
-            // Load saved prices from localStorage if available
-            const savedPrices = localStorage.getItem('priceCalculatorData');
-            if (savedPrices) {
-                try {
-                    const prices = JSON.parse(savedPrices);
-                    // Update table with saved prices
-                    console.log('Loaded saved prices:', prices);
-                } catch (e) {
-                    console.error('Error loading saved prices:', e);
+            loadPriceComponents();
+        }
+        
+        // Price Calculator management functions
+        function loadPriceComponents() {
+            console.log('Loading price calculator components...');
+            fetch(`${getApiUrl()}/price-calculator`, {
+                headers: getAuthHeaders()
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        displayPriceComponentsByCategory(data.data);
+                    } else {
+                        console.error('Failed to load price components:', data.message);
+                        document.getElementById('priceComponentsList').innerHTML = 
+                            '<div class="text-red-500">Ошибка загрузки компонентов цен</div>';
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading price components:', err);
+                    document.getElementById('priceComponentsList').innerHTML = 
+                        '<div class="text-red-500">Ошибка загрузки: ' + err.message + '</div>';
+                });
+        }
+        
+        function displayPriceComponentsByCategory(components) {
+            const categories = {
+                'transport': 'Транспорт',
+                'hotel': 'Гостиницы', 
+                'meals': 'Питание',
+                'guide': 'Проводники',
+                'tickets': 'Входные билеты',
+                'transfer': 'Трансферы',
+                'documents': 'Документы'
+            };
+            
+            const container = document.getElementById('priceComponentsList');
+            const groupedComponents = {};
+            
+            // Group components by category
+            components.forEach(component => {
+                if (!groupedComponents[component.category]) {
+                    groupedComponents[component.category] = [];
                 }
+                groupedComponents[component.category].push(component);
+            });
+            
+            // Generate HTML for each category
+            const html = Object.keys(categories).map(categoryKey => {
+                const categoryName = categories[categoryKey];
+                const categoryComponents = groupedComponents[categoryKey] || [];
+                
+                if (categoryComponents.length === 0) return '';
+                
+                return `
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">${categoryName}</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${categoryComponents.map(component => `
+                                <div class="border rounded-lg p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <label class="text-sm font-medium text-gray-700">${component.componentName}</label>
+                                        <span class="text-xs text-gray-500">${component.componentKey}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="number" 
+                                               value="${component.basePrice}" 
+                                               min="0" 
+                                               step="0.01" 
+                                               class="form-input w-24 text-sm"
+                                               onchange="updateComponentPrice(${component.id}, this.value)"
+                                               id="component-${component.id}">
+                                        <span class="text-sm text-gray-600">TJS</span>
+                                        <div class="flex items-center ml-2">
+                                            <input type="checkbox" 
+                                                   ${component.isActive ? 'checked' : ''} 
+                                                   onchange="toggleComponentActive(${component.id}, this.checked)"
+                                                   class="mr-1">
+                                            <span class="text-xs text-gray-500">Активен</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).filter(html => html).join('');
+            
+            container.innerHTML = html || '<div class="text-gray-500">Нет доступных компонентов</div>';
+        }
+        
+        function updateComponentPrice(componentId, newPrice) {
+            const price = parseFloat(newPrice);
+            if (isNaN(price) || price < 0) {
+                alert('Введите корректную цену');
+                return;
             }
+            
+            fetch(`${getApiUrl()}/price-calculator/${componentId}`, {
+                method: 'PUT',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ basePrice: price })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Price updated successfully for component', componentId);
+                    } else {
+                        alert('Ошибка обновления цены: ' + (data.message || 'Неизвестная ошибка'));
+                        // Reset the input value
+                        document.getElementById(`component-${componentId}`).value = data.originalPrice || newPrice;
+                    }
+                })
+                .catch(err => {
+                    console.error('Error updating component price:', err);
+                    alert('Ошибка сети при обновлении цены');
+                });
+        }
+        
+        function toggleComponentActive(componentId, isActive) {
+            fetch(`${getApiUrl()}/price-calculator/${componentId}`, {
+                method: 'PUT',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ isActive: isActive })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Component active status updated:', componentId, isActive);
+                    } else {
+                        alert('Ошибка обновления статуса: ' + (data.message || 'Неизвестная ошибка'));
+                        // Reset checkbox
+                        event.target.checked = !isActive;
+                    }
+                })
+                .catch(err => {
+                    console.error('Error updating component status:', err);
+                    alert('Ошибка сети при обновлении статуса');
+                    event.target.checked = !isActive;
+                });
+        }
+        
+        function refreshPriceComponents() {
+            loadPriceComponents();
         }
 
         function loadBannerManagement() {

@@ -67,6 +67,8 @@ export class TourModel {
         price: data.price,
         priceType: data.priceType || 'за человека',
         originalPrice: data.originalPrice || null,
+        priceComponents: data.priceComponents || null,
+        totalPriceTJS: data.totalPriceTJS || null,
         categoryId: data.categoryId,
         tourBlockId: data.tourBlockId,
         country: data.country,
@@ -119,6 +121,8 @@ export class TourModel {
     if (data.price) updateData.price = data.price;
     if (data.priceType !== undefined) updateData.priceType = data.priceType;
     if (data.originalPrice !== undefined) updateData.originalPrice = data.originalPrice;
+    if (data.priceComponents !== undefined) updateData.priceComponents = data.priceComponents;
+    if (data.totalPriceTJS !== undefined) updateData.totalPriceTJS = data.totalPriceTJS;
     if (data.country !== undefined) updateData.country = data.country;
     if (data.city !== undefined) updateData.city = data.city;
     if (data.format !== undefined) updateData.format = data.format;
@@ -592,6 +596,128 @@ export class HotelModel {
     });
 
     return true;
+  }
+}
+
+export class PriceCalculatorModel {
+  /**
+   * Get all price calculator components
+   */
+  static async findAll() {
+    return await prisma.priceCalculator.findMany({
+      where: { isActive: true },
+      orderBy: [
+        { category: 'asc' },
+        { componentName: 'asc' }
+      ]
+    });
+  }
+
+  /**
+   * Get price calculator component by key
+   */
+  static async findByKey(componentKey: string) {
+    return await prisma.priceCalculator.findUnique({
+      where: { componentKey }
+    });
+  }
+
+  /**
+   * Create a new price calculator component
+   */
+  static async create(data: any) {
+    return await prisma.priceCalculator.create({
+      data: {
+        componentKey: data.componentKey,
+        componentName: data.componentName,
+        basePrice: parseFloat(data.basePrice),
+        category: data.category,
+        isActive: data.isActive !== undefined ? data.isActive : true
+      }
+    });
+  }
+
+  /**
+   * Update a price calculator component
+   */
+  static async update(id: number, data: any) {
+    const updateData: any = {};
+    
+    if (data.componentKey !== undefined) updateData.componentKey = data.componentKey;
+    if (data.componentName !== undefined) updateData.componentName = data.componentName;
+    if (data.basePrice !== undefined) updateData.basePrice = parseFloat(data.basePrice);
+    if (data.category !== undefined) updateData.category = data.category;
+    if (data.isActive !== undefined) updateData.isActive = data.isActive;
+
+    return await prisma.priceCalculator.update({
+      where: { id },
+      data: updateData
+    });
+  }
+
+  /**
+   * Delete a price calculator component
+   */
+  static async delete(id: number) {
+    const component = await prisma.priceCalculator.findUnique({ where: { id } });
+    if (!component) return false;
+
+    await prisma.priceCalculator.delete({ where: { id } });
+    return true;
+  }
+
+  /**
+   * Initialize default price components
+   */
+  static async initializeDefaults() {
+    const defaultComponents = [
+      // Транспорт
+      { key: 'transport_suv', name: 'Внедорожник', category: 'transport', price: 500 },
+      { key: 'transport_crossover', name: 'Кроссовер', category: 'transport', price: 400 },
+      { key: 'transport_minibus', name: 'Микроавтобус', category: 'transport', price: 600 },
+      { key: 'transport_bus', name: 'Автобус', category: 'transport', price: 300 },
+      
+      // Гостиницы
+      { key: 'hotel_5star_double', name: '5*, двухместный', category: 'hotel', price: 1200 },
+      { key: 'hotel_4star_double', name: '4*, двухместный', category: 'hotel', price: 900 },
+      { key: 'hotel_3star_double', name: '3*, двухместный', category: 'hotel', price: 600 },
+      { key: 'hotel_2star_double', name: '2*, двухместный', category: 'hotel', price: 400 },
+      { key: 'hotel_hostel', name: 'Хостел', category: 'hotel', price: 200 },
+      
+      // Питание
+      { key: 'meals_lunch', name: 'Обед', category: 'meals', price: 150 },
+      { key: 'meals_dinner', name: 'Ужин', category: 'meals', price: 200 },
+      
+      // Проводники
+      { key: 'guide_russian', name: 'Русскоговорящий', category: 'guide', price: 800 },
+      { key: 'guide_english', name: 'Англоговорящий', category: 'guide', price: 1000 },
+      
+      // Входные билеты
+      { key: 'tickets_local', name: 'В объектах-тадж', category: 'tickets', price: 50 },
+      { key: 'tickets_international', name: 'В объектах-инт', category: 'tickets', price: 100 },
+      
+      // Трансферы
+      { key: 'transfer_local', name: 'Аэропорт-дом гостиницы-тадж', category: 'transfer', price: 300 },
+      { key: 'transfer_international', name: 'Аэропорт-дом гостиницы-инт', category: 'transfer', price: 500 },
+      
+      // Документы
+      { key: 'documents_gbao', name: 'Разрешение на выезд в ГБАО', category: 'documents', price: 250 },
+      { key: 'documents_visa_support', name: 'Виза-поддержка, офиц. приглашение', category: 'documents', price: 400 },
+      { key: 'documents_foreign_visa', name: 'Виза в зарубежные страны', category: 'documents', price: 600 }
+    ];
+
+    for (const component of defaultComponents) {
+      const existing = await this.findByKey(component.key);
+      if (!existing) {
+        await this.create({
+          componentKey: component.key,
+          componentName: component.name,
+          basePrice: component.price,
+          category: component.category,
+          isActive: true
+        });
+      }
+    }
   }
 }
 
