@@ -137,11 +137,65 @@
         .modal-content {
             background: white;
             border-radius: 16px;
-            max-width: 90%;
+            width: 100%;
+            max-width: 900px;
             max-height: 90vh;
             overflow-y: auto;
             padding: 32px;
             position: relative;
+            box-sizing: border-box;
+        }
+        
+        /* Убеждаемся, что все элементы формы помещаются */
+        .modal-content .form-group,
+        .modal-content .checkbox-group,
+        .modal-content .grid {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .modal-content .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .modal-content .checkbox-item {
+            flex: 0 0 auto;
+            margin-right: 0;
+            margin-bottom: 8px;
+        }
+        
+        /* Специальные стили для модального окна тура */
+        #tourModal .modal-content {
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        /* Убеждаемся, что загрузчик изображений помещается */
+        #tourModal #tour-uploader-container {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* Стили для чекбоксов в модальном окне */
+        #tourModal .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+            width: 100%;
+        }
+        
+        /* Стили для связанных ресурсов */
+        #tourModal #hotelCheckboxes,
+        #tourModal #guideCheckboxes {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            background: #f9fafb;
         }
         
         .form-group {
@@ -1628,7 +1682,7 @@
 
     <!-- Tour Modal -->
     <div id="tourModal" class="modal">
-        <div class="modal-content" style="width: 900px; max-width: 95vw; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-content">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-semibold">Добавить/Редактировать тур</h2>
                 <button onclick="closeTourModal()" class="text-gray-500 hover:text-gray-700">
