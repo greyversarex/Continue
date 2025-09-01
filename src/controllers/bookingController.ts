@@ -434,7 +434,6 @@ export const bookingController = {
           description: booking.hotel.description ? JSON.parse(booking.hotel.description) : null,
           amenities: booking.hotel.amenities ? JSON.parse(booking.hotel.amenities) : [],
           roomTypes: booking.hotel.roomTypes,
-          mealTypes: booking.hotel.mealTypes
         } : null
       };
 
