@@ -2313,12 +2313,29 @@
         }
         
         function loadDashboardStats() {
+            // Check if user is authenticated first
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                console.log('No auth token found, user needs to login');
+                return;
+            }
+            
             // Use the new dedicated dashboard stats endpoint
             fetch(`${getApiUrl()}/admin/dashboard-stats`, { 
                 headers: getAuthHeaders() 
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (response.status === 401 || response.status === 403) {
+                        // Token is invalid, redirect to login
+                        console.log('Token invalid, redirecting to login');
+                        logout();
+                        return null;
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    if (!data) return; // Handle logout case
+                    
                     console.log('Dashboard stats loaded:', data);
                     if (data.success) {
                         const stats = data.data.stats;
@@ -2335,11 +2352,24 @@
                         }
                     } else {
                         console.error('Dashboard stats API error:', data.message);
+                        // Show default values if API fails
+                        showDefaultStats();
                     }
                 })
                 .catch(err => {
                     console.error('Error loading dashboard stats:', err);
+                    showDefaultStats();
                 });
+        }
+        
+        function showDefaultStats() {
+            const statsCards = document.querySelectorAll('.stat-card h3');
+            if (statsCards.length >= 4) {
+                statsCards[0].textContent = '-';
+                statsCards[1].textContent = '-';
+                statsCards[2].textContent = '$0.00';
+                statsCards[3].textContent = '-';
+            }
         }
         
         function loadRecentOrders() {
@@ -7289,10 +7319,38 @@
         function checkAuthOnLoad() {
             const token = localStorage.getItem('authToken');
             if (token) {
-                // Show dashboard and hide login
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminDashboard').style.display = 'block';
-                showSection('dashboard');
+                // Verify token with backend before showing dashboard
+                fetch(`${getApiUrl()}/admin/verify-token`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Token is valid, show dashboard
+                        document.getElementById('loginScreen').style.display = 'none';
+                        document.getElementById('adminDashboard').style.display = 'block';
+                        showSection('dashboard');
+                        loadDashboard();
+                    } else {
+                        // Token is invalid, show login
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('user');
+                        document.getElementById('loginScreen').style.display = 'flex';
+                        document.getElementById('adminDashboard').style.display = 'none';
+                    }
+                })
+                .catch(err => {
+                    console.error('Token verification failed:', err);
+                    // On error, show login
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('user');
+                    document.getElementById('loginScreen').style.display = 'flex';
+                    document.getElementById('adminDashboard').style.display = 'none';
+                });
             } else {
                 // Show login screen
                 document.getElementById('loginScreen').style.display = 'flex';
