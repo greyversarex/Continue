@@ -71,6 +71,7 @@ export interface CreateTourData {
   location?: string;
   services?: string;
   pricingComponents?: string; // JSON string of selected pricing components with quantities
+  pricingMode?: string; // 'auto' for component-based, 'manual' for manual price input
 }
 
 // API Response types

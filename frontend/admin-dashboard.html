@@ -1680,37 +1680,77 @@
                     
                     
                     
-                    <!-- Component-based Pricing System -->
+                    <!-- Pricing System with Mode Toggle -->
                     <div class="form-group col-span-2">
-                        <label class="form-label">Компоненты тура и цены (TJS)</label>
+                        <label class="form-label">Ценообразование тура</label>
                         <div class="border rounded-lg p-4 bg-gray-50">
-                            <!-- Price Components Selection -->
-                            <div id="tourPricingComponents" class="space-y-4">
-                                <div class="text-center text-gray-500 py-4">
-                                    <i class="fas fa-spinner fa-spin mr-2"></i>
-                                    Загрузка компонентов цен...
+                            <!-- Pricing Mode Toggle -->
+                            <div class="mb-4 p-3 bg-white rounded border">
+                                <label class="form-label mb-2">Режим ценообразования</label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="pricingMode" value="auto" id="pricingModeAuto" 
+                                               onchange="togglePricingMode(this.value)" checked 
+                                               class="w-4 h-4 text-blue-600 mr-2">
+                                        Автоматический расчёт (компоненты)
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="pricingMode" value="manual" id="pricingModeManual" 
+                                               onchange="togglePricingMode(this.value)" 
+                                               class="w-4 h-4 text-blue-600 mr-2">
+                                        Ручной ввод цены
+                                    </label>
                                 </div>
                             </div>
-                            
-                            <!-- Calculated Total -->
-                            <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
-                                <div class="flex justify-between items-center">
-                                    <span class="font-semibold">Общая стоимость:</span>
-                                    <span class="text-xl font-bold text-blue-600" id="calculatedTotalPrice">0 TJS</span>
+
+                            <!-- Auto Pricing (Components) -->
+                            <div id="autoPricingSection">
+                                <!-- Price Components Selection -->
+                                <div id="tourPricingComponents" class="space-y-4">
+                                    <div class="text-center text-gray-500 py-4">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                                        Загрузка компонентов цен...
+                                    </div>
                                 </div>
-                                <div class="mt-2">
-                                    <label class="form-label">Тип цены</label>
-                                    <select class="form-input" id="tourPriceType" required>
-                                        <option value="за человека">За человека</option>
-                                        <option value="за группу">За группу</option>
-                                    </select>
+                                
+                                <!-- Calculated Total -->
+                                <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-semibold">Общая стоимость:</span>
+                                        <span class="text-xl font-bold text-blue-600" id="calculatedTotalPrice">0 TJS</span>
+                                    </div>
                                 </div>
                             </div>
+
+                            <!-- Manual Pricing -->
+                            <div id="manualPricingSection" style="display: none;">
+                                <div class="space-y-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Цена (TJS)</label>
+                                        <input type="number" class="form-input" id="manualTourPrice" 
+                                               min="0" step="0.01" placeholder="Введите цену в сомони"
+                                               onchange="updateManualPrice()">
+                                    </div>
+                                    <div class="p-3 bg-yellow-50 border border-yellow-200 rounded text-sm">
+                                        <i class="fas fa-info-circle text-yellow-600 mr-1"></i>
+                                        В ручном режиме вы сами устанавливаете цену тура без использования компонентов.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Common Price Type -->
+                            <div class="mt-4">
+                                <label class="form-label">Тип цены</label>
+                                <select class="form-input" id="tourPriceType" required>
+                                    <option value="за человека">За человека</option>
+                                    <option value="за группу">За группу</option>
+                                </select>
+                            </div>
                             
-                            <!-- Hidden field to store selected components -->
+                            <!-- Hidden fields -->
                             <input type="hidden" id="tourPricingData" value="">
-                            <!-- Hidden field for calculated price -->
                             <input type="hidden" id="tourPrice" value="0">
+                            <input type="hidden" id="tourPricingMode" value="auto">
                         </div>
                     </div>
                     
@@ -2857,7 +2897,9 @@
                 // Собираем выбранных гидов 
                 guideIds: Array.from(document.querySelectorAll('input[name="selectedGuides"]:checked')).map(cb => parseInt(cb.value)),
                 // Компоненты цены (новая система ценообразования)
-                pricingComponents: document.getElementById('tourPricingData')?.value || '[]'
+                pricingComponents: document.getElementById('tourPricingData')?.value || '[]',
+                // Режим ценообразования
+                pricingMode: document.getElementById('tourPricingMode')?.value || 'auto'
             };
             
             console.log('📤 Sending tour data:', formData);
@@ -2899,11 +2941,18 @@
             window.tourStartTimes = [];
             window.editStartTimes = [];
             
+            // Сбрасываем режим ценообразования на автоматический
+            document.getElementById('pricingModeAuto').checked = true;
+            document.getElementById('pricingModeManual').checked = false;
+            document.getElementById('tourPricingMode').value = 'auto';
+            togglePricingMode('auto');
+            
             // Очищаем компоненты цены
             selectedTourComponents = [];
             document.getElementById('tourPricingData').value = '';
             document.getElementById('tourPrice').value = '0';
             document.getElementById('calculatedTotalPrice').textContent = '0 TJS';
+            document.getElementById('manualTourPrice').value = '';
             
             // Сбрасываем чекбоксы компонентов
             document.querySelectorAll('#tourPricingComponents input[type="checkbox"]').forEach(checkbox => {
@@ -3534,21 +3583,40 @@
                         }
                         
                         // Load pricing components for editing
-                        if (tour.pricingComponents) {
-                            try {
-                                const components = typeof tour.pricingComponents === 'string' 
-                                    ? JSON.parse(tour.pricingComponents) 
-                                    : tour.pricingComponents;
-                                
-                                // Wait for components to be loaded, then populate selections
-                                setTimeout(() => {
-                                    loadTourPricingComponentsForEdit(components);
-                                }, 500);
-                                
-                                console.log('✅ Will load pricing components for editing:', components);
-                            } catch (e) {
-                                console.warn('Failed to parse pricing components:', e);
+                        const pricingMode = tour.pricingMode || 'auto'; // Default to auto if not set
+                        document.getElementById('tourPricingMode').value = pricingMode;
+                        
+                        if (pricingMode === 'manual') {
+                            // Switch to manual mode and set price
+                            document.getElementById('pricingModeManual').checked = true;
+                            document.getElementById('pricingModeAuto').checked = false;
+                            togglePricingMode('manual');
+                            document.getElementById('manualTourPrice').value = tour.price || '';
+                            updateManualPrice();
+                            console.log('✅ Loaded manual pricing mode with price:', tour.price);
+                        } else {
+                            // Switch to auto mode and load components
+                            document.getElementById('pricingModeAuto').checked = true;
+                            document.getElementById('pricingModeManual').checked = false;
+                            togglePricingMode('auto');
+                            
+                            if (tour.pricingComponents) {
+                                try {
+                                    const components = typeof tour.pricingComponents === 'string' 
+                                        ? JSON.parse(tour.pricingComponents) 
+                                        : tour.pricingComponents;
+                                    
+                                    // Wait for components to be loaded, then populate selections
+                                    setTimeout(() => {
+                                        loadTourPricingComponentsForEdit(components);
+                                    }, 500);
+                                    
+                                    console.log('✅ Will load pricing components for editing:', components);
+                                } catch (e) {
+                                    console.warn('Failed to parse pricing components:', e);
+                                }
                             }
+                            console.log('✅ Loaded automatic pricing mode');
                         }
                         
                         const tourPriceTypeElement = document.getElementById('tourPriceType');
@@ -7422,7 +7490,52 @@
             }
         }
 
+        function togglePricingMode(mode) {
+            const autoPricingSection = document.getElementById('autoPricingSection');
+            const manualPricingSection = document.getElementById('manualPricingSection');
+            const pricingModeField = document.getElementById('tourPricingMode');
+            
+            if (mode === 'auto') {
+                autoPricingSection.style.display = 'block';
+                manualPricingSection.style.display = 'none';
+                pricingModeField.value = 'auto';
+                
+                // Recalculate price from components
+                calculateTourTotalPrice();
+                
+                console.log('Switched to automatic pricing mode');
+            } else if (mode === 'manual') {
+                autoPricingSection.style.display = 'none';
+                manualPricingSection.style.display = 'block';
+                pricingModeField.value = 'manual';
+                
+                // Clear components data but keep manual price
+                document.getElementById('tourPricingData').value = '[]';
+                
+                console.log('Switched to manual pricing mode');
+            }
+        }
+
+        function updateManualPrice() {
+            const manualPrice = document.getElementById('manualTourPrice').value;
+            const tourPriceField = document.getElementById('tourPrice');
+            
+            if (manualPrice && parseFloat(manualPrice) >= 0) {
+                tourPriceField.value = parseFloat(manualPrice).toFixed(2);
+                console.log('Manual price updated to:', manualPrice, 'TJS');
+            } else {
+                tourPriceField.value = '0';
+            }
+        }
+
         function calculateTourTotalPrice() {
+            const pricingMode = document.getElementById('tourPricingMode').value;
+            
+            // Only calculate if in auto mode
+            if (pricingMode !== 'auto') {
+                return;
+            }
+            
             let totalPrice = 0;
             
             selectedTourComponents.forEach(component => {

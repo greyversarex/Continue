@@ -84,6 +84,7 @@ model Tour {
   tourHotels     TourHotel[]
   tourGuides     TourGuide[]
   pricingComponents TourPricingComponent[]
+  pricingMode    String?          @default("auto") // "auto" for component-based, "manual" for manual input
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
