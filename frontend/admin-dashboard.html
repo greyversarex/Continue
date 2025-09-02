@@ -3392,15 +3392,25 @@
             
             document.getElementById('tourModal').classList.add('active');
             
-            // Initialize the uploader
+            // Initialize the uploader (only if container exists)
             setTimeout(() => {
-                initializeTourUploader();
-                initializeTourEditUploader();
+                const uploaderContainer = document.getElementById('tour-uploader-container');
+                if (uploaderContainer) {
+                    initializeTourUploader();
+                    initializeTourEditUploader();
+                }
             }, 100);
             
-            // Load hotels and guides for checkboxes
-            loadHotelsForCheckboxes();
-            loadGuidesForCheckboxes();
+            // Load hotels and guides for checkboxes (only if containers exist)
+            const hotelContainer = document.getElementById('hotelCheckboxes');
+            const guideContainer = document.getElementById('guideCheckboxes');
+            
+            if (hotelContainer) {
+                loadHotelsForCheckboxes();
+            }
+            if (guideContainer) {
+                loadGuidesForCheckboxes();
+            }
             
             // Add city filter for hotels
             const tourCityInput = document.getElementById('tourCity');
@@ -3418,6 +3428,57 @@
             
             // Load categories for tour form
             loadCategories();
+            
+            // Load categories for the simplified form dropdown
+            loadCategoriesForSimpleForm();
+        }
+        
+        // Function to load categories for simplified form dropdown
+        function loadCategoriesForSimpleForm() {
+            fetch(`${getApiUrl()}/categories`, {
+                headers: getAuthHeaders()
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const simpleSelect = document.getElementById('tourCategory');
+                    if (!simpleSelect) {
+                        console.warn('Simple category select not found');
+                        return;
+                    }
+                    
+                    const categories = data.data || data.categories || [];
+                    
+                    if (categories.length === 0) {
+                        simpleSelect.innerHTML = `
+                            <option value="">Категории не найдены</option>
+                        `;
+                    } else {
+                        simpleSelect.innerHTML = '<option value="">Выберите категорию</option>' +
+                            categories.map(cat => {
+                                let categoryName;
+                                try {
+                                    if (cat.name && typeof cat.name === 'string') {
+                                        const parsed = JSON.parse(cat.name);
+                                        categoryName = parsed.ru || parsed.en || 'Без названия';
+                                    } else if (cat.name && typeof cat.name === 'object') {
+                                        categoryName = cat.name.ru || cat.name.en || 'Без названия';
+                                    } else {
+                                        categoryName = 'Без названия';
+                                    }
+                                } catch (e) {
+                                    categoryName = cat.name || 'Без названия';
+                                }
+                                return `<option value="${cat.id}">${categoryName}</option>`;
+                            }).join('');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading categories for simple form:', err);
+                    const simpleSelect = document.getElementById('tourCategory');
+                    if (simpleSelect) {
+                        simpleSelect.innerHTML = '<option value="">Ошибка загрузки категорий</option>';
+                    }
+                });
             
             if (tourId) {
                 // Заполняем скрытое поле ID тура
@@ -4027,8 +4088,8 @@
             document.getElementById('tourModal').classList.remove('active');
             document.getElementById('tourForm').reset();
             
-            // Clear the uploader
-            if (tourUploader) {
+            // Clear the uploader (only if it exists)
+            if (tourUploader && document.getElementById('tour-uploader-container')) {
                 tourUploader.clear('tour-uploader-container');
             }
             // ИСПРАВЛЕНО: Используем правильный uploader
@@ -4229,6 +4290,10 @@
                 .then(res => res.json())
                 .then(data => {
                     const container = document.getElementById('hotelCheckboxes');
+                    if (!container) {
+                        console.warn('Hotel checkboxes container not found - using simplified form');
+                        return;
+                    }
                     let hotels = data.data || data.hotels || [];
                     
                     // Filter hotels by city if provided
@@ -4277,6 +4342,10 @@
                 .then(res => res.json())
                 .then(data => {
                     const container = document.getElementById('guideCheckboxes');
+                    if (!container) {
+                        console.warn('Guide checkboxes container not found - using simplified form');
+                        return;
+                    }
                     const guides = data.data || data.guides || [];
                     container.innerHTML = guides.map(guide => {
                         let name;
