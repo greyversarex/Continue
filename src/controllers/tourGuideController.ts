@@ -518,3 +518,83 @@ export const leaveGuideReview = async (req: Request, res: Response): Promise<voi
     });
   }
 };
+
+// Создание нового тургида с аутентификацией (для админ панели)
+export const createTourGuideProfile = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { name, description, login, password, email, phone, languages, experience } = req.body;
+
+    if (!name || !login || !password || !email) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'Имя, логин, пароль и email обязательны' 
+      });
+      return;
+    }
+
+    // Проверить уникальность логина
+    const existingGuide = await prisma.tourGuideProfile.findUnique({
+      where: { login }
+    });
+
+    if (existingGuide) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'Логин уже используется' 
+      });
+      return;
+    }
+
+    // Проверить уникальность email если он указан
+    if (email) {
+      const existingEmail = await prisma.tourGuideProfile.findFirst({
+        where: { email }
+      });
+
+      if (existingEmail) {
+        res.status(400).json({ 
+          success: false, 
+          message: 'Email уже используется' 
+        });
+        return;
+      }
+    }
+
+    // Хэшировать пароль
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Создать тургида
+    const guide = await prisma.tourGuideProfile.create({
+      data: {
+        name,
+        login,
+        password: hashedPassword,
+        email,
+        phone: phone || null,
+        isActive: true
+      }
+    });
+
+    console.log('✅ Новый тургид создан:', guide.login);
+
+    res.status(201).json({
+      success: true,
+      data: {
+        id: guide.id,
+        name: guide.name,
+        login: guide.login,
+        email: guide.email,
+        phone: guide.phone,
+        isActive: guide.isActive
+      },
+      message: 'Тургид успешно создан'
+    });
+
+  } catch (error) {
+    console.error('❌ Ошибка создания тургида:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Ошибка сервера' 
+    });
+  }
+};

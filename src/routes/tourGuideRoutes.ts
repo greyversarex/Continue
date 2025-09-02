@@ -7,13 +7,17 @@ import {
   startTour,
   finishTour,
   collectReviews,
-  leaveGuideReview
+  leaveGuideReview,
+  createTourGuideProfile
 } from '../controllers/tourGuideController';
 
 const router = express.Router();
 
 // Авторизация
 router.post('/login', loginTourGuide);
+
+// Создание тургида с аутентификацией (для админ панели)
+router.post('/create-with-auth', createTourGuideProfile);
 
 // Защищённые маршруты для тургидов (требуют авторизации)
 router.get('/tours', authenticateTourGuide, getGuideTours);

@@ -5854,34 +5854,60 @@
                         </div>
                         
                         <form id="guideForm">
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 gap-4">
                                 <div class="form-group">
-                                    <label class="form-label">Имя (Русский)</label>
-                                    <input type="text" class="form-input" id="guideNameRu" required>
+                                    <label class="form-label">ФИО *</label>
+                                    <input type="text" class="form-input" id="guideFullName" placeholder="Иванов Иван Иванович" required>
                                 </div>
+                                
                                 <div class="form-group">
-                                    <label class="form-label">Имя (English)</label>
-                                    <input type="text" class="form-input" id="guideNameEn" required>
+                                    <label class="form-label">Языки *</label>
+                                    <select class="form-input" id="guideLanguages" multiple>
+                                        <option value="Русский">Русский</option>
+                                        <option value="English">English</option>
+                                        <option value="Тоҷикӣ">Тоҷикӣ</option>
+                                        <option value="Ўзбек">Ўзбек</option>
+                                        <option value="Қырған">Қырған</option>
+                                        <option value="Türkmen">Türkmen</option>
+                                        <option value="Французский">Французский</option>
+                                        <option value="Немецкий">Немецкий</option>
+                                    </select>
+                                    <small class="text-gray-500">Удерживайте Ctrl/Cmd для выбора нескольких языков</small>
                                 </div>
-                                <div class="form-group col-span-2">
-                                    <label class="form-label">Описание (Русский)</label>
-                                    <textarea class="form-input" rows="3" id="guideDescRu"></textarea>
-                                </div>
-                                <div class="form-group col-span-2">
-                                    <label class="form-label">Описание (English)</label>
-                                    <textarea class="form-input" rows="3" id="guideDescEn"></textarea>
-                                </div>
+                                
                                 <div class="form-group">
-                                    <label class="form-label">Языки</label>
-                                    <input type="text" class="form-input" id="guideLanguages" placeholder="Русский, English, Тоҷикӣ">
+                                    <label class="form-label">Опыт работы (лет) *</label>
+                                    <input type="number" class="form-input" id="guideExperience" min="0" max="50" required>
                                 </div>
+                                
                                 <div class="form-group">
-                                    <label class="form-label">Опыт работы (лет)</label>
-                                    <input type="number" class="form-input" id="guideExperience" min="0">
+                                    <label class="form-label">Телефон *</label>
+                                    <input type="tel" class="form-input" id="guidePhone" placeholder="+992901234567" required>
                                 </div>
-                                <div class="form-group col-span-2">
-                                    <label class="form-label">Контакты</label>
-                                    <input type="text" class="form-input" id="guideContact" placeholder="Телефон, Email">
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" class="form-input" id="guideEmail" placeholder="guide@example.com" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Комментарии</label>
+                                    <textarea class="form-input" rows="3" id="guideComments" placeholder="Дополнительная информация о гиде..."></textarea>
+                                </div>
+                                
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-medium text-blue-900 mb-3">🔐 Данные для входа в кабинет</h4>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Логин *</label>
+                                            <input type="text" class="form-input" id="guideLogin" placeholder="guide_login" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Пароль *</label>
+                                            <input type="password" class="form-input" id="guidePassword" placeholder="********" required>
+                                        </div>
+                                    </div>
+                                    <small class="text-blue-600">Гид сможет войти в свой кабинет с этими данными</small>
                                 </div>
                             </div>
                             
@@ -5910,22 +5936,36 @@
         }
         
         function saveGuide() {
+            // Получаем выбранные языки из select
+            const languageSelect = document.getElementById('guideLanguages');
+            const selectedLanguages = Array.from(languageSelect.selectedOptions).map(option => option.value);
+            
+            // Проверяем обязательные поля
+            const fullName = document.getElementById('guideFullName').value.trim();
+            const experience = document.getElementById('guideExperience').value;
+            const phone = document.getElementById('guidePhone').value.trim();
+            const email = document.getElementById('guideEmail').value.trim();
+            const login = document.getElementById('guideLogin').value.trim();
+            const password = document.getElementById('guidePassword').value.trim();
+            
+            if (!fullName || !experience || !phone || !email || !login || !password || selectedLanguages.length === 0) {
+                alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой)');
+                return;
+            }
+            
             const formData = {
-                name: JSON.stringify({
-                    ru: document.getElementById('guideNameRu').value,
-                    en: document.getElementById('guideNameEn').value
-                }),
-                description: JSON.stringify({
-                    ru: document.getElementById('guideDescRu').value,
-                    en: document.getElementById('guideDescEn').value
-                }),
-                languages: document.getElementById('guideLanguages').value.split(',').map(l => l.trim()).filter(l => l),
-                experience: parseInt(document.getElementById('guideExperience').value) || 0,
-                contact: document.getElementById('guideContact').value,
+                name: fullName,
+                description: document.getElementById('guideComments').value.trim() || 'Профессиональный гид',
+                languages: selectedLanguages,
+                experience: parseInt(experience),
+                phone: phone,
+                email: email,
+                login: login,
+                password: password,
                 isActive: true
             };
             
-            fetch(`${getApiUrl()}/guides`, {
+            fetch(`${getApiUrl()}/guide/create-with-auth`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify(formData)
