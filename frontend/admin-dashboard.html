@@ -1386,79 +1386,6 @@
                         <input type="text" class="form-input" id="hotelCity" placeholder="Душанбе, Самарканд, Бишкек и т.д.">
                     </div>
                     
-                    <!-- НОВОЕ: Секция типов питания с ценами -->
-                    <div class="form-group">
-                        <label class="form-label">Типы питания и цены</label>
-                        <div class="bg-gray-50 p-4 rounded-lg border">
-                            <p class="text-sm text-gray-600 mb-3">Настройте доплату за питание в сутки (в USD)</p>
-                            
-                            <!-- RO - Без питания -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="mealRO" class="rounded">
-                                    <label for="mealRO" class="font-medium">RO - Без питания</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceMealRO" class="form-input w-20" placeholder="0" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ сутки</span>
-                                </div>
-                            </div>
-                            
-                            <!-- BB - Завтрак -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="mealBB" class="rounded">
-                                    <label for="mealBB" class="font-medium">BB - Завтрак</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceMealBB" class="form-input w-20" placeholder="25" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ сутки</span>
-                                </div>
-                            </div>
-                            
-                            <!-- HB - Полупансион -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="mealHB" class="rounded">
-                                    <label for="mealHB" class="font-medium">HB - Полупансион (завтрак + ужин)</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceMealHB" class="form-input w-20" placeholder="45" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ сутки</span>
-                                </div>
-                            </div>
-                            
-                            <!-- FB - Полный пансион -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="mealFB" class="rounded">
-                                    <label for="mealFB" class="font-medium">FB - Полный пансион (завтрак + обед + ужин)</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceMealFB" class="form-input w-20" placeholder="65" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ сутки</span>
-                                </div>
-                            </div>
-                            
-                            <!-- AI - Все включено -->
-                            <div class="flex items-center justify-between py-2">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="mealAI" class="rounded">
-                                    <label for="mealAI" class="font-medium">AI - Все включено</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceMealAI" class="form-input w-20" placeholder="85" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ сутки</span>
-                                </div>
-                            </div>
-                        </div>
-                        <small class="text-gray-500 mt-2 block">Отметьте доступные типы питания и укажите доплату за питание в сутки</small>
-                    </div>
                     
                     <div class="form-group">
                         <label class="form-label">Фотографии отеля</label>
@@ -4470,7 +4397,6 @@
                 document.getElementById('hotelModalTitle').textContent = 'Добавить отель';
                 document.getElementById('hotelForm').reset();
                 clearRoomTypeFields(); // НОВОЕ: Очистить категории номеров для создания нового отеля
-                clearMealTypeFields(); // НОВОЕ: Очистить типы питания для создания нового отеля
                 if (hotelUploader) {
                     hotelUploader.clear('hotel-uploader-container');
                 }
@@ -4495,7 +4421,6 @@
             
             // НОВОЕ: Очистить категории номеров и типы питания при закрытии модала
             clearRoomTypeFields();
-            clearMealTypeFields();
         }
         
         // НОВОЕ: Функция очистки полей категорий номеров
@@ -4511,24 +4436,6 @@
             document.getElementById('priceDBL').disabled = true;
         }
         
-        // НОВОЕ: Функция очистки полей типов питания
-        function clearMealTypeFields() {
-            document.getElementById('mealRO').checked = false;
-            document.getElementById('mealBB').checked = false;
-            document.getElementById('mealHB').checked = false;
-            document.getElementById('mealFB').checked = false;
-            document.getElementById('mealAI').checked = false;
-            document.getElementById('priceMealRO').value = '';
-            document.getElementById('priceMealBB').value = '';
-            document.getElementById('priceMealHB').value = '';
-            document.getElementById('priceMealFB').value = '';
-            document.getElementById('priceMealAI').value = '';
-            document.getElementById('priceMealRO').disabled = true;
-            document.getElementById('priceMealBB').disabled = true;
-            document.getElementById('priceMealHB').disabled = true;
-            document.getElementById('priceMealFB').disabled = true;
-            document.getElementById('priceMealAI').disabled = true;
-        }
         
         function loadHotelData(hotelId) {
             const apiUrl = getApiUrl();
@@ -5498,8 +5405,17 @@
                     }
                     
                     container.innerHTML = guides.map(guide => {
-                        const name = JSON.parse(guide.name || '{}');
-                        const languages = JSON.parse(guide.languages || '[]');
+                        let name, languages;
+                        try {
+                            name = typeof guide.name === 'string' ? JSON.parse(guide.name) : (guide.name || {});
+                        } catch(e) {
+                            name = guide.name || {};
+                        }
+                        try {
+                            languages = typeof guide.languages === 'string' ? JSON.parse(guide.languages) : (guide.languages || []);
+                        } catch(e) {
+                            languages = guide.languages || [];
+                        }
                         
                         return `
                             <div class="bg-white rounded-lg shadow-sm p-4">
