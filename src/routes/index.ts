@@ -19,6 +19,7 @@ import objectStorageRoutes from './objectStorageRoutes';
 import bookingRoutes from './bookingRoutes';
 import uploadRoutes from './uploadRoutes';
 import objectsRoutes from './objectsRoutes';
+import priceCalculatorRoutes from './priceCalculatorRoutes';
 
 // Remove old SQLite database routes (now using Prisma)
 
@@ -44,6 +45,7 @@ router.use('/slides', slideRoutes);
 router.use('/booking', bookingRoutes);
 router.use('/images', uploadRoutes); // Add images endpoint for frontend compatibility
 router.use('/objects', objectsRoutes); // Add objects endpoint for ObjectUploader
+router.use('/price-calculator', priceCalculatorRoutes); // Add price calculator endpoints
 router.use('/', objectStorageRoutes);
 
 // All data access now through Prisma models

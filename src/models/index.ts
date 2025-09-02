@@ -597,6 +597,129 @@ export class HotelModel {
   }
 }
 
+export class PriceCalculatorModel {
+  /**
+   * Get all pricing components
+   */
+  static async findAll() {
+    return await prisma.priceCalculatorComponent.findMany({
+      where: { isActive: true },
+      orderBy: [
+        { category: 'asc' },
+        { sortOrder: 'asc' },
+        { name: 'asc' }
+      ]
+    });
+  }
+
+  /**
+   * Get pricing component by key
+   */
+  static async findByKey(key: string) {
+    return await prisma.priceCalculatorComponent.findUnique({
+      where: { key }
+    });
+  }
+
+  /**
+   * Create a new pricing component
+   */
+  static async create(data: any) {
+    return await prisma.priceCalculatorComponent.create({
+      data: {
+        key: data.key,
+        category: data.category,
+        name: data.name,
+        price: data.price,
+        unit: data.unit,
+        description: data.description || null,
+        sortOrder: data.sortOrder || 0
+      }
+    });
+  }
+
+  /**
+   * Update a pricing component
+   */
+  static async update(id: number, data: any) {
+    return await prisma.priceCalculatorComponent.update({
+      where: { id },
+      data: {
+        name: data.name,
+        price: data.price,
+        unit: data.unit,
+        description: data.description,
+        sortOrder: data.sortOrder,
+        isActive: data.isActive
+      }
+    });
+  }
+
+  /**
+   * Delete a pricing component
+   */
+  static async delete(id: number) {
+    return await prisma.priceCalculatorComponent.delete({
+      where: { id }
+    });
+  }
+
+  /**
+   * Initialize default pricing components
+   */
+  static async initializeDefaults() {
+    const defaultComponents = [
+      // Транспорт
+      { key: 'transport_offroad', category: 'transport', name: 'Транспорт: внедорожник', price: 64.0, unit: 'км', sortOrder: 1 },
+      { key: 'transport_crossover', category: 'transport', name: 'Транспорт: кроссовер', price: 64.0, unit: 'км', sortOrder: 2 },
+      { key: 'transport_minibus', category: 'transport', name: 'Транспорт: микроавтобус', price: 2200.0, unit: 'день', sortOrder: 3 },
+      { key: 'transport_bus', category: 'transport', name: 'Транспорт: автобус', price: 4400.0, unit: 'день', sortOrder: 4 },
+      
+      // Проживание
+      { key: 'accommodation_5star', category: 'accommodation', name: 'Гостиница: 5*, двухместный', price: 1300.0, unit: 'ночь/номер', sortOrder: 1 },
+      { key: 'accommodation_4star', category: 'accommodation', name: 'Гостиница: 4*, двухместный', price: 1100.0, unit: 'ночь/номер', sortOrder: 2 },
+      { key: 'accommodation_3star', category: 'accommodation', name: 'Гостиница: 3*, двухместный', price: 850.0, unit: 'ночь/номер', sortOrder: 3 },
+      { key: 'accommodation_2star', category: 'accommodation', name: 'Гостиница: 2*, двухместный', price: 450.0, unit: 'ночь/номер', sortOrder: 4 },
+      { key: 'accommodation_hostel', category: 'accommodation', name: 'Хостел', price: 200.0, unit: 'ночь/номер', sortOrder: 5 },
+      
+      // Питание
+      { key: 'meals_lunch', category: 'meals', name: 'Обед', price: 70.0, unit: 'раз', sortOrder: 1 },
+      { key: 'meals_dinner', category: 'meals', name: 'Ужин', price: 65.0, unit: 'раз', sortOrder: 2 },
+      
+      // Сопровождение
+      { key: 'guide_russian', category: 'guides', name: 'Проводник: русскоговорящий', price: 330.0, unit: 'день', sortOrder: 1 },
+      { key: 'guide_english', category: 'guides', name: 'Проводник: англоговорящий', price: 650.0, unit: 'день', sortOrder: 2 },
+      
+      // Билеты и сборы
+      { key: 'tickets_local', category: 'tickets', name: 'Входные билеты в объектах (для граждан Таджикистана)', price: 11.0, unit: 'раз', sortOrder: 1 },
+      { key: 'tickets_foreign', category: 'tickets', name: 'Входные билеты в объектах (для иностранцев)', price: 33.0, unit: 'раз', sortOrder: 2 },
+      
+      // Трансфер
+      { key: 'transfer_local', category: 'transfer', name: 'Аэропорт-гостиница (для граждан Таджикистана)', price: 330.0, unit: 'человек', sortOrder: 1 },
+      { key: 'transfer_foreign', category: 'transfer', name: 'Аэропорт-гостиница (для иностранцев)', price: 550.0, unit: 'человек', sortOrder: 2 },
+      
+      // Документы и разрешения
+      { key: 'documents_gbao', category: 'documents', name: 'Разрешение на въезд в ГБАО', price: 275.0, unit: 'человек', sortOrder: 1 },
+      { key: 'documents_visa_support', category: 'documents', name: 'Визовая поддержка (официальное приглашение)', price: 330.0, unit: 'человек', sortOrder: 2 },
+      { key: 'documents_foreign_visa', category: 'documents', name: 'Виза в зарубежные страны', price: 1400.0, unit: 'человек', sortOrder: 3 }
+    ];
+
+    const results = [];
+    for (const component of defaultComponents) {
+      try {
+        const existing = await this.findByKey(component.key);
+        if (!existing) {
+          const created = await this.create(component);
+          results.push(created);
+        }
+      } catch (error) {
+        console.error(`Error creating component ${component.key}:`, error);
+      }
+    }
+    return results;
+  }
+}
+
 export class ReviewModel {
   /**
    * Get all reviews with tour information

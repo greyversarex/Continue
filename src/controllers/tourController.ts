@@ -217,7 +217,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds } = req.body;
+      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -361,7 +361,8 @@ export class TourController {
         startDate: startDate || null,
         endDate: endDate || null,
         rating: ratingNumber,
-        reviewsCount: reviewsCountNumber
+        reviewsCount: reviewsCountNumber,
+        pricingComponents: pricingComponents || null
       });
       } catch (createError) {
         console.error('❌ Error in TourModel.create:', createError);
@@ -487,7 +488,7 @@ export class TourController {
         });
       }
 
-      let { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds } = req.body;
+      let { title, description, duration, price, categoryId, tourBlockId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed (same as createTour)
       if (typeof title === 'string') {
@@ -574,6 +575,7 @@ export class TourController {
       if (ratingNumber !== undefined) updateData.rating = ratingNumber;
       if (reviewsCountNumber !== undefined) updateData.reviewsCount = reviewsCountNumber;
       if (isFeatured !== undefined) updateData.isFeatured = isFeatured;
+      if (pricingComponents !== undefined) updateData.pricingComponents = pricingComponents;
 
       const tour = await TourModel.update(id, updateData);
 

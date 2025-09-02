@@ -83,6 +83,7 @@ model Tour {
   bookings       Booking[]
   tourHotels     TourHotel[]
   tourGuides     TourGuide[]
+  pricingComponents TourPricingComponent[]
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -423,4 +424,34 @@ model ExchangeRate {
   createdAt DateTime @default(now())
 
   @@map("exchange_rates")
+}
+
+model PriceCalculatorComponent {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique // Уникальный ключ компонента (transport_offroad, accommodation_5star, etc.)
+  category    String   // Категория: transport, accommodation, meals, guides, tickets, transfer, documents
+  name        String   // Название на русском языке
+  price       Float    // Цена в сомони (TJS)
+  unit        String   // Единица измерения: км, день, ночь/номер, раз, человек
+  description String?  // Дополнительное описание
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0) // Порядок отображения в интерфейсе
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("price_calculator_components")
+}
+
+model TourPricingComponent {
+  id           Int      @id @default(autoincrement())
+  tourId       Int      @map("tour_id")
+  componentKey String   @map("component_key") // Ключ компонента из PriceCalculatorComponent
+  quantity     Float    @default(1) // Количество (например, дней, км, etc.)
+  customPrice  Float?   @map("custom_price") // Кастомная цена, если отличается от базовой
+  tour         Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([tourId, componentKey])
+  @@map("tour_pricing_components")
 }

@@ -70,6 +70,7 @@ export interface CreateTourData {
   tags?: string;
   location?: string;
   services?: string;
+  pricingComponents?: string; // JSON string of selected pricing components with quantities
 }
 
 // API Response types
