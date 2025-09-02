@@ -328,13 +328,13 @@
             const tourPriceCalcElement = document.getElementById('tour-price-calc');
             if (tourPriceCalcElement) {
                 tourPriceCalcElement.dataset.originalPrice = tourPrice;
-                tourPriceCalcElement.textContent = `${tourPrice} TJS`;
+                tourPriceCalcElement.textContent = `SM${tourPrice}`;
             }
             
             const totalPriceElement = document.getElementById('total-price');
             if (totalPriceElement) {
                 totalPriceElement.dataset.originalPrice = tourPrice;
-                totalPriceElement.textContent = `${tourPrice} TJS`;
+                totalPriceElement.textContent = `SM${tourPrice}`;
             }
             
             bookingState.totalPrice = tourPrice;
@@ -1037,9 +1037,9 @@
         // Глобальная система валют (копия из index.html)
         let globalCurrency = 'TJS';
         let exchangeRates = {
-            TJS: { rate: 1 },
-            USD: { rate: 0.091 },
-            EUR: { rate: 0.084 }
+            TJS: { rate: 1, symbol: 'SM' },
+            USD: { rate: 0.091, symbol: '$' },
+            EUR: { rate: 0.084, symbol: '€' }
         };
 
         // Функция конвертации цен
@@ -1053,7 +1053,7 @@
                 if (element.dataset.originalPrice) {
                     const originalPrice = parseInt(element.dataset.originalPrice);
                     const convertedPrice = convertPrice(originalPrice, globalCurrency);
-                    element.textContent = `${convertedPrice} ${globalCurrency}`;
+                    element.textContent = `${exchangeRates[globalCurrency].symbol}${convertedPrice}`;
                 }
             });
         }
@@ -1067,7 +1067,8 @@
                 if (data.success) {
                     data.data.forEach(rate => {
                         exchangeRates[rate.currency] = {
-                            rate: parseFloat(rate.rate)
+                            rate: parseFloat(rate.rate),
+                            symbol: rate.symbol
                         };
                     });
                     

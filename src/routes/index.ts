@@ -19,7 +19,6 @@ import objectStorageRoutes from './objectStorageRoutes';
 import bookingRoutes from './bookingRoutes';
 import uploadRoutes from './uploadRoutes';
 import objectsRoutes from './objectsRoutes';
-import priceCalculatorRoutes from './priceCalculatorRoutes';
 
 // Remove old SQLite database routes (now using Prisma)
 
@@ -43,7 +42,6 @@ router.use('/exchange-rates', exchangeRateRoutes);
 router.use('/news', newsRoutes);
 router.use('/slides', slideRoutes);
 router.use('/booking', bookingRoutes);
-router.use('/price-calculator', priceCalculatorRoutes);
 router.use('/images', uploadRoutes); // Add images endpoint for frontend compatibility
 router.use('/objects', objectsRoutes); // Add objects endpoint for ObjectUploader
 router.use('/', objectStorageRoutes);

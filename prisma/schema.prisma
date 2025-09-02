@@ -32,19 +32,6 @@ model TourBlock {
   @@map("tour_blocks")
 }
 
-model PriceCalculator {
-  id            Int      @id @default(autoincrement())
-  componentKey  String   @unique // Key for the component (e.g., "transport_suv", "hotel_5star_double")
-  componentName String   // Display name in Russian
-  basePrice     Float    // Base price in TJS
-  category      String   // Category: "transport", "hotel", "meals", "guide", "tickets", "transfer", "documents"
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@map("price_calculator")
-}
-
 model Tour {
   id             Int              @id @default(autoincrement())
   title          String           // JSON field for multilingual content
@@ -54,8 +41,6 @@ model Tour {
   price          String
   priceType      String           @default("за человека") // "за человека" или "за группу"
   originalPrice  String?          // For discount display
-  priceComponents String?         // JSON object with selected components and their prices
-  totalPriceTJS  Float?           // Calculated total price in TJS
   country        String?          // Страна
   city           String?          // Город
   format         String?          // Формат: Групповой, Индивидуальный, VIP
@@ -119,6 +104,7 @@ model Hotel {
   city        String?     // City where hotel is located
   pension     String?     @default("none") // Legacy pension field (deprecated)
   roomTypes   String?     // JSON object with room types and prices: {"SGL": {"price": 100, "name": "Одноместный"}, "TWL": {"price": 150, "name": "Двухместный"}, "DBL": {"price": 180, "name": "Двухспальный"}}
+  mealTypes   String?     // JSON object with meal types and prices: {"RO": {"price": 0, "name": "Без питания"}, "BB": {"price": 25, "name": "Завтрак"}, "HB": {"price": 45, "name": "Полупансион"}, "FB": {"price": 65, "name": "Полный пансион"}, "AI": {"price": 85, "name": "Все включено"}}
   isActive    Boolean     @default(true)
   tourHotels  TourHotel[]
   orders      Order[]

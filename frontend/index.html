@@ -2907,9 +2907,9 @@
         // Глобальная система валют
         let globalCurrency = 'TJS';
         let exchangeRates = {
-            TJS: { rate: 1 },
-            USD: { rate: 0.091 },
-            EUR: { rate: 0.084 }
+            TJS: { rate: 1, symbol: 'SM' },
+            USD: { rate: 0.091, symbol: '$' },
+            EUR: { rate: 0.084, symbol: '€' }
         };
 
         // Функции переключения валют
@@ -2960,7 +2960,7 @@
                 if (priceElement && priceElement.dataset.originalPrice) {
                     const originalPrice = parseInt(priceElement.dataset.originalPrice);
                     const convertedPrice = convertPrice(originalPrice, globalCurrency);
-                    priceElement.textContent = `${convertedPrice} ${globalCurrency}`;
+                    priceElement.textContent = `${exchangeRates[globalCurrency].symbol}${convertedPrice}`;
                 }
             });
             
@@ -2969,7 +2969,7 @@
                 if (element.dataset.originalPrice) {
                     const originalPrice = parseInt(element.dataset.originalPrice);
                     const convertedPrice = convertPrice(originalPrice, globalCurrency);
-                    element.textContent = `${convertedPrice} ${globalCurrency}`;
+                    element.textContent = `${exchangeRates[globalCurrency].symbol}${convertedPrice}`;
                 }
             });
         }
@@ -2983,7 +2983,8 @@
                 if (data.success) {
                     data.data.forEach(rate => {
                         exchangeRates[rate.currency] = {
-                            rate: parseFloat(rate.rate)
+                            rate: parseFloat(rate.rate),
+                            symbol: rate.symbol
                         };
                     });
                     
@@ -3001,7 +3002,7 @@
             const savedCurrency = localStorage.getItem('selectedCurrency');
             if (savedCurrency && exchangeRates[savedCurrency]) {
                 globalCurrency = savedCurrency;
-                selectCurrency(savedCurrency, savedCurrency);
+                selectCurrency(savedCurrency, exchangeRates[savedCurrency].symbol);
             }
             
             // Загружаем актуальные курсы валют

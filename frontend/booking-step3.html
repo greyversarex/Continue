@@ -436,7 +436,7 @@
                     <div class="bg-blue-50 p-3 rounded-lg">
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-gray-800">Итого к оплате:</span>
-                            <span class="font-bold text-xl text-blue-600 price-display" data-original-price="${booking.totalPrice || (tourBasePrice + roomCost + mealCost)}">${booking.totalPrice || (tourBasePrice + roomCost + mealCost)} TJS</span>
+                            <span class="font-bold text-xl text-blue-600 price-display" data-original-price="${booking.totalPrice || (tourBasePrice + roomCost + mealCost)}">SM${booking.totalPrice || (tourBasePrice + roomCost + mealCost)}</span>
                         </div>
                     </div>
                 </div>
@@ -545,9 +545,9 @@
         // Глобальная система валют (копия из booking-step1.html)
         let globalCurrency = 'TJS';
         let exchangeRates = {
-            TJS: { rate: 1 },
-            USD: { rate: 0.091 },
-            EUR: { rate: 0.084 }
+            TJS: { rate: 1, symbol: 'SM' },
+            USD: { rate: 0.091, symbol: '$' },
+            EUR: { rate: 0.084, symbol: '€' }
         };
 
         // Функция конвертации цен
@@ -561,7 +561,7 @@
                 if (element.dataset.originalPrice) {
                     const originalPrice = parseInt(element.dataset.originalPrice);
                     const convertedPrice = convertPrice(originalPrice, globalCurrency);
-                    element.textContent = `${convertedPrice} ${globalCurrency}`;
+                    element.textContent = `${exchangeRates[globalCurrency].symbol}${convertedPrice}`;
                 }
             });
         }
@@ -575,7 +575,8 @@
                 if (data.success) {
                     data.data.forEach(rate => {
                         exchangeRates[rate.currency] = {
-                            rate: parseFloat(rate.rate)
+                            rate: parseFloat(rate.rate),
+                            symbol: rate.symbol
                         };
                     });
                     
