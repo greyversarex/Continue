@@ -98,7 +98,8 @@ export class TourModel {
         services: data.services || null,
         isFeatured: data.isFeatured || false,
         startDate: data.startDate,
-        endDate: data.endDate
+        endDate: data.endDate,
+        pricingData: data.pricingComponents || null
       },
       include: {
         category: true
@@ -150,6 +151,7 @@ export class TourModel {
     if (data.startDate !== undefined) updateData.startDate = data.startDate;
     if (data.endDate !== undefined) updateData.endDate = data.endDate;
     if (data.tourBlockId !== undefined) updateData.tourBlockId = data.tourBlockId;
+    if (data.pricingComponents !== undefined) updateData.pricingData = data.pricingComponents;
     
     if (data.categoryId) {
       // Validate that the category exists

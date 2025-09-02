@@ -70,7 +70,8 @@ export interface CreateTourData {
   tags?: string;
   location?: string;
   services?: string;
-  pricingComponents?: string; // JSON string of selected pricing components with quantities
+  pricingComponents?: string; // JSON string of selected pricing components with quantities (maps to pricingData in DB)
+  pricingData?: string; // Prisma field name for pricing components data
 }
 
 // API Response types

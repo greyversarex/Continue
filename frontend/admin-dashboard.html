@@ -3548,11 +3548,11 @@
                         }
                         
                         // Load pricing components for editing
-                        if (tour.pricingComponents) {
+                        if (tour.pricingData) {
                             try {
-                                const components = typeof tour.pricingComponents === 'string' 
-                                    ? JSON.parse(tour.pricingComponents) 
-                                    : tour.pricingComponents;
+                                const components = typeof tour.pricingData === 'string' 
+                                    ? JSON.parse(tour.pricingData) 
+                                    : tour.pricingData;
                                 
                                 // Wait for components to be loaded, then populate selections
                                 setTimeout(() => {
