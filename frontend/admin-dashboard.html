@@ -1644,16 +1644,27 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Блок тура</label>
-                        <select class="form-input" id="tourBlockId">
-                            <option value="">Выберите блок</option>
-                            <option value="1">Популярные туры</option>
-                            <option value="2">Рекомендованные туры по Центральной Азии</option>
-                            <option value="3">Туры по Таджикистану</option>
-                            <option value="4">Туры по Узбекистану</option>
-                            <option value="5">Туры по Киргизстану</option>
-                            <option value="6">Туры по Туркменистану</option>
-                        </select>
+                        <label class="form-label">Блоки туров (можно выбрать несколько)</label>
+                        <div class="checkbox-group" id="tourBlocksCheckboxes">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="1" name="tourBlocks"> Популярные туры
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="2" name="tourBlocks"> Рекомендованные туры по Центральной Азии
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="3" name="tourBlocks"> Туры по Таджикистану
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="4" name="tourBlocks"> Туры по Узбекистану
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="5" name="tourBlocks"> Туры по Киргизстану
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="6" name="tourBlocks"> Туры по Туркменистану
+                            </label>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -1674,8 +1685,12 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Длительность (дней)</label>
+                        <label class="form-label" id="durationLabel">Длительность (дней)</label>
                         <input type="number" class="form-input" id="tourDurationDays" min="1" required>
+                        <div id="durationHoursField" style="display: none;">
+                            <label class="form-label mt-2">Длительность в часах</label>
+                            <input type="number" class="form-input" id="tourDurationHours" placeholder="8" min="1" max="24">
+                        </div>
                     </div>
                     
                     
@@ -1883,9 +1898,15 @@
                                 <input type="checkbox" value="Страховка"> Страховка
                             </label>
                         </div>
+                        <div class="mt-3 flex gap-2">
+                            <input type="text" class="form-input flex-1" id="newTourService" placeholder="Введите название новой услуги">
+                            <button type="button" onclick="addNewTourService()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md">
+                                <i class="fas fa-plus"></i> Добавить
+                            </button>
+                        </div>
                     </div>
                     
-                    <div class="form-group col-span-2">
+                    <div class="form-group col-span-2" id="hotelSection">
                         <label class="form-label">Связанные отели</label>
                         <div class="checkbox-group" id="hotelCheckboxes">
                             <!-- Hotels will be loaded here -->
@@ -2774,7 +2795,7 @@
                 country: document.getElementById('tourCountry')?.value || '',
                 city: document.getElementById('tourCity')?.value || '',
                 categoryId: parseInt(document.getElementById('tourCategory')?.value) || null,
-                tourBlockId: parseInt(document.getElementById('tourBlockId')?.value) || null,
+                tourBlockIds: Array.from(document.querySelectorAll('input[name="tourBlocks"]:checked')).map(cb => parseInt(cb.value)),
                 
                 // Информация о туре
                 pickupInfo: document.getElementById('tourPickupInfo')?.value || '',
@@ -2882,7 +2903,7 @@
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
                 categoryId: selectedCategories.length > 0 ? selectedCategories[0].id : null,
-                tourBlockId: document.getElementById('tourBlockId')?.value ? parseInt(document.getElementById('tourBlockId').value) : null,
+                tourBlockIds: Array.from(document.querySelectorAll('input[name="tourBlocks"]:checked')).map(cb => parseInt(cb.value)),
                 isFeatured: document.getElementById('tourIsFeatured')?.checked || false,
                 isActive: true,
                 // Собираем выбранные отели
@@ -4825,7 +4846,7 @@
             return brandSelect.value || null;
         }
         
-        // Функция для добавления нового удобства
+        // Функция для добавления нового удобства отеля
         function addNewAmenity() {
             const newAmenityInput = document.getElementById('newAmenity');
             const amenityName = newAmenityInput.value.trim();
@@ -4854,6 +4875,37 @@
             
             amenitiesContainer.appendChild(newCheckbox);
             newAmenityInput.value = '';
+        }
+        
+        // Функция для добавления новой услуги тура
+        function addNewTourService() {
+            const newServiceInput = document.getElementById('newTourService');
+            const serviceName = newServiceInput.value.trim();
+            
+            if (!serviceName) {
+                alert('Введите название услуги');
+                return;
+            }
+            
+            // Проверить, не существует ли уже такая услуга
+            const existingServices = document.querySelectorAll('#includesOptions input[type="checkbox"]');
+            for (let checkbox of existingServices) {
+                if (checkbox.value === serviceName) {
+                    alert('Такая услуга уже существует');
+                    return;
+                }
+            }
+            
+            // Создать новый чекбокс
+            const servicesContainer = document.getElementById('includesOptions');
+            const newCheckbox = document.createElement('label');
+            newCheckbox.className = 'checkbox-item';
+            newCheckbox.innerHTML = `
+                <input type="checkbox" value="${serviceName}" checked> ${serviceName}
+            `;
+            
+            servicesContainer.appendChild(newCheckbox);
+            newServiceInput.value = '';
         }
         
         // Обработчик изменения селекта бренда
@@ -7299,11 +7351,53 @@
                     }
                 }
                 
+                // Handle day tour logic
+                handleDayTourLogic(categoryId, categoryNameRu);
+                
                 // Close the modal
                 closeCategoryListModal();
             } else {
                 console.error('Category ID not found for:', categoryNameRu);
                 alert('Ошибка: категория не найдена');
+            }
+        }
+
+        // Функция для обработки логики однодневных туров
+        function handleDayTourLogic(categoryId, categoryName) {
+            const isDayTour = categoryId === 1; // "Однодневные туры" имеют ID = 1
+            const durationLabel = document.getElementById('durationLabel');
+            const durationDaysField = document.getElementById('tourDurationDays');
+            const durationHoursField = document.getElementById('durationHoursField');
+            const hotelSection = document.getElementById('hotelSection');
+            
+            if (isDayTour) {
+                // Для однодневных туров
+                durationLabel.textContent = 'Длительность (часов)';
+                durationDaysField.placeholder = '8';
+                durationDaysField.min = '1';
+                durationDaysField.max = '24';
+                durationHoursField.style.display = 'block';
+                
+                // Скрыть секцию отелей
+                if (hotelSection) {
+                    hotelSection.style.display = 'none';
+                }
+                
+                console.log('Переключен на режим однодневного тура');
+            } else {
+                // Для многодневных туров
+                durationLabel.textContent = 'Длительность (дней)';
+                durationDaysField.placeholder = '';
+                durationDaysField.min = '1';
+                durationDaysField.max = '';
+                durationHoursField.style.display = 'none';
+                
+                // Показать секцию отелей
+                if (hotelSection) {
+                    hotelSection.style.display = 'block';
+                }
+                
+                console.log('Переключен на режим многодневного тура');
             }
         }
 
