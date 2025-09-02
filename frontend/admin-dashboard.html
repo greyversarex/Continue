@@ -1704,6 +1704,103 @@
                             <option value="6">Туры по Туркменистану</option>
                         </select>
                     </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Категория</label>
+                        <select class="form-input" id="tourCategory" required>
+                            <option value="">Загрузка категорий...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Формат тура</label>
+                        <select class="form-input" id="tourFormat">
+                            <option value="">Выберите формат</option>
+                            <option value="Групповой">Групповой</option>
+                            <option value="Индивидуальный">Индивидуальный</option>
+                            <option value="VIP">VIP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Тематика тура</label>
+                        <input type="text" class="form-input" id="tourTheme" placeholder="Природа, культура, история...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Сложность</label>
+                        <select class="form-input" id="tourDifficulty">
+                            <option value="">Выберите сложность</option>
+                            <option value="Easy">Легкая</option>
+                            <option value="Medium">Средняя</option>
+                            <option value="Hard">Сложная</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Длительность (текст)</label>
+                        <input type="text" class="form-input" id="tourDuration" placeholder="3 дня / 2 ночи" required>
+                    </div>
+                </div>
+                
+                <!-- Дополнительные параметры -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="form-group">
+                        <label class="form-label">Мин. участников</label>
+                        <input type="number" class="form-input" id="tourMinPeople" min="1" placeholder="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Макс. участников</label>
+                        <input type="number" class="form-input" id="tourMaxPeople" min="1" placeholder="10">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Дата начала</label>
+                        <input type="date" class="form-input" id="tourStartDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Дата окончания</label>
+                        <input type="date" class="form-input" id="tourEndDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Информация о сборе</label>
+                        <input type="text" class="form-input" id="tourPickupInfo" placeholder="Встреча в отеле или место сбора">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Языки (через запятую)</label>
+                        <input type="text" class="form-input" id="tourLanguages" placeholder="Русский, English, Тоҷикӣ">
+                    </div>
+                </div>
+                
+                <!-- Краткое описание -->
+                <div class="grid grid-cols-1 gap-6 mb-6">
+                    <div class="form-group">
+                        <label class="form-label">Краткое описание (Русский)</label>
+                        <textarea class="form-input" rows="2" id="tourShortDescRu" placeholder="Краткое описание для карточки тура"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Краткое описание (English)</label>
+                        <textarea class="form-input" rows="2" id="tourShortDescEn" placeholder="Short description for tour card"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Флаги -->
+                <div class="form-group mb-6">
+                    <div class="flex gap-6">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" id="tourIsActive" checked class="rounded">
+                            <span>Активный тур</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" id="tourIsFeatured" class="rounded">
+                            <span>Рекомендуемый тур</span>
+                        </label>
+                    </div>
                 </div>
                 
                 <!-- Описание -->
@@ -1885,31 +1982,6 @@
                     <small class="text-gray-500 mt-2 block">Выберите составляющие цены и укажите стоимость каждой</small>
                 </div>
                 
-                <!-- Дополнительная информация -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div class="form-group">
-                        <label class="form-label">Информация о приёме/сборе</label>
-                        <input type="text" class="form-input" id="tourPickupInfo" placeholder="Например: Приём включён, Место сбора: отель" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Категория тура</label>
-                        <select class="form-input" id="tourCategory" required>
-                            <option value="">Выберите категорию</option>
-                            <!-- Категории будут загружены динамически -->
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Минимальное количество людей</label>
-                        <input type="number" class="form-input" id="tourMinPeople" min="1" placeholder="2">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Максимальное количество людей</label>
-                        <input type="number" class="form-input" id="tourMaxPeople" min="1" placeholder="12">
-                    </div>
-                </div>
                 
                 <!-- Кнопки -->
                 <div class="flex justify-end gap-3 mt-6">
@@ -2830,47 +2902,74 @@
             const priceElement = document.getElementById('tourPrice');
             const durationElement = document.getElementById('tourDurationDays');
             
+            // Вспомогательные функции для безопасного получения значений
+            const getTourValue = (id) => {
+                const element = document.getElementById(id);
+                return element ? element.value : '';
+            };
+            
+            const getTourCheckbox = (id) => {
+                const element = document.getElementById(id);
+                return element ? element.checked : false;
+            };
+            
+            // Подготавливаем языки как массив
+            const languagesText = getTourValue('tourLanguages');
+            const languagesArray = languagesText ? languagesText.split(',').map(lang => lang.trim()).filter(lang => lang) : [];
+            
             const formData = {
                 title: JSON.stringify({
-                    ru: titleRuElement ? titleRuElement.value : '',
-                    en: titleEnElement ? titleEnElement.value : (titleRuElement ? titleRuElement.value : '')
+                    ru: getTourValue('tourTitleRu'),
+                    en: getTourValue('tourTitleEn')
                 }),
-                shortDescription: JSON.stringify({
-                    ru: descRuElement ? descRuElement.value : '',
-                    en: descEnElement ? descEnElement.value : (descRuElement ? descRuElement.value : '')
+                shortDesc: JSON.stringify({
+                    ru: getTourValue('tourShortDescRu'),
+                    en: getTourValue('tourShortDescEn')
                 }),
                 description: JSON.stringify({
-                    ru: descRuElement ? descRuElement.value : '',
-                    en: descEnElement ? descEnElement.value : (descRuElement ? descRuElement.value : '')
+                    ru: getTourValue('tourDescRu'),
+                    en: getTourValue('tourDescEn')
                 }),
-                price: priceElement ? parseFloat(priceElement.value) : 0,
-                priceType: document.getElementById('tourPriceType')?.value || 'за человека',
-                originalPrice: document.getElementById('tourOriginalPrice')?.value ? parseFloat(document.getElementById('tourOriginalPrice').value) : null,
-                durationDays: durationElement ? parseInt(durationElement.value) : 1,
-                format: document.getElementById('tourType')?.value,
-                tourType: document.getElementById('tourType')?.value,
-                difficulty: document.getElementById('tourDifficulty')?.value || 'Легкий',
-                maxPeople: document.getElementById('tourMaxPeople')?.value ? parseInt(document.getElementById('tourMaxPeople').value) : null,
-                minPeople: document.getElementById('tourMinPeople')?.value ? parseInt(document.getElementById('tourMinPeople').value) : null,
-                country: document.getElementById('tourCountry')?.value,
-                city: document.getElementById('tourCity')?.value,
-                pickupInfo: document.getElementById('tourPickupInfo')?.value,
-                mainImage: document.getElementById('tourMainImage')?.value,
-                images: JSON.stringify(window.tourGalleryImages || []),
-                highlights: JSON.stringify(window.tourHighlights || []),
-                itinerary: JSON.stringify(window.tourItinerary || []),
-                startTimeOptions: JSON.stringify(window.tourStartTimes || []),
-                languages: JSON.stringify(window.tourLanguages || ['Русский']),
-                availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
-                availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
-                categoryId: selectedCategories.length > 0 ? selectedCategories[0].id : null,
-                tourBlockId: document.getElementById('tourBlockId')?.value ? parseInt(document.getElementById('tourBlockId').value) : null,
-                isFeatured: document.getElementById('tourIsFeatured')?.checked || false,
-                isActive: true,
-                // Собираем выбранные отели
-                hotelIds: Array.from(document.querySelectorAll('input[name="selectedHotels"]:checked')).map(cb => parseInt(cb.value)),
-                // Собираем выбранных гидов 
-                guideIds: Array.from(document.querySelectorAll('input[name="selectedGuides"]:checked')).map(cb => parseInt(cb.value))
+                duration: getTourValue('tourDuration'),
+                price: getTourValue('tourPrice') || '0',
+                priceType: getTourValue('tourPriceType'),
+                originalPrice: '',
+                priceComponents: getTourValue('tourPriceComponents'),
+                totalPriceTJS: parseFloat(getTourValue('tourTotalPriceTJS')) || 0,
+                durationDays: parseInt(getTourValue('tourDurationDays')) || 1,
+                format: getTourValue('tourFormat'),
+                tourType: getTourValue('tourType'),
+                theme: getTourValue('tourTheme'),
+                startDate: getTourValue('tourStartDate'),
+                endDate: getTourValue('tourEndDate'),
+                difficulty: getTourValue('tourDifficulty'),
+                maxPeople: parseInt(getTourValue('tourMaxPeople')) || null,
+                minPeople: parseInt(getTourValue('tourMinPeople')) || null,
+                country: getTourValue('tourCountry'),
+                city: getTourValue('tourCity'),
+                pickupInfo: getTourValue('tourPickupInfo'),
+                languages: JSON.stringify(languagesArray),
+                availableMonths: JSON.stringify([]),
+                availableDays: JSON.stringify([]),
+                mainImage: '',
+                images: JSON.stringify([]),
+                highlights: JSON.stringify([]),
+                itinerary: JSON.stringify([]),
+                included: JSON.stringify([]),
+                includes: JSON.stringify([]),
+                excluded: JSON.stringify([]),
+                requirements: JSON.stringify({}),
+                startTime: '',
+                startTimeOptions: JSON.stringify([]),
+                services: JSON.stringify([]),
+                rating: null,
+                reviewsCount: 0,
+                location: JSON.stringify({}),
+                tags: JSON.stringify([]),
+                categoryId: parseInt(getTourValue('tourCategory')) || 1,
+                tourBlockId: parseInt(getTourValue('tourBlockId')) || null,
+                isFeatured: getTourCheckbox('tourIsFeatured'),
+                isActive: getTourCheckbox('tourIsActive') 
             };
             
             console.log('📤 Sending tour data:', formData);
