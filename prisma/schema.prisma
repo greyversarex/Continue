@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,7 +9,7 @@ datasource db {
 
 model Category {
   id    Int    @id @default(autoincrement())
-  name  String // JSON field for multilingual content: {"en": "Trekking", "ru": "Треккинг"}
+  name  String
   tours Tour[]
 
   @@map("categories")
@@ -20,111 +17,118 @@ model Category {
 
 model TourBlock {
   id          Int      @id @default(autoincrement())
-  title       String   // JSON field for multilingual content
-  description String?  // JSON field for multilingual content
-  slug        String   @unique // URL slug
+  title       String
+  description String?
+  slug        String   @unique
   isActive    Boolean  @default(true)
   sortOrder   Int      @default(0)
-  tours       Tour[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  tours       Tour[]
 
   @@map("tour_blocks")
 }
 
 model Tour {
-  id             Int              @id @default(autoincrement())
-  title          String           // JSON field for multilingual content
-  description    String           // JSON field for multilingual content
-  shortDesc      String?          // JSON field for short description on cards
-  duration       String
-  price          String
-  priceType      String           @default("за человека") // "за человека" или "за группу"
-  originalPrice  String?          // For discount display
-  country        String?          // Страна
-  city           String?          // Город
-  format         String?          // Формат: Групповой, Индивидуальный, VIP
-  tourType       String?          // Тип тура: Персональный, Групповой персональный, Групповой общий
-  durationDays   Int?             // Количество дней
-  theme          String?          // Тематика тура
-  startDate      String?          // Дата начала
-  endDate        String?          // Дата окончания
-  startTime      String?          // Время начала тура (выбранное из доступных)
-  startTimeOptions String?        // JSON array доступных времен начала тура
-  pickupInfo     String?          // Настраиваемое поле для "Приём включён" или "Место сбора"
-  languages      String?          // JSON array of tour languages
-  availableMonths String?         // JSON array of available months
-  availableDays  String?          // JSON array of available weekdays
-  images         String?          // JSON array of image URLs
-  mainImage      String?          // Main card image
-  services       String?          // JSON array of included services
-  highlights     String?          // JSON array of tour highlights
-  itinerary      String?          // JSON array of daily itinerary
-  included       String?          // JSON array of what's included
-  includes       String?          // JSON array of services included in tour
-  excluded       String?          // JSON array of what's excluded
-  requirements   String?          // JSON field for requirements/restrictions
-  difficulty     String?          // Easy, Medium, Hard
-  rating         Float?           // Average rating
-  reviewsCount   Int?             // Number of reviews
-  maxPeople      Int?             // Maximum group size
-  minPeople      Int?             // Minimum group size
-  location       String?          // JSON object with coordinates
-  tags           String?          // JSON array of tags
-  isActive       Boolean          @default(true)
-  isFeatured     Boolean          @default(false)
-  categoryId     Int
-  tourBlockId    Int?             @map("tour_block_id")
-  category       Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  tourBlock      TourBlock?       @relation(fields: [tourBlockId], references: [id])
-  bookingRequests BookingRequest[]
-  orders         Order[]
-  reviews        Review[]
-  bookings       Booking[]
-  tourHotels     TourHotel[]
-  tourGuides     TourGuide[]
-  pricingComponents TourPricingComponent[]
-  pricingData    String?          // JSON string of selected pricing components with quantities and custom prices
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  id                 Int                    @id @default(autoincrement())
+  title              String
+  description        String
+  shortDesc          String?
+  duration           String
+  price              String
+  priceType          String                 @default("за человека")
+  originalPrice      String?
+  country            String?
+  city               String?
+  format             String?
+  tourType           String?
+  durationDays       Int?
+  theme              String?
+  startDate          String?
+  endDate            String?
+  startTime          String?
+  startTimeOptions   String?
+  pickupInfo         String?
+  languages          String?
+  availableMonths    String?
+  availableDays      String?
+  images             String?
+  mainImage          String?
+  services           String?
+  highlights         String?
+  itinerary          String?
+  included           String?
+  includes           String?
+  excluded           String?
+  requirements       String?
+  difficulty         String?
+  rating             Float?
+  reviewsCount       Int?
+  maxPeople          Int?
+  minPeople          Int?
+  location           String?
+  tags               String?
+  isActive           Boolean                @default(true)
+  isFeatured         Boolean                @default(false)
+  categoryId         Int
+  tourBlockId        Int?                   @map("tour_block_id")
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  pricingData        String?
+  assignedGuideId    Int?                   @map("assigned_guide_id")
+  scheduledEndDate   DateTime?
+  scheduledStartDate DateTime?
+  status             String                 @default("pending")
+  uniqueCode         String?                @unique
+  bookingRequests    BookingRequest[]
+  bookings           Booking[]
+  guideReviews       GuideReview[]
+  orders             Order[]
+  reviews            Review[]
+  tourGuides         TourGuide[]
+  tourHotels         TourHotel[]
+  pricingComponents  TourPricingComponent[]
+  assignedGuide      TourGuideProfile?      @relation(fields: [assignedGuideId], references: [id])
+  category           Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  tourBlock          TourBlock?             @relation(fields: [tourBlockId], references: [id])
 
   @@map("tours")
 }
 
 model Hotel {
   id          Int         @id @default(autoincrement())
-  name        String      // JSON field for multilingual content
-  description String?     // JSON field for multilingual content
-  images      String?     // JSON array of image URLs
+  name        String
+  description String?
+  images      String?
   address     String?
   rating      Float?
-  stars       Int?        // Hotel stars rating (1-5)
-  amenities   String?     // JSON array of amenities
-  brand       String?     // Hotel brand (Hilton, Marriott, etc.)
-  category    String?     // Luxury, Premium, Budget
-  country     String?     // Country where hotel is located
-  city        String?     // City where hotel is located
-  pension     String?     @default("none") // Legacy pension field (deprecated)
-  roomTypes   String?     // JSON object with room types and prices: {"SGL": {"price": 100, "name": "Одноместный"}, "TWL": {"price": 150, "name": "Двухместный"}, "DBL": {"price": 180, "name": "Двухспальный"}}
-  mealTypes   String?     // JSON object with meal types and prices: {"RO": {"price": 0, "name": "Без питания"}, "BB": {"price": 25, "name": "Завтрак"}, "HB": {"price": 45, "name": "Полупансион"}, "FB": {"price": 65, "name": "Полный пансион"}, "AI": {"price": 85, "name": "Все включено"}}
+  stars       Int?
+  amenities   String?
+  brand       String?
+  category    String?
+  country     String?
+  city        String?
+  pension     String?     @default("none")
+  roomTypes   String?
+  mealTypes   String?
   isActive    Boolean     @default(true)
-  tourHotels  TourHotel[]
-  orders      Order[]
-  bookings    Booking[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  bookings    Booking[]
+  orders      Order[]
+  tourHotels  TourHotel[]
 
   @@map("hotels")
 }
 
 model TourHotel {
-  id        Int     @id @default(autoincrement())
-  tourId    Int     @map("tour_id")
-  hotelId   Int     @map("hotel_id")
-  pricePerNight Float? @map("price_per_night")
-  isDefault Boolean @default(false) @map("is_default")
-  tour      Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
-  hotel     Hotel   @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  id            Int     @id @default(autoincrement())
+  tourId        Int     @map("tour_id")
+  hotelId       Int     @map("hotel_id")
+  pricePerNight Float?  @map("price_per_night")
+  isDefault     Boolean @default(false) @map("is_default")
+  hotel         Hotel   @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  tour          Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@unique([tourId, hotelId])
   @@map("tour_hotels")
@@ -132,29 +136,29 @@ model TourHotel {
 
 model Guide {
   id          Int         @id @default(autoincrement())
-  name        String      // JSON field for multilingual content
-  description String?     // JSON field for multilingual content
-  photo       String?     // Profile photo URL
-  languages   String      // JSON array of languages
-  contact     String?     // JSON object with phone, email, etc.
-  experience  Int?        // Years of experience
-  rating      Float?      // Average rating
+  name        String
+  description String?
+  photo       String?
+  languages   String
+  contact     String?
+  experience  Int?
+  rating      Float?
   isActive    Boolean     @default(true)
-  tourGuides  TourGuide[]
-  orders      Order[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  orders      Order[]
+  tourGuides  TourGuide[]
 
   @@map("guides")
 }
 
 model TourGuide {
-  id       Int     @id @default(autoincrement())
-  tourId   Int     @map("tour_id")
-  guideId  Int     @map("guide_id")
+  id        Int     @id @default(autoincrement())
+  tourId    Int     @map("tour_id")
+  guideId   Int     @map("guide_id")
   isDefault Boolean @default(false) @map("is_default")
-  tour     Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
-  guide    Guide   @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  guide     Guide   @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  tour      Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@unique([tourId, guideId])
   @@map("tour_guides")
@@ -165,36 +169,36 @@ model Customer {
   fullName  String   @map("full_name")
   email     String   @unique
   phone     String?
-  orders    Order[]
-  reviews   Review[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orders    Order[]
+  reviews   Review[]
 
   @@map("customers")
 }
 
 model Order {
-  id            Int      @id @default(autoincrement())
-  orderNumber   String   @unique @map("order_number") // Generated order number
-  customerId    Int      @map("customer_id")
-  tourId        Int      @map("tour_id")
-  hotelId       Int?     @map("hotel_id")
-  guideId       Int?     @map("guide_id")
-  tourDate      String   @map("tour_date")
-  tourists      String   // JSON array of tourists data
-  wishes        String?  // Customer wishes/notes
-  totalAmount   Float    @map("total_amount")
-  status        String   @default("pending") // pending, confirmed, paid, cancelled, completed
-  paymentStatus String   @default("unpaid") @map("payment_status") // unpaid, paid, refunded
-  paymentMethod String?  @map("payment_method") // payme, click, stripe, paypal
-  paymentIntentId String? @map("payment_intent_id") // Stripe payment intent ID
-  receiptData   String?  @map("receipt_data") // JSON receipt information
-  customer      Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  tour          Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
-  hotel         Hotel?   @relation(fields: [hotelId], references: [id])
-  guide         Guide?   @relation(fields: [guideId], references: [id])
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  orderNumber     String   @unique @map("order_number")
+  customerId      Int      @map("customer_id")
+  tourId          Int      @map("tour_id")
+  hotelId         Int?     @map("hotel_id")
+  guideId         Int?     @map("guide_id")
+  tourDate        String   @map("tour_date")
+  tourists        String
+  wishes          String?
+  totalAmount     Float    @map("total_amount")
+  status          String   @default("pending")
+  paymentStatus   String   @default("unpaid") @map("payment_status")
+  paymentMethod   String?  @map("payment_method")
+  paymentIntentId String?  @map("payment_intent_id")
+  receiptData     String?  @map("receipt_data")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  guide           Guide?   @relation(fields: [guideId], references: [id])
+  hotel           Hotel?   @relation(fields: [hotelId], references: [id])
+  tour            Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@map("orders")
 }
@@ -206,27 +210,27 @@ model BookingRequest {
   preferredDate  String   @map("preferred_date")
   numberOfPeople Int      @map("number_of_people")
   tourId         Int      @map("tour_id")
-  tour           Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  tour           Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@map("booking_requests")
 }
 
 model Review {
   id           Int       @id @default(autoincrement())
-  customerId   Int?      @map("customer_id") // Сделано необязательным - отзыв может оставить кто угодно
+  customerId   Int?      @map("customer_id")
   tourId       Int       @map("tour_id")
-  reviewerName String    @map("reviewer_name") // Имя туриста
-  rating       Int       // 1-5 stars
+  reviewerName String    @map("reviewer_name")
+  rating       Int
   text         String
-  photos       String?   // JSON array с URL фотографий
+  photos       String?
   isModerated  Boolean   @default(false) @map("is_moderated")
   isApproved   Boolean   @default(false) @map("is_approved")
-  customer     Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  tour         Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  customer     Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tour         Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@map("reviews")
 }
@@ -235,9 +239,9 @@ model Admin {
   id        Int      @id @default(autoincrement())
   username  String   @unique
   email     String   @unique
-  password  String   // Hashed password
+  password  String
   fullName  String   @map("full_name")
-  role      String   @default("admin") // admin, manager
+  role      String   @default("admin")
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -246,53 +250,52 @@ model Admin {
 }
 
 model News {
-  id           Int      @id @default(autoincrement())
-  title        String   // JSON field for multilingual content
-  content      String   // JSON field for multilingual content
-  excerpt      String?  // JSON field for short description
-  category     String   // Category: "Новости компании", "Туризм", "События", "Пресс-релиз"
-  image        String?  // Main image URL
-  images       String?  // JSON array of additional image URLs
-  tags         String?  // JSON array of tags
-  author       String   @default("Bunyod-Tour")
-  isPublished  Boolean  @default(true) @map("is_published")
-  isFeatured   Boolean  @default(false) @map("is_featured")
-  publishedAt  DateTime @default(now()) @map("published_at")
-  slug         String   @unique // URL slug for SEO
-  metaTitle    String?  @map("meta_title") // JSON field for SEO title
-  metaDescription String? @map("meta_description") // JSON field for SEO description
-  views        Int      @default(0) // View counter
-  readTime     Int?     @map("read_time") // Estimated read time in minutes
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  title           String
+  content         String
+  excerpt         String?
+  category        String
+  image           String?
+  images          String?
+  tags            String?
+  author          String   @default("Bunyod-Tour")
+  isPublished     Boolean  @default(true) @map("is_published")
+  isFeatured      Boolean  @default(false) @map("is_featured")
+  publishedAt     DateTime @default(now()) @map("published_at")
+  slug            String   @unique
+  metaTitle       String?  @map("meta_title")
+  metaDescription String?  @map("meta_description")
+  views           Int      @default(0)
+  readTime        Int?     @map("read_time")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("news")
 }
 
-// CMS модели для управления контентом сайта
 model ContentBlock {
-  id          Int      @id @default(autoincrement())
-  key         String   @unique // уникальный ключ блока (hero_title, hero_description, etc.)
-  title       String   // JSON multilingual title
-  content     String   // JSON multilingual content
-  type        String   // text, image, html, json
-  section     String   // hero, services, tours, footer, etc.
-  isActive    Boolean  @default(true)
-  sortOrder   Int      @default(0)
-  metadata    String?  // JSON для дополнительных данных
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  title     String
+  content   String
+  type      String
+  section   String
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  metadata  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("content_blocks")
 }
 
 model SiteSetting {
   id        Int      @id @default(autoincrement())
-  key       String   @unique // site_name, contact_email, logo_url, etc.
-  value     String   // JSON для мультиязычности
-  type      String   // text, email, url, json, boolean
-  group     String   // general, contact, seo, social
-  label     String   // JSON multilingual label for admin
+  key       String   @unique
+  value     String
+  type      String
+  group     String
+  label     String
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -302,13 +305,13 @@ model SiteSetting {
 
 model Page {
   id          Int      @id @default(autoincrement())
-  slug        String   @unique // about-us, services, contact
-  title       String   // JSON multilingual title
-  content     String   // JSON multilingual content
-  metaTitle   String?  // JSON multilingual SEO title
-  metaDesc    String?  // JSON multilingual SEO description
+  slug        String   @unique
+  title       String
+  content     String
+  metaTitle   String?
+  metaDesc    String?
   isPublished Boolean  @default(true)
-  template    String   @default("default") // default, about, contact, services
+  template    String   @default("default")
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -319,67 +322,59 @@ model Page {
 model MenuItem {
   id        Int        @id @default(autoincrement())
   parentId  Int?       @map("parent_id")
-  title     String     // JSON multilingual title
-  url       String     // URL или slug
-  type      String     // page, external, dropdown
+  title     String
+  url       String
+  type      String
   isActive  Boolean    @default(true)
   sortOrder Int        @default(0)
-  parent    MenuItem?  @relation("MenuItemParent", fields: [parentId], references: [id])
-  children  MenuItem[] @relation("MenuItemParent")
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  parent    MenuItem?  @relation("MenuItemParent", fields: [parentId], references: [id])
+  children  MenuItem[] @relation("MenuItemParent")
 
   @@map("menu_items")
 }
 
 model NewsPost {
-  id           Int       @id @default(autoincrement())
-  title        String    // JSON multilingual title
-  slug         String    @unique
-  excerpt      String?   // JSON multilingual excerpt
-  content      String    // JSON multilingual content
-  imageUrl     String?   // Featured image URL
-  category     NewsCategory
-  author       String?
-  publishDate  DateTime  @default(now())
-  isFeatured   Boolean   @default(false)
-  isPublished  Boolean   @default(true)
-  views        Int       @default(0)
-  metaTitle    String?   // JSON multilingual SEO title
-  metaDesc     String?   // JSON multilingual SEO description
-  tags         String?   // JSON array of tags
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          Int          @id @default(autoincrement())
+  title       String
+  slug        String       @unique
+  excerpt     String?
+  content     String
+  imageUrl    String?
+  category    NewsCategory
+  author      String?
+  publishDate DateTime     @default(now())
+  isFeatured  Boolean      @default(false)
+  isPublished Boolean      @default(true)
+  views       Int          @default(0)
+  metaTitle   String?
+  metaDesc    String?
+  tags        String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@map("news_posts")
 }
 
 model NewsletterSubscriber {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique
-  isActive    Boolean  @default(true)
-  subscribedAt DateTime @default(now())
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  isActive       Boolean   @default(true)
+  subscribedAt   DateTime  @default(now())
   unsubscribedAt DateTime?
-  
-  @@map("newsletter_subscribers")
-}
 
-enum NewsCategory {
-  tours
-  events
-  announcements
-  tips
-  general
+  @@map("newsletter_subscribers")
 }
 
 model Slide {
   id          Int      @id @default(autoincrement())
-  title       String   // JSON field for multilingual content
-  description String   // JSON field for multilingual content
-  image       String?  // Background image URL
-  link        String?  // Call-to-action link
-  buttonText  String?  // JSON field for button text
-  order       Int      @default(0) // Display order
+  title       String
+  description String
+  image       String?
+  link        String?
+  buttonText  String?
+  order       Int      @default(0)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -388,38 +383,37 @@ model Slide {
 }
 
 model Booking {
-  id                   Int      @id @default(autoincrement())
-  tourId               Int      @map("tour_id")
-  hotelId              Int?     @map("hotel_id")
-  tourists             String   // JSON array of tourist data
-  contactName          String?  @map("contact_name")
-  contactPhone         String?  @map("contact_phone")
-  contactEmail         String?  @map("contact_email")
-  roomSelection        String?  @map("room_selection") // JSON object with selected rooms
-  mealSelection        String?  @map("meal_selection") // JSON object with selected meals
-  totalPrice           Float    @map("total_price") // Всегда в TJS (основная валюта)
-  selectedCurrency     String   @default("TJS") @map("selected_currency") // Выбранная пользователем валюта
-  totalPriceConverted  Float?   @map("total_price_converted") // Цена в выбранной валюте (для UI)
-  tourDate             String   @map("tour_date")
-  numberOfTourists     Int      @map("number_of_tourists")
-  specialRequests      String?  @map("special_requests")
-  status               String   @default("draft") // draft, paid, error, cancelled
-  paymentMethod        String?  @map("payment_method")
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
-
-  tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
-  hotel  Hotel? @relation(fields: [hotelId], references: [id])
+  id                  Int      @id @default(autoincrement())
+  tourId              Int      @map("tour_id")
+  hotelId             Int?     @map("hotel_id")
+  tourists            String
+  contactName         String?  @map("contact_name")
+  contactPhone        String?  @map("contact_phone")
+  contactEmail        String?  @map("contact_email")
+  roomSelection       String?  @map("room_selection")
+  mealSelection       String?  @map("meal_selection")
+  totalPrice          Float    @map("total_price")
+  tourDate            String   @map("tour_date")
+  numberOfTourists    Int      @map("number_of_tourists")
+  specialRequests     String?  @map("special_requests")
+  status              String   @default("draft")
+  paymentMethod       String?  @map("payment_method")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  selectedCurrency    String   @default("TJS") @map("selected_currency")
+  totalPriceConverted Float?   @map("total_price_converted")
+  hotel               Hotel?   @relation(fields: [hotelId], references: [id])
+  tour                Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@map("bookings")
 }
 
 model ExchangeRate {
   id        Int      @id @default(autoincrement())
-  currency  String   @unique // "TJS", "USD", "EUR"
-  rate      Float    // курс относительно TJS (для TJS = 1, для USD = 0.091, для EUR = 0.084)
-  symbol    String   // Символ валюты: "SM", "$", "€"
-  name      String   // Название валюты: "Сомони", "Доллар США", "Евро"
+  currency  String   @unique
+  rate      Float
+  symbol    String
+  name      String
   isActive  Boolean  @default(true)
   updatedAt DateTime @default(now()) @updatedAt
   createdAt DateTime @default(now())
@@ -429,14 +423,14 @@ model ExchangeRate {
 
 model PriceCalculatorComponent {
   id          Int      @id @default(autoincrement())
-  key         String   @unique // Уникальный ключ компонента (transport_offroad, accommodation_5star, etc.)
-  category    String   // Категория: transport, accommodation, meals, guides, tickets, transfer, documents
-  name        String   // Название на русском языке
-  price       Float    // Цена в сомони (TJS)
-  unit        String   // Единица измерения: км, день, ночь/номер, раз, человек
-  description String?  // Дополнительное описание
+  key         String   @unique
+  category    String
+  name        String
+  price       Float
+  unit        String
+  description String?
   isActive    Boolean  @default(true)
-  sortOrder   Int      @default(0) // Порядок отображения в интерфейсе
+  sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -446,13 +440,50 @@ model PriceCalculatorComponent {
 model TourPricingComponent {
   id           Int      @id @default(autoincrement())
   tourId       Int      @map("tour_id")
-  componentKey String   @map("component_key") // Ключ компонента из PriceCalculatorComponent
-  quantity     Float    @default(1) // Количество (например, дней, км, etc.)
-  customPrice  Float?   @map("custom_price") // Кастомная цена, если отличается от базовой
-  tour         Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  componentKey String   @map("component_key")
+  quantity     Float    @default(1)
+  customPrice  Float?   @map("custom_price")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  tour         Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@unique([tourId, componentKey])
   @@map("tour_pricing_components")
+}
+
+model TourGuideProfile {
+  id            Int           @id @default(autoincrement())
+  name          String
+  login         String        @unique
+  password      String
+  email         String?
+  phone         String?
+  isActive      Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  guideReviews  GuideReview[]
+  assignedTours Tour[]
+
+  @@map("tour_guide_profiles")
+}
+
+model GuideReview {
+  id        Int              @id @default(autoincrement())
+  tourId    Int              @map("tour_id")
+  guideId   Int              @map("guide_id")
+  content   String
+  createdAt DateTime         @default(now())
+  guide     TourGuideProfile @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  tour      Tour             @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@unique([tourId, guideId])
+  @@map("guide_reviews")
+}
+
+enum NewsCategory {
+  tours
+  events
+  announcements
+  tips
+  general
 }

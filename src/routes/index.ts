@@ -20,6 +20,9 @@ import bookingRoutes from './bookingRoutes';
 import uploadRoutes from './uploadRoutes';
 import objectsRoutes from './objectsRoutes';
 import priceCalculatorRoutes from './priceCalculatorRoutes';
+// Temporarily disabled due to TypeScript compilation issues
+// import tourGuideRoutes from './tourGuideRoutes';
+// import adminTourHistoryRoutes from './adminTourHistoryRoutes';
 
 // Remove old SQLite database routes (now using Prisma)
 
@@ -46,6 +49,9 @@ router.use('/booking', bookingRoutes);
 router.use('/images', uploadRoutes); // Add images endpoint for frontend compatibility
 router.use('/objects', objectsRoutes); // Add objects endpoint for ObjectUploader
 router.use('/price-calculator', priceCalculatorRoutes); // Add price calculator endpoints
+// Temporarily disabled due to TypeScript compilation issues
+// router.use('/guide', tourGuideRoutes); // Tour guide authentication and management
+// router.use('/admin', adminTourHistoryRoutes); // Admin tour history and guide management
 router.use('/', objectStorageRoutes);
 
 // All data access now through Prisma models

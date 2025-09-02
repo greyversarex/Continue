@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кабинет тургида - Bunyod-Tour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .status-pending { background: linear-gradient(45deg, #FEF3C7, #FDE68A); color: #92400E; }
+        .status-active { background: linear-gradient(45deg, #DBEAFE, #BFDBFE); color: #1E40AF; }
+        .status-finished { background: linear-gradient(45deg, #D1FAE5, #A7F3D0); color: #065F46; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-user-tie text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Кабинет тургида</h1>
+                        <p class="text-gray-600" id="guideName">Загрузка...</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Выход
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="card rounded-xl p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Активные туры</p>
+                        <p class="text-3xl font-bold text-blue-600" id="activeTours">0</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-route text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded-xl p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Завершённые туры</p>
+                        <p class="text-3xl font-bold text-green-600" id="completedTours">0</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded-xl p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Всего туристов</p>
+                        <p class="text-3xl font-bold text-purple-600" id="totalTourists">0</p>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <i class="fas fa-users text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tours List -->
+        <div class="card rounded-xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-gray-800">
+                    <i class="fas fa-list-alt mr-2 text-blue-600"></i>
+                    Мои туры
+                </h2>
+                <button id="refreshBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    <i class="fas fa-refresh mr-2"></i>Обновить
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="text-center py-12">
+                <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
+                <p class="text-gray-600">Загрузка туров...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-12">
+                <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-500 mb-2">Туры не назначены</h3>
+                <p class="text-gray-400">У вас пока нет назначенных туров</p>
+            </div>
+
+            <!-- Tours Grid -->
+            <div id="toursGrid" class="hidden grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                <!-- Tours will be loaded here dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Tour Detail Modal -->
+    <div id="tourModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800" id="modalTourTitle">Детали тура</h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+
+                <!-- Modal content will be loaded here -->
+                <div id="modalContent">
+                    <!-- Tour details, status controls, tourist list, etc. -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let guideData = null;
+        let tours = [];
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('tourGuideToken');
+            const data = localStorage.getItem('tourGuideData');
+
+            if (!token || !data) {
+                window.location.href = '/guide-login.html';
+                return false;
+            }
+
+            try {
+                guideData = JSON.parse(data);
+                document.getElementById('guideName').textContent = guideData.name;
+                return true;
+            } catch (error) {
+                console.error('Error parsing guide data:', error);
+                window.location.href = '/guide-login.html';
+                return false;
+            }
+        }
+
+        // Load tours (demo data for now since API is temporarily disabled)
+        function loadTours() {
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('toursGrid').classList.add('hidden');
+
+            // Demo data for demonstration
+            setTimeout(() => {
+                const demoTours = [
+                    {
+                        id: 1,
+                        uniqueCode: 'TG-2025-001',
+                        title: JSON.stringify({ru: 'Культурный тур по Душанбе', en: 'Cultural Tour of Dushanbe'}),
+                        scheduledStartDate: '2025-09-10T09:00:00Z',
+                        scheduledEndDate: '2025-09-12T18:00:00Z',
+                        status: 'pending',
+                        totalTourists: 8,
+                        bookingsCount: 3
+                    },
+                    {
+                        id: 2,
+                        uniqueCode: 'TG-2025-002',
+                        title: JSON.stringify({ru: 'Горный тур в Фанские горы', en: 'Mountain Tour to Fann Mountains'}),
+                        scheduledStartDate: '2025-09-15T08:00:00Z',
+                        scheduledEndDate: '2025-09-18T20:00:00Z',
+                        status: 'active',
+                        totalTourists: 6,
+                        bookingsCount: 2
+                    }
+                ];
+
+                displayTours(demoTours);
+                updateStats(demoTours);
+                document.getElementById('loadingState').classList.add('hidden');
+            }, 1000);
+        }
+
+        function displayTours(toursList) {
+            const toursGrid = document.getElementById('toursGrid');
+            
+            if (toursList.length === 0) {
+                document.getElementById('emptyState').classList.remove('hidden');
+                return;
+            }
+
+            toursGrid.innerHTML = '';
+            toursGrid.classList.remove('hidden');
+
+            toursList.forEach(tour => {
+                const tourTitle = JSON.parse(tour.title);
+                const startDate = new Date(tour.scheduledStartDate);
+                const endDate = new Date(tour.scheduledEndDate);
+                
+                const statusClass = `status-${tour.status}`;
+                const statusText = {
+                    'pending': 'Ожидает',
+                    'active': 'В процессе',
+                    'finished': 'Завершён'
+                }[tour.status];
+
+                const tourCard = `
+                    <div class="card rounded-xl p-6 cursor-pointer hover:shadow-lg" onclick="openTourModal(${tour.id})">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-semibold text-gray-500">${tour.uniqueCode}</span>
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </div>
+                        
+                        <h3 class="text-lg font-bold text-gray-800 mb-3 line-clamp-2">${tourTitle.ru}</h3>
+                        
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar-start text-blue-500 mr-2 w-4"></i>
+                                ${startDate.toLocaleDateString('ru-RU')}
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar-end text-red-500 mr-2 w-4"></i>
+                                ${endDate.toLocaleDateString('ru-RU')}
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-users text-green-500 mr-2 w-4"></i>
+                                ${tour.totalTourists} туристов
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-xs text-gray-500">
+                            <span>${tour.bookingsCount} бронирований</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                `;
+                
+                toursGrid.innerHTML += tourCard;
+            });
+        }
+
+        function updateStats(toursList) {
+            const activeTours = toursList.filter(tour => ['pending', 'active'].includes(tour.status)).length;
+            const completedTours = toursList.filter(tour => tour.status === 'finished').length;
+            const totalTourists = toursList.reduce((sum, tour) => sum + tour.totalTourists, 0);
+
+            document.getElementById('activeTours').textContent = activeTours;
+            document.getElementById('completedTours').textContent = completedTours;
+            document.getElementById('totalTourists').textContent = totalTourists;
+        }
+
+        function openTourModal(tourId) {
+            document.getElementById('tourModal').classList.remove('hidden');
+            document.getElementById('modalContent').innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-3xl text-blue-500 mb-4"></i>
+                    <p class="text-gray-600">Загрузка деталей тура...</p>
+                </div>
+            `;
+
+            // Demo content for tour modal
+            setTimeout(() => {
+                document.getElementById('modalContent').innerHTML = `
+                    <div class="space-y-6">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">Статус тура</h4>
+                            <div class="flex space-x-3">
+                                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                                    <i class="fas fa-play mr-2"></i>Начать тур
+                                </button>
+                                <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                                    <i class="fas fa-check mr-2"></i>Завершить тур
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-3">Программа тура</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-gray-600">Программа тура будет отображаться здесь...</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-3">Список туристов (Demo)</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-2 bg-white rounded">
+                                        <span>Иван Петров</span>
+                                        <span class="text-sm text-gray-600">ivan@example.com</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded">
+                                        <span>Мария Сидорова</span>
+                                        <span class="text-sm text-gray-600">maria@example.com</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <p class="text-yellow-800 text-sm">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Полная функциональность API временно недоступна. Это демонстрационная версия интерфейса.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }, 500);
+        }
+
+        // Event listeners
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('tourModal').classList.add('hidden');
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', loadTours);
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if (confirm('Вы действительно хотите выйти?')) {
+                localStorage.removeItem('tourGuideToken');
+                localStorage.removeItem('tourGuideData');
+                window.location.href = '/guide-login.html';
+            }
+        });
+
+        // Initialize
+        if (checkAuth()) {
+            loadTours();
+        }
+    </script>
+</body>
+</html>
