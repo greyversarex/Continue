@@ -3,8 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { ApiResponse } from '../types';
+import prisma, { withRetry } from '../config/database';
 
-const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
 
 export class AdminController {
@@ -22,10 +22,10 @@ export class AdminController {
         });
       }
 
-      // Найти администратора по имени пользователя
-      const admin = await prisma.admin.findUnique({
+      // Найти администратора по имени пользователя с retry logic
+      const admin = await withRetry(() => prisma.admin.findUnique({
         where: { username }
-      });
+      }));
 
       if (!admin || !admin.isActive) {
         return res.status(401).json({
