@@ -13,10 +13,11 @@ export const loginTourGuide = async (req: Request, res: Response): Promise<void>
     const { login, password } = req.body;
 
     if (!login || !password) {
-      return res.status(400).json({ 
+      res.status(400).json({ 
         success: false, 
         message: 'Логин и пароль обязательны' 
       });
+      return;
     }
 
     // Найти тургида по логину
@@ -34,26 +35,29 @@ export const loginTourGuide = async (req: Request, res: Response): Promise<void>
     });
 
     if (!guide) {
-      return res.status(401).json({ 
+      res.status(401).json({ 
         success: false, 
         message: 'Неверный логин или пароль' 
       });
+      return;
     }
 
     if (!guide.isActive) {
-      return res.status(403).json({ 
+      res.status(403).json({ 
         success: false, 
         message: 'Аккаунт деактивирован' 
       });
+      return;
     }
 
     // Проверить пароль
     const validPassword = await bcrypt.compare(password, guide.password);
     if (!validPassword) {
-      return res.status(401).json({ 
+      res.status(401).json({ 
         success: false, 
         message: 'Неверный логин или пароль' 
       });
+      return;
     }
 
     // Создать JWT токен
@@ -98,10 +102,11 @@ export const getGuideTours = async (req: Request, res: Response): Promise<void> 
     const guideId = (req as any).user?.id;
 
     if (!guideId) {
-      return res.status(401).json({ 
+      res.status(401).json({ 
         success: false, 
         message: 'Не авторизован' 
       });
+      return;
     }
 
     const tours = await prisma.tour.findMany({
@@ -165,10 +170,11 @@ export const getTourDetails = async (req: Request, res: Response): Promise<void>
     const tourId = parseInt(id);
 
     if (!tourId) {
-      return res.status(400).json({ 
+      res.status(400).json({ 
         success: false, 
         message: 'ID тура обязателен' 
       });
+      return;
     }
 
     const tour = await prisma.tour.findFirst({
@@ -196,10 +202,11 @@ export const getTourDetails = async (req: Request, res: Response): Promise<void>
     });
 
     if (!tour) {
-      return res.status(404).json({ 
+      res.status(404).json({ 
         success: false, 
         message: 'Тур не найден' 
       });
+      return;
     }
 
     // Извлечь список туристов из бронирований
@@ -270,10 +277,11 @@ export const startTour = async (req: Request, res: Response): Promise<void> => {
     });
 
     if (!tour) {
-      return res.status(404).json({ 
+      res.status(404).json({ 
         success: false, 
         message: 'Тур не найден или уже начат' 
       });
+      return;
     }
 
     const updatedTour = await prisma.tour.update({
@@ -316,10 +324,11 @@ export const finishTour = async (req: Request, res: Response): Promise<void> => 
     });
 
     if (!tour) {
-      return res.status(404).json({ 
+      res.status(404).json({ 
         success: false, 
         message: 'Тур не найден или не активен' 
       });
+      return;
     }
 
     const updatedTour = await prisma.tour.update({
@@ -355,10 +364,11 @@ export const collectReviews = async (req: Request, res: Response): Promise<void>
     const tourId = parseInt(id);
 
     if (!selectedTourists || !Array.isArray(selectedTourists)) {
-      return res.status(400).json({ 
+      res.status(400).json({ 
         success: false, 
         message: 'Список туристов обязателен' 
       });
+      return;
     }
 
     const tour = await prisma.tour.findFirst({
@@ -370,10 +380,11 @@ export const collectReviews = async (req: Request, res: Response): Promise<void>
     });
 
     if (!tour) {
-      return res.status(404).json({ 
+      res.status(404).json({ 
         success: false, 
         message: 'Тур не найден или не завершён' 
       });
+      return;
     }
 
     // Настройка nodemailer (заглушка для демонстрации)
@@ -440,10 +451,11 @@ export const leaveGuideReview = async (req: Request, res: Response): Promise<voi
     const tourId = parseInt(id);
 
     if (!content || content.trim().length === 0) {
-      return res.status(400).json({ 
+      res.status(400).json({ 
         success: false, 
         message: 'Текст отзыва обязателен' 
       });
+      return;
     }
 
     const tour = await prisma.tour.findFirst({
@@ -455,10 +467,11 @@ export const leaveGuideReview = async (req: Request, res: Response): Promise<voi
     });
 
     if (!tour) {
-      return res.status(404).json({ 
+      res.status(404).json({ 
         success: false, 
         message: 'Тур не найден или не завершён' 
       });
+      return;
     }
 
     // Проверить, есть ли уже отзыв от этого тургида

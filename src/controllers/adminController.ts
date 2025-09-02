@@ -166,6 +166,105 @@ export class AdminController {
       });
     }
   }
+
+  /**
+   * Получение статистики для панели администратора
+   */
+  static async getDashboardStats(req: Request, res: Response, next: NextFunction) {
+    try {
+      const [toursCount, ordersCount, customersCount, hotelsCount, guidesCount, reviewsCount] = await Promise.all([
+        prisma.tour.count(),
+        prisma.order.count(),
+        prisma.customer.count(),
+        prisma.hotel.count(),
+        prisma.guide.count(),
+        prisma.review.count()
+      ]);
+
+      const recentOrders = await prisma.order.findMany({
+        take: 5,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          customer: true,
+          tour: true
+        }
+      });
+
+      const response: ApiResponse = {
+        success: true,
+        data: {
+          stats: {
+            tours: toursCount,
+            orders: ordersCount,
+            customers: customersCount,
+            hotels: hotelsCount,
+            guides: guidesCount,
+            reviews: reviewsCount
+          },
+          recentOrders
+        },
+        message: 'Dashboard statistics retrieved successfully'
+      };
+
+      return res.status(200).json(response);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * Получение всех туров для админ панели
+   */
+  static async getTours(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tours = await prisma.tour.findMany({
+        include: {
+          category: true,
+          tourBlock: true,
+          orders: true,
+          reviews: true
+        },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      const response: ApiResponse = {
+        success: true,
+        data: tours,
+        message: 'Tours retrieved successfully'
+      };
+
+      return res.status(200).json(response);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * Получение всех заказов для админ панели
+   */
+  static async getOrders(req: Request, res: Response, next: NextFunction) {
+    try {
+      const orders = await prisma.order.findMany({
+        include: {
+          customer: true,
+          tour: true,
+          hotel: true,
+          guide: true
+        },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      const response: ApiResponse = {
+        success: true,
+        data: orders,
+        message: 'Orders retrieved successfully'
+      };
+
+      return res.status(200).json(response);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
 
 /**

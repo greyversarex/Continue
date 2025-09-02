@@ -2313,28 +2313,28 @@
         }
         
         function loadDashboardStats() {
-            // Load real stats from existing endpoints
-            Promise.all([
-                fetch(`${getApiUrl()}/tours`, { headers: getAuthHeaders() }),
-                fetch(`${getApiUrl()}/orders`, { headers: getAuthHeaders() }),
-                fetch(`${getApiUrl()}/customers`, { headers: getAuthHeaders() })
-            ])
-                .then(responses => Promise.all(responses.map(res => res.json())))
-                .then(([toursData, ordersData, customersData]) => {
-                    // Calculate real stats
-                    const toursCount = toursData.success ? toursData.data.length : 0;
-                    const ordersCount = ordersData.success ? ordersData.data.length : 0;
-                    const customersCount = customersData.success ? customersData.data.length : 0;
-                    const revenue = ordersData.success ? 
-                        ordersData.data.reduce((total, order) => total + (parseFloat(order.totalAmount) || 0), 0) : 0;
-                    
-                    // Обновить статистические карточки
-                    const statsCards = document.querySelectorAll('.stat-card h3');
-                    if (statsCards.length >= 4) {
-                        statsCards[0].textContent = toursCount;
-                        statsCards[1].textContent = ordersCount; 
-                        statsCards[2].textContent = '$' + revenue.toFixed(2);
-                        statsCards[3].textContent = customersCount;
+            // Use the new dedicated dashboard stats endpoint
+            fetch(`${getApiUrl()}/admin/dashboard-stats`, { 
+                headers: getAuthHeaders() 
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Dashboard stats loaded:', data);
+                    if (data.success) {
+                        const stats = data.data.stats;
+                        const revenue = data.data.recentOrders.reduce((total, order) => 
+                            total + (parseFloat(order.totalAmount) || 0), 0);
+                        
+                        // Обновить статистические карточки
+                        const statsCards = document.querySelectorAll('.stat-card h3');
+                        if (statsCards.length >= 4) {
+                            statsCards[0].textContent = stats.tours || 0;
+                            statsCards[1].textContent = stats.orders || 0; 
+                            statsCards[2].textContent = '$' + revenue.toFixed(2);
+                            statsCards[3].textContent = stats.customers || 0;
+                        }
+                    } else {
+                        console.error('Dashboard stats API error:', data.message);
                     }
                 })
                 .catch(err => {

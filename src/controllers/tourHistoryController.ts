@@ -159,10 +159,11 @@ export const getTourDetailsAdmin = async (req: Request, res: Response): Promise<
     const tourId = parseInt(id);
 
     if (!tourId) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'ID тура обязателен'
       });
+      return;
     }
 
     const tour = await prisma.tour.findUnique({
@@ -218,10 +219,11 @@ export const getTourDetailsAdmin = async (req: Request, res: Response): Promise<
     });
 
     if (!tour) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Тур не найден'
       });
+      return;
     }
 
     // Извлечь список туристов из бронирований
@@ -271,10 +273,11 @@ export const createTourGuide = async (req: Request, res: Response): Promise<void
     const { name, login, password, email, phone } = req.body;
 
     if (!name || !login || !password) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Имя, логин и пароль обязательны'
       });
+      return;
     }
 
     // Проверить уникальность логина
@@ -283,10 +286,11 @@ export const createTourGuide = async (req: Request, res: Response): Promise<void
     });
 
     if (existingGuide) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Логин уже занят'
       });
+      return;
     }
 
     // Хэшировать пароль
@@ -376,10 +380,11 @@ export const updateTourGuide = async (req: Request, res: Response): Promise<void
     const guideId = parseInt(id);
 
     if (!guideId) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'ID тургида обязателен'
       });
+      return;
     }
 
     const updateData: any = {};
@@ -432,10 +437,11 @@ export const assignGuideToTour = async (req: Request, res: Response): Promise<vo
     const { tourId, guideId, scheduledStartDate, scheduledEndDate, uniqueCode } = req.body;
 
     if (!tourId || !guideId) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'ID тура и тургида обязательны'
       });
+      return;
     }
 
     const updateData: any = {
@@ -484,10 +490,11 @@ export const deleteTourGuide = async (req: Request, res: Response): Promise<void
     const guideId = parseInt(id);
 
     if (!guideId) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'ID тургида обязателен'
       });
+      return;
     }
 
     // Проверить, есть ли активные туры у тургида
@@ -499,10 +506,11 @@ export const deleteTourGuide = async (req: Request, res: Response): Promise<void
     });
 
     if (activeTours > 0) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: `Нельзя удалить тургида с ${activeTours} активными турами`
       });
+      return;
     }
 
     await prisma.tourGuideProfile.delete({
