@@ -2357,10 +2357,20 @@
         }
         
         function loadCharts() {
+            // ИСПРАВЛЕНИЕ: Уничтожаем существующие charts перед созданием новых
+            if (salesChart) {
+                salesChart.destroy();
+                salesChart = null;
+            }
+            if (destinationsChart) {
+                destinationsChart.destroy();
+                destinationsChart = null;
+            }
+            
             // Sales Chart
             const salesCtx = document.getElementById('salesChart');
             if (salesCtx) {
-                new Chart(salesCtx, {
+                salesChart = new Chart(salesCtx, {
                     type: 'line',
                     data: {
                         labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн'],
@@ -2382,7 +2392,7 @@
             // Destinations Chart
             const destCtx = document.getElementById('destinationsChart');
             if (destCtx) {
-                new Chart(destCtx, {
+                destinationsChart = new Chart(destCtx, {
                     type: 'doughnut',
                     data: {
                         labels: ['Таджикистан', 'Узбекистан', 'Казахстан', 'Кыргызстан'],
@@ -2399,7 +2409,11 @@
             }
         }
         
-        // Global variables for selected items
+        // ИСПРАВЛЕНИЕ: Глобальные переменные для Chart.js экземпляров
+        let salesChart = null;
+        let destinationsChart = null;
+        
+        // Глобальные переменные для выбранных элементов (восстановлены)
         let selectedCategories = [];
         let selectedLanguages = [];
         
