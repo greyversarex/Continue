@@ -4904,12 +4904,14 @@
                 }
             }
             
-            // НОВОЕ: Обработка типов питания с ценами
+            // НОВОЕ: Обработка типов питания с ценами (с проверками на существование элементов)
             const mealTypes = {};
             
             // RO - Без питания
-            if (document.getElementById('mealRO').checked) {
-                const price = document.getElementById('priceMealRO').value;
+            const mealROEl = document.getElementById('mealRO');
+            const priceMealROEl = document.getElementById('priceMealRO');
+            if (mealROEl && mealROEl.checked && priceMealROEl) {
+                const price = priceMealROEl.value;
                 mealTypes.RO = {
                     name: 'Без питания',
                     price: price && !isNaN(parseFloat(price)) ? parseFloat(price) : 0
@@ -4917,8 +4919,10 @@
             }
             
             // BB - Завтрак
-            if (document.getElementById('mealBB').checked) {
-                const price = document.getElementById('priceMealBB').value;
+            const mealBBEl = document.getElementById('mealBB');
+            const priceMealBBEl = document.getElementById('priceMealBB');
+            if (mealBBEl && mealBBEl.checked && priceMealBBEl) {
+                const price = priceMealBBEl.value;
                 if (price && !isNaN(parseFloat(price))) {
                     mealTypes.BB = {
                         name: 'Завтрак',
@@ -4928,8 +4932,10 @@
             }
             
             // HB - Полупансион
-            if (document.getElementById('mealHB').checked) {
-                const price = document.getElementById('priceMealHB').value;
+            const mealHBEl = document.getElementById('mealHB');
+            const priceMealHBEl = document.getElementById('priceMealHB');
+            if (mealHBEl && mealHBEl.checked && priceMealHBEl) {
+                const price = priceMealHBEl.value;
                 if (price && !isNaN(parseFloat(price))) {
                     mealTypes.HB = {
                         name: 'Полупансион',
@@ -4939,8 +4945,10 @@
             }
             
             // FB - Полный пансион
-            if (document.getElementById('mealFB').checked) {
-                const price = document.getElementById('priceMealFB').value;
+            const mealFBEl = document.getElementById('mealFB');
+            const priceMealFBEl = document.getElementById('priceMealFB');
+            if (mealFBEl && mealFBEl.checked && priceMealFBEl) {
+                const price = priceMealFBEl.value;
                 if (price && !isNaN(parseFloat(price))) {
                     mealTypes.FB = {
                         name: 'Полный пансион',
@@ -4950,8 +4958,10 @@
             }
             
             // AI - Все включено
-            if (document.getElementById('mealAI').checked) {
-                const price = document.getElementById('priceMealAI').value;
+            const mealAIEl = document.getElementById('mealAI');
+            const priceMealAIEl = document.getElementById('priceMealAI');
+            if (mealAIEl && mealAIEl.checked && priceMealAIEl) {
+                const price = priceMealAIEl.value;
                 if (price && !isNaN(parseFloat(price))) {
                     mealTypes.AI = {
                         name: 'Все включено',
@@ -5047,31 +5057,51 @@
                 if (!this.checked) document.getElementById('priceDBL').value = '';
             });
             
-            // НОВОЕ: Обработчики для включения/выключения полей цены типов питания
-            document.getElementById('mealRO').addEventListener('change', function() {
-                document.getElementById('priceMealRO').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceMealRO').value = '';
-            });
+            // НОВОЕ: Обработчики для включения/выключения полей цены типов питания (с проверками)
+            const mealROEl = document.getElementById('mealRO');
+            const priceMealROEl = document.getElementById('priceMealRO');
+            if (mealROEl && priceMealROEl) {
+                mealROEl.addEventListener('change', function() {
+                    priceMealROEl.disabled = !this.checked;
+                    if (!this.checked) priceMealROEl.value = '';
+                });
+            }
             
-            document.getElementById('mealBB').addEventListener('change', function() {
-                document.getElementById('priceMealBB').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceMealBB').value = '';
-            });
+            const mealBBEl = document.getElementById('mealBB');
+            const priceMealBBEl = document.getElementById('priceMealBB');
+            if (mealBBEl && priceMealBBEl) {
+                mealBBEl.addEventListener('change', function() {
+                    priceMealBBEl.disabled = !this.checked;
+                    if (!this.checked) priceMealBBEl.value = '';
+                });
+            }
             
-            document.getElementById('mealHB').addEventListener('change', function() {
-                document.getElementById('priceMealHB').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceMealHB').value = '';
-            });
+            const mealHBEl = document.getElementById('mealHB');
+            const priceMealHBEl = document.getElementById('priceMealHB');
+            if (mealHBEl && priceMealHBEl) {
+                mealHBEl.addEventListener('change', function() {
+                    priceMealHBEl.disabled = !this.checked;
+                    if (!this.checked) priceMealHBEl.value = '';
+                });
+            }
             
-            document.getElementById('mealFB').addEventListener('change', function() {
-                document.getElementById('priceMealFB').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceMealFB').value = '';
-            });
+            const mealFBEl = document.getElementById('mealFB');
+            const priceMealFBEl = document.getElementById('priceMealFB');
+            if (mealFBEl && priceMealFBEl) {
+                mealFBEl.addEventListener('change', function() {
+                    priceMealFBEl.disabled = !this.checked;
+                    if (!this.checked) priceMealFBEl.value = '';
+                });
+            }
             
-            document.getElementById('mealAI').addEventListener('change', function() {
-                document.getElementById('priceMealAI').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceMealAI').value = '';
-            });
+            const mealAIElementCheck = document.getElementById('mealAI');
+            const priceMealAIElementCheck = document.getElementById('priceMealAI');
+            if (mealAIElementCheck && priceMealAIElementCheck) {
+                mealAIElementCheck.addEventListener('change', function() {
+                    priceMealAIElementCheck.disabled = !this.checked;
+                    if (!this.checked) priceMealAIElementCheck.value = '';
+                });
+            }
         });
 
         // Initialize ObjectUploader for hotels
