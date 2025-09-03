@@ -92,6 +92,7 @@ export class TourModel {
         rating: data.rating || null,
         reviewsCount: data.reviewsCount || null,
         theme: data.theme || null,
+        assignedGuideId: data.assignedGuideId || null,
         requirements: data.requirements || null,
         tags: data.tags || null,
         location: data.location || null,
@@ -152,6 +153,7 @@ export class TourModel {
     if (data.endDate !== undefined) updateData.endDate = data.endDate;
     if (data.tourBlockId !== undefined) updateData.tourBlockId = data.tourBlockId;
     if (data.pricingComponents !== undefined) updateData.pricingData = data.pricingComponents;
+    if (data.assignedGuideId !== undefined) updateData.assignedGuideId = data.assignedGuideId;
     
     if (data.categoryId) {
       // Validate that the category exists

@@ -70,6 +70,7 @@ export interface CreateTourData {
   tags?: string;
   location?: string;
   services?: string;
+  assignedGuideId?: number | null; // ID of assigned tour guide
   pricingComponents?: string; // JSON string of selected pricing components with quantities (maps to pricingData in DB)
   pricingData?: string; // Prisma field name for pricing components data
 }

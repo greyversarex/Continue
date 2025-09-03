@@ -576,6 +576,12 @@ export class TourController {
       if (reviewsCountNumber !== undefined) updateData.reviewsCount = reviewsCountNumber;
       if (isFeatured !== undefined) updateData.isFeatured = isFeatured;
       if (pricingComponents !== undefined) updateData.pricingComponents = pricingComponents;
+      
+      // Add support for assignedGuideId
+      if (req.body.assignedGuideId !== undefined) {
+        const assignedGuideIdNumber = req.body.assignedGuideId ? parseInt(req.body.assignedGuideId) : null;
+        updateData.assignedGuideId = assignedGuideIdNumber;
+      }
 
       const tour = await TourModel.update(id, updateData);
 

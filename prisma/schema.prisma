@@ -88,7 +88,7 @@ model Tour {
   tourGuides         TourGuide[]
   tourHotels         TourHotel[]
   pricingComponents  TourPricingComponent[]
-  assignedGuide      TourGuideProfile?      @relation(fields: [assignedGuideId], references: [id])
+  assignedGuide      Guide?                 @relation(fields: [assignedGuideId], references: [id])
   category           Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   tourBlock          TourBlock?             @relation(fields: [tourBlockId], references: [id])
 
@@ -148,8 +148,9 @@ model Guide {
   isActive    Boolean     @default(true)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  orders      Order[]
-  tourGuides  TourGuide[]
+  orders       Order[]
+  tourGuides   TourGuide[]
+  assignedTours Tour[] @relation("AssignedGuide")
 
   @@map("guides")
 }
