@@ -2689,9 +2689,9 @@
                         <div class="flex items-center justify-between mt-auto">
                             <div class="text-lg font-bold text-gray-900">
                                 ${tour.originalPrice ? `
-                                    <span class="text-sm line-through text-gray-400 mr-2 price-display" data-original-price="${tour.originalPrice}">SM${tour.originalPrice}</span>
+                                    <span class="text-sm line-through text-gray-400 mr-2 price-display" data-original-price="${tour.originalPrice}">${tour.originalPrice} TJS</span>
                                 ` : ''}
-                                <span class="tour-price price-display" data-original-price="${tour.price}">SM${tour.price}</span>
+                                <span class="tour-price price-display" data-original-price="${tour.price}">${tour.price} TJS</span>
                                 <div class="text-xs text-gray-500">${tour.priceType}</div>
                             </div>
                             <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" 
@@ -2954,8 +2954,12 @@
                 const priceElement = card.querySelector('.tour-price');
                 if (priceElement && priceElement.dataset.originalPrice) {
                     const originalPrice = parseInt(priceElement.dataset.originalPrice);
-                    const convertedPrice = convertPrice(originalPrice, globalCurrency);
-                    priceElement.textContent = `${exchangeRates[globalCurrency].symbol}${convertedPrice}`;
+                    if (globalCurrency === 'TJS') {
+                        priceElement.textContent = `${originalPrice} TJS`;
+                    } else {
+                        const convertedPrice = convertPrice(originalPrice, globalCurrency);
+                        priceElement.textContent = `${originalPrice} TJS (${convertedPrice} ${globalCurrency})`;
+                    }
                 }
             });
             
@@ -2963,8 +2967,12 @@
             document.querySelectorAll('.price-display').forEach(element => {
                 if (element.dataset.originalPrice) {
                     const originalPrice = parseInt(element.dataset.originalPrice);
-                    const convertedPrice = convertPrice(originalPrice, globalCurrency);
-                    element.textContent = `${exchangeRates[globalCurrency].symbol}${convertedPrice}`;
+                    if (globalCurrency === 'TJS') {
+                        element.textContent = `${originalPrice} TJS`;
+                    } else {
+                        const convertedPrice = convertPrice(originalPrice, globalCurrency);
+                        element.textContent = `${originalPrice} TJS (${convertedPrice} ${globalCurrency})`;
+                    }
                 }
             });
         }
