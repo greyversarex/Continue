@@ -15,7 +15,7 @@ Frontend structure alignment: Admin panel must perfectly match the frontend home
 ### Backend Framework
 The backend is built with **Express.js and TypeScript**, chosen for type safety, developer productivity, and robust ecosystem support. It follows a **modular architecture** organized into controllers, models, routes, and middleware, adhering to an **MVC pattern** for clear separation of concerns.
 
-### System Status (Updated September 2, 2025)
+### System Status (Updated September 3, 2025)
 - **✅ Full CRUD Operations**: All create, read, update, delete operations tested and working
 - **✅ Multilingual Support**: JSON-based multilingual content properly implemented (Russian, English, Tajik)
 - **✅ Database Integration**: PostgreSQL with Prisma ORM fully operational
@@ -24,7 +24,9 @@ The backend is built with **Express.js and TypeScript**, chosen for type safety,
 - **✅ Data Validation**: Fixed critical duration field conversion issue (integer to string for Prisma)
 - **✅ Content Created**: 32 tours, 6 hotels, 5 guides, 7 categories, 6 tour blocks successfully created
 - **✅ Component-based Tour Pricing**: Dynamic pricing system with inline editing implemented
-- **🚧 Tour Guide Cabinet System**: Database schema created, frontend interfaces built (API temporarily disabled due to TypeScript compilation issues)
+- **✅ Booking-to-Order Data Flow**: Fixed critical integration between Booking (draft) and Order (payment-ready) systems
+- **✅ Payment Integration**: Seamless connection between booking system and AlifPay/Payler payment gateways with proper orderNumber generation
+- **✅ Tour Guide Cabinet System**: Database schema created, frontend interfaces built (API temporarily disabled due to TypeScript compilation issues)
 
 ### Database Layer
 **PostgreSQL with Prisma ORM** is used for the database. PostgreSQL provides robust relational database features with excellent scalability, while Prisma provides type-safe database access and excellent TypeScript integration. The schema includes **Tours** with multilingual JSON fields, **Categories** for classification, **TourBlocks** for frontend organization, and new **TourGuideProfile** and **GuideReview** models for tour guide management, maintaining foreign key relationships. The database contains tours organized into blocks matching the frontend structure. A global Prisma client instance manages database connections with graceful shutdown.

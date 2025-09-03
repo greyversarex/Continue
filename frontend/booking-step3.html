@@ -471,12 +471,12 @@
                 return;
             }
 
-            // Get order number from localStorage or URL
+            // Get booking ID from URL (это основная информация)
             const urlParams = new URLSearchParams(window.location.search);
-            const orderNumber = urlParams.get('orderNumber') || bookingState.orderNumber;
+            const bookingId = urlParams.get('bookingId');
 
-            if (!orderNumber) {
-                alert('Ошибка: Номер заказа не найден');
+            if (!bookingId) {
+                alert('Ошибка: ID бронирования не найден');
                 return;
             }
 
@@ -484,6 +484,28 @@
             showPaymentProcessing();
 
             try {
+                // ШАГАН 1: Сначала создать Order из Booking
+                console.log('🔄 Создаем заказ из бронирования...');
+                const createOrderResponse = await fetch(`/api/booking/${bookingId}/create-order`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const orderData = await createOrderResponse.json();
+                
+                if (!orderData.success) {
+                    console.error('❌ Не удалось создать заказ:', orderData.message);
+                    alert('Ошибка при создании заказа: ' + orderData.message);
+                    closePaymentModal();
+                    return;
+                }
+
+                const orderNumber = orderData.data.orderNumber;
+                console.log('✅ Заказ создан:', orderNumber);
+
+                // ШАГАН 2: Теперь инициировать оплату с orderNumber
                 let paymentResponse;
                 
                 // Route to appropriate payment system

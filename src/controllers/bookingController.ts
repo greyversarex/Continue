@@ -285,6 +285,119 @@ export const bookingController = {
   },
 
   /**
+   * Создать заказ из бронирования для оплаты (Шаг 3)
+   * POST /api/booking/:id/create-order
+   */
+  async createOrderFromBooking(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      
+      // Найти бронирование с полными данными
+      const booking = await prisma.booking.findUnique({
+        where: { id: parseInt(id) },
+        include: {
+          tour: {
+            include: {
+              category: true
+            }
+          },
+          hotel: true
+        }
+      });
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found'
+        });
+      }
+
+      if (!booking.contactEmail || !booking.contactName) {
+        return res.status(400).json({
+          success: false,
+          message: 'Contact information is required'
+        });
+      }
+
+      // Создать или найти клиента
+      let customer = await prisma.customer.findUnique({
+        where: { email: booking.contactEmail }
+      });
+
+      if (!customer) {
+        customer = await prisma.customer.create({
+          data: {
+            fullName: booking.contactName,
+            email: booking.contactEmail,
+            phone: booking.contactPhone || ''
+          }
+        });
+      }
+
+      // Генерировать номер заказа
+      const generateOrderNumber = (): string => {
+        const timestamp = Date.now().toString();
+        const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+        return `BT-${timestamp.slice(-6)}${random}`;
+      };
+
+      const orderNumber = generateOrderNumber();
+
+      // Создать заказ с правильной суммой из бронирования
+      const order = await prisma.order.create({
+        data: {
+          orderNumber,
+          customerId: customer.id,
+          tourId: booking.tourId,
+          hotelId: booking.hotelId,
+          guideId: null, // Может быть добавлено позже
+          tourDate: booking.tourDate,
+          tourists: booking.tourists,
+          wishes: booking.specialRequests || '',
+          totalAmount: booking.totalPrice,
+          status: 'pending',
+          paymentStatus: 'unpaid'
+        },
+        include: {
+          customer: true,
+          tour: {
+            include: {
+              category: true
+            }
+          },
+          hotel: true
+        }
+      });
+
+      // Обновить статус бронирования
+      await prisma.booking.update({
+        where: { id: booking.id },
+        data: {
+          status: 'order_created'
+        }
+      });
+
+      return res.json({
+        success: true,
+        data: {
+          order: order,
+          orderNumber: order.orderNumber,
+          totalAmount: order.totalAmount
+        },
+        message: 'Order created successfully from booking'
+      });
+
+    } catch (error) {
+      console.error('Error creating order from booking:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to create order from booking',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  },
+
+  /**
    * Процесс оплаты (Шаг 3 - mock)
    * PUT /api/booking/:id/pay
    */
@@ -554,3 +667,4 @@ export const bookingController = {
     }
   }
 };
+

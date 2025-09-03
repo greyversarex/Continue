@@ -59,10 +59,55 @@ export const createOrder = async (req: Request, res: Response) => {
       });
     }
 
-    // Calculate total amount (basic calculation, can be enhanced)
+    // Calculate total amount with proper pricing logic
     const basePrice = parseFloat(tour.price);
     const numberOfTourists = bookingData.tourists.length;
-    const totalAmount = basePrice * numberOfTourists;
+    const tourPriceType = tour.priceType;
+    
+    let totalAmount = 0;
+    
+    // Calculate tour base price
+    if (tourPriceType === 'за человека') {
+      totalAmount += basePrice * numberOfTourists;
+    } else {
+      totalAmount += basePrice; // За группу
+    }
+    
+    // Add hotel costs if selected
+    if (bookingData.selectedHotelId && (bookingData as any).roomSelection) {
+      const hotel = await prisma.hotel.findUnique({
+        where: { id: bookingData.selectedHotelId }
+      });
+      
+      if (hotel) {
+        const tourDuration = parseInt(tour.duration.replace(/\D/g, '')) || 1;
+        const roomSelection = typeof (bookingData as any).roomSelection === 'string' 
+          ? JSON.parse((bookingData as any).roomSelection) 
+          : (bookingData as any).roomSelection;
+          
+        for (const [roomType, roomData] of Object.entries(roomSelection as any)) {
+          const room = roomData as any;
+          if (room.quantity > 0 && room.price) {
+            totalAmount += room.price * room.quantity * tourDuration;
+          }
+        }
+      }
+    }
+    
+    // Add meal costs if selected
+    if (bookingData.selectedHotelId && (bookingData as any).mealSelection) {
+      const tourDuration = parseInt(tour.duration.replace(/\D/g, '')) || 1;
+      const mealSelection = typeof (bookingData as any).mealSelection === 'string' 
+        ? JSON.parse((bookingData as any).mealSelection) 
+        : (bookingData as any).mealSelection;
+        
+      for (const [mealType, mealData] of Object.entries(mealSelection as any)) {
+        const meal = mealData as any;
+        if (meal.selected && meal.price) {
+          totalAmount += meal.price * numberOfTourists * tourDuration;
+        }
+      }
+    }
 
     // Create order
     const orderNumber = generateOrderNumber();

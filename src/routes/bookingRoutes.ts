@@ -7,6 +7,7 @@ const router = express.Router();
 router.post('/start', bookingController.startBooking);              // Step 1: Start booking
 router.put('/:id/step1', bookingController.updateBookingStep1);     // Step 1: Hotel/room selection
 router.put('/:id/details', bookingController.updateBookingDetails); // Step 2: Tourist details
+router.post('/:id/create-order', bookingController.createOrderFromBooking); // Step 3: Create Order
 router.put('/:id/pay', bookingController.processPayment);           // Step 3: Payment
 router.get('/:id', bookingController.getBooking);                   // Get booking details
 
