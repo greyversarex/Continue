@@ -2723,28 +2723,28 @@
             // Формируем данные для отправки
             const tourData = {
                 title: {
-                    ru: document.getElementById('tourTitleRu')?.value || '',
-                    en: document.getElementById('tourTitleEn')?.value || ''
+                    ru: safeGetValue('tourTitleRu', ''),
+                    en: safeGetValue('tourTitleEn', '')
                 },
                 description: {
-                    ru: document.getElementById('tourDescRu')?.value || '',
-                    en: document.getElementById('tourDescEn')?.value || ''
+                    ru: safeGetValue('tourDescRu', ''),
+                    en: safeGetValue('tourDescEn', '')
                 },
                 duration: '',  // Поле удалено из формы
-                durationDays: parseInt(document.getElementById('tourDurationDays')?.value) || 1,
-                price: document.getElementById('tourPrice')?.value || '',
-                priceType: document.getElementById('tourPriceType')?.value || 'за человека',
-                country: document.getElementById('tourCountry')?.value || '',
-                city: document.getElementById('tourCity')?.value || '',
-                categoryId: parseInt(document.getElementById('tourCategory')?.value) || null,
+                durationDays: safeGetValue('tourDurationDays', 1, 'int'),
+                price: safeGetValue('tourPrice', ''),
+                priceType: safeGetValue('tourPriceType', 'за человека'),
+                country: safeGetValue('tourCountry', ''),
+                city: safeGetValue('tourCity', ''),
+                categoryId: safeGetValue('tourCategory', null, 'int'),
                 tourBlockIds: Array.from(document.querySelectorAll('input[name="tourBlocks"]:checked')).map(cb => parseInt(cb.value)),
                 
                 // Информация о туре
-                pickupInfo: document.getElementById('tourPickupInfo')?.value || '',
-                languages: document.getElementById('tourLanguages')?.value || '',
+                pickupInfo: safeGetValue('tourPickupInfo', ''),
+                languages: safeGetValue('tourLanguages', ''),
                 // difficulty field removed per user request
-                minPeople: parseInt(document.getElementById('tourMinPeople')?.value) || null,
-                maxPeople: parseInt(document.getElementById('tourMaxPeople')?.value) || null,
+                minPeople: safeGetValue('tourMinPeople', null, 'int'),
+                maxPeople: safeGetValue('tourMaxPeople', null, 'int'),
                 
                 // Images - using uploaded files
                 mainImage: mainImage || '',
@@ -2790,7 +2790,7 @@
             }
             
             // Получаем ID тура из скрытого поля
-            const tourId = document.getElementById('tour-id').value || '';
+            const tourId = safeGetValue('tour-id', '');
             
             // Определяем режим редактирования (boolean, не строка!)
             const isEditing = Boolean(tourId && tourId.trim() !== '');
@@ -2825,18 +2825,18 @@
                     en: descEnElement ? descEnElement.value : (descRuElement ? descRuElement.value : '')
                 }),
                 price: priceElement ? parseFloat(priceElement.value) : 0,
-                priceType: document.getElementById('tourPriceType')?.value || 'за человека',
-                originalPrice: document.getElementById('tourOriginalPrice')?.value ? parseFloat(document.getElementById('tourOriginalPrice').value) : null,
+                priceType: safeGetValue('tourPriceType', 'за человека'),
+                originalPrice: safeGetValue('tourOriginalPrice', null, 'float'),
                 durationDays: durationElement ? parseInt(durationElement.value) : 1,
-                format: document.getElementById('tourType')?.value,
-                tourType: document.getElementById('tourType')?.value,
-                difficulty: document.getElementById('tourDifficulty')?.value || 'Легкий',
-                maxPeople: document.getElementById('tourMaxPeople')?.value ? parseInt(document.getElementById('tourMaxPeople').value) : null,
-                minPeople: document.getElementById('tourMinPeople')?.value ? parseInt(document.getElementById('tourMinPeople').value) : null,
-                country: document.getElementById('tourCountry')?.value,
-                city: document.getElementById('tourCity')?.value,
-                pickupInfo: document.getElementById('tourPickupInfo')?.value,
-                mainImage: document.getElementById('tourMainImage')?.value,
+                format: safeGetValue('tourType', ''),
+                tourType: safeGetValue('tourType', ''),
+                difficulty: safeGetValue('tourDifficulty', 'Легкий'),
+                maxPeople: safeGetValue('tourMaxPeople', null, 'int'),
+                minPeople: safeGetValue('tourMinPeople', null, 'int'),
+                country: safeGetValue('tourCountry', ''),
+                city: safeGetValue('tourCity', ''),
+                pickupInfo: safeGetValue('tourPickupInfo', ''),
+                mainImage: safeGetValue('tourMainImage', ''),
                 images: JSON.stringify(window.tourGalleryImages || []),
                 highlights: JSON.stringify(window.tourHighlights || []),
                 itinerary: JSON.stringify(window.tourItinerary || []),
@@ -2846,14 +2846,14 @@
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
                 categoryId: selectedCategories.length > 0 ? selectedCategories[0].id : null,
                 tourBlockIds: Array.from(document.querySelectorAll('input[name="tourBlocks"]:checked')).map(cb => parseInt(cb.value)),
-                isFeatured: document.getElementById('tourIsFeatured')?.checked || false,
+                isFeatured: safeGetValue('tourIsFeatured', false, 'checkbox'),
                 isActive: true,
                 // Собираем выбранные отели
                 hotelIds: Array.from(document.querySelectorAll('input[name="selectedHotels"]:checked')).map(cb => parseInt(cb.value)),
                 // Собираем выбранных гидов 
                 guideIds: Array.from(document.querySelectorAll('input[name="selectedGuides"]:checked')).map(cb => parseInt(cb.value)),
                 // Компоненты цены (новая система ценообразования)
-                pricingComponents: document.getElementById('tourPricingData')?.value || '[]'
+                pricingComponents: safeGetValue('tourPricingData', '[]')
             };
             
             console.log('📤 Sending tour data:', formData);
@@ -2932,9 +2932,9 @@
 
         // Функции управления программой тура
         function addItinerary() {
-            const time = document.getElementById('newItineraryTime').value;
-            const itineraryTitle = document.getElementById('newItineraryTitle').value.trim();
-            const desc = document.getElementById('newItineraryDesc').value.trim();
+            const time = safeGetValue('newItineraryTime', '');
+            const itineraryTitle = safeGetValue('newItineraryTitle', '').trim();
+            const desc = safeGetValue('newItineraryDesc', '').trim();
             
             if (time && itineraryTitle && desc) {
                 window.tourItinerary.push({ time, title: itineraryTitle, description: desc });
