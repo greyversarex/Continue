@@ -99,20 +99,7 @@
                         </div>
                     </div>
 
-                    <!-- Support Contacts -->
-                    <div class="border-t pt-4 mt-6">
-                        <h4 class="font-medium text-gray-800 mb-2">Служба поддержки</h4>
-                        <div class="text-sm text-gray-600 space-y-1">
-                            <p><i class="fas fa-phone text-blue-500 mr-2"></i>+992 935 888 000</p>
-                            <p><i class="fas fa-envelope text-blue-500 mr-2"></i>info@bunyod-tour.com</p>
-                            <p><i class="fas fa-clock text-blue-500 mr-2"></i>Пн-Пт: 9:00-18:00</p>
-                        </div>
-                    </div>
 
-                    <!-- Continue Button -->
-                    <button id="continue-btn" class="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                        Продолжить
-                    </button>
                 </div>
             </div>
         </div>
@@ -129,12 +116,22 @@
             totalPrice: 0
         };
 
+        // Currency management
+        let currencyState = {
+            rates: {},
+            selectedCurrency: 'TJS', // Default currency
+            baseCurrency: 'TJS'
+        };
+
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             initializePage();
         });
 
-        function initializePage() {
+        async function initializePage() {
+            // Initialize currencies first
+            await initializeCurrencies();
+
             // Get tour info from URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             const tourId = urlParams.get('tourId');
@@ -153,6 +150,58 @@
 
             // Start booking process
             startBooking(tourId, tourDate, numberOfTourists);
+        }
+
+        // Currency functions
+        async function initializeCurrencies() {
+            try {
+                // Get selected currency from localStorage or URL params
+                const urlParams = new URLSearchParams(window.location.search);
+                const currencyFromUrl = urlParams.get('currency');
+                const currencyFromStorage = localStorage.getItem('selectedCurrency');
+                
+                currencyState.selectedCurrency = currencyFromUrl || currencyFromStorage || 'TJS';
+                
+                // Load exchange rates
+                const response = await fetch('/api/exchange-rates');
+                const data = await response.json();
+                
+                if (data.success) {
+                    currencyState.rates = {};
+                    data.data.forEach(rate => {
+                        currencyState.rates[rate.currency] = {
+                            rate: rate.rate,
+                            symbol: rate.symbol === 'SM' ? 'TJS' : rate.symbol, // Fix symbol display
+                            name: rate.name
+                        };
+                    });
+                    console.log('💱 Currency rates loaded:', currencyState.rates);
+                }
+            } catch (error) {
+                console.error('❌ Error loading currencies:', error);
+                // Set default rates if API fails
+                currencyState.rates = {
+                    'TJS': { rate: 1, symbol: 'TJS', name: 'Сомони' },
+                    'USD': { rate: 0.091, symbol: '$', name: 'Доллар США' },
+                    'EUR': { rate: 0.084, symbol: '€', name: 'Евро' }
+                };
+            }
+        }
+
+        function formatCurrencyWithEquivalent(amountTJS, showEquivalent = true) {
+            const selectedCurrency = currencyState.selectedCurrency;
+            const rates = currencyState.rates;
+            
+            // Always show TJS first
+            let display = `${Math.round(amountTJS)} TJS`;
+            
+            if (showEquivalent && selectedCurrency !== 'TJS' && rates[selectedCurrency]) {
+                const convertedAmount = Math.round(amountTJS * rates[selectedCurrency].rate);
+                const symbol = rates[selectedCurrency].symbol;
+                display += ` (${convertedAmount} ${symbol})`;
+            }
+            
+            return display;
         }
 
         async function startBooking(tourId, tourDate, numberOfTourists) {
@@ -265,7 +314,7 @@
                         <div class="text-sm text-gray-600 space-y-1">
                             <div class="flex justify-between">
                                 <span>Цена тура ${tour.priceType === 'за группу' ? '(за группу)' : '× ' + numberOfTourists + ' чел.'}:</span>
-                                <span id="tour-price-calc" class="price-display" data-original-price="0">SM0</span>
+                                <span id="tour-price-calc" class="price-display" data-original-price="0">0 TJS</span>
                             </div>
                             <div id="room-costs-calc" class="space-y-1">
                                 <!-- Room costs calculation will appear here -->
@@ -277,7 +326,7 @@
                         <div class="border-t pt-2 mt-2">
                             <div class="flex justify-between font-bold text-lg text-blue-600">
                                 <span>Итоговая сумма:</span>
-                                <span id="total-price" class="price-display" data-original-price="0">SM0</span>
+                                <span id="total-price" class="price-display" data-original-price="0">0 TJS</span>
                             </div>
                         </div>
                     </div>
@@ -304,10 +353,6 @@
                         </div>
                     </div>
                     
-                    <!-- Кнопка продолжить -->
-                    <button id="continue-btn" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                        Продолжить
-                    </button>
                 </div>
             `;
 
@@ -328,13 +373,13 @@
             const tourPriceCalcElement = document.getElementById('tour-price-calc');
             if (tourPriceCalcElement) {
                 tourPriceCalcElement.dataset.originalPrice = tourPrice;
-                tourPriceCalcElement.textContent = `SM${tourPrice}`;
+                tourPriceCalcElement.textContent = formatCurrencyWithEquivalent(tourPrice);
             }
             
             const totalPriceElement = document.getElementById('total-price');
             if (totalPriceElement) {
                 totalPriceElement.dataset.originalPrice = tourPrice;
-                totalPriceElement.textContent = `SM${tourPrice}`;
+                totalPriceElement.textContent = formatCurrencyWithEquivalent(tourPrice);
             }
             
             bookingState.totalPrice = tourPrice;
@@ -446,7 +491,7 @@
                                             <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
                                                 <div>
                                                     <span class="font-medium">${type} - ${room.name}</span>
-                                                    <span class="text-green-600 ml-2">$${room.price}/сутки</span>
+                                                    <span class="text-green-600 ml-2">${Math.round(room.price)} TJS/сутки</span>
                                                 </div>
                                                 <div class="room-counter flex items-center space-x-2">
                                                     <button class="btn-counter" onclick="changeRoomQuantity('${hotel.id}', '${type}', -1)">-</button>
@@ -484,7 +529,7 @@
                                                     <input type="radio" name="meal-${hotel.id}" value="${type}" class="mr-3" onchange="selectMeal('${hotel.id}', '${type}', ${meal.price})">
                                                     <span class="font-medium">${type} - ${meal.name}</span>
                                                 </div>
-                                                <span class="text-green-600">$${meal.price}/сутки</span>
+                                                <span class="text-green-600">${Math.round(meal.price)} TJS/сутки</span>
                                             </label>
                                         `).join('')}
                                     </div>
@@ -654,7 +699,7 @@
                         roomsHtml += `
                             <div class="flex justify-between items-center">
                                 <span>${roomInfo.name} × ${quantity}</span>
-                                <span class="text-green-600 font-medium">$${roomInfo.price}/сутки</span>
+                                <span class="text-green-600 font-medium">${Math.round(roomInfo.price)} TJS/сутки</span>
                             </div>
                         `;
                     }
@@ -671,7 +716,7 @@
                         mealsHtml += `
                             <div class="flex justify-between items-center">
                                 <span>Питание: ${mealTypes[mealType].name}</span>
-                                <span class="text-green-600 font-medium">$${price}/сутки</span>
+                                <span class="text-green-600 font-medium">${Math.round(price)} TJS/сутки</span>
                             </div>
                         `;
                     }
@@ -890,7 +935,7 @@
                                 roomsHtml += `
                                     <div class="flex justify-between">
                                         <span>${roomTypes[roomType].name} × ${quantity}</span>
-                                        <span>$${roomTypes[roomType].price}/сутки</span>
+                                        <span>${Math.round(roomTypes[roomType].price)} TJS/сутки</span>
                                     </div>
                                 `;
                             }
@@ -966,12 +1011,12 @@
             // Safely update displays if elements exist
             const tourPriceCalcElement = document.getElementById('tour-price-calc');
             if (tourPriceCalcElement) {
-                tourPriceCalcElement.textContent = `$${tourPrice}`;
+                tourPriceCalcElement.textContent = formatCurrencyWithEquivalent(tourPrice);
             }
             
             const totalPriceElement = document.getElementById('total-price');
             if (totalPriceElement) {
-                totalPriceElement.textContent = `$${totalPrice}`;
+                totalPriceElement.textContent = formatCurrencyWithEquivalent(totalPrice);
             }
             
             // Store total for later use
