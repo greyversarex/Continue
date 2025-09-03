@@ -5411,10 +5411,14 @@
                         } catch(e) {
                             name = guide.name || {};
                         }
-                        try {
-                            languages = typeof guide.languages === 'string' ? JSON.parse(guide.languages) : (guide.languages || []);
-                        } catch(e) {
-                            languages = guide.languages || [];
+                        // ИСПРАВЛЕНО: правильная обработка languages для Guide API
+                        if (typeof guide.languages === 'string') {
+                            // Если это простая строка (как в API /guides), разбиваем на массив
+                            languages = guide.languages.split(',').map(lang => lang.trim()).filter(lang => lang);
+                        } else if (Array.isArray(guide.languages)) {
+                            languages = guide.languages;
+                        } else {
+                            languages = [];
                         }
                         
                         return `
@@ -5956,7 +5960,7 @@
             const formData = {
                 name: fullName,
                 description: document.getElementById('guideComments').value.trim() || 'Профессиональный гид',
-                languages: selectedLanguages,
+                languages: selectedLanguages.join(', '), // ИСПРАВЛЕНО: API ожидает строку, а не массив
                 experience: parseInt(experience),
                 phone: phone,
                 email: email,
