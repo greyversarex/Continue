@@ -94,7 +94,7 @@ const ViatorTourCard: React.FC<TourCardProps> = ({ tour }) => {
         {/* Price */}
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-2xl font-bold text-blue-600">{tour.price}</div>
+            <div className="text-2xl font-bold text-blue-600">{Math.round(parseFloat(tour.price) || 0)} TJS</div>
             <div className="text-xs text-gray-500">{t('tour.per_person', 'per person')}</div>
           </div>
           <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors">

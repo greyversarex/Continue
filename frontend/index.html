@@ -941,23 +941,19 @@
                     <div class="language-dropdown">
                         <button class="lang-selector-btn" onclick="toggleCurrencyDropdown()">
                             <span class="selected-currency">TJS</span>
-                            <span class="currency-symbol">SM</span>
                             <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
                         <div class="lang-dropdown-content" id="currencyDropdown">
-                            <a href="#" class="lang-option active" data-currency="TJS" onclick="selectCurrency('TJS', 'SM')">
+                            <a href="#" class="lang-option active" data-currency="TJS" onclick="selectCurrency('TJS', 'TJS')">
                                 <span class="currency-name">TJS</span>
-                                <span class="currency-symbol">SM</span>
                             </a>
-                            <a href="#" class="lang-option" data-currency="USD" onclick="selectCurrency('USD', '$')">
+                            <a href="#" class="lang-option" data-currency="USD" onclick="selectCurrency('USD', 'USD')">
                                 <span class="currency-name">USD</span>
-                                <span class="currency-symbol">$</span>
                             </a>
-                            <a href="#" class="lang-option" data-currency="EUR" onclick="selectCurrency('EUR', '€')">
+                            <a href="#" class="lang-option" data-currency="EUR" onclick="selectCurrency('EUR', 'EUR')">
                                 <span class="currency-name">EUR</span>
-                                <span class="currency-symbol">€</span>
                             </a>
                         </div>
                     </div>
@@ -2929,7 +2925,6 @@
             
             // Обновляем кнопку селектора
             document.querySelector('.selected-currency').textContent = currency;
-            document.querySelector('.currency-symbol').textContent = symbol;
             
             // Обновляем активный элемент в dropdown
             document.querySelectorAll('#currencyDropdown .lang-option').forEach(option => {
