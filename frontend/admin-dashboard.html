@@ -4257,16 +4257,31 @@
                     const container = document.getElementById('guideCheckboxes');
                     const guides = data.data || data.guides || [];
                     container.innerHTML = guides.map(guide => {
-                        let name;
-                        try {
-                            name = typeof guide.name === 'string' ? JSON.parse(guide.name) : (guide.name || {});
-                        } catch (e) {
-                            console.warn('Failed to parse guide name in checkboxes:', guide.name);
-                            name = guide.name || {};
+                        let displayName;
+                        
+                        // Правильная обработка имени гида
+                        if (typeof guide.name === 'string') {
+                            // Если это обычная строка (не JSON), используем как есть
+                            if (!guide.name.startsWith('{')) {
+                                displayName = guide.name;
+                            } else {
+                                // Если это JSON строка, парсим
+                                try {
+                                    const nameObj = JSON.parse(guide.name);
+                                    displayName = nameObj.ru || nameObj.en || guide.name;
+                                } catch(e) {
+                                    displayName = guide.name;
+                                }
+                            }
+                        } else if (typeof guide.name === 'object' && guide.name !== null) {
+                            displayName = guide.name.ru || guide.name.en || 'Гид';
+                        } else {
+                            displayName = 'Гид';
                         }
+                        
                         return `
                             <label class="checkbox-item">
-                                <input type="checkbox" name="selectedGuides" value="${guide.id}"> ${name.ru || name.en || 'Гид'}
+                                <input type="checkbox" name="selectedGuides" value="${guide.id}"> ${displayName}
                             </label>
                         `;
                     }).join('');
@@ -5502,10 +5517,24 @@
                     
                     container.innerHTML = guides.map(guide => {
                         let name, languages;
-                        try {
-                            name = typeof guide.name === 'string' ? JSON.parse(guide.name) : (guide.name || {});
-                        } catch(e) {
-                            name = guide.name || {};
+                        
+                        // Правильная обработка имени гида
+                        if (typeof guide.name === 'string') {
+                            // Если это обычная строка (не JSON), используем как есть
+                            if (!guide.name.startsWith('{')) {
+                                name = { ru: guide.name, en: guide.name };
+                            } else {
+                                // Если это JSON строка, парсим
+                                try {
+                                    name = JSON.parse(guide.name);
+                                } catch(e) {
+                                    name = { ru: guide.name, en: guide.name };
+                                }
+                            }
+                        } else if (typeof guide.name === 'object' && guide.name !== null) {
+                            name = guide.name;
+                        } else {
+                            name = {};
                         }
                         // ИСПРАВЛЕНО: правильная обработка languages для Guide API
                         if (typeof guide.languages === 'string') {
@@ -5726,8 +5755,28 @@
         
         function getGuideName(guide) {
             if (!guide) return 'Неизвестно';
-            const name = JSON.parse(guide.name || '{}');
-            return name.ru || name.en || 'Гид';
+            
+            // Проверяем тип guide.name
+            if (typeof guide.name === 'string') {
+                // Если это обычная строка, возвращаем как есть
+                if (!guide.name.startsWith('{')) {
+                    return guide.name;
+                }
+                // Если это JSON строка, парсим
+                try {
+                    const name = JSON.parse(guide.name);
+                    return name.ru || name.en || guide.name;
+                } catch {
+                    return guide.name;
+                }
+            }
+            
+            // Если это уже объект
+            if (typeof guide.name === 'object' && guide.name !== null) {
+                return guide.name.ru || guide.name.en || 'Гид';
+            }
+            
+            return 'Гид';
         }
         
         function formatDate(dateString) {

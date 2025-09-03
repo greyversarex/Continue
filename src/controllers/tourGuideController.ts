@@ -20,16 +20,15 @@ export const loginTourGuide = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    // Найти тургида по логину
-    const guide = await prisma.tourGuideProfile.findUnique({
+    // Найти тургида по логину (используем таблицу guide)
+    const guide = await prisma.guide.findFirst({
       where: { login },
       select: {
         id: true,
         name: true,
         login: true,
         password: true,
-        email: true,
-        phone: true,
+        contact: true,
         isActive: true
       }
     });
@@ -50,8 +49,8 @@ export const loginTourGuide = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    // Проверить пароль
-    const validPassword = await bcrypt.compare(password, guide.password);
+    // Проверить пароль (в таблице guide пароль хранится в открытом виде)
+    const validPassword = password === guide.password;
     if (!validPassword) {
       res.status(401).json({ 
         success: false, 
@@ -81,8 +80,8 @@ export const loginTourGuide = async (req: Request, res: Response): Promise<void>
         id: guide.id,
         name: guide.name,
         login: guide.login,
-        email: guide.email,
-        phone: guide.phone
+        email: guide.contact ? (typeof guide.contact === 'string' ? JSON.parse(guide.contact).email : guide.contact.email) : null,
+        phone: guide.contact ? (typeof guide.contact === 'string' ? JSON.parse(guide.contact).phone : guide.contact.phone) : null
       },
       message: 'Авторизация успешна'
     });
