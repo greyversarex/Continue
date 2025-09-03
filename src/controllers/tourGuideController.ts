@@ -49,8 +49,42 @@ export const loginTourGuide = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    // Проверить пароль (в таблице guide пароль хранится в открытом виде)
-    const validPassword = password === guide.password;
+    // ✅ БЕЗОПАСНАЯ проверка пароля с поддержкой обратной совместимости
+    let validPassword = false;
+    
+    // Проверяем, что пароль не null
+    if (!guide.password) {
+      res.status(401).json({ 
+        success: false, 
+        message: 'Неверный логин или пароль' 
+      });
+      return;
+    }
+    
+    try {
+      // Сначала проверяем как хешированный пароль (новый безопасный способ)
+      validPassword = await bcrypt.compare(password, guide.password);
+    } catch (error) {
+      // Если bcrypt.compare не сработал, это может быть старый нехешированный пароль
+      // ВРЕМЕННАЯ поддержка для существующих гидов (постепенная миграция)
+      console.warn('⚠️ Legacy password check for guide:', guide.login);
+      validPassword = password === guide.password;
+      
+      // Если пароль совпал и это старый формат - обновим его на хешированный
+      if (validPassword) {
+        try {
+          const hashedPassword = await bcrypt.hash(password, 10);
+          await prisma.guide.update({
+            where: { id: guide.id },
+            data: { password: hashedPassword }
+          });
+          console.log('✅ Password migrated to hash for guide:', guide.login);
+        } catch (updateError) {
+          console.error('❌ Failed to migrate password to hash:', updateError);
+        }
+      }
+    }
+    
     if (!validPassword) {
       res.status(401).json({ 
         success: false, 
@@ -537,6 +571,10 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
       return;
     }
 
+    // Хешируем пароль для безопасности
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     // ИСПРАВЛЕНО: Создаем в таблице Guide вместо TourGuideProfile
     const guide = await prisma.guide.create({
       data: {
@@ -547,7 +585,7 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
         experience: experience ? parseInt(experience) : 0,
         rating: 5.0, // Начальный рейтинг
         login: login, // Добавляем логин
-        password: password, // Добавляем пароль (в открытом виде для админа)
+        password: hashedPassword, // ✅ БЕЗОПАСНО: Храним хешированный пароль
         isActive: isActive !== undefined ? isActive : true,
         photo: null // Пока без фото
       }

@@ -429,17 +429,47 @@ router.post('/alif', async (req: Request, res: Response) => {
   }
 });
 
-// AlifPay callback
+// ✅ БЕЗОПАСНЫЙ AlifPay callback с HMAC валидацией
 router.post('/alif-callback', async (req: Request, res: Response) => {
   try {
-    const { orderId, status, amount } = req.body;
-
-    console.log('AlifPay callback received:', req.body);
-
-    if (!orderId) {
-      return res.status(400).send('Bad Request');
+    const { orderId, amount, status, token: receivedToken } = req.body;
+    
+    console.log('🔄 AlifPay callback received:', { orderId, amount, status });
+    
+    // ✅ КРИТИЧЕСКИ ВАЖНО: Валидация HMAC подписи
+    const alifKey = process.env.ALIF_KEY;
+    const alifPassword = process.env.ALIF_PASSWORD;
+    
+    if (!alifKey || !alifPassword) {
+      console.error('❌ AlifPay configuration missing for callback validation');
+      return res.status(500).json({
+        success: false,
+        message: 'Payment configuration error'
+      });
     }
-
+    
+    // Генерируем ожидаемый токен для проверки
+    const crypto = require('crypto');
+    const step1 = crypto.createHmac('sha256', alifPassword).update(alifKey).digest('hex');
+    const step2Data = alifKey + orderId + amount;
+    const expectedToken = crypto.createHmac('sha256', step1).update(step2Data).digest('hex');
+    
+    // ✅ ПРОВЕРКА ПОДПИСИ: Отклоняем поддельные callbacks
+    if (receivedToken !== expectedToken) {
+      console.error('❌ Invalid HMAC token in AlifPay callback:', {
+        received: receivedToken,
+        expected: expectedToken,
+        orderId: orderId
+      });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid callback signature'
+      });
+    }
+    
+    console.log('✅ AlifPay callback signature validated');
+    
+    // Найти заказ
     const order = await prisma.order.findUnique({
       where: { id: parseInt(orderId) },
       include: {
@@ -448,10 +478,14 @@ router.post('/alif-callback', async (req: Request, res: Response) => {
     });
 
     if (!order) {
-      return res.status(404).send('Order Not Found');
+      console.error('❌ Order not found for AlifPay callback:', orderId);
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
     }
 
-    // Update payment status based on Alif response
+    // ✅ Обновить статус платежа на основе ответа AlifPay
     if (status === 'success' || status === 'paid') {
       await prisma.order.update({
         where: { id: order.id },
@@ -460,11 +494,14 @@ router.post('/alif-callback', async (req: Request, res: Response) => {
         },
       });
 
-      // Send confirmation email
+      console.log('✅ Payment confirmed for order:', orderId);
+
+      // Отправить email подтверждение
       try {
         await emailService.sendPaymentConfirmation(order, order.customer);
+        console.log('✅ Confirmation email sent for order:', orderId);
       } catch (emailError) {
-        console.error('Email sending failed:', emailError);
+        console.error('❌ Email sending failed:', emailError);
       }
     } else {
       await prisma.order.update({
@@ -473,9 +510,13 @@ router.post('/alif-callback', async (req: Request, res: Response) => {
           paymentStatus: 'failed',
         },
       });
+      console.log('⚠️ Payment failed for order:', orderId);
     }
 
-    return res.status(200).send('OK');
+    return res.status(200).json({
+      success: true,
+      message: 'Callback processed'
+    });
 
   } catch (error) {
     console.error('AlifPay callback error:', error);
