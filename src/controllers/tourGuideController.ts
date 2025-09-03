@@ -522,79 +522,54 @@ export const leaveGuideReview = async (req: Request, res: Response): Promise<voi
 // Создание нового тургида с аутентификацией (для админ панели)
 export const createTourGuideProfile = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, description, login, password, email, phone, languages, experience } = req.body;
+    const { name, description, login, password, email, phone, languages, experience, isActive } = req.body;
 
-    if (!name || !login || !password || !email) {
+    console.log('📝 Получены данные для создания гида:', req.body);
+
+    if (!name || !email || !languages) {
       res.status(400).json({ 
         success: false, 
-        message: 'Имя, логин, пароль и email обязательны' 
+        message: 'Имя, email и языки обязательны' 
       });
       return;
     }
 
-    // Проверить уникальность логина
-    const existingGuide = await prisma.tourGuideProfile.findUnique({
-      where: { login }
-    });
-
-    if (existingGuide) {
-      res.status(400).json({ 
-        success: false, 
-        message: 'Логин уже используется' 
-      });
-      return;
-    }
-
-    // Проверить уникальность email если он указан
-    if (email) {
-      const existingEmail = await prisma.tourGuideProfile.findFirst({
-        where: { email }
-      });
-
-      if (existingEmail) {
-        res.status(400).json({ 
-          success: false, 
-          message: 'Email уже используется' 
-        });
-        return;
-      }
-    }
-
-    // Хэшировать пароль
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Создать тургида
-    const guide = await prisma.tourGuideProfile.create({
+    // ИСПРАВЛЕНО: Создаем в таблице Guide вместо TourGuideProfile
+    const guide = await prisma.guide.create({
       data: {
-        name,
-        login,
-        password: hashedPassword,
-        email,
-        phone: phone || null,
-        isActive: true
+        name: name, // Сохраняем как простую строку, а не JSON
+        description: description || 'Профессиональный гид',
+        languages: languages, // Строка языков через запятую
+        contact: JSON.stringify({ email, phone }), // Контакты в JSON
+        experience: experience ? parseInt(experience) : 0,
+        rating: 5.0, // Начальный рейтинг
+        isActive: isActive !== undefined ? isActive : true,
+        photo: null // Пока без фото
       }
     });
 
-    console.log('✅ Новый тургид создан:', guide.login);
+    console.log('✅ Новый гид создан в таблице Guide:', guide.id);
 
     res.status(201).json({
       success: true,
       data: {
         id: guide.id,
         name: guide.name,
-        login: guide.login,
-        email: guide.email,
-        phone: guide.phone,
+        description: guide.description,
+        languages: guide.languages,
+        contact: guide.contact,
+        experience: guide.experience,
+        rating: guide.rating,
         isActive: guide.isActive
       },
-      message: 'Тургид успешно создан'
+      message: 'Гид успешно создан'
     });
 
   } catch (error) {
-    console.error('❌ Ошибка создания тургида:', error);
+    console.error('❌ Ошибка создания гида:', error);
     res.status(500).json({ 
       success: false, 
-      message: 'Ошибка сервера' 
+      message: 'Ошибка сервера: ' + (error instanceof Error ? error.message : 'Unknown error')
     });
   }
 };

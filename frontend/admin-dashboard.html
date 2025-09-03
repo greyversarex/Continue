@@ -1852,7 +1852,7 @@
                     <button type="button" onclick="closeTourModal()" class="btn btn-secondary">
                         Отмена
                     </button>
-                    <button type="submit" class="btn btn-primary" onclick="createFullTour(event)">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i>
                         Сохранить
                     </button>
@@ -2416,6 +2416,7 @@
         // Глобальные переменные для выбранных элементов (восстановлены)
         let selectedCategories = [];
         let selectedLanguages = [];
+        let selectedGuideLanguages = []; // Для гидов
         
         // Инициализация всех глобальных переменных
         window.tourLanguages = window.tourLanguages || [];
@@ -5880,17 +5881,29 @@
                                 
                                 <div class="form-group">
                                     <label class="form-label">Языки *</label>
-                                    <select class="form-input" id="guideLanguages" multiple>
-                                        <option value="Русский">Русский</option>
-                                        <option value="English">English</option>
-                                        <option value="Тоҷикӣ">Тоҷикӣ</option>
-                                        <option value="Ўзбек">Ўзбек</option>
-                                        <option value="Қырған">Қырған</option>
-                                        <option value="Türkmen">Türkmen</option>
-                                        <option value="Французский">Французский</option>
-                                        <option value="Немецкий">Немецкий</option>
-                                    </select>
-                                    <small class="text-gray-500">Удерживайте Ctrl/Cmd для выбора нескольких языков</small>
+                                    <div class="flex gap-2 mb-2">
+                                        <select class="form-input flex-1" id="guideAvailableLanguages">
+                                            <option value="">Выберите язык для добавления</option>
+                                            <option value="Русский">Русский</option>
+                                            <option value="English">English</option>
+                                            <option value="Тоҷикӣ">Тоҷикӣ</option>
+                                            <option value="Ўзбек">Ўзбек</option>
+                                            <option value="Қырған">Қырған</option>
+                                            <option value="Türkmen">Türkmen</option>
+                                            <option value="Французский">Французский</option>
+                                            <option value="Немецкий">Немецкий</option>
+                                            <option value="Испанский">Испанский</option>
+                                            <option value="Китайский">Китайский</option>
+                                            <option value="Арабский">Арабский</option>
+                                        </select>
+                                        <button type="button" onclick="addLanguageToGuide()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div id="selectedGuideLanguages" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                                        <small class="text-gray-500">Выбранные языки появятся здесь</small>
+                                    </div>
+                                    <input type="hidden" id="guideLanguagesHidden">
                                 </div>
                                 
                                 <div class="form-group">
@@ -5951,12 +5964,60 @@
             if (modal) {
                 modal.remove();
             }
+            // Очищаем выбранные языки при закрытии
+            selectedGuideLanguages = [];
+        }
+        
+        // НОВЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С ЯЗЫКАМИ ГИДОВ
+        function addLanguageToGuide() {
+            const select = document.getElementById('guideAvailableLanguages');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                const language = selectedOption.value;
+                
+                // Проверяем, не добавлен ли уже этот язык
+                if (selectedGuideLanguages.includes(language)) {
+                    alert('Этот язык уже добавлен');
+                    return;
+                }
+                
+                selectedGuideLanguages.push(language);
+                updateSelectedGuideLanguagesDisplay();
+                
+                // Сбрасываем select
+                select.selectedIndex = 0;
+            }
+        }
+        
+        function removeLanguageFromGuide(language) {
+            selectedGuideLanguages = selectedGuideLanguages.filter(lang => lang !== language);
+            updateSelectedGuideLanguagesDisplay();
+        }
+        
+        function updateSelectedGuideLanguagesDisplay() {
+            const container = document.getElementById('selectedGuideLanguages');
+            const hiddenInput = document.getElementById('guideLanguagesHidden');
+            
+            if (selectedGuideLanguages.length === 0) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные языки появятся здесь</small>';
+                hiddenInput.value = '';
+            } else {
+                container.innerHTML = selectedGuideLanguages.map(lang => 
+                    `<div class="flex justify-between items-center bg-white p-2 rounded border">
+                        <span>${lang}</span>
+                        <button type="button" onclick="removeLanguageFromGuide('${lang}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>`
+                ).join('');
+                hiddenInput.value = selectedGuideLanguages.join(', ');
+            }
         }
         
         function saveGuide() {
-            // Получаем выбранные языки из select
-            const languageSelect = document.getElementById('guideLanguages');
-            const selectedLanguages = Array.from(languageSelect.selectedOptions).map(option => option.value);
+            // ИСПРАВЛЕНО: Получаем выбранные языки из нового интерфейса
+            console.log('🔍 Выбранные языки:', selectedGuideLanguages);
             
             // Проверяем обязательные поля
             const fullName = document.getElementById('guideFullName').value.trim();
@@ -5966,7 +6027,7 @@
             const login = document.getElementById('guideLogin').value.trim();
             const password = document.getElementById('guidePassword').value.trim();
             
-            if (!fullName || !experience || !phone || !email || !login || !password || selectedLanguages.length === 0) {
+            if (!fullName || !experience || !phone || !email || !login || !password || selectedGuideLanguages.length === 0) {
                 alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой)');
                 return;
             }
@@ -5974,7 +6035,7 @@
             const formData = {
                 name: fullName,
                 description: document.getElementById('guideComments').value.trim() || 'Профессиональный гид',
-                languages: selectedLanguages.join(', '), // ИСПРАВЛЕНО: API ожидает строку, а не массив
+                languages: selectedGuideLanguages.join(', '), // ИСПРАВЛЕНО: Используем новый массив языков
                 experience: parseInt(experience),
                 phone: phone,
                 email: email,
@@ -5982,6 +6043,8 @@
                 password: password,
                 isActive: true
             };
+            
+            console.log('📤 Отправляем данные гида:', formData);
             
             fetch(`${getApiUrl()}/guide/create-with-auth`, {
                 method: 'POST',
