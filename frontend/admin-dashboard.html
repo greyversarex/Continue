@@ -3932,36 +3932,48 @@
             console.log('🏨 Selected hotels:', selectedHotels);
             console.log('👨‍🏫 Selected guides:', selectedGuides);
             
-            // Формируем данные для отправки
+            // Формируем данные для отправки (с проверками на существование элементов)
+            const tourDescRuEl = document.getElementById('tourDescRu');
+            const tourDescEnEl = document.getElementById('tourDescEn');
+            const tourPriceTypeEl = document.getElementById('tourPriceType');
+            const tourBlockIdEl = document.getElementById('tourBlockId');
+            const tourCountryEl = document.getElementById('tourCountry');
+            const tourCityEl = document.getElementById('tourCity');
+            const tourTypeEl = document.getElementById('tourType');
+            const tourPickupInfoEl = document.getElementById('tourPickupInfo');
+            const tourMinPeopleEl = document.getElementById('tourMinPeople');
+            const tourMaxPeopleEl = document.getElementById('tourMaxPeople');
+            const tourMainImageEl = document.getElementById('tourMainImage');
+            
             const formData = {
                 title: JSON.stringify({
                     ru: titleRuValue,
                     en: titleEnValue || titleRuValue
                 }),
                 description: JSON.stringify({
-                    ru: document.getElementById('tourDescRu').value || '',
-                    en: document.getElementById('tourDescEn').value || ''
+                    ru: tourDescRuEl ? tourDescRuEl.value || '' : '',
+                    en: tourDescEnEl ? tourDescEnEl.value || '' : ''
                 }),
                 price: parseFloat(priceValue),
-                priceType: document.getElementById('tourPriceType').value || 'за человека',
+                priceType: tourPriceTypeEl ? tourPriceTypeEl.value || 'за человека' : 'за человека',
                 categoryId: categoryValue ? parseInt(categoryValue) : null,
-                tourBlockId: document.getElementById('tourBlockId').value ? parseInt(document.getElementById('tourBlockId').value) : null,
-                country: document.getElementById('tourCountry').value || '',
-                city: document.getElementById('tourCity').value || '',
+                tourBlockId: tourBlockIdEl && tourBlockIdEl.value ? parseInt(tourBlockIdEl.value) : null,
+                country: tourCountryEl ? tourCountryEl.value || '' : '',
+                city: tourCityEl ? tourCityEl.value || '' : '',
                 durationDays: parseInt(durationDaysValue),
                 duration: durationDaysValue.toString(),
-                format: document.getElementById('tourType').value || '',
-                tourType: document.getElementById('tourType').value || '',
-                pickupInfo: document.getElementById('tourPickupInfo').value || '',
-                minPeople: document.getElementById('tourMinPeople').value ? parseInt(document.getElementById('tourMinPeople').value) : null,
-                maxPeople: document.getElementById('tourMaxPeople').value ? parseInt(document.getElementById('tourMaxPeople').value) : null,
+                format: tourTypeEl ? tourTypeEl.value || '' : '',
+                tourType: tourTypeEl ? tourTypeEl.value || '' : '',
+                pickupInfo: tourPickupInfoEl ? tourPickupInfoEl.value || '' : '',
+                minPeople: tourMinPeopleEl && tourMinPeopleEl.value ? parseInt(tourMinPeopleEl.value) : null,
+                maxPeople: tourMaxPeopleEl && tourMaxPeopleEl.value ? parseInt(tourMaxPeopleEl.value) : null,
                 highlights: JSON.stringify(window.tourHighlights || []),
                 itinerary: JSON.stringify(window.tourItinerary || []),
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
                 languages: JSON.stringify(window.tourLanguages || ['Русский']),
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
-                mainImage: document.getElementById('tourMainImage')?.value || '',
+                mainImage: tourMainImageEl ? tourMainImageEl.value || '' : '',
                 images: JSON.stringify(window.tourGalleryImages || []),
                 hotelIds: selectedHotels,
                 guideIds: selectedGuides,
