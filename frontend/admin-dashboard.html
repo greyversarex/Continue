@@ -4864,16 +4864,26 @@
         document.getElementById('hotelForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Build name object (русский приоритетный)
-            const nameValue = document.getElementById('hotelName').value;
+            // Build name object (русский приоритетный) - используем безопасные методы
+            const nameValue = safeGetValue('hotelName', '');
+            if (!nameValue.trim()) {
+                alert('Пожалуйста, введите название отеля');
+                return;
+            }
+            
             const name = {
                 ru: nameValue,
                 en: nameValue,
                 tj: nameValue
             };
             
-            // Build description object (русский приоритетный)
-            const descValue = document.getElementById('hotelDescription').value;
+            // Build description object (русский приоритетный) - используем безопасные методы
+            const descValue = safeGetValue('hotelDescription', '');
+            if (!descValue.trim()) {
+                alert('Пожалуйста, введите описание отеля');
+                return;
+            }
+            
             const description = {
                 ru: descValue,
                 en: descValue,
@@ -4883,35 +4893,35 @@
             // НОВОЕ: Обработка категорий номеров с ценами
             const roomTypes = {};
             
-            // SGL - Одноместный
-            if (document.getElementById('roomSGL').checked) {
-                const price = document.getElementById('priceSGL').value;
-                if (price && !isNaN(parseFloat(price))) {
+            // SGL - Одноместный (безопасно)
+            if (safeGetValue('roomSGL', false, 'checkbox')) {
+                const price = safeGetValue('priceSGL', '', 'float');
+                if (price && !isNaN(price)) {
                     roomTypes.SGL = {
                         name: 'Одноместный',
-                        price: parseFloat(price)
+                        price: price
                     };
                 }
             }
             
-            // TWL - Двухместный
-            if (document.getElementById('roomTWL').checked) {
-                const price = document.getElementById('priceTWL').value;
-                if (price && !isNaN(parseFloat(price))) {
+            // TWL - Двухместный (безопасно)
+            if (safeGetValue('roomTWL', false, 'checkbox')) {
+                const price = safeGetValue('priceTWL', '', 'float');
+                if (price && !isNaN(price)) {
                     roomTypes.TWL = {
                         name: 'Двухместный', 
-                        price: parseFloat(price)
+                        price: price
                     };
                 }
             }
             
-            // DBL - Двухспальный
-            if (document.getElementById('roomDBL').checked) {
-                const price = document.getElementById('priceDBL').value;
-                if (price && !isNaN(parseFloat(price))) {
+            // DBL - Двухспальный (безопасно)
+            if (safeGetValue('roomDBL', false, 'checkbox')) {
+                const price = safeGetValue('priceDBL', '', 'float');
+                if (price && !isNaN(price)) {
                     roomTypes.DBL = {
                         name: 'Двухспальный',
-                        price: parseFloat(price)
+                        price: price
                     };
                 }
             }
@@ -5115,6 +5125,35 @@
                 });
             }
         });
+
+        // Универсальная функция для безопасного получения значений DOM элементов
+        function safeGetValue(elementId, defaultValue = '', parseType = null) {
+            const element = document.getElementById(elementId);
+            if (!element) {
+                console.warn(`⚠️ Element with ID "${elementId}" not found, using default value:`, defaultValue);
+                return defaultValue;
+            }
+            
+            let value;
+            // Определяем тип элемента для правильного получения значения
+            if (parseType === 'checkbox' || element.type === 'checkbox') {
+                value = element.checked;
+            } else {
+                value = element.value;
+            }
+            
+            // Применяем парсинг если указан
+            if (parseType === 'int') {
+                const parsed = parseInt(value);
+                return isNaN(parsed) ? (typeof defaultValue === 'number' ? defaultValue : 0) : parsed;
+            }
+            if (parseType === 'float') {
+                const parsed = parseFloat(value);
+                return isNaN(parsed) ? (typeof defaultValue === 'number' ? defaultValue : 0) : parsed;
+            }
+            
+            return value || defaultValue;
+        }
 
         // Initialize ObjectUploader for hotels
         let hotelUploader = null;
@@ -6079,14 +6118,16 @@
             // ИСПРАВЛЕНО: Получаем выбранные языки из нового интерфейса
             console.log('🔍 Выбранные языки:', selectedGuideLanguages);
             
-            // Проверяем обязательные поля
-            const fullName = document.getElementById('guideFullName').value.trim();
-            const experience = document.getElementById('guideExperience').value;
-            const phone = document.getElementById('guidePhone').value.trim();
-            const email = document.getElementById('guideEmail').value.trim();
-            const login = document.getElementById('guideLogin').value.trim();
-            const password = document.getElementById('guidePassword').value.trim();
+            // Безопасно получаем все значения полей используя safeGetValue
+            const fullName = safeGetValue('guideFullName', '').trim();
+            const experience = safeGetValue('guideExperience', '', 'int');
+            const phone = safeGetValue('guidePhone', '').trim();
+            const email = safeGetValue('guideEmail', '').trim();
+            const login = safeGetValue('guideLogin', '').trim();
+            const password = safeGetValue('guidePassword', '').trim();
+            const comments = safeGetValue('guideComments', '').trim();
             
+            // Проверяем обязательные поля
             if (!fullName || !experience || !phone || !email || !login || !password || selectedGuideLanguages.length === 0) {
                 alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой)');
                 return;
@@ -6094,9 +6135,9 @@
             
             const formData = {
                 name: fullName,
-                description: document.getElementById('guideComments').value.trim() || 'Профессиональный гид',
+                description: comments || 'Профессиональный гид',
                 languages: selectedGuideLanguages.join(', '), // ИСПРАВЛЕНО: Используем новый массив языков
-                experience: parseInt(experience),
+                experience: experience,
                 phone: phone,
                 email: email,
                 login: login,
@@ -6705,16 +6746,16 @@
         function saveTourBlock() {
             const formData = {
                 title: JSON.stringify({
-                    ru: document.getElementById('blockTitleRu').value,
-                    en: document.getElementById('blockTitleEn').value
+                    ru: safeGetValue('blockTitleRu', ''),
+                    en: safeGetValue('blockTitleEn', '')
                 }),
                 description: JSON.stringify({
-                    ru: document.getElementById('blockDescRu').value,
-                    en: document.getElementById('blockDescEn').value
+                    ru: safeGetValue('blockDescRu', ''),
+                    en: safeGetValue('blockDescEn', '')
                 }),
-                slug: document.getElementById('blockSlug').value,
-                sortOrder: parseInt(document.getElementById('blockSortOrder').value) || 0,
-                isActive: document.getElementById('blockIsActive').checked
+                slug: safeGetValue('blockSlug', ''),
+                sortOrder: safeGetValue('blockSortOrder', 0, 'int'),
+                isActive: safeGetValue('blockIsActive', true, 'checkbox')
             };
             
             const url = currentTourBlockId ? 
@@ -7356,21 +7397,21 @@
         async function saveBannerSlide() {
             const slideData = {
                 title: {
-                    ru: document.getElementById('bannerTitleRu').value,
-                    en: document.getElementById('bannerTitleEn').value
+                    ru: safeGetValue('bannerTitleRu', ''),
+                    en: safeGetValue('bannerTitleEn', '')
                 },
                 description: {
-                    ru: document.getElementById('bannerDescRu').value,
-                    en: document.getElementById('bannerDescEn').value
+                    ru: safeGetValue('bannerDescRu', ''),
+                    en: safeGetValue('bannerDescEn', '')
                 },
-                image: document.getElementById('bannerImage').value || '',
-                link: document.getElementById('bannerLink').value || '',
+                image: safeGetValue('bannerImage', ''),
+                link: safeGetValue('bannerLink', ''),
                 buttonText: {
-                    ru: document.getElementById('bannerButtonTextRu').value || '',
-                    en: document.getElementById('bannerButtonTextEn').value || ''
+                    ru: safeGetValue('bannerButtonTextRu', ''),
+                    en: safeGetValue('bannerButtonTextEn', '')
                 },
-                order: parseInt(document.getElementById('bannerOrder').value) || 1,
-                isActive: document.getElementById('bannerActive').checked
+                order: safeGetValue('bannerOrder', 1, 'int'),
+                isActive: safeGetValue('bannerActive', false, 'checkbox')
             };
 
             try {
@@ -8024,10 +8065,10 @@
         document.getElementById('exchangeRateForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const currency = document.getElementById('editCurrency').value;
-            const rate = parseFloat(document.getElementById('editCurrencyRate').value);
-            const symbol = document.getElementById('editCurrencySymbol').value;
-            const name = document.getElementById('editCurrencyName').value;
+            const currency = safeGetValue('editCurrency', '');
+            const rate = safeGetValue('editCurrencyRate', 0, 'float');
+            const symbol = safeGetValue('editCurrencySymbol', '');
+            const name = safeGetValue('editCurrencyName', '');
             
             try {
                 const response = await fetch(`${getApiUrl()}/exchange-rates/${currency}`, {
