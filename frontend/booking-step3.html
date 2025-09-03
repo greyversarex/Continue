@@ -471,12 +471,12 @@
                 return;
             }
 
-            // Get booking ID from URL
+            // Get order number from localStorage or URL
             const urlParams = new URLSearchParams(window.location.search);
-            const bookingId = urlParams.get('bookingId');
+            const orderNumber = urlParams.get('orderNumber') || bookingState.orderNumber;
 
-            if (!bookingId) {
-                alert('Ошибка: ID бронирования не найден');
+            if (!orderNumber) {
+                alert('Ошибка: Номер заказа не найден');
                 return;
             }
 
@@ -484,30 +484,97 @@
             showPaymentProcessing();
 
             try {
-                const response = await fetch(`/api/booking/${bookingId}/pay`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        paymentMethod: selectedPaymentMethod,
-                        totalAmount: bookingState.finalTotalPrice
-                    })
-                });
-
-                const data = await response.json();
+                let paymentResponse;
                 
-                if (data.success) {
-                    console.log('✅ Payment processed successfully');
-                    showPaymentSuccess();
+                // Route to appropriate payment system
+                if (selectedPaymentMethod === 'alif' || selectedPaymentMethod === 'alifpay') {
+                    paymentResponse = await fetch('/api/payments/alif', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            orderNumber: orderNumber,
+                            gate: selectedPaymentMethod === 'korti-milli' ? 'km' : 'vsa'
+                        })
+                    });
+                } else if (selectedPaymentMethod === 'payler') {
+                    paymentResponse = await fetch('/api/payments/payler', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            orderNumber: orderNumber
+                        })
+                    });
+                } else if (selectedPaymentMethod === 'stripe') {
+                    // Use existing Stripe integration
+                    paymentResponse = await fetch('/api/payments/create-payment-intent', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            orderNumber: orderNumber
+                        })
+                    });
                 } else {
-                    console.error('❌ Payment failed:', data.message);
+                    alert('Метод оплаты временно недоступен');
+                    closePaymentModal();
+                    return;
+                }
+
+                const paymentData = await paymentResponse.json();
+                
+                if (paymentData.success) {
+                    console.log('✅ Payment initiated successfully');
+                    
+                    // Store order info for success page
+                    localStorage.setItem('completedOrder', JSON.stringify({
+                        orderNumber: orderNumber,
+                        paymentMethod: selectedPaymentMethod
+                    }));
+                    
+                    // Redirect to payment gateway or show success
+                    if (paymentData.paymentUrl) {
+                        if (paymentData.method === 'POST' && paymentData.formData) {
+                            // Create form for AlifPay redirect
+                            redirectToAlifPay(paymentData.paymentUrl, paymentData.formData);
+                        } else {
+                            // Direct redirect for Payler
+                            window.location.href = paymentData.paymentUrl;
+                        }
+                    } else if (paymentData.clientSecret) {
+                        // Handle Stripe payment
+                        showPaymentSuccess();
+                    }
+                } else {
+                    console.error('❌ Payment failed:', paymentData.message);
                     showPaymentError();
                 }
             } catch (error) {
                 console.error('❌ Error processing payment:', error);
                 showPaymentError();
             }
+        }
+
+        function redirectToAlifPay(url, formData) {
+            // Create and submit form for AlifPay
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+            
+            Object.entries(formData).forEach(([key, value]) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                form.appendChild(input);
+            });
+            
+            document.body.appendChild(form);
+            form.submit();
         }
 
         function showPaymentProcessing() {
@@ -537,9 +604,9 @@
             // Clear booking state
             localStorage.removeItem('bookingState');
             
-            // Redirect to confirmation page (you would implement this)
-            alert('Спасибо за ваше бронирование! Детали отправлены на ваш email.');
-            window.location.href = '/tours.html';
+            // Redirect to success page
+            const orderNumber = bookingState.orderNumber || 'unknown';
+            window.location.href = `/frontend/payment-success.html?order=${orderNumber}`;
         }
 
         // Глобальная система валют (копия из booking-step1.html)

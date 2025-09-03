@@ -442,6 +442,9 @@ router.post('/alif-callback', async (req: Request, res: Response) => {
 
     const order = await prisma.order.findUnique({
       where: { id: parseInt(orderId) },
+      include: {
+        customer: true,
+      },
     });
 
     if (!order) {
@@ -459,7 +462,7 @@ router.post('/alif-callback', async (req: Request, res: Response) => {
 
       // Send confirmation email
       try {
-        await emailService.sendPaymentConfirmation(order);
+        await emailService.sendPaymentConfirmation(order, order.customer);
       } catch (emailError) {
         console.error('Email sending failed:', emailError);
       }
@@ -592,6 +595,9 @@ router.post('/payler-callback', async (req: Request, res: Response) => {
 
     const order = await prisma.order.findUnique({
       where: { id: parseInt(order_id) },
+      include: {
+        customer: true,
+      },
     });
 
     if (!order) {
@@ -609,7 +615,7 @@ router.post('/payler-callback', async (req: Request, res: Response) => {
 
       // Send confirmation email
       try {
-        await emailService.sendPaymentConfirmation(order);
+        await emailService.sendPaymentConfirmation(order, order.customer);
       } catch (emailError) {
         console.error('Email sending failed:', emailError);
       }
