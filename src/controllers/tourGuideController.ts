@@ -80,8 +80,8 @@ export const loginTourGuide = async (req: Request, res: Response): Promise<void>
         id: guide.id,
         name: guide.name,
         login: guide.login,
-        email: guide.contact ? (typeof guide.contact === 'string' ? JSON.parse(guide.contact).email : guide.contact.email) : null,
-        phone: guide.contact ? (typeof guide.contact === 'string' ? JSON.parse(guide.contact).phone : guide.contact.phone) : null
+        email: guide.contact ? (typeof guide.contact === 'string' ? JSON.parse(guide.contact).email : (guide.contact as any).email) : null,
+        phone: guide.contact ? (typeof guide.contact === 'string' ? JSON.parse(guide.contact).phone : (guide.contact as any).phone) : null
       },
       message: 'Авторизация успешна'
     });
