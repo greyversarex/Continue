@@ -311,6 +311,18 @@ router.get('/payment-methods', async (req: Request, res: Response) => {
         enabled: !!process.env.CLICK_MERCHANT_ID,
         description: 'Uzbekistan payment system',
       },
+      {
+        id: 'alif',
+        name: 'AlifPay',
+        enabled: !!(process.env.ALIF_KEY && process.env.ALIF_PASSWORD),
+        description: 'Tajikistan payment system (Alif Bank)',
+      },
+      {
+        id: 'payler',
+        name: 'Payler',
+        enabled: !!process.env.PAYLER_KEY,
+        description: 'Tajikistan payment system',
+      },
     ];
 
     return res.json({
@@ -324,6 +336,297 @@ router.get('/payment-methods', async (req: Request, res: Response) => {
       message: 'Failed to get payment methods',
       error: error instanceof Error ? error.message : 'Unknown error',
     });
+  }
+});
+
+// AlifPay integration
+router.post('/alif', async (req: Request, res: Response) => {
+  try {
+    const { orderNumber, gate = 'vsa' } = req.body;
+
+    if (!orderNumber) {
+      return res.status(400).json({
+        success: false,
+        message: 'Order number is required',
+      });
+    }
+
+    // Get order details
+    const order = await prisma.order.findUnique({
+      where: { orderNumber },
+      include: {
+        customer: true,
+        tour: true,
+      },
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      });
+    }
+
+    const alifKey = process.env.ALIF_KEY;
+    const alifPassword = process.env.ALIF_PASSWORD;
+    const returnUrl = process.env.ALIF_RETURN_URL || `${process.env.BASE_URL || 'http://localhost:5000'}/frontend/payment-success.html`;
+    const callbackUrl = process.env.ALIF_CALLBACK_URL || `${process.env.BASE_URL || 'http://localhost:5000'}/api/payments/alif-callback`;
+
+    if (!alifKey || !alifPassword) {
+      return res.status(500).json({
+        success: false,
+        message: 'AlifPay configuration missing',
+      });
+    }
+
+    const orderId = order.id.toString();
+    const amount = Math.round(order.totalAmount);
+    const info = `Оплата тура №${orderNumber}`;
+
+    // Generate HMAC token: HMAC_SHA256(key+orderId+amount+callbackUrl, HMAC_SHA256(password, key))
+    const crypto = require('crypto');
+    const step1 = crypto.createHmac('sha256', alifPassword).update(alifKey).digest('hex');
+    const step2Data = alifKey + orderId + amount + callbackUrl;
+    const token = crypto.createHmac('sha256', step1).update(step2Data).digest('hex');
+
+    // Update order with payment method
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        paymentMethod: 'alif',
+        paymentStatus: 'processing',
+      },
+    });
+
+    // Return form data for redirect to Alif
+    const alifFormData = {
+      key: alifKey,
+      orderId: orderId,
+      amount: amount,
+      info: info,
+      returnUrl: returnUrl,
+      callbackUrl: callbackUrl,
+      email: order.customer.email,
+      phone: order.customer.phone || '',
+      gate: gate,
+      token: token,
+    };
+
+    return res.json({
+      success: true,
+      paymentUrl: 'https://web.alif.tj/',
+      formData: alifFormData,
+      method: 'POST',
+    });
+
+  } catch (error) {
+    console.error('AlifPay error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'AlifPay integration error',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// AlifPay callback
+router.post('/alif-callback', async (req: Request, res: Response) => {
+  try {
+    const { orderId, status, amount } = req.body;
+
+    console.log('AlifPay callback received:', req.body);
+
+    if (!orderId) {
+      return res.status(400).send('Bad Request');
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id: parseInt(orderId) },
+    });
+
+    if (!order) {
+      return res.status(404).send('Order Not Found');
+    }
+
+    // Update payment status based on Alif response
+    if (status === 'success' || status === 'paid') {
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          paymentStatus: 'paid',
+        },
+      });
+
+      // Send confirmation email
+      try {
+        await emailService.sendPaymentConfirmation(order);
+      } catch (emailError) {
+        console.error('Email sending failed:', emailError);
+      }
+    } else {
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          paymentStatus: 'failed',
+        },
+      });
+    }
+
+    return res.status(200).send('OK');
+
+  } catch (error) {
+    console.error('AlifPay callback error:', error);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
+// Payler integration
+router.post('/payler', async (req: Request, res: Response) => {
+  try {
+    const { orderNumber } = req.body;
+
+    if (!orderNumber) {
+      return res.status(400).json({
+        success: false,
+        message: 'Order number is required',
+      });
+    }
+
+    // Get order details
+    const order = await prisma.order.findUnique({
+      where: { orderNumber },
+      include: {
+        customer: true,
+        tour: true,
+      },
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      });
+    }
+
+    const paylerKey = process.env.PAYLER_KEY;
+
+    if (!paylerKey) {
+      return res.status(500).json({
+        success: false,
+        message: 'Payler configuration missing',
+      });
+    }
+
+    // Call Payler StartSession API
+    const paylerAmount = Math.round(order.totalAmount * 100); // Convert to tiyin
+    const fetch = require('node-fetch');
+
+    const startSessionBody = new URLSearchParams({
+      key: paylerKey,
+      type: 'OneStep',
+      currency: 'TJS',
+      amount: paylerAmount.toString(),
+      order_id: order.id.toString(),
+    });
+
+    const response = await fetch('https://secure.payler.com/gapi/StartSession', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: startSessionBody,
+    });
+
+    const responseData = await response.text();
+    console.log('Payler StartSession response:', responseData);
+
+    // Parse response (format: session_id=XXXXX)
+    const sessionIdMatch = responseData.match(/session_id=([^&\s]+)/);
+    
+    if (!sessionIdMatch) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to create Payler session',
+        error: responseData,
+      });
+    }
+
+    const sessionId = sessionIdMatch[1];
+
+    // Update order with payment method
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        paymentMethod: 'payler',
+        paymentStatus: 'processing',
+        paymentIntentId: sessionId,
+      },
+    });
+
+    return res.json({
+      success: true,
+      paymentUrl: `https://secure.payler.com/gapi/Pay/?session_id=${sessionId}`,
+      sessionId: sessionId,
+    });
+
+  } catch (error) {
+    console.error('Payler error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Payler integration error',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+// Payler callback
+router.post('/payler-callback', async (req: Request, res: Response) => {
+  try {
+    const { order_id, status, session_id } = req.body;
+
+    console.log('Payler callback received:', req.body);
+
+    if (!order_id) {
+      return res.status(400).send('Bad Request');
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id: parseInt(order_id) },
+    });
+
+    if (!order) {
+      return res.status(404).send('Order Not Found');
+    }
+
+    // Update payment status based on Payler response
+    if (status === 'success' || status === 'Charged') {
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          paymentStatus: 'paid',
+        },
+      });
+
+      // Send confirmation email
+      try {
+        await emailService.sendPaymentConfirmation(order);
+      } catch (emailError) {
+        console.error('Email sending failed:', emailError);
+      }
+    } else {
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          paymentStatus: 'failed',
+        },
+      });
+    }
+
+    return res.status(200).send('OK');
+
+  } catch (error) {
+    console.error('Payler callback error:', error);
+    return res.status(500).send('Internal Server Error');
   }
 });
 
