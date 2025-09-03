@@ -543,6 +543,8 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
         contact: JSON.stringify({ email, phone }), // Контакты в JSON
         experience: experience ? parseInt(experience) : 0,
         rating: 5.0, // Начальный рейтинг
+        login: login, // Добавляем логин
+        password: password, // Добавляем пароль (в открытом виде для админа)
         isActive: isActive !== undefined ? isActive : true,
         photo: null // Пока без фото
       }
