@@ -36,6 +36,7 @@ model Tour {
   shortDesc          String?
   duration           String
   price              String
+  currency           String                 @default("TJS")
   priceType          String                 @default("за человека")
   originalPrice      String?
   country            String?
