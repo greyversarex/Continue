@@ -2638,9 +2638,8 @@
         }
         
         function renderTourCard(tour) {
-            // Парсим JSON названия и описания
-            const title = typeof tour.title === 'string' ? JSON.parse(tour.title) : tour.title;
-            const description = typeof tour.description === 'string' ? JSON.parse(tour.description) : tour.description;
+            const title = tour.title;
+            const description = tour.description;
             const shortDesc = tour.shortDesc || null;
             
             return `
@@ -2697,6 +2696,7 @@
                                     <div class="text-sm line-through text-gray-400 mb-1 price-display" data-original-price="${tour.originalPrice}">${tour.originalPrice} TJS</div>
                                 ` : ''}
                                 <div class="text-lg font-bold text-gray-900 tour-price price-display" data-original-price="${tour.price}">${tour.price} TJS</div>
+                                <div class="converted-price text-sm text-gray-600 mt-1" style="display: none;"></div>
                                 <div class="text-xs text-gray-500 mt-1">${tour.priceType}</div>
                             </div>
                             <button class="hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors" 
