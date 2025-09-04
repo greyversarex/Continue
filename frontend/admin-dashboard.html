@@ -1846,6 +1846,35 @@
                             <!-- Guides will be loaded here -->
                         </div>
                     </div>
+
+                    <!-- Pricing Components Section -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">
+                            <i class="fas fa-calculator mr-2"></i>
+                            Компоненты ценообразования
+                        </label>
+                        <div class="mb-3 text-sm text-gray-600">
+                            Выберите включенные в тур услуги для автоматического расчета стоимости
+                        </div>
+                        <div class="pricing-components-grid grid grid-cols-1 md:grid-cols-2 gap-3 p-4 border rounded-lg bg-gray-50" id="tourPricingComponents">
+                            <!-- Динамически загружается из базы данных -->
+                            <div class="text-center text-gray-500 py-4 col-span-full">
+                                Загрузка компонентов...
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3 bg-blue-50 rounded flex justify-between items-center">
+                            <div>
+                                <span class="text-sm font-medium text-gray-700">Расчетная стоимость:</span>
+                                <div class="text-xs text-gray-500">Базируется на выбранных компонентах</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-blue-600" id="calculatedPrice">0 TJS</div>
+                                <button type="button" class="text-xs text-blue-500 hover:underline" onclick="applyCalculatedPrice()">
+                                    Применить к цене тура
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="flex justify-end gap-3 mt-6">
@@ -3396,6 +3425,9 @@
             // Load hotels and guides for checkboxes
             loadHotelsForCheckboxes();
             loadGuidesForCheckboxes();
+            
+            // Load pricing components for tour form
+            loadTourPricingComponentsForm();
             
             // Load categories for tour form
             loadCategories();
@@ -7678,6 +7710,7 @@
         // Tour Pricing Components Functions
         let tourPricingComponents = [];
         let selectedTourComponents = [];
+        let selectedTourFormComponents = [];
 
         async function loadTourPricingComponents() {
             try {
@@ -7826,6 +7859,113 @@
             document.getElementById('tourPrice').value = totalPrice.toFixed(2);
             // Save selected components data
             document.getElementById('tourPricingData').value = JSON.stringify(selectedTourComponents);
+        }
+
+        // Tour Form Pricing Components Functions
+        async function loadTourPricingComponentsForm() {
+            try {
+                const response = await fetch(`${getApiUrl()}/price-calculator`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderTourFormPricingComponents(data.data);
+                } else {
+                    console.error('Failed to load pricing components for tour form:', data.message);
+                }
+            } catch (error) {
+                console.error('Error loading pricing components for tour form:', error);
+            }
+        }
+
+        function renderTourFormPricingComponents(components) {
+            const container = document.getElementById('tourPricingComponents');
+            
+            // Store components globally for price calculation
+            window.tourFormComponents = components;
+            
+            if (components.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-4 col-span-full">Нет компонентов для отображения</div>';
+                return;
+            }
+
+            // Group components by category
+            const groupedComponents = {};
+            components.forEach(component => {
+                if (!groupedComponents[component.category]) {
+                    groupedComponents[component.category] = [];
+                }
+                groupedComponents[component.category].push(component);
+            });
+
+            // Category translations
+            const categoryTitles = {
+                'transport': '🚗 Транспорт',
+                'accommodation': '🏨 Проживание', 
+                'meals': '🍽️ Питание',
+                'guide': '👨‍🏫 Услуги гида',
+                'activities': '🎯 Активности',
+                'other': '📋 Прочее'
+            };
+
+            let html = '';
+            Object.keys(groupedComponents).forEach(category => {
+                const title = categoryTitles[category] || category;
+                html += `
+                    <div class="col-span-full">
+                        <h4 class="font-medium text-gray-800 border-b pb-2 mb-3">${title}</h4>
+                    </div>
+                `;
+                
+                groupedComponents[category].forEach(component => {
+                    html += `
+                        <label class="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+                            <input type="checkbox" 
+                                   value="${component.id}" 
+                                   onchange="updateTourFormPrice()"
+                                   class="pricing-component-checkbox">
+                            <div class="flex-1">
+                                <div class="font-medium">${component.name}</div>
+                                <div class="text-sm text-gray-500">${component.price} TJS/${component.unit}</div>
+                            </div>
+                        </label>
+                    `;
+                });
+            });
+
+            container.innerHTML = html;
+        }
+
+        function updateTourFormPrice() {
+            const checkboxes = document.querySelectorAll('.pricing-component-checkbox:checked');
+            let totalPrice = 0;
+
+            checkboxes.forEach(checkbox => {
+                const componentId = parseInt(checkbox.value);
+                const component = window.tourFormComponents?.find(c => c.id === componentId);
+                if (component) {
+                    totalPrice += component.price;
+                }
+            });
+
+            document.getElementById('calculatedPrice').textContent = `${totalPrice} TJS`;
+        }
+
+        function applyCalculatedPrice() {
+            const calculatedPrice = document.getElementById('calculatedPrice').textContent.replace(' TJS', '');
+            document.getElementById('tourPrice').value = calculatedPrice;
+            
+            // Show confirmation
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = 'Применено!';
+            button.style.color = '#10b981';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.color = '';
+            }, 2000);
         }
 
         function loadTourPricingComponentsForEdit(savedComponents) {
