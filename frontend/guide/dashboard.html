@@ -166,41 +166,41 @@
             }
         }
 
-        // Load tours (demo data for now since API is temporarily disabled)
-        function loadTours() {
+        // Load tours from real API
+        async function loadTours() {
             document.getElementById('loadingState').classList.remove('hidden');
             document.getElementById('emptyState').classList.add('hidden');
             document.getElementById('toursGrid').classList.add('hidden');
 
-            // Demo data for demonstration
-            setTimeout(() => {
-                const demoTours = [
-                    {
-                        id: 1,
-                        uniqueCode: 'TG-2025-001',
-                        title: JSON.stringify({ru: 'Культурный тур по Душанбе', en: 'Cultural Tour of Dushanbe'}),
-                        scheduledStartDate: '2025-09-10T09:00:00Z',
-                        scheduledEndDate: '2025-09-12T18:00:00Z',
-                        status: 'pending',
-                        totalTourists: 8,
-                        bookingsCount: 3
-                    },
-                    {
-                        id: 2,
-                        uniqueCode: 'TG-2025-002',
-                        title: JSON.stringify({ru: 'Горный тур в Фанские горы', en: 'Mountain Tour to Fann Mountains'}),
-                        scheduledStartDate: '2025-09-15T08:00:00Z',
-                        scheduledEndDate: '2025-09-18T20:00:00Z',
-                        status: 'active',
-                        totalTourists: 6,
-                        bookingsCount: 2
+            try {
+                const token = localStorage.getItem('tourGuideToken');
+                const response = await fetch('/api/guide/tours', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
-                ];
+                });
 
-                displayTours(demoTours);
-                updateStats(demoTours);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Tours API response:', result);
+
+                if (result.success) {
+                    displayTours(result.data || []);
+                    updateStats(result.data || []);
+                } else {
+                    throw new Error(result.message || 'Failed to load tours');
+                }
+            } catch (error) {
+                console.error('Error loading tours:', error);
+                // Show empty state on error
+                document.getElementById('emptyState').classList.remove('hidden');
+            } finally {
                 document.getElementById('loadingState').classList.add('hidden');
-            }, 1000);
+            }
         }
 
         function displayTours(toursList) {
@@ -215,16 +215,24 @@
             toursGrid.classList.remove('hidden');
 
             toursList.forEach(tour => {
-                const tourTitle = JSON.parse(tour.title);
-                const startDate = new Date(tour.scheduledStartDate);
-                const endDate = new Date(tour.scheduledEndDate);
+                // Handle both JSON string and object formats for title
+                let tourTitle;
+                try {
+                    tourTitle = typeof tour.title === 'string' ? JSON.parse(tour.title) : tour.title;
+                } catch (e) {
+                    tourTitle = { ru: tour.title || 'Без названия', en: tour.title || 'Untitled' };
+                }
                 
-                const statusClass = `status-${tour.status}`;
+                // Handle dates
+                const startDate = tour.scheduledStartDate ? new Date(tour.scheduledStartDate) : new Date();
+                const endDate = tour.scheduledEndDate ? new Date(tour.scheduledEndDate) : new Date();
+                
+                const statusClass = `status-${tour.status || 'pending'}`;
                 const statusText = {
                     'pending': 'Ожидает',
-                    'active': 'В процессе',
+                    'active': 'В процессе', 
                     'finished': 'Завершён'
-                }[tour.status];
+                }[tour.status || 'pending'];
 
                 const tourCard = `
                     <div class="card rounded-xl p-6 cursor-pointer hover:shadow-lg" onclick="openTourModal(${tour.id})">
@@ -282,54 +290,140 @@
                 </div>
             `;
 
-            // Demo content for tour modal
-            setTimeout(() => {
+            // Load real tour details from API
+            loadTourDetails(tourId);
+        }
+
+        async function loadTourDetails(tourId) {
+            try {
+                const token = localStorage.getItem('tourGuideToken');
+                const response = await fetch(`/api/guide/tours/${tourId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayTourDetails(result.data);
+                } else {
+                    throw new Error(result.message || 'Failed to load tour details');
+                }
+            } catch (error) {
+                console.error('Error loading tour details:', error);
                 document.getElementById('modalContent').innerHTML = `
-                    <div class="space-y-6">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h4 class="font-semibold text-blue-800 mb-2">Статус тура</h4>
-                            <div class="flex space-x-3">
-                                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-                                    <i class="fas fa-play mr-2"></i>Начать тур
-                                </button>
-                                <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
-                                    <i class="fas fa-check mr-2"></i>Завершить тур
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 class="font-semibold text-gray-800 mb-3">Программа тура</h4>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <p class="text-gray-600">Программа тура будет отображаться здесь...</p>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 class="font-semibold text-gray-800 mb-3">Список туристов (Demo)</h4>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <div class="space-y-2">
-                                    <div class="flex justify-between items-center p-2 bg-white rounded">
-                                        <span>Иван Петров</span>
-                                        <span class="text-sm text-gray-600">ivan@example.com</span>
-                                    </div>
-                                    <div class="flex justify-between items-center p-2 bg-white rounded">
-                                        <span>Мария Сидорова</span>
-                                        <span class="text-sm text-gray-600">maria@example.com</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-yellow-50 p-4 rounded-lg">
-                            <p class="text-yellow-800 text-sm">
-                                <i class="fas fa-info-circle mr-2"></i>
-                                Полная функциональность API временно недоступна. Это демонстрационная версия интерфейса.
-                            </p>
-                        </div>
+                    <div class="text-center py-8">
+                        <i class="fas fa-exclamation-triangle text-3xl text-red-500 mb-4"></i>
+                        <p class="text-red-600">Ошибка загрузки деталей тура</p>
+                        <p class="text-gray-500 text-sm mt-2">${error.message}</p>
                     </div>
                 `;
-            }, 500);
+            }
+        }
+
+        function displayTourDetails(tour) {
+            const tourTitle = typeof tour.title === 'string' ? JSON.parse(tour.title) : tour.title;
+            const statusText = {
+                'pending': 'Ожидает начала',
+                'active': 'В процессе', 
+                'finished': 'Завершён'
+            }[tour.status || 'pending'];
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-2">Статус тура: ${statusText}</h4>
+                        <div class="flex space-x-3">
+                            ${tour.status === 'pending' ? `
+                                <button onclick="updateTourStatus(${tour.id}, 'active')" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                                    <i class="fas fa-play mr-2"></i>Начать тур
+                                </button>
+                            ` : ''}
+                            ${tour.status === 'active' ? `
+                                <button onclick="updateTourStatus(${tour.id}, 'finished')" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                                    <i class="fas fa-check mr-2"></i>Завершить тур
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Информация о туре</h4>
+                        <div class="bg-gray-50 p-4 rounded-lg space-y-2">
+                            <p><strong>Название:</strong> ${tourTitle.ru}</p>
+                            <p><strong>Продолжительность:</strong> ${tour.duration || 'Не указана'}</p>
+                            <p><strong>Цена:</strong> ${tour.price || 'Не указана'} ${tour.currency || 'TJS'}</p>
+                            <p><strong>Код тура:</strong> ${tour.uniqueCode || 'Не назначен'}</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Программа тура</h4>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            ${tour.itinerary ? `<p class="text-gray-600">${tour.itinerary}</p>` : '<p class="text-gray-500">Программа тура не добавлена</p>'}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Список бронирований</h4>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            ${tour.bookings && tour.bookings.length > 0 ? 
+                                tour.bookings.map(booking => `
+                                    <div class="flex justify-between items-center p-2 bg-white rounded mb-2">
+                                        <span>${booking.contactName || 'Клиент'}</span>
+                                        <span class="text-sm text-gray-600">${booking.contactEmail || 'Нет email'}</span>
+                                        <span class="text-sm font-semibold">${booking.numberOfTourists} чел.</span>
+                                    </div>
+                                `).join('') 
+                                : '<p class="text-gray-500">Нет активных бронирований</p>'
+                            }
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <p class="text-green-800 text-sm">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Система полностью функциональна. Управляйте турами в реальном времени.
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function updateTourStatus(tourId, newStatus) {
+            try {
+                const token = localStorage.getItem('tourGuideToken');
+                const response = await fetch(`/api/guide/tours/${tourId}/${newStatus === 'active' ? 'start' : 'finish'}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Reload tours to reflect changes
+                    loadTours();
+                    // Reload tour details in modal
+                    loadTourDetails(tourId);
+                    
+                    // Show success message
+                    alert(`Статус тура обновлен: ${newStatus === 'active' ? 'Тур начат' : 'Тур завершён'}`);
+                } else {
+                    throw new Error(result.message || 'Failed to update tour status');
+                }
+            } catch (error) {
+                console.error('Error updating tour status:', error);
+                alert('Ошибка при обновлении статуса тура: ' + error.message);
+            }
         }
 
         // Event listeners
