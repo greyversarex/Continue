@@ -3001,27 +3001,74 @@
 
         // Инициализация валютной системы
         function initializeCurrency() {
-            // Восстанавливаем выбранную валюту из localStorage
+            // Устанавливаем TJS как основную валюту по умолчанию
+            globalCurrency = 'TJS';
+            
+            // Восстанавливаем выбранную валюту из localStorage только если это не первый визит
             const savedCurrency = localStorage.getItem('selectedCurrency');
-            if (savedCurrency && exchangeRates[savedCurrency]) {
+            if (savedCurrency && exchangeRates[savedCurrency] && savedCurrency !== 'TJS') {
                 globalCurrency = savedCurrency;
-                selectCurrency(savedCurrency, exchangeRates[savedCurrency].symbol);
+                document.querySelector('.selected-currency').textContent = savedCurrency;
+                document.querySelectorAll('#currencyDropdown .lang-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                document.querySelector(`[data-currency="${savedCurrency}"]`)?.classList.add('active');
+            } else {
+                // Убеждаемся что TJS активен по умолчанию
+                document.querySelector('.selected-currency').textContent = 'TJS';
+                document.querySelectorAll('#currencyDropdown .lang-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                document.querySelector(`[data-currency="TJS"]`)?.classList.add('active');
+                localStorage.setItem('selectedCurrency', 'TJS');
             }
             
             // Загружаем актуальные курсы валют
             loadExchangeRates();
+            
+            // Обновляем отображение цен
+            convertAllPrices();
         }
 
 
         // Закрытие dropdown при клике вне их
         document.addEventListener('click', function(event) {
-            const langDropdown = document.getElementById('langDropdown');
+            const langDropdown = document.getElementById('languageDropdown');
             const currencyDropdown = document.getElementById('currencyDropdown');
             
-            if (!event.target.closest('.language-dropdown')) {
+            // Закрываем языковой dropdown
+            if (langDropdown && !event.target.closest('.language-dropdown')) {
                 langDropdown.classList.remove('show');
+            }
+            
+            // Закрываем валютный dropdown
+            if (currencyDropdown && !event.target.closest('.language-dropdown')) {
                 currencyDropdown.classList.remove('show');
             }
+        });
+
+        // Обработчики для валютного селектора
+        document.addEventListener('DOMContentLoaded', function() {
+            // Добавляем обработчик клика для валютного селектора
+            const currencyButton = document.querySelector('.lang-selector-btn[onclick="toggleCurrencyDropdown()"]');
+            if (currencyButton) {
+                currencyButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleCurrencyDropdown();
+                });
+            }
+            
+            // Добавляем обработчики для опций валют
+            document.querySelectorAll('#currencyDropdown .lang-option').forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const currency = this.getAttribute('data-currency');
+                    const symbol = this.querySelector('.currency-name')?.textContent || currency;
+                    selectCurrency(currency, symbol);
+                });
+            });
         });
     </script>
 </body>
