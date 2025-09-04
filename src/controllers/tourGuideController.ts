@@ -217,7 +217,12 @@ export const getTourDetails = async (req: Request, res: Response): Promise<void>
     const tour = await prisma.tour.findFirst({
       where: { 
         id: tourId,
-        assignedGuideId: guideId
+        isActive: true,
+        tourGuides: {
+          some: {
+            guideId: guideId
+          }
+        }
       },
       include: {
         bookings: {
@@ -234,6 +239,11 @@ export const getTourDetails = async (req: Request, res: Response): Promise<void>
         },
         guideReviews: {
           where: { guideId: guideId }
+        },
+        tourGuides: {
+          include: {
+            guide: true
+          }
         }
       }
     });
