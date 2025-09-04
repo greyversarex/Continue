@@ -88,7 +88,7 @@ model Tour {
   tourGuides         TourGuide[]
   tourHotels         TourHotel[]
   pricingComponents  TourPricingComponent[]
-  assignedGuide      Guide?                 @relation(fields: [assignedGuideId], references: [id])
+  assignedGuide      Guide?                 @relation("AssignedGuide", fields: [assignedGuideId], references: [id])
   category           Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   tourBlock          TourBlock?             @relation(fields: [tourBlockId], references: [id])
 
@@ -465,7 +465,6 @@ model TourGuideProfile {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   guideReviews  GuideReview[]
-  assignedTours Tour[]
 
   @@map("tour_guide_profiles")
 }

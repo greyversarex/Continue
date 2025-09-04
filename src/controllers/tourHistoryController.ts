@@ -174,8 +174,6 @@ export const getTourDetailsAdmin = async (req: Request, res: Response): Promise<
             id: true,
             name: true,
             login: true,
-            email: true,
-            phone: true
           }
         },
         bookings: {
@@ -228,7 +226,7 @@ export const getTourDetailsAdmin = async (req: Request, res: Response): Promise<
 
     // Извлечь список туристов из бронирований
     const tourists: any[] = [];
-    (tour.bookings as any[]).forEach(booking => {
+    (tour.bookings || []).forEach(booking => {
       if (booking.tourists) {
         try {
           const bookingTourists = JSON.parse(booking.tourists);
@@ -343,13 +341,6 @@ export const getAllTourGuides = async (req: Request, res: Response): Promise<voi
         phone: true,
         isActive: true,
         createdAt: true,
-        assignedTours: {
-          select: {
-            id: true,
-            title: true,
-            status: true
-          }
-        }
       },
       orderBy: {
         createdAt: 'desc'
