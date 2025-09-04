@@ -1805,31 +1805,15 @@
                     
                     <div class="form-group col-span-2">
                         <label class="form-label">Услуги включенные в тур</label>
-                        <div class="checkbox-group" id="includesOptions">
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="Трансфер"> Трансфер
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="Проживание"> Проживание
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="Питание"> Питание
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="Гид"> Гид
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="Входные билеты"> Входные билеты
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="Страховка"> Страховка
-                            </label>
+                        <div class="text-sm text-gray-600 mb-3">
+                            ⚡ Автоматически синхронизируется с выбранными компонентами тура
                         </div>
-                        <div class="mt-3 flex gap-2">
-                            <input type="text" class="form-input flex-1" id="newTourService" placeholder="Введите название новой услуги">
-                            <button type="button" onclick="addNewTourService()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md">
-                                <i class="fas fa-plus"></i> Добавить
-                            </button>
+                        <div class="checkbox-group" id="includesOptions">
+                            <!-- Услуги будут автоматически добавлены из выбранных компонентов -->
+                            <div class="text-center text-gray-400 py-4" id="includesPlaceholder">
+                                <i class="fas fa-magic mr-2"></i>
+                                Выберите компоненты тура выше, и услуги автоматически появятся здесь
+                            </div>
                         </div>
                     </div>
                     
@@ -7262,10 +7246,8 @@
             const unit = prompt('Введите единицу измерения:');
             if (!unit) return;
 
-            const category = prompt('Введите категорию (transport, accommodation, meals, guides, tickets, transfer, documents):');
-            if (!category) return;
-
-            createNewComponent(service, parseFloat(price), unit, category);
+            // Услуга - это и есть компонент, категория не нужна
+            createNewComponent(service, parseFloat(price), unit, 'service');
         }
 
         async function createNewComponent(name, price, unit, category) {
@@ -7833,39 +7815,43 @@
         function syncIncludedServices() {
             console.log('🔄 Синхронизация услуг с компонентами тура...');
             
-            // Очищаем все отметки в "Услугах включенных в тур"
-            const includeCheckboxes = document.querySelectorAll('#includesOptions input[type="checkbox"]');
-            includeCheckboxes.forEach(checkbox => {
-                checkbox.checked = false;
-            });
+            const includesContainer = document.getElementById('includesOptions');
+            const placeholder = document.getElementById('includesPlaceholder');
             
-            // Отмечаем услуги которые выбраны в компонентах
+            // Очищаем контейнер от существующих элементов
+            includesContainer.innerHTML = '';
+            
+            if (selectedTourComponents.length === 0) {
+                // Если нет выбранных компонентов, показываем placeholder
+                includesContainer.innerHTML = `
+                    <div class="text-center text-gray-400 py-4" id="includesPlaceholder">
+                        <i class="fas fa-magic mr-2"></i>
+                        Выберите компоненты тура выше, и услуги автоматически появятся здесь
+                    </div>
+                `;
+                return;
+            }
+            
+            // Добавляем услуги из выбранных компонентов
             selectedTourComponents.forEach(component => {
                 const serviceName = component.name;
                 
-                // Ищем соответствующую услугу в блоке "Услуги включенные"
-                includeCheckboxes.forEach(checkbox => {
-                    const checkboxValue = checkbox.value.toLowerCase();
-                    const componentName = serviceName.toLowerCase();
-                    
-                    // Простое сопоставление по ключевым словам
-                    if (
-                        (componentName.includes('транспорт') && checkboxValue.includes('трансфер')) ||
-                        (componentName.includes('трансфер') && checkboxValue.includes('трансфер')) ||
-                        (componentName.includes('питание') && checkboxValue.includes('питание')) ||
-                        (componentName.includes('гид') && checkboxValue.includes('гид')) ||
-                        (componentName.includes('билет') && checkboxValue.includes('билет')) ||
-                        (componentName.includes('страховка') && checkboxValue.includes('страховка')) ||
-                        (componentName.includes('проживание') && checkboxValue.includes('размещение')) ||
-                        (componentName.includes('размещение') && checkboxValue.includes('размещение'))
-                    ) {
-                        checkbox.checked = true;
-                        console.log(`✅ Услуга "${checkbox.value}" автоматически отмечена для компонента "${serviceName}"`);
-                    }
-                });
+                const serviceItem = document.createElement('label');
+                serviceItem.className = 'checkbox-item';
+                serviceItem.innerHTML = `
+                    <input type="checkbox" value="${serviceName}" checked readonly>
+                    <span class="text-green-600">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        ${serviceName} 
+                        <span class="text-sm text-gray-500">(${component.price} TJS/${component.unit})</span>
+                    </span>
+                `;
+                
+                includesContainer.appendChild(serviceItem);
+                console.log(`✅ Услуга "${serviceName}" добавлена в включенные услуги`);
             });
             
-            console.log(`✅ Синхронизировано ${selectedTourComponents.length} компонентов с услугами`);
+            console.log(`✅ Синхронизировано ${selectedTourComponents.length} услуг с компонентами`);
         }
 
         function loadTourPricingComponentsForEdit(savedComponents) {
