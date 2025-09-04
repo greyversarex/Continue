@@ -74,11 +74,30 @@ app.use('/api', apiRoutes);
 const objectStorageRoutes = require('./src/routes/objectStorageRoutes.ts').default;
 app.use('/', objectStorageRoutes);
 
-// ИСПРАВЛЕНИЕ: Обработка repl_preview параметров
+// ИСПРАВЛЕНИЕ: Обработка repl_preview параметров и всех возможных путей
 app.get('/', (req, res) => {
   console.log('🏠 Serving home page with query params:', req.query);
+  console.log('🏠 Request URL:', req.url);
+  console.log('🏠 Request path:', req.path);
   // Игнорируем repl_preview параметры и всегда отдаем главную страницу
   res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
+
+// Обработка закодированных repl_preview параметров
+app.use((req, res, next) => {
+  // Декодируем URL для проверки
+  const decodedUrl = decodeURIComponent(req.url);
+  console.log('🔄 Middleware check - Original URL:', req.url);
+  console.log('🔄 Middleware check - Decoded URL:', decodedUrl);
+  
+  // Если это запрос с repl_preview параметрами (даже закодированными)
+  if (decodedUrl.includes('repl_preview') && req.path === '/') {
+    console.log('🏠 Serving home page for repl_preview request');
+    return res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+  }
+  
+  // Продолжаем обработку
+  next();
 });
 
 // Add direct route for /api/objects/direct/* to serve uploaded images
