@@ -18,7 +18,7 @@ const router = Router();
 // Public routes
 router.get('/', getTourBlocks);
 
-// Get tours for a specific tour block (должен быть выше /:id)
+// Get tours for a specific tour block (теперь поддерживает множественные блоки)
 router.get('/:id/tours', async (req, res) => {
   try {
     const blockId = parseInt(req.params.id);
@@ -31,21 +31,31 @@ router.get('/:id/tours', async (req, res) => {
       return;
     }
 
-    const tours = await prisma.tour.findMany({
+    // Ищем туры через новую таблицу связей TourBlockAssignment
+    const tourAssignments = await prisma.tourBlockAssignment.findMany({
       where: {
-        tourBlockId: blockId,
-        isActive: true
+        tourBlockId: blockId
       },
       include: {
-        category: true,
-        tourBlock: true
+        tour: {
+          include: {
+            category: true,
+            tourBlock: true // Старое поле для совместимости
+          }
+        }
       },
-      orderBy: {
-        createdAt: 'desc'
-      }
+      orderBy: [
+        { isPrimary: 'desc' }, // Сначала основные туры
+        { tour: { createdAt: 'desc' } }
+      ]
     });
 
-    console.log(`📋 Found ${tours.length} tours for block ${blockId}`);
+    // Извлекаем туры из связей и фильтруем активные
+    const tours = tourAssignments
+      .map(assignment => assignment.tour)
+      .filter(tour => tour.isActive);
+
+    console.log(`📋 Found ${tours.length} tours for block ${blockId} (via new assignment system)`);
 
     res.json({
       success: true,
