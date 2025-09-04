@@ -2880,9 +2880,13 @@
 
         // Загружаем туры и слайды при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
             loadTourBlocks();
             loadSlides();
             initializeCurrency();
+            
+            // Инициализируем все обработчики событий
+            initializeEventHandlers();
         });
 
         function formatImageUrl(imageUrl) {
@@ -3047,29 +3051,86 @@
             }
         });
 
-        // Обработчики для валютного селектора
-        document.addEventListener('DOMContentLoaded', function() {
-            // Добавляем обработчик клика для валютного селектора
-            const currencyButton = document.querySelector('.lang-selector-btn[onclick="toggleCurrencyDropdown()"]');
+        // Функция инициализации всех обработчиков событий
+        function initializeEventHandlers() {
+            console.log('Initializing event handlers...');
+            
+            // Обработчики для валютного селектора  
+            const currencyButton = document.querySelector('button[onclick="toggleCurrencyDropdown()"]');
             if (currencyButton) {
+                // Убираем onclick атрибут и добавляем event listener
+                currencyButton.removeAttribute('onclick');
                 currencyButton.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
+                    console.log('Currency button clicked');
                     toggleCurrencyDropdown();
                 });
+                console.log('Currency button handler added');
             }
             
-            // Добавляем обработчики для опций валют
+            // Обработчики для опций валют
             document.querySelectorAll('#currencyDropdown .lang-option').forEach(option => {
+                option.removeAttribute('onclick');
                 option.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     const currency = this.getAttribute('data-currency');
-                    const symbol = this.querySelector('.currency-name')?.textContent || currency;
-                    selectCurrency(currency, symbol);
+                    console.log('Currency selected:', currency);
+                    selectCurrency(currency, currency);
                 });
             });
-        });
+            
+            // Обработчики для языкового селектора
+            const langButton = document.querySelector('button[onclick="toggleLanguageDropdown()"]');
+            if (langButton) {
+                langButton.removeAttribute('onclick');
+                langButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Language button clicked');
+                    toggleLanguageDropdown();
+                });
+            }
+            
+            // Обработчики для опций языков
+            document.querySelectorAll('#langDropdown .lang-option').forEach(option => {
+                option.removeAttribute('onclick');
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const lang = this.getAttribute('data-lang');
+                    const flag = this.querySelector('.flag').className.split(' ')[1];
+                    const name = this.querySelector('.lang-name').textContent;
+                    console.log('Language selected:', lang);
+                    selectLanguage(lang, flag, name);
+                });
+            });
+            
+            // Поиск туров
+            const searchButton = document.querySelector('button[onclick="searchTours()"]');
+            if (searchButton) {
+                searchButton.removeAttribute('onclick');
+                searchButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Search button clicked');
+                    searchTours();
+                });
+            }
+            
+            // Кнопка "Больше с Bunyod-Tour"
+            const ctaButton = document.querySelector('.cta-button');
+            if (ctaButton) {
+                ctaButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('CTA button clicked');
+                    // Прокрутка к турам
+                    document.querySelector('#main-content')?.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+            
+            console.log('All event handlers initialized');
+        }
     </script>
 </body>
 </html>
