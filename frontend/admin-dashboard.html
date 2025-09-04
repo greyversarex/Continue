@@ -7662,90 +7662,83 @@
         let selectedTourComponents = [];
 
         async function loadTourPricingComponents() {
+            console.log('🔄 Загружаем компоненты цены для формы тура...');
             try {
                 const response = await fetch(`${getApiUrl()}/price-calculator`, {
                     headers: getAuthHeaders()
                 });
                 const data = await response.json();
                 
+                console.log('📋 Ответ API компонентов цены:', data);
+                
                 if (data.success) {
                     tourPricingComponents = data.data;
+                    console.log('✅ Компоненты загружены, количество:', tourPricingComponents.length);
+                    console.log('📝 Список компонентов:', tourPricingComponents.map(c => c.name));
                     renderTourPricingComponents();
                 } else {
-                    console.error('Failed to load tour pricing components:', data.message);
+                    console.error('❌ Ошибка загрузки компонентов:', data.message);
                     document.getElementById('tourPricingComponents').innerHTML = 
                         '<div class="text-center text-red-500 py-4">Ошибка загрузки компонентов цен</div>';
                 }
             } catch (error) {
-                console.error('Error loading tour pricing components:', error);
+                console.error('💥 Критическая ошибка загрузки компонентов:', error);
                 document.getElementById('tourPricingComponents').innerHTML = 
                     '<div class="text-center text-red-500 py-4">Ошибка соединения с сервером</div>';
             }
         }
 
         function renderTourPricingComponents() {
+            console.log('🎨 Начинаем рендеринг компонентов цены...');
             const container = document.getElementById('tourPricingComponents');
+            console.log('📦 Контейнер найден:', container ? 'ДА' : 'НЕТ');
             
             if (tourPricingComponents.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-500 py-4">Нет доступных компонентов</div>';
+                console.log('⚠️ Компонентов нет, показываем сообщение');
+                container.innerHTML = '<div class="text-center text-gray-500 py-4">Нет доступных компонентов цен. Добавьте их в разделе "Калькулятор цен"</div>';
                 return;
             }
+            
+            console.log('🔧 Рендерим компоненты, количество:', tourPricingComponents.length);
 
-            // Group components by category
-            const categories = {
-                transport: { name: 'Транспорт', items: [] },
-                accommodation: { name: 'Проживание', items: [] },
-                meals: { name: 'Питание', items: [] },
-                guides: { name: 'Сопровождение', items: [] },
-                tickets: { name: 'Билеты и сборы', items: [] },
-                transfer: { name: 'Трансфер', items: [] },
-                documents: { name: 'Документы и разрешения', items: [] }
-            };
-
-            tourPricingComponents.forEach(component => {
-                if (categories[component.category]) {
-                    categories[component.category].items.push(component);
-                }
-            });
-
-            container.innerHTML = Object.keys(categories).map(categoryKey => {
-                const category = categories[categoryKey];
-                if (category.items.length === 0) return '';
-                
-                return `
-                    <div class="mb-6">
-                        <h4 class="font-semibold text-gray-700 mb-3 border-b pb-2">${category.name}</h4>
-                        <div class="space-y-2">
-                            ${category.items.map(component => `
-                                <div class="flex items-center gap-3 p-3 bg-white rounded border">
-                                    <input type="checkbox" id="component_${component.id}" 
-                                           onchange="toggleTourComponent(${component.id}, this.checked)"
-                                           class="w-4 h-4 text-blue-600">
-                                    <label for="component_${component.id}" class="flex-1 cursor-pointer font-medium">
-                                        ${component.name}
-                                    </label>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-sm text-gray-600">TJS</span>
-                                        <input type="number" min="0" step="0.01" value="${component.price}" 
-                                               class="w-20 px-2 py-1 border rounded text-center"
-                                               id="price_${component.id}"
-                                               onchange="updateComponentPrice(${component.id}, this.value)"
-                                               disabled>
-                                        <span class="text-sm text-gray-500">/ ${component.unit}</span>
-                                    </div>
-                                    <div class="flex items-center gap-2" id="quantity_container_${component.id}" style="display: none;">
-                                        <span class="text-sm">Кол-во:</span>
-                                        <input type="number" min="1" value="1" 
-                                               class="w-16 px-2 py-1 border rounded text-center"
-                                               id="quantity_${component.id}"
-                                               onchange="updateComponentQuantity(${component.id}, this.value)">
-                                    </div>
+            // Отображаем ВСЕ компоненты без группировки по категориям
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h4 class="font-semibold text-gray-700 mb-3 border-b pb-2">
+                        <i class="fas fa-calculator mr-2 text-blue-600"></i>
+                        Доступные компоненты из калькулятора цен
+                    </h4>
+                    <div class="space-y-2">
+                        ${tourPricingComponents.map(component => `
+                            <div class="flex items-center gap-3 p-3 bg-white rounded border hover:bg-blue-50 transition">
+                                <input type="checkbox" id="component_${component.id}" 
+                                       onchange="toggleTourComponent(${component.id}, this.checked)"
+                                       class="w-4 h-4 text-blue-600">
+                                <label for="component_${component.id}" class="flex-1 cursor-pointer font-medium text-gray-800">
+                                    <i class="fas fa-tag mr-2 text-green-600"></i>
+                                    ${component.name}
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm text-gray-600 font-medium">TJS</span>
+                                    <input type="number" min="0" step="0.01" value="${component.price}" 
+                                           class="w-24 px-2 py-1 border rounded text-center font-semibold text-blue-600"
+                                           id="price_${component.id}"
+                                           onchange="updateComponentPrice(${component.id}, this.value)"
+                                           disabled>
+                                    <span class="text-sm text-gray-500">/ ${component.unit}</span>
                                 </div>
-                            `).join('')}
-                        </div>
+                                <div class="flex items-center gap-2" id="quantity_container_${component.id}" style="display: none;">
+                                    <span class="text-sm font-medium">Кол-во:</span>
+                                    <input type="number" min="1" value="1" 
+                                           class="w-16 px-2 py-1 border rounded text-center"
+                                           id="quantity_${component.id}"
+                                           onchange="updateComponentQuantity(${component.id}, this.value)">
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
-                `;
-            }).filter(html => html).join('');
+                </div>
+            `;
         }
 
 
