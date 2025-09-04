@@ -2558,11 +2558,15 @@
         
         async function loadToursForBlock(block) {
             try {
-                const response = await fetch(`${API_BASE_URL}/tours?blockId=${block.id}&limit=12`);
+                const response = await fetch(`${API_BASE_URL}/tour-blocks/${block.id}/tours`);
                 const result = await response.json();
+                
+                console.log(`Loading tours for block ${block.id}:`, result);
                 
                 if (result.success && result.data.length > 0) {
                     renderTourBlock(block, result.data);
+                } else {
+                    console.log(`No tours found for block ${block.id}`);
                 }
             } catch (error) {
                 console.error(`Error loading tours for block ${block.id}:`, error);

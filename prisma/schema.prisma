@@ -16,15 +16,16 @@ model Category {
 }
 
 model TourBlock {
-  id          Int      @id @default(autoincrement())
+  id          Int                     @id @default(autoincrement())
   title       String
   description String?
-  slug        String   @unique
-  isActive    Boolean  @default(true)
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  tours       Tour[]
+  slug        String                  @unique
+  isActive    Boolean                 @default(true)
+  sortOrder   Int                     @default(0)
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+  tours       Tour[]                  // Старая связь (временно)
+  tourBlocks  TourBlockAssignment[]   // Новая связь many-to-many
 
   @@map("tour_blocks")
 }
@@ -89,9 +90,10 @@ model Tour {
   tourGuides         TourGuide[]
   tourHotels         TourHotel[]
   pricingComponents  TourPricingComponent[]
+  tourBlockAssignments TourBlockAssignment[] // Новая связь many-to-many
   assignedGuide      Guide?                 @relation("AssignedGuide", fields: [assignedGuideId], references: [id])
   category           Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  tourBlock          TourBlock?             @relation(fields: [tourBlockId], references: [id])
+  tourBlock          TourBlock?             @relation(fields: [tourBlockId], references: [id]) // Старая связь (временно)
 
   @@map("tours")
 }
@@ -133,6 +135,21 @@ model TourHotel {
 
   @@unique([tourId, hotelId])
   @@map("tour_hotels")
+}
+
+// Новая промежуточная таблица для many-to-many связи туров и блоков
+model TourBlockAssignment {
+  id           Int       @id @default(autoincrement())
+  tourId       Int       @map("tour_id")
+  tourBlockId  Int       @map("tour_block_id")
+  isPrimary    Boolean   @default(false) @map("is_primary") // Основной блок (для обратной совместимости)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  
+  tour         Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  tourBlock    TourBlock @relation(fields: [tourBlockId], references: [id], onDelete: Cascade)
+
+  @@unique([tourId, tourBlockId])
+  @@map("tour_block_assignments")
 }
 
 model Guide {
