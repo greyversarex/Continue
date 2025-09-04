@@ -7833,11 +7833,7 @@
                 serviceItem.className = 'checkbox-item';
                 serviceItem.innerHTML = `
                     <input type="checkbox" value="${serviceName}" checked readonly>
-                    <span class="text-green-600">
-                        <i class="fas fa-check-circle mr-2"></i>
-                        ${serviceName} 
-                        <span class="text-sm text-gray-500">(${component.price} TJS/${component.unit})</span>
-                    </span>
+                    <span>${serviceName}</span>
                 `;
                 
                 includesContainer.appendChild(serviceItem);
