@@ -74,6 +74,13 @@ app.use('/api', apiRoutes);
 const objectStorageRoutes = require('./src/routes/objectStorageRoutes.ts').default;
 app.use('/', objectStorageRoutes);
 
+// ИСПРАВЛЕНИЕ: Обработка repl_preview параметров
+app.get('/', (req, res) => {
+  console.log('🏠 Serving home page with query params:', req.query);
+  // Игнорируем repl_preview параметры и всегда отдаем главную страницу
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
+
 // Add direct route for /api/objects/direct/* to serve uploaded images
 app.use('/api/objects/direct', express.static(path.join(__dirname, 'uploads/images')));
 
@@ -104,10 +111,7 @@ app.get('/hotels-catalog.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'hotels-catalog.html'));
 });
 
-// Обслуживать главную страницу
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
-});
+// Обработчик корневого пути перенесен выше (строка 81-85)
 
 // Глобальная обработка ошибок
 app.use((error, req, res, next) => {
