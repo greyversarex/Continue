@@ -4,33 +4,26 @@ import { emailService } from '../services/emailService';
 
 const prisma = new PrismaClient();
 
-// Вспомогательная функция для получения цены хостела из компонентов тура
-async function getHostelPriceFromTour(tourId: number): Promise<number> {
+// Вспомогательная функция для получения базовой цены проживания
+async function getBasicAccommodationPrice(): Promise<number> {
   try {
-    // Ищем компонент хостела в компонентах тура
-    const hostelComponent = await prisma.tourPricingComponent.findFirst({
-      where: {
-        tourId: tourId,
-        componentKey: 'accommodation_hostel'
+    // Ищем базовый компонент проживания в новой системе калькулятора
+    const accommodationComponent = await prisma.priceCalculatorComponent.findUnique({
+      where: { 
+        key: 'accommodation_basic',
+        isActive: true
       }
     });
     
-    if (hostelComponent) {
-      // Если есть кастомная цена, используем её, иначе - стандартную
-      if (hostelComponent.customPrice) {
-        return hostelComponent.customPrice * hostelComponent.quantity;
-      }
+    if (accommodationComponent) {
+      return accommodationComponent.price;
     }
     
-    // Если нет специфичного компонента для тура, используем стандартную цену хостела
-    const standardHostel = await prisma.priceCalculatorComponent.findUnique({
-      where: { key: 'accommodation_hostel' }
-    });
-    
-    return standardHostel ? standardHostel.price : 200; // Возврат стандартной цены или 200 как fallback
+    // Если компонент не найден, возвращаем дефолтную цену $25
+    return 25.0;
   } catch (error) {
-    console.error('Error getting hostel price:', error);
-    return 200; // Fallback цена
+    console.error('Error getting basic accommodation price:', error);
+    return 25.0; // Дефолтная цена
   }
 }
 
@@ -137,21 +130,21 @@ export const bookingController = {
       if (roomSelection && hotel) {
         const tourDuration = parseInt(tour.duration.replace(/\D/g, '')) || 1;
         
-        // Получаем цену хостела из компонентов тура
-        const hostelPrice = await getHostelPriceFromTour(parseInt(tourId.toString()));
+        // Получаем базовую цену проживания из компонентов калькулятора
+        const basicAccommodationPrice = await getBasicAccommodationPrice();
         
-        // Вычитаем хостел из базовой цены (хостел включен в базовую цену)
+        // Вычитаем базовое проживание из базовой цены (базовое проживание включено в базовую цену)
         if (tourPriceType === 'за человека') {
-          // Для цены "за человека" нужно вычесть хостел на каждого туриста
+          // Для цены "за человека" нужно вычесть базовое проживание на каждого туриста
           const numberOfTouristsNum = parseInt(numberOfTourists.toString());
-          // Предполагаем, что хостел рассчитывается на номер (обычно 2 человека)
-          const hostelRoomsNeeded = Math.ceil(numberOfTouristsNum / 2);
-          totalPrice -= hostelPrice * hostelRoomsNeeded * tourDuration;
+          // Предполагаем, что базовое проживание рассчитывается на номер (обычно 2 человека)
+          const accommodationRoomsNeeded = Math.ceil(numberOfTouristsNum / 2);
+          totalPrice -= basicAccommodationPrice * accommodationRoomsNeeded * tourDuration;
         } else {
-          // Для цены "за группу" вычитаем хостел для всей группы
+          // Для цены "за группу" вычитаем базовое проживание для всей группы
           const numberOfTouristsNum = parseInt(numberOfTourists.toString());
-          const hostelRoomsNeeded = Math.ceil(numberOfTouristsNum / 2);
-          totalPrice -= hostelPrice * hostelRoomsNeeded * tourDuration;
+          const accommodationRoomsNeeded = Math.ceil(numberOfTouristsNum / 2);
+          totalPrice -= basicAccommodationPrice * accommodationRoomsNeeded * tourDuration;
         }
         
         // Добавляем стоимость выбранных номеров отеля
@@ -280,18 +273,18 @@ export const bookingController = {
       if (roomSelection && existingBooking.hotel) {
         const tourDuration = parseInt(existingBooking.tour.duration.replace(/\D/g, '')) || 1;
         
-        // Получаем цену хостела из компонентов тура
-        const hostelPrice = await getHostelPriceFromTour(existingBooking.tour.id);
+        // Получаем базовую цену проживания из компонентов калькулятора
+        const basicAccommodationPrice = await getBasicAccommodationPrice();
         
-        // Вычитаем хостел из базовой цены
+        // Вычитаем базовое проживание из базовой цены
         if (tourPriceType === 'за человека') {
-          // Для цены "за человека" вычитаем хостел на группу
-          const hostelRoomsNeeded = Math.ceil(existingBooking.numberOfTourists / 2);
-          totalPrice -= hostelPrice * hostelRoomsNeeded * tourDuration;
+          // Для цены "за человека" вычитаем базовое проживание на группу
+          const accommodationRoomsNeeded = Math.ceil(existingBooking.numberOfTourists / 2);
+          totalPrice -= basicAccommodationPrice * accommodationRoomsNeeded * tourDuration;
         } else {
-          // Для цены "за группу" вычитаем хостел для группы
-          const hostelRoomsNeeded = Math.ceil(existingBooking.numberOfTourists / 2);
-          totalPrice -= hostelPrice * hostelRoomsNeeded * tourDuration;
+          // Для цены "за группу" вычитаем базовое проживание для группы
+          const accommodationRoomsNeeded = Math.ceil(existingBooking.numberOfTourists / 2);
+          totalPrice -= basicAccommodationPrice * accommodationRoomsNeeded * tourDuration;
         }
         
         // Добавляем стоимость выбранных номеров отеля
