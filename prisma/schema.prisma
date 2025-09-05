@@ -40,8 +40,10 @@ model Tour {
   currency           String                 @default("TJS")
   priceType          String                 @default("за человека")
   originalPrice      String?
-  country            String?
-  city               String?
+  countryId          Int?                   @map("country_id")
+  cityId             Int?                   @map("city_id")
+  country            String?                // Временно для обратной совместимости
+  city               String?                // Временно для обратной совместимости
   format             String?
   tourType           String?
   durationDays       Int?
@@ -95,6 +97,8 @@ model Tour {
   assignedGuide      Guide?                 @relation("AssignedGuide", fields: [assignedGuideId], references: [id])
   category           Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   tourBlock          TourBlock?             @relation(fields: [tourBlockId], references: [id]) // Старая связь (временно)
+  tourCountry        Country?               @relation(fields: [countryId], references: [id])
+  tourCity           City?                  @relation(fields: [cityId], references: [id])
 
   @@map("tours")
 }
@@ -110,8 +114,10 @@ model Hotel {
   amenities   String?
   brand       String?
   category    String?
-  country     String?
-  city        String?
+  countryId   Int?        @map("country_id")
+  cityId      Int?        @map("city_id")
+  country     String?     // Временно для обратной совместимости
+  city        String?     // Временно для обратной совместимости
   pension     String?     @default("none")
   roomTypes   String?
   mealTypes   String?
@@ -121,6 +127,8 @@ model Hotel {
   bookings    Booking[]
   orders      Order[]
   tourHotels  TourHotel[]
+  hotelCountry Country?   @relation(fields: [countryId], references: [id])
+  hotelCity    City?      @relation(fields: [cityId], references: [id])
 
   @@map("hotels")
 }
@@ -164,6 +172,8 @@ model Guide {
   contact     String?
   experience  Int?
   rating      Float?
+  countryId   Int?        @map("country_id")
+  cityId      Int?        @map("city_id")
   login       String?
   password    String?
   isActive    Boolean     @default(true)
@@ -172,6 +182,8 @@ model Guide {
   orders       Order[]
   tourGuides   TourGuide[]
   assignedTours Tour[] @relation("AssignedGuide")
+  guideCountry Country? @relation(fields: [countryId], references: [id])
+  guideCity    City?    @relation(fields: [cityId], references: [id])
 
   @@map("guides")
 }
@@ -195,6 +207,8 @@ model Driver {
   isActive         Boolean     @default(true)
   languages        String?     // Знание языков
   workingAreas     String?     // Рабочие зоны/города
+  countryId        Int?        @map("country_id")
+  cityId           Int?        @map("city_id")
   pricePerDay      Float?      // Цена за день
   pricePerHour     Float?      // Цена за час
   currency         String?     @default("TJS")
@@ -203,6 +217,8 @@ model Driver {
   // Связи с заказами будут добавлены позже
   // orders           Order[]
   tourDrivers      TourDriver[]
+  driverCountry    Country?    @relation(fields: [countryId], references: [id])
+  driverCity       City?       @relation(fields: [cityId], references: [id])
 
   @@map("drivers")
 }
@@ -400,6 +416,45 @@ model MenuItem {
   children  MenuItem[] @relation("MenuItemParent")
 
   @@map("menu_items")
+}
+
+model Country {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  nameRu      String   @map("name_ru")
+  nameEn      String   @map("name_en")
+  nameTj      String   @map("name_tj")
+  code        String   @unique // TJ, UZ, KG, KZ, TM
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  cities      City[]
+  tours       Tour[]   // Связь с турами
+  hotels      Hotel[]  // Связь с отелями
+  drivers     Driver[] // Связь с водителями
+  guides      Guide[]  // Связь с гидами
+
+  @@map("countries")
+}
+
+model City {
+  id         Int      @id @default(autoincrement())
+  name       String
+  nameRu     String   @map("name_ru")
+  nameEn     String   @map("name_en")
+  nameTj     String   @map("name_tj")
+  countryId  Int      @map("country_id")
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  country    Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  tours      Tour[]   // Связь с турами
+  hotels     Hotel[]  // Связь с отелями
+  drivers    Driver[] // Связь с водителями
+  guides     Guide[]  // Связь с гидами
+
+  @@unique([name, countryId])
+  @@map("cities")
 }
 
 model NewsPost {
