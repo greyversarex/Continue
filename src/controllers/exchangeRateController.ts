@@ -114,6 +114,13 @@ export const initializeExchangeRates = async (req: Request, res: Response) => {
                 symbol: '€',
                 name: 'Евро',
                 isActive: true
+            },
+            {
+                currency: 'RUB',
+                rate: 0.11,
+                symbol: '₽',
+                name: 'Российский рубль',
+                isActive: true
             }
         ];
 
