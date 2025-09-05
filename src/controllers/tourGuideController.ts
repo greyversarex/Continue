@@ -613,8 +613,10 @@ export const leaveGuideReview = async (req: Request, res: Response): Promise<voi
 export const createTourGuideProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, description, login, password, email, phone, languages, experience, isActive } = req.body;
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
     console.log('📝 Получены данные для создания гида:', req.body);
+    console.log('📁 Получены файлы:', files);
 
     if (!name || !email || !languages) {
       res.status(400).json({ 
@@ -628,6 +630,32 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+    // Обрабатываем загруженный аватар
+    let photoPath = null;
+    if (files && files.avatar && files.avatar[0]) {
+      photoPath = files.avatar[0].path;
+      console.log('📷 Аватар сохранен:', photoPath);
+    }
+
+    // Обрабатываем загруженные документы
+    let documentsArray: Array<{
+      filename: string;
+      originalName: string;
+      path: string;
+      size: number;
+      mimeType: string;
+    }> = [];
+    if (files && files.documents && files.documents.length > 0) {
+      documentsArray = files.documents.map(file => ({
+        filename: file.filename,
+        originalName: file.originalname,
+        path: file.path,
+        size: file.size,
+        mimeType: file.mimetype
+      }));
+      console.log('📄 Документы сохранены:', documentsArray.length);
+    }
+
     // ИСПРАВЛЕНО: Создаем в таблице Guide вместо TourGuideProfile
     const guide = await prisma.guide.create({
       data: {
@@ -640,7 +668,8 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
         login: login, // Добавляем логин
         password: hashedPassword, // ✅ БЕЗОПАСНО: Храним хешированный пароль
         isActive: isActive !== undefined ? isActive : true,
-        photo: null // Пока без фото
+        photo: photoPath, // Путь к аватару
+        documents: documentsArray.length > 0 ? JSON.stringify(documentsArray) : null // Документы в JSON
       }
     });
 
@@ -656,9 +685,11 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
         contact: guide.contact,
         experience: guide.experience,
         rating: guide.rating,
-        isActive: guide.isActive
+        isActive: guide.isActive,
+        photo: guide.photo,
+        documents: guide.documents
       },
-      message: 'Гид успешно создан'
+      message: 'Гид успешно создан с загруженными файлами'
     });
 
   } catch (error) {
@@ -675,7 +706,11 @@ export const updateGuideProfile = async (req: Request, res: Response): Promise<v
   try {
     const { id } = req.params;
     const { name, description, email, phone, languages, experience, isActive } = req.body;
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
     const guideId = parseInt(id);
+
+    console.log('📝 Получены данные для обновления гида:', req.body);
+    console.log('📁 Получены файлы:', files);
 
     if (!guideId) {
       res.status(400).json({ 
@@ -715,6 +750,35 @@ export const updateGuideProfile = async (req: Request, res: Response): Promise<v
       });
     }
 
+    // Обрабатываем загруженный аватар
+    if (files && files.avatar && files.avatar[0]) {
+      updateData.photo = files.avatar[0].path;
+      console.log('📷 Аватар обновлен:', files.avatar[0].path);
+    }
+
+    // Обрабатываем загруженные документы
+    if (files && files.documents && files.documents.length > 0) {
+      const documentsArray = files.documents.map(file => ({
+        filename: file.filename,
+        originalName: file.originalname,
+        path: file.path,
+        size: file.size,
+        mimeType: file.mimetype
+      }));
+      
+      // Сохраняем новые документы, добавляя к существующим
+      let existingDocuments = [];
+      try {
+        existingDocuments = existingGuide.documents ? JSON.parse(existingGuide.documents) : [];
+      } catch (e) {
+        existingDocuments = [];
+      }
+      
+      const allDocuments = [...existingDocuments, ...documentsArray];
+      updateData.documents = JSON.stringify(allDocuments);
+      console.log('📄 Документы обновлены, всего:', allDocuments.length);
+    }
+
     const updatedGuide = await prisma.guide.update({
       where: { id: guideId },
       data: updateData
@@ -732,10 +796,10 @@ export const updateGuideProfile = async (req: Request, res: Response): Promise<v
         contact: updatedGuide.contact,
         experience: updatedGuide.experience,
         isActive: updatedGuide.isActive,
-        avatar: updatedGuide.avatar,
+        photo: updatedGuide.photo,
         documents: updatedGuide.documents
       },
-      message: 'Профиль гида успешно обновлен'
+      message: 'Профиль гида успешно обновлен с файлами'
     });
 
   } catch (error) {

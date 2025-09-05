@@ -21,8 +21,11 @@ const router = express.Router();
 // Авторизация
 router.post('/login', loginTourGuide);
 
-// Создание тургида с аутентификацией (для админ панели)
-router.post('/create-with-auth', createTourGuideProfile);
+// Создание тургида с аутентификацией (для админ панели) - с поддержкой загрузки файлов
+router.post('/create-with-auth', upload.fields([
+  { name: 'avatar', maxCount: 1 },
+  { name: 'documents', maxCount: 10 }
+]), createTourGuideProfile);
 
 // Защищённые маршруты для тургидов (требуют авторизации)
 router.get('/tours', authenticateTourGuide, getGuideTours);
@@ -32,8 +35,11 @@ router.post('/tours/:id/finish', authenticateTourGuide, finishTour);
 router.post('/tours/:id/collect-reviews', authenticateTourGuide, collectReviews);
 router.post('/tours/:id/guide-review', authenticateTourGuide, leaveGuideReview);
 
-// Маршруты для управления профилем гида (админ панель)
-router.put('/profile/:id', updateGuideProfile);
+// Маршруты для управления профилем гида (админ панель) - с поддержкой загрузки файлов
+router.put('/profile/:id', upload.fields([
+  { name: 'avatar', maxCount: 1 },
+  { name: 'documents', maxCount: 10 }
+]), updateGuideProfile);
 router.post('/profile/:id/avatar', upload.single('avatar'), uploadGuideAvatar);
 router.post('/profile/:id/documents', upload.array('documents', 10), uploadGuideDocuments);
 router.delete('/profile/:id/document', deleteGuideDocument);
