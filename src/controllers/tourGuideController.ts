@@ -3,9 +3,52 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs/promises';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'tour-guide-secret-key';
+
+// Конфигурация multer для загрузки файлов
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const uploadPath = path.join(process.cwd(), 'uploads', 'guides');
+    try {
+      await fs.mkdir(uploadPath, { recursive: true });
+    } catch (error) {
+      console.error('Error creating upload directory:', error);
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname);
+    cb(null, `${file.fieldname}-${uniqueSuffix}${extension}`);
+  }
+});
+
+const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  // Разрешенные типы файлов
+  const allowedTypes = [
+    'image/jpeg', 'image/jpg', 'image/png', 'image/webp', // Для аватаров
+    'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' // Для документов
+  ];
+  
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Неподдерживаемый тип файла. Разрешены: JPG, PNG, WEBP, PDF, DOC, DOCX'));
+  }
+};
+
+export const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB лимит
+  }
+});
 
 // Авторизация тургида
 export const loginTourGuide = async (req: Request, res: Response): Promise<void> => {
@@ -623,6 +666,280 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
     res.status(500).json({ 
       success: false, 
       message: 'Ошибка сервера: ' + (error instanceof Error ? error.message : 'Unknown error')
+    });
+  }
+};
+
+// Обновление профиля гида с поддержкой файлов
+export const updateGuideProfile = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { name, description, email, phone, languages, experience, isActive } = req.body;
+    const guideId = parseInt(id);
+
+    if (!guideId) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'ID гида обязателен' 
+      });
+      return;
+    }
+
+    // Найти существующего гида
+    const existingGuide = await prisma.guide.findUnique({
+      where: { id: guideId }
+    });
+
+    if (!existingGuide) {
+      res.status(404).json({ 
+        success: false, 
+        message: 'Гид не найден' 
+      });
+      return;
+    }
+
+    const updateData: any = {};
+    
+    if (name) updateData.name = name;
+    if (description) updateData.description = description;
+    if (languages) updateData.languages = languages;
+    if (experience !== undefined) updateData.experience = parseInt(experience);
+    if (isActive !== undefined) updateData.isActive = isActive;
+    
+    // Обновляем контакты
+    if (email || phone) {
+      const currentContact = existingGuide.contact ? JSON.parse(existingGuide.contact) : {};
+      updateData.contact = JSON.stringify({
+        email: email || currentContact.email,
+        phone: phone || currentContact.phone
+      });
+    }
+
+    const updatedGuide = await prisma.guide.update({
+      where: { id: guideId },
+      data: updateData
+    });
+
+    console.log('✅ Профиль гида обновлен:', guideId);
+
+    res.json({
+      success: true,
+      data: {
+        id: updatedGuide.id,
+        name: updatedGuide.name,
+        description: updatedGuide.description,
+        languages: updatedGuide.languages,
+        contact: updatedGuide.contact,
+        experience: updatedGuide.experience,
+        isActive: updatedGuide.isActive,
+        avatar: updatedGuide.avatar,
+        documents: updatedGuide.documents
+      },
+      message: 'Профиль гида успешно обновлен'
+    });
+
+  } catch (error) {
+    console.error('❌ Ошибка обновления гида:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Ошибка сервера: ' + (error instanceof Error ? error.message : 'Unknown error')
+    });
+  }
+};
+
+// Загрузка аватара для гида
+export const uploadGuideAvatar = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const guideId = parseInt(id);
+
+    if (!guideId) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'ID гида обязателен' 
+      });
+      return;
+    }
+
+    if (!req.file) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'Файл аватара не загружен' 
+      });
+      return;
+    }
+
+    const avatarPath = `/uploads/guides/${req.file.filename}`;
+
+    // Обновляем путь к аватару в базе данных
+    const updatedGuide = await prisma.guide.update({
+      where: { id: guideId },
+      data: { avatar: avatarPath }
+    });
+
+    console.log('✅ Аватар гида обновлен:', guideId, avatarPath);
+
+    res.json({
+      success: true,
+      data: {
+        avatarPath,
+        guide: updatedGuide
+      },
+      message: 'Аватар успешно загружен'
+    });
+
+  } catch (error) {
+    console.error('❌ Ошибка загрузки аватара:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Ошибка загрузки аватара: ' + (error instanceof Error ? error.message : 'Unknown error')
+    });
+  }
+};
+
+// Загрузка документов для гида
+export const uploadGuideDocuments = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const guideId = parseInt(id);
+
+    if (!guideId) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'ID гида обязателен' 
+      });
+      return;
+    }
+
+    if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'Документы не загружены' 
+      });
+      return;
+    }
+
+    // Получаем текущие документы
+    const existingGuide = await prisma.guide.findUnique({
+      where: { id: guideId }
+    });
+
+    let existingDocuments = [];
+    if (existingGuide?.documents) {
+      try {
+        existingDocuments = JSON.parse(existingGuide.documents);
+      } catch (e) {
+        console.warn('Error parsing existing documents:', e);
+      }
+    }
+
+    // Добавляем новые документы
+    const newDocuments = req.files.map((file: Express.Multer.File) => ({
+      name: file.originalname,
+      path: `/uploads/guides/${file.filename}`,
+      type: file.mimetype,
+      size: file.size,
+      uploadedAt: new Date().toISOString()
+    }));
+
+    const allDocuments = [...existingDocuments, ...newDocuments];
+
+    // Обновляем документы в базе данных
+    const updatedGuide = await prisma.guide.update({
+      where: { id: guideId },
+      data: { documents: JSON.stringify(allDocuments) }
+    });
+
+    console.log('✅ Документы гида загружены:', guideId, newDocuments.length);
+
+    res.json({
+      success: true,
+      data: {
+        documents: allDocuments,
+        newDocuments,
+        guide: updatedGuide
+      },
+      message: `Загружено ${newDocuments.length} документов`
+    });
+
+  } catch (error) {
+    console.error('❌ Ошибка загрузки документов:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Ошибка загрузки документов: ' + (error instanceof Error ? error.message : 'Unknown error')
+    });
+  }
+};
+
+// Удаление документа гида
+export const deleteGuideDocument = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { documentPath } = req.body;
+    const guideId = parseInt(id);
+
+    if (!guideId || !documentPath) {
+      res.status(400).json({ 
+        success: false, 
+        message: 'ID гида и путь к документу обязательны' 
+      });
+      return;
+    }
+
+    // Получаем текущие документы
+    const existingGuide = await prisma.guide.findUnique({
+      where: { id: guideId }
+    });
+
+    if (!existingGuide) {
+      res.status(404).json({ 
+        success: false, 
+        message: 'Гид не найден' 
+      });
+      return;
+    }
+
+    let documents = [];
+    if (existingGuide.documents) {
+      try {
+        documents = JSON.parse(existingGuide.documents);
+      } catch (e) {
+        console.warn('Error parsing documents:', e);
+      }
+    }
+
+    // Удаляем документ из списка
+    const updatedDocuments = documents.filter((doc: any) => doc.path !== documentPath);
+
+    // Обновляем в базе данных
+    const updatedGuide = await prisma.guide.update({
+      where: { id: guideId },
+      data: { documents: JSON.stringify(updatedDocuments) }
+    });
+
+    // Пытаемся удалить файл с диска
+    try {
+      const fullPath = path.join(process.cwd(), documentPath);
+      await fs.unlink(fullPath);
+      console.log('✅ Файл удален с диска:', fullPath);
+    } catch (fileError) {
+      console.warn('⚠️ Не удалось удалить файл с диска:', fileError);
+    }
+
+    res.json({
+      success: true,
+      data: {
+        documents: updatedDocuments,
+        guide: updatedGuide
+      },
+      message: 'Документ успешно удален'
+    });
+
+  } catch (error) {
+    console.error('❌ Ошибка удаления документа:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Ошибка удаления документа: ' + (error instanceof Error ? error.message : 'Unknown error')
     });
   }
 };

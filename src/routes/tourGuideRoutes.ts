@@ -8,7 +8,12 @@ import {
   finishTour,
   collectReviews,
   leaveGuideReview,
-  createTourGuideProfile
+  createTourGuideProfile,
+  updateGuideProfile,
+  uploadGuideAvatar,
+  uploadGuideDocuments,
+  deleteGuideDocument,
+  upload
 } from '../controllers/tourGuideController';
 
 const router = express.Router();
@@ -26,5 +31,11 @@ router.post('/tours/:id/start', authenticateTourGuide, startTour);
 router.post('/tours/:id/finish', authenticateTourGuide, finishTour);
 router.post('/tours/:id/collect-reviews', authenticateTourGuide, collectReviews);
 router.post('/tours/:id/guide-review', authenticateTourGuide, leaveGuideReview);
+
+// Маршруты для управления профилем гида (админ панель)
+router.put('/profile/:id', updateGuideProfile);
+router.post('/profile/:id/avatar', upload.single('avatar'), uploadGuideAvatar);
+router.post('/profile/:id/documents', upload.array('documents', 10), uploadGuideDocuments);
+router.delete('/profile/:id/document', deleteGuideDocument);
 
 export default router;

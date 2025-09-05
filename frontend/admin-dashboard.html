@@ -6099,6 +6099,174 @@
             // Очищаем выбранные языки при закрытии
             selectedGuideLanguages = [];
         }
+
+        function openEditGuideModal(guide) {
+            // Парсим контакты и документы
+            let contact = {};
+            try {
+                contact = guide.contact ? JSON.parse(guide.contact) : {};
+            } catch (e) {
+                console.warn('Error parsing contact:', e);
+            }
+            
+            let documents = [];
+            try {
+                documents = guide.documents ? JSON.parse(guide.documents) : [];
+            } catch (e) {
+                console.warn('Error parsing documents:', e);
+            }
+            
+            // Парсим языки
+            selectedGuideLanguages = guide.languages ? guide.languages.split(', ').filter(lang => lang.trim()) : [];
+            
+            const modal = `
+                <div id="editGuideModal" class="modal active">
+                    <div class="modal-content" style="width: 800px; max-height: 90vh; overflow-y: auto;">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-semibold">Редактировать гида</h2>
+                            <button onclick="closeEditGuideModal()" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="editGuideForm">
+                            <input type="hidden" id="editGuideId" value="${guide.id}">
+                            
+                            <!-- Основная информация -->
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold mb-4">Основная информация</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Полное имя *</label>
+                                        <input type="text" class="form-input" id="editGuideFullName" value="${guide.name || ''}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Опыт работы (лет)</label>
+                                        <input type="number" class="form-input" id="editGuideExperience" value="${guide.experience || 0}" min="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-input" id="editGuideEmail" value="${contact.email || ''}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Телефон</label>
+                                        <input type="tel" class="form-input" id="editGuidePhone" value="${contact.phone || ''}">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group mt-4">
+                                    <label class="form-label">Описание</label>
+                                    <textarea class="form-input" id="editGuideDescription" rows="3">${guide.description || ''}</textarea>
+                                </div>
+                            </div>
+
+                            <!-- Языки -->
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold mb-4">Языки</h3>
+                                <div class="form-group">
+                                    <label class="form-label">Выберите языки *</label>
+                                    <div class="flex gap-2 mb-2">
+                                        <select class="form-input flex-1" id="editGuideAvailableLanguages">
+                                            <option value="">Выберите язык</option>
+                                            <option value="Русский">Русский</option>
+                                            <option value="English">English</option>
+                                            <option value="Тоҷикӣ">Тоҷикӣ</option>
+                                            <option value="Español">Español</option>
+                                            <option value="Français">Français</option>
+                                            <option value="Deutsch">Deutsch</option>
+                                            <option value="中文">中文</option>
+                                            <option value="العربية">العربية</option>
+                                        </select>
+                                        <button type="button" onclick="addLanguageToEditGuide()" class="btn btn-secondary">Добавить</button>
+                                    </div>
+                                    <div class="bg-gray-50 p-3 rounded-lg border-2 border-dashed border-gray-300 min-h-[80px]">
+                                        <div id="editSelectedGuideLanguages"></div>
+                                    </div>
+                                    <input type="hidden" id="editGuideLanguagesHidden" name="languages">
+                                </div>
+                            </div>
+
+                            <!-- Аватар -->
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold mb-4">Аватар</h3>
+                                <div class="form-group">
+                                    ${guide.avatar ? `
+                                        <div class="mb-4">
+                                            <img src="${guide.avatar}" alt="Текущий аватар" class="w-24 h-24 object-cover rounded-full border">
+                                        </div>
+                                    ` : ''}
+                                    <label class="form-label">Загрузить новый аватар</label>
+                                    <input type="file" class="form-input" id="editGuideAvatar" accept="image/*">
+                                    <small class="text-gray-500">Поддерживаются: JPG, PNG, WEBP (до 5MB)</small>
+                                </div>
+                            </div>
+
+                            <!-- Документы -->
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold mb-4">Документы</h3>
+                                <div class="form-group">
+                                    <label class="form-label">Загрузить документы</label>
+                                    <input type="file" class="form-input" id="editGuideDocuments" multiple accept=".pdf,.doc,.docx">
+                                    <small class="text-gray-500">Поддерживаются: PDF, DOC, DOCX (до 5MB каждый)</small>
+                                </div>
+                                
+                                ${documents.length > 0 ? `
+                                    <div class="mt-4">
+                                        <h4 class="font-semibold mb-2">Загруженные документы:</h4>
+                                        <div id="editExistingDocuments">
+                                            ${documents.map(doc => `
+                                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded mb-2">
+                                                    <div>
+                                                        <span class="font-medium">${doc.name}</span>
+                                                        <small class="text-gray-500 ml-2">(${Math.round(doc.size/1024)}KB)</small>
+                                                    </div>
+                                                    <button type="button" onclick="deleteGuideDocument(${guide.id}, '${doc.path}')" class="text-red-500 hover:text-red-700">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <!-- Статус -->
+                            <div class="mb-6">
+                                <div class="form-group">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="editGuideIsActive" ${guide.isActive ? 'checked' : ''}>
+                                        <span class="ml-2">Активный гид</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end gap-3 mt-6">
+                                <button type="button" onclick="closeEditGuideModal()" class="btn btn-secondary">Отмена</button>
+                                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modal);
+            
+            // Инициализируем языки
+            updateEditSelectedGuideLanguagesDisplay();
+            
+            document.getElementById('editGuideForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveEditGuide();
+            });
+        }
+
+        function closeEditGuideModal() {
+            const modal = document.getElementById('editGuideModal');
+            if (modal) {
+                modal.remove();
+            }
+            selectedGuideLanguages = [];
+        }
         
         // НОВЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С ЯЗЫКАМИ ГИДОВ
         function addLanguageToGuide() {
@@ -6144,6 +6312,166 @@
                     </div>`
                 ).join('');
                 hiddenInput.value = selectedGuideLanguages.join(', ');
+            }
+        }
+
+        // Функции для редактирования гида
+        function addLanguageToEditGuide() {
+            const select = document.getElementById('editGuideAvailableLanguages');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                const language = selectedOption.value;
+                
+                if (selectedGuideLanguages.includes(language)) {
+                    alert('Этот язык уже добавлен');
+                    return;
+                }
+                
+                selectedGuideLanguages.push(language);
+                updateEditSelectedGuideLanguagesDisplay();
+                select.selectedIndex = 0;
+            }
+        }
+
+        function removeLanguageFromEditGuide(language) {
+            selectedGuideLanguages = selectedGuideLanguages.filter(lang => lang !== language);
+            updateEditSelectedGuideLanguagesDisplay();
+        }
+
+        function updateEditSelectedGuideLanguagesDisplay() {
+            const container = document.getElementById('editSelectedGuideLanguages');
+            const hiddenInput = document.getElementById('editGuideLanguagesHidden');
+            
+            if (selectedGuideLanguages.length === 0) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные языки появятся здесь</small>';
+                hiddenInput.value = '';
+            } else {
+                container.innerHTML = selectedGuideLanguages.map(lang => 
+                    `<div class="flex justify-between items-center bg-white p-2 rounded border">
+                        <span>${lang}</span>
+                        <button type="button" onclick="removeLanguageFromEditGuide('${lang}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>`
+                ).join('');
+                hiddenInput.value = selectedGuideLanguages.join(', ');
+            }
+        }
+
+        async function saveEditGuide() {
+            const guideId = document.getElementById('editGuideId').value;
+            const name = document.getElementById('editGuideFullName').value.trim();
+            const email = document.getElementById('editGuideEmail').value.trim();
+            const phone = document.getElementById('editGuidePhone').value.trim();
+            const description = document.getElementById('editGuideDescription').value.trim();
+            const experience = document.getElementById('editGuideExperience').value;
+            const isActive = document.getElementById('editGuideIsActive').checked;
+
+            if (!name || !email || selectedGuideLanguages.length === 0) {
+                alert('Пожалуйста, заполните все обязательные поля');
+                return;
+            }
+
+            try {
+                // 1. Обновляем основную информацию
+                const updateData = {
+                    name,
+                    description,
+                    email,
+                    phone,
+                    languages: selectedGuideLanguages.join(', '),
+                    experience: parseInt(experience) || 0,
+                    isActive
+                };
+
+                const updateResponse = await fetch(`${getApiUrl()}/guide/profile/${guideId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(updateData)
+                });
+
+                if (!updateResponse.ok) {
+                    throw new Error('Ошибка обновления профиля');
+                }
+
+                // 2. Загружаем аватар (если выбран)
+                const avatarFile = document.getElementById('editGuideAvatar').files[0];
+                if (avatarFile) {
+                    const avatarFormData = new FormData();
+                    avatarFormData.append('avatar', avatarFile);
+
+                    const avatarResponse = await fetch(`${getApiUrl()}/guide/profile/${guideId}/avatar`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': getAuthHeaders()['Authorization']
+                        },
+                        body: avatarFormData
+                    });
+
+                    if (!avatarResponse.ok) {
+                        console.warn('Ошибка загрузки аватара');
+                    }
+                }
+
+                // 3. Загружаем документы (если выбраны)
+                const documentFiles = document.getElementById('editGuideDocuments').files;
+                if (documentFiles.length > 0) {
+                    const documentsFormData = new FormData();
+                    Array.from(documentFiles).forEach(file => {
+                        documentsFormData.append('documents', file);
+                    });
+
+                    const documentsResponse = await fetch(`${getApiUrl()}/guide/profile/${guideId}/documents`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': getAuthHeaders()['Authorization']
+                        },
+                        body: documentsFormData
+                    });
+
+                    if (!documentsResponse.ok) {
+                        console.warn('Ошибка загрузки документов');
+                    }
+                }
+
+                alert('Гид успешно обновлен!');
+                closeEditGuideModal();
+                loadGuides();
+
+            } catch (err) {
+                console.error('Error updating guide:', err);
+                alert('Ошибка при обновлении гида: ' + err.message);
+            }
+        }
+
+        async function deleteGuideDocument(guideId, documentPath) {
+            if (!confirm('Вы уверены, что хотите удалить этот документ?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/guide/profile/${guideId}/document`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ documentPath })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка удаления документа');
+                }
+
+                alert('Документ успешно удален');
+                
+                // Удаляем элемент из DOM
+                const docElement = document.querySelector(`[onclick="deleteGuideDocument(${guideId}, '${documentPath}')"]`).closest('div');
+                if (docElement) {
+                    docElement.remove();
+                }
+
+            } catch (err) {
+                console.error('Error deleting document:', err);
+                alert('Ошибка при удалении документа: ' + err.message);
             }
         }
         
@@ -6201,8 +6529,27 @@
             });
         }
         
-        function editGuide(id) {
-            alert('Редактирование гида будет добавлено в следующем обновлении');
+        async function editGuide(id) {
+            try {
+                // Получаем данные гида
+                const response = await fetch(`${getApiUrl()}/guides/${id}`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Не удалось загрузить данные гида');
+                }
+                
+                const data = await response.json();
+                const guide = data.data;
+                
+                // Открываем модальное окно редактирования
+                openEditGuideModal(guide);
+                
+            } catch (err) {
+                console.error('Error loading guide:', err);
+                alert('Ошибка при загрузке данных гида');
+            }
         }
         
         function deleteGuide(id) {
