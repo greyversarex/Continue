@@ -65,6 +65,156 @@
         .dropdown-content .dropdown-submenu:hover > .dropdown-subcontent {
             display: block !important;
         }
+        
+        /* Стили для языкового селектора с флагами */
+        .language-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .lang-selector-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            min-width: 80px;
+        }
+        
+        .lang-selector-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .selected-flag {
+            width: 24px;
+            height: 16px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .flag {
+            width: 20px;
+            height: 14px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        /* Цвета флагов */
+        .flag-ru, .selected-flag.flag-ru {
+            background: linear-gradient(to bottom, 
+                #ffffff 0%, #ffffff 33.33%, 
+                #0039a6 33.33%, #0039a6 66.66%, 
+                #d52b1e 66.66%, #d52b1e 100%);
+        }
+        .flag-us, .selected-flag.flag-us {
+            background: linear-gradient(to bottom, 
+                #b22234 0%, #b22234 7.7%, #ffffff 7.7%, #ffffff 15.4%, 
+                #b22234 15.4%, #b22234 23.1%, #ffffff 23.1%, #ffffff 30.8%,
+                #b22234 30.8%, #b22234 38.5%, #ffffff 38.5%, #ffffff 46.2%,
+                #b22234 46.2%, #b22234 53.8%, #ffffff 53.8%, #ffffff 61.5%,
+                #b22234 61.5%, #b22234 69.2%, #ffffff 69.2%, #ffffff 76.9%,
+                #b22234 76.9%, #b22234 84.6%, #ffffff 84.6%, #ffffff 92.3%,
+                #b22234 92.3%, #b22234 100%);
+            position: relative;
+        }
+        .flag-us::before, .selected-flag.flag-us::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 38%;
+            height: 54%;
+            background: #3c3b6e;
+        }
+        .flag-tj, .selected-flag.flag-tj {
+            background: linear-gradient(to bottom, 
+                #006600 0%, #006600 33.33%, 
+                #ffffff 33.33%, #ffffff 66.66%, 
+                #cc0000 66.66%, #cc0000 100%);
+        }
+        .flag-ir, .selected-flag.flag-ir {
+            background: linear-gradient(to bottom, 
+                #009639 0%, #009639 33.33%, 
+                #ffffff 33.33%, #ffffff 66.66%, 
+                #dc143c 66.66%, #dc143c 100%);
+        }
+        .flag-de, .selected-flag.flag-de {
+            background: linear-gradient(to bottom, 
+                #000000 0%, #000000 33.33%, 
+                #dd0000 33.33%, #dd0000 66.66%, 
+                #ffcc00 66.66%, #ffcc00 100%);
+        }
+        .flag-cn, .selected-flag.flag-cn {
+            background: #de2910;
+            position: relative;
+        }
+        .flag-cn::before, .selected-flag.flag-cn::before {
+            content: '★';
+            position: absolute;
+            color: #ffde00;
+            font-size: 8px;
+            top: 2px;
+            left: 2px;
+        }
+        
+        .lang-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 8px;
+            padding: 8px 0;
+            top: 100%;
+            left: 0;
+            margin-top: 4px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .lang-dropdown-content.show {
+            display: block;
+        }
+        
+        .lang-option {
+            color: #333;
+            padding: 8px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+            transition: background-color 0.3s;
+        }
+        
+        .lang-option:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .lang-option.active {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .lang-name, .currency-name {
+            margin-left: 8px;
+        }
 
         /* WOW карточки турагентов */
         .agent-card {
@@ -203,27 +353,11 @@
         }
         
         .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             position: relative;
             overflow: hidden;
         }
         
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="60" cy="60" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
-            animation: float 20s infinite linear;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px) translateX(0px); }
-            50% { transform: translateY(-20px) translateX(-10px); }
-            100% { transform: translateY(0px) translateX(0px); }
-        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -288,16 +422,67 @@
                     </div>
                 </nav>
                 
-                <!-- Языковой селектор -->
+                <!-- Языковой и валютный селекторы -->
                 <div class="flex items-center space-x-4">
+                    <!-- Языковой селектор -->
                     <div class="language-dropdown">
-                        <button class="lang-selector-btn">
+                        <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
                             <span class="selected-flag flag-ru"></span>
-                            <span class="selected-lang">RU</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            <span class="selected-lang">Русский</span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
+                        <div class="lang-dropdown-content" id="langDropdown">
+                            <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'flag-ru', 'Русский')">
+                                <span class="flag flag-ru"></span>
+                                <span class="lang-name">Русский</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'flag-us', 'English')">
+                                <span class="flag flag-us"></span>
+                                <span class="lang-name">English</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="tj" onclick="selectLanguage('tj', 'flag-tj', 'Тоҷикӣ')">
+                                <span class="flag flag-tj"></span>
+                                <span class="lang-name">Тоҷикӣ</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="fa" onclick="selectLanguage('fa', 'flag-ir', 'فارسی')">
+                                <span class="flag flag-ir"></span>
+                                <span class="lang-name">فارسی</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', 'flag-de', 'Deutsch')">
+                                <span class="flag flag-de"></span>
+                                <span class="lang-name">Deutsch</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="zh" onclick="selectLanguage('zh', 'flag-cn', '中文')">
+                                <span class="flag flag-cn"></span>
+                                <span class="lang-name">中文</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Валютный селектор -->
+                    <div class="language-dropdown">
+                        <button class="lang-selector-btn" onclick="toggleCurrencyDropdown()">
+                            <span class="selected-currency">TJS</span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="lang-dropdown-content" id="currencyDropdown">
+                            <a href="#" class="lang-option active" data-currency="TJS" onclick="selectCurrency('TJS', 'TJS')">
+                                <span class="currency-name">TJS</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="USD" onclick="selectCurrency('USD', 'USD')">
+                                <span class="currency-name">USD</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="EUR" onclick="selectCurrency('EUR', 'EUR')">
+                                <span class="currency-name">EUR</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="RUB" onclick="selectCurrency('RUB', 'RUB')">
+                                <span class="currency-name">RUB</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -305,16 +490,16 @@
     </header>
 
     <!-- Hero секция -->
-    <section class="hero-section text-white py-20">
+    <section class="hero-section text-gray-900 py-20">
         <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
             <h1 class="text-5xl font-bold mb-6">
                 Наши профессиональные турагенты
             </h1>
-            <p class="text-xl mb-8 max-w-3xl mx-auto">
+            <p class="text-xl mb-8 max-w-3xl mx-auto text-gray-700">
                 Знакомьтесь с нашей командой экспертов, которые сделают ваше путешествие по Центральной Азии незабываемым. 
                 Каждый наш турагент — это профессионал с многолетним опытом и глубокими знаниями региона.
             </p>
-            <div class="flex justify-center items-center space-x-8 text-sm">
+            <div class="flex justify-center items-center space-x-8 text-sm text-gray-600">
                 <div class="flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -589,6 +774,76 @@
             // Здесь можно добавить логику связи с турагентом
             alert(`Связаться с ${agentName}. ID: ${agentId}`);
         }
+        
+        // Функции для языкового селектора
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('langDropdown');
+            const currencyDropdown = document.getElementById('currencyDropdown');
+            
+            // Закрываем валютный дропдаун
+            if (currencyDropdown) {
+                currencyDropdown.classList.remove('show');
+            }
+            
+            dropdown.classList.toggle('show');
+        }
+        
+        function selectLanguage(lang, flagClass, langName) {
+            // Обновляем отображаемые элементы
+            document.querySelector('.selected-flag').className = `selected-flag ${flagClass}`;
+            document.querySelector('.selected-lang').textContent = langName;
+            
+            // Обновляем активный элемент
+            document.querySelectorAll('.lang-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+            
+            // Закрываем дропдаун
+            document.getElementById('langDropdown').classList.remove('show');
+            
+            // Здесь можно добавить логику смены языка
+        }
+        
+        // Функции для валютного селектора
+        function toggleCurrencyDropdown() {
+            const dropdown = document.getElementById('currencyDropdown');
+            const langDropdown = document.getElementById('langDropdown');
+            
+            // Закрываем языковой дропдаун
+            if (langDropdown) {
+                langDropdown.classList.remove('show');
+            }
+            
+            dropdown.classList.toggle('show');
+        }
+        
+        function selectCurrency(currency, displayName) {
+            // Обновляем отображаемый элемент
+            document.querySelector('.selected-currency').textContent = displayName;
+            
+            // Обновляем активный элемент в валютном дропдауне
+            document.querySelectorAll('#currencyDropdown .lang-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`[data-currency="${currency}"]`).classList.add('active');
+            
+            // Закрываем дропдаун
+            document.getElementById('currencyDropdown').classList.remove('show');
+            
+            // Здесь можно добавить логику смены валюты
+        }
+        
+        // Закрытие дропдаунов при клике вне области
+        document.addEventListener('click', function(event) {
+            const langDropdown = document.getElementById('langDropdown');
+            const currencyDropdown = document.getElementById('currencyDropdown');
+            
+            if (!event.target.closest('.language-dropdown')) {
+                if (langDropdown) langDropdown.classList.remove('show');
+                if (currencyDropdown) currencyDropdown.classList.remove('show');
+            }
+        });
 
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
