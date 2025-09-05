@@ -4,6 +4,36 @@ import { emailService } from '../services/emailService';
 
 const prisma = new PrismaClient();
 
+// Вспомогательная функция для получения цены хостела из компонентов тура
+async function getHostelPriceFromTour(tourId: number): Promise<number> {
+  try {
+    // Ищем компонент хостела в компонентах тура
+    const hostelComponent = await prisma.tourPricingComponent.findFirst({
+      where: {
+        tourId: tourId,
+        componentKey: 'accommodation_hostel'
+      }
+    });
+    
+    if (hostelComponent) {
+      // Если есть кастомная цена, используем её, иначе - стандартную
+      if (hostelComponent.customPrice) {
+        return hostelComponent.customPrice * hostelComponent.quantity;
+      }
+    }
+    
+    // Если нет специфичного компонента для тура, используем стандартную цену хостела
+    const standardHostel = await prisma.priceCalculatorComponent.findUnique({
+      where: { key: 'accommodation_hostel' }
+    });
+    
+    return standardHostel ? standardHostel.price : 200; // Возврат стандартной цены или 200 как fallback
+  } catch (error) {
+    console.error('Error getting hostel price:', error);
+    return 200; // Fallback цена
+  }
+}
+
 interface BookingStartData {
   tourId: number;
   hotelId?: number;
@@ -103,10 +133,28 @@ export const bookingController = {
         totalPrice += tourPrice; // За группу
       }
 
-      // Добавить стоимость номеров (если выбраны)
+      // НОВАЯ ЛОГИКА: Если выбран отель, вычесть хостел и добавить отель
       if (roomSelection && hotel) {
         const tourDuration = parseInt(tour.duration.replace(/\D/g, '')) || 1;
         
+        // Получаем цену хостела из компонентов тура
+        const hostelPrice = await getHostelPriceFromTour(parseInt(tourId.toString()));
+        
+        // Вычитаем хостел из базовой цены (хостел включен в базовую цену)
+        if (tourPriceType === 'за человека') {
+          // Для цены "за человека" нужно вычесть хостел на каждого туриста
+          const numberOfTouristsNum = parseInt(numberOfTourists.toString());
+          // Предполагаем, что хостел рассчитывается на номер (обычно 2 человека)
+          const hostelRoomsNeeded = Math.ceil(numberOfTouristsNum / 2);
+          totalPrice -= hostelPrice * hostelRoomsNeeded * tourDuration;
+        } else {
+          // Для цены "за группу" вычитаем хостел для всей группы
+          const numberOfTouristsNum = parseInt(numberOfTourists.toString());
+          const hostelRoomsNeeded = Math.ceil(numberOfTouristsNum / 2);
+          totalPrice -= hostelPrice * hostelRoomsNeeded * tourDuration;
+        }
+        
+        // Добавляем стоимость выбранных номеров отеля
         for (const [roomType, roomData] of Object.entries(roomSelection as any)) {
           const room = roomData as any;
           if (room.quantity > 0) {
@@ -228,10 +276,25 @@ export const bookingController = {
         totalPrice += tourPrice; // За группу
       }
 
-      // Добавить стоимость номеров (если выбраны)
+      // НОВАЯ ЛОГИКА: Если выбран отель, вычесть хостел и добавить отель
       if (roomSelection && existingBooking.hotel) {
         const tourDuration = parseInt(existingBooking.tour.duration.replace(/\D/g, '')) || 1;
         
+        // Получаем цену хостела из компонентов тура
+        const hostelPrice = await getHostelPriceFromTour(existingBooking.tour.id);
+        
+        // Вычитаем хостел из базовой цены
+        if (tourPriceType === 'за человека') {
+          // Для цены "за человека" вычитаем хостел на группу
+          const hostelRoomsNeeded = Math.ceil(existingBooking.numberOfTourists / 2);
+          totalPrice -= hostelPrice * hostelRoomsNeeded * tourDuration;
+        } else {
+          // Для цены "за группу" вычитаем хостел для группы
+          const hostelRoomsNeeded = Math.ceil(existingBooking.numberOfTourists / 2);
+          totalPrice -= hostelPrice * hostelRoomsNeeded * tourDuration;
+        }
+        
+        // Добавляем стоимость выбранных номеров отеля
         for (const [roomType, roomData] of Object.entries(roomSelection as any)) {
           const room = roomData as any;
           if (room.quantity > 0) {
