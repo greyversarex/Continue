@@ -2,6 +2,23 @@ import { Request, Response } from 'express';
 import prisma from '../config/database';
 import { GuideData } from '../types/booking';
 
+// Безопасная функция для парсинга JSON
+function safeJsonParse(value: string | null): any {
+  if (!value) return null;
+  
+  try {
+    // Если строка выглядит как JSON (начинается с { или [), парсим её
+    if (value.trim().startsWith('{') || value.trim().startsWith('[')) {
+      return JSON.parse(value);
+    }
+    // Иначе возвращаем как простую строку
+    return value;
+  } catch (error) {
+    // Если парсинг не удался, возвращаем исходную строку
+    return value;
+  }
+}
+
 export const createGuide = async (req: Request, res: Response) => {
   try {
     const { name, description, photo, languages, contact, experience, rating, isActive } = req.body;
@@ -117,10 +134,10 @@ export const getGuideById = async (req: Request, res: Response) => {
 
     const formattedGuide = {
       ...guide,
-      name: JSON.parse(guide.name),
-      description: guide.description ? JSON.parse(guide.description) : null,
-      languages: JSON.parse(guide.languages),
-      contact: guide.contact ? JSON.parse(guide.contact) : null,
+      name: safeJsonParse(guide.name),
+      description: safeJsonParse(guide.description),
+      languages: safeJsonParse(guide.languages),
+      contact: safeJsonParse(guide.contact),
     };
 
     return res.json({
