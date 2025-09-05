@@ -157,6 +157,8 @@ model Guide {
   name        String
   description String?
   photo       String?
+  avatar      String?     // Новое поле для аватара
+  documents   String?     // JSON массив документов [{name: "", path: "", type: ""}]
   languages   String
   contact     String?
   experience  Int?
