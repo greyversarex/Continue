@@ -377,6 +377,14 @@
                     <i class="fas fa-car"></i>
                     <span>Водители</span>
                 </a>
+                <a href="#" class="nav-item" data-section="countries">
+                    <i class="fas fa-globe"></i>
+                    <span>Страны</span>
+                </a>
+                <a href="#" class="nav-item" data-section="cities">
+                    <i class="fas fa-city"></i>
+                    <span>Города</span>
+                </a>
                 <a href="#" class="nav-item" data-section="customers">
                     <i class="fas fa-users"></i>
                     <span>Клиенты</span>
@@ -657,6 +665,36 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="driversList">
                         <!-- Drivers will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Countries Section -->
+                <section id="countriesSection" style="display: none;">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold">Управление странами</h2>
+                        <button class="btn btn-primary" onclick="openCountryModal()">
+                            <i class="fas fa-plus mr-2"></i>
+                            Добавить страну
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="countriesList">
+                        <!-- Countries will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Cities Section -->
+                <section id="citiesSection" style="display: none;">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold">Управление городами</h2>
+                        <button class="btn btn-primary" onclick="openCityModal()">
+                            <i class="fas fa-plus mr-2"></i>
+                            Добавить город
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="citiesList">
+                        <!-- Cities will be loaded here -->
                     </div>
                 </section>
 
@@ -1342,13 +1380,15 @@
                     
                     <div class="form-group">
                         <label class="form-label">Страна</label>
-                        <select class="form-input" id="hotelCountry">
+                        <select class="form-input" id="hotelCountry" onchange="loadCitiesForCountry(this.value, 'hotelCity')">
                             <option value="">Выберите страну</option>
-                            <option value="Таджикистан">Таджикистан</option>
-                            <option value="Узбекистан">Узбекистан</option>
-                            <option value="Киргизстан">Киргизстан</option>
-                            <option value="Туркменистан">Туркменистан</option>
-                            <option value="Казахстан">Казахстан</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Город</label>
+                        <select class="form-input" id="hotelCity">
+                            <option value="">Сначала выберите страну</option>
                         </select>
                     </div>
                     
@@ -1615,19 +1655,16 @@
                     
                     <div class="form-group">
                         <label class="form-label">Страна</label>
-                        <select class="form-input" id="tourCountry" required>
+                        <select class="form-input" id="tourCountry" required onchange="loadCitiesForCountry(this.value, 'tourCity')">
                             <option value="">Выберите страну</option>
-                            <option value="Таджикистан">Таджикистан</option>
-                            <option value="Узбекистан">Узбекистан</option>
-                            <option value="Казахстан">Казахстан</option>
-                            <option value="Кыргызстан">Кыргызстан</option>
-                            <option value="Туркменистан">Туркменистан</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Город</label>
-                        <input type="text" class="form-input" id="tourCity" required>
+                        <select class="form-input" id="tourCity" required>
+                            <option value="">Сначала выберите страну</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">
@@ -2217,6 +2254,8 @@
                 hotels: 'Управление отелями',
                 guides: 'Управление гидами',
                 drivers: 'Управление водителями',
+                countries: 'Управление странами',
+                cities: 'Управление городами',
                 customers: 'Клиенты',
                 reviews: 'Модерация отзывов',
                 payments: 'Платежи',
@@ -2244,6 +2283,12 @@
                     break;
                 case 'drivers':
                     loadDrivers();
+                    break;
+                case 'countries':
+                    loadCountries();
+                    break;
+                case 'cities':
+                    loadCities();
                     break;
                 case 'reviews':
                     loadReviews();
@@ -3382,6 +3427,8 @@
         }
         
         function openTourModal(tourId = null) {
+            // Загружаем страны при открытии формы
+            loadCountriesForSelect('tourCountry');
             console.log('🔵 Opening tour modal with tourId:', tourId);
             currentTourId = tourId;
             console.log('🔵 Set currentTourId to:', currentTourId);
@@ -4423,6 +4470,8 @@
         }
         
         function openHotelModal(hotelId = null) {
+            // Загружаем страны при открытии формы
+            loadCountriesForSelect('hotelCountry');
             // ИСПРАВЛЕНО: установка hotel-id вместо currentHotelId
             document.getElementById('hotel-id').value = hotelId;
             window.hotelImageURLs = [];
@@ -9273,6 +9322,15 @@
                 case 'guides':
                     loadGuides();
                     break;
+                case 'drivers':
+                    loadDrivers();
+                    break;
+                case 'countries':
+                    loadCountries();
+                    break;
+                case 'cities':
+                    loadCities();
+                    break;
                 case 'reviews':
                     loadReviews();
                     break;
@@ -9462,6 +9520,285 @@
                 showErrorMessage('Ошибка при обновлении курса валюты');
             }
         });
+
+        // ============== ИНТЕГРАЦИЯ ВЫПАДАЮЩИХ СПИСКОВ СТРАН И ГОРОДОВ ==============
+        
+        // Загрузка стран в выпадающий список
+        async function loadCountriesForSelect(selectId) {
+            try {
+                const response = await fetch(`${getApiUrl()}/countries`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const select = document.getElementById(selectId);
+                
+                if (select && data.success && data.data) {
+                    // Сохраняем текущее значение
+                    const currentValue = select.value;
+                    
+                    // Очищаем список и добавляем опции
+                    select.innerHTML = '<option value="">Выберите страну</option>';
+                    
+                    data.data.forEach(country => {
+                        if (country.isActive) {
+                            const option = document.createElement('option');
+                            option.value = country.nameRu; // Используем русское название как значение
+                            option.textContent = country.nameRu;
+                            option.dataset.countryId = country.id;
+                            select.appendChild(option);
+                        }
+                    });
+                    
+                    // Восстанавливаем значение если оно было
+                    if (currentValue) {
+                        select.value = currentValue;
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Ошибка загрузки стран:', error);
+            }
+        }
+        
+        // Загрузка городов для выбранной страны
+        async function loadCitiesForCountry(countryName, citySelectId) {
+            const citySelect = document.getElementById(citySelectId);
+            
+            if (!citySelect) return;
+            
+            // Очищаем список городов
+            citySelect.innerHTML = '<option value="">Загружаем города...</option>';
+            
+            if (!countryName) {
+                citySelect.innerHTML = '<option value="">Сначала выберите страну</option>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/cities`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    // Фильтруем города по выбранной стране
+                    const countryCities = data.data.filter(city => 
+                        city.isActive && city.country && city.country.nameRu === countryName
+                    );
+                    
+                    citySelect.innerHTML = '<option value="">Выберите город</option>';
+                    
+                    if (countryCities.length > 0) {
+                        countryCities.forEach(city => {
+                            const option = document.createElement('option');
+                            option.value = city.nameRu;
+                            option.textContent = city.nameRu;
+                            option.dataset.cityId = city.id;
+                            citySelect.appendChild(option);
+                        });
+                    } else {
+                        citySelect.innerHTML = '<option value="">Нет доступных городов</option>';
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Ошибка загрузки городов:', error);
+                citySelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            }
+        }
+        
+        // ============== УПРАВЛЕНИЕ СТРАНАМИ И ГОРОДАМИ ==============
+        
+        // Загрузка стран
+        async function loadCountries() {
+            try {
+                const response = await fetch(`${getApiUrl()}/countries`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const countriesList = document.getElementById('countriesList');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    countriesList.innerHTML = data.data.map(country => `
+                        <div class="bg-white rounded-lg shadow-sm border p-4">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center">
+                                    <i class="fas fa-globe text-blue-500 text-xl mr-3"></i>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900">${country.nameRu}</h3>
+                                        <p class="text-sm text-gray-600">Код: ${country.code}</p>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-1 text-xs rounded-full ${country.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${country.isActive ? 'Активна' : 'Неактивна'}
+                                </span>
+                            </div>
+                            <div class="text-sm text-gray-600 mb-3">
+                                <p><strong>EN:</strong> ${country.nameEn}</p>
+                                <p><strong>TJ:</strong> ${country.nameTj}</p>
+                                <p><strong>Городов:</strong> ${country.cities ? country.cities.length : 0}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="editCountry(${country.id})" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </button>
+                                <button onclick="deleteCountry(${country.id})" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    countriesList.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <div class="bg-gray-50 rounded-xl p-8">
+                                <i class="fas fa-globe text-gray-400 text-4xl mb-4"></i>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">Нет стран</h3>
+                                <p class="text-gray-600 mb-6">Создайте первую страну</p>
+                                <button onclick="openCountryModal()" class="btn btn-primary">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Добавить страну
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки стран:', error);
+                document.getElementById('countriesList').innerHTML = `
+                    <div class="col-span-full">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <span class="text-red-700">Ошибка загрузки стран</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Загрузка городов
+        async function loadCities() {
+            try {
+                const response = await fetch(`${getApiUrl()}/cities`, {
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                const citiesList = document.getElementById('citiesList');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    citiesList.innerHTML = data.data.map(city => `
+                        <div class="bg-white rounded-lg shadow-sm border p-4">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center">
+                                    <i class="fas fa-city text-blue-500 text-xl mr-3"></i>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900">${city.nameRu}</h3>
+                                        <p class="text-sm text-gray-600">${city.country ? city.country.nameRu : 'Без страны'}</p>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-1 text-xs rounded-full ${city.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${city.isActive ? 'Активен' : 'Неактивен'}
+                                </span>
+                            </div>
+                            <div class="text-sm text-gray-600 mb-3">
+                                <p><strong>EN:</strong> ${city.nameEn}</p>
+                                <p><strong>TJ:</strong> ${city.nameTj}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="editCity(${city.id})" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </button>
+                                <button onclick="deleteCity(${city.id})" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    citiesList.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <div class="bg-gray-50 rounded-xl p-8">
+                                <i class="fas fa-city text-gray-400 text-4xl mb-4"></i>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">Нет городов</h3>
+                                <p class="text-gray-600 mb-6">Создайте первый город</p>
+                                <button onclick="openCityModal()" class="btn btn-primary">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Добавить город
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки городов:', error);
+            }
+        }
+        
+        // Временные заглушки для модальных окон
+        function openCountryModal() { alert('Создание стран будет добавлено позже'); }
+        function openCityModal() { alert('Создание городов будет добавлено позже'); }
+        function editCountry(id) { openCountryModal(); }
+        function editCity(id) { openCityModal(); }
+        
+        // Удаление страны
+        async function deleteCountry(countryId) {
+            if (!confirm('Удалить страну? Это также удалит все города.')) return;
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/countries/${countryId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('Страна удалена');
+                    loadCountries();
+                } else {
+                    alert('Ошибка удаления: ' + (data.message || data.error));
+                }
+            } catch (error) {
+                alert('Ошибка соединения');
+            }
+        }
+        
+        // Удаление города
+        async function deleteCity(cityId) {
+            if (!confirm('Удалить город?')) return;
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/cities/${cityId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('Город удален');
+                    loadCities();
+                } else {
+                    alert('Ошибка удаления: ' + (data.message || data.error));
+                }
+            } catch (error) {
+                alert('Ошибка соединения');
+            }
+        }
+
     </script>
 </body>
 </html>

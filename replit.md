@@ -28,6 +28,7 @@ The backend is built with **Express.js and TypeScript**, chosen for type safety,
 - **✅ Payment Integration**: Seamless connection between booking system and AlifPay/Payler payment gateways with proper orderNumber generation
 - **✅ Tour Guide Cabinet System**: Fully operational with real-time tour management, status updates, and tourist tracking. All demo data replaced with live API integration.
 - **✅ Driver Management System**: Complete driver management system with authentication, vehicle categories, and admin panel integration successfully implemented and tested.
+- **✅ Country and City Management System**: Full geographic management system with models for 5 Central Asian countries (Tajikistan, Uzbekistan, Kyrgyzstan, Kazakhstan, Turkmenistan) and 10 cities. Includes multilingual support, admin panel integration, and dynamic dropdown lists for forms.
 
 ### Database Layer
 **PostgreSQL with Prisma ORM** is used for the database. PostgreSQL provides robust relational database features with excellent scalability, while Prisma provides type-safe database access and excellent TypeScript integration. The schema includes **Tours** with multilingual JSON fields, **Categories** for classification, **TourBlocks** for frontend organization, and new **TourGuideProfile** and **GuideReview** models for tour guide management, maintaining foreign key relationships. The database contains tours organized into blocks matching the frontend structure. A global Prisma client instance manages database connections with graceful shutdown.
@@ -52,7 +53,11 @@ A complete **driver management system** has been developed parallel to the tour 
 - **Working Areas**: Geographic coverage specification for driver availability zones
 - **File Upload System**: Avatar and document upload functionality with validation and storage
 - **Admin Panel Integration**: Complete admin interface for driver CRUD operations within the existing dashboard
+- **Country Management Interface**: Admin sections for viewing, managing, and deleting countries with multilingual support
+- **City Management Interface**: Admin sections for viewing, managing, and deleting cities with country relationship display
 - **API Endpoints**: Full RESTful API with create, read, update, delete, and authentication endpoints
+- **Geographic API Endpoints**: RESTful API for countries (`/api/countries`) and cities (`/api/cities`) with proper relationships and filtering
+- **Dynamic Form Integration**: Dropdown lists in tour and hotel creation forms that dynamically load countries and cities from the database
 - **Login Interface**: Dedicated driver login page with responsive design and error handling
 
 ### API Design
