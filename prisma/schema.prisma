@@ -91,6 +91,7 @@ model Tour {
   tourHotels         TourHotel[]
   pricingComponents  TourPricingComponent[]
   tourBlockAssignments TourBlockAssignment[] // Новая связь many-to-many
+  tourDrivers        TourDriver[]           // Связь с водителями
   assignedGuide      Guide?                 @relation("AssignedGuide", fields: [assignedGuideId], references: [id])
   category           Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   tourBlock          TourBlock?             @relation(fields: [tourBlockId], references: [id]) // Старая связь (временно)
@@ -173,6 +174,49 @@ model Guide {
   assignedTours Tour[] @relation("AssignedGuide")
 
   @@map("guides")
+}
+
+model Driver {
+  id               Int         @id @default(autoincrement())
+  name             String
+  description      String?
+  photo            String?
+  avatar           String?     // Аватар водителя
+  documents        String?     // JSON массив документов [{name: "", path: "", type: ""}]
+  licenseNumber    String?     // Номер водительского удостоверения
+  licenseCategory  String?     // Категория прав (B, C, D, E и т.д.)
+  vehicleTypes     String?     // JSON массив типов транспорта ["sedan", "suv", "minibus", "bus", "truck"]
+  vehicleInfo      String?     // JSON информация о транспорте [{model: "", year: "", plate: "", capacity: ""}]
+  experience       Int?        // Стаж вождения в годах
+  contact          String?     // JSON контактная информация
+  rating           Float?      // Рейтинг водителя
+  login            String?     // Логин для входа в кабинет
+  password         String?     // Хешированный пароль
+  isActive         Boolean     @default(true)
+  languages        String?     // Знание языков
+  workingAreas     String?     // Рабочие зоны/города
+  pricePerDay      Float?      // Цена за день
+  pricePerHour     Float?      // Цена за час
+  currency         String?     @default("TJS")
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  // Связи с заказами будут добавлены позже
+  // orders           Order[]
+  tourDrivers      TourDriver[]
+
+  @@map("drivers")
+}
+
+model TourDriver {
+  id        Int     @id @default(autoincrement())
+  tourId    Int     @map("tour_id")
+  driverId  Int     @map("driver_id")
+  isDefault Boolean @default(false) @map("is_default")
+  driver    Driver  @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  tour      Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@unique([tourId, driverId])
+  @@map("tour_drivers")
 }
 
 model TourGuide {
