@@ -1013,7 +1013,7 @@
             // Store selected hotel and redirect to booking flow
             const currentTourId = window.currentSelectedTourId || 1;
             localStorage.setItem('selectedHotel', JSON.stringify({ id: hotelId, name: hotelName, price: price }));
-            window.location.href = `booking-flow.html?tourId=${currentTourId}`;
+            window.location.href = `tour-template.html?id=${currentTourId}`;
         }
 
         function backToSearch() {
