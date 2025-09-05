@@ -373,6 +373,10 @@
                     <i class="fas fa-user-tie"></i>
                     <span>Гиды</span>
                 </a>
+                <a href="#" class="nav-item" data-section="drivers">
+                    <i class="fas fa-car"></i>
+                    <span>Водители</span>
+                </a>
                 <a href="#" class="nav-item" data-section="customers">
                     <i class="fas fa-users"></i>
                     <span>Клиенты</span>
@@ -638,6 +642,21 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="guidesList">
                         <!-- Guides will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Drivers Section -->
+                <section id="driversSection" style="display: none;">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold">Управление водителями</h2>
+                        <button class="btn btn-primary" onclick="openDriverModal()">
+                            <i class="fas fa-plus"></i>
+                            Добавить водителя
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="driversList">
+                        <!-- Drivers will be loaded here -->
                     </div>
                 </section>
 
@@ -2197,6 +2216,7 @@
                 bookings: 'Управление заказами',
                 hotels: 'Управление отелями',
                 guides: 'Управление гидами',
+                drivers: 'Управление водителями',
                 customers: 'Клиенты',
                 reviews: 'Модерация отзывов',
                 payments: 'Платежи',
@@ -2221,6 +2241,9 @@
                     break;
                 case 'guides':
                     loadGuides();
+                    break;
+                case 'drivers':
+                    loadDrivers();
                     break;
                 case 'reviews':
                     loadReviews();
@@ -6777,6 +6800,618 @@
         function removeEditLanguageFromGuide(index) {
             selectedGuideLanguages.splice(index, 1);
             updateEditSelectedGuideLanguagesDisplay();
+        }
+
+        // ============== УПРАВЛЕНИЕ ВОДИТЕЛЯМИ ==============
+        
+        // Переменные для хранения данных водителей
+        let selectedDriverLanguages = [];
+        let selectedDriverVehicleTypes = [];
+        let selectedDriverLicenseCategories = [];
+        let driverAvatarFile = null;
+        let driverDocumentFiles = [];
+        let editDriverAvatarFile = null;
+        let editDriverDocumentFiles = [];
+
+        // Доступные типы транспорта
+        const VEHICLE_TYPES = [
+            'sedan',      // Легковой автомобиль
+            'suv',        // Внедорожник  
+            'minibus',    // Минивэн
+            'bus',        // Автобус
+            'truck',      // Грузовик
+            'motorcycle', // Мотоцикл
+            'taxi'        // Такси
+        ];
+
+        // Категории водительских прав
+        const LICENSE_CATEGORIES = [
+            'A',  // Мотоциклы
+            'B',  // Легковые автомобили
+            'C',  // Грузовые автомобили
+            'D',  // Автобусы
+            'E',  // С прицепом
+            'BE', // B с прицепом
+            'CE', // C с прицепом
+            'DE'  // D с прицепом
+        ];
+
+        // Загрузка водителей
+        async function loadDrivers() {
+            try {
+                const response = await fetch(`${getApiUrl()}/drivers`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const driversList = document.getElementById('driversList');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    driversList.innerHTML = data.data.map(driver => {
+                        const contact = typeof driver.contact === 'string' ? 
+                            JSON.parse(driver.contact || '{}') : driver.contact || {};
+                        const vehicleTypes = typeof driver.vehicleTypes === 'string' ? 
+                            JSON.parse(driver.vehicleTypes || '[]') : driver.vehicleTypes || [];
+                        const documents = typeof driver.documents === 'string' ? 
+                            JSON.parse(driver.documents || '[]') : driver.documents || [];
+
+                        return `
+                            <div class="bg-white rounded-xl shadow-sm p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                                            ${driver.photo ? 
+                                                `<img src="${driver.photo}" alt="${driver.name}" class="w-12 h-12 rounded-full object-cover">` :
+                                                `<i class="fas fa-car text-blue-600"></i>`
+                                            }
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-lg">${driver.name}</h3>
+                                            <p class="text-gray-600 text-sm">Стаж: ${driver.experience || 0} лет</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="editDriver(${driver.id})" class="btn-icon" title="Редактировать">
+                                            <i class="fas fa-edit text-blue-600"></i>
+                                        </button>
+                                        <button onclick="deleteDriver(${driver.id})" class="btn-icon" title="Удалить">
+                                            <i class="fas fa-trash text-red-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-2 mb-4">
+                                    <p><strong>Email:</strong> ${contact.email || 'Не указан'}</p>
+                                    <p><strong>Телефон:</strong> ${contact.phone || 'Не указан'}</p>
+                                    <p><strong>Категория прав:</strong> ${driver.licenseCategory || 'Не указана'}</p>
+                                    <p><strong>Языки:</strong> ${driver.languages || 'Не указаны'}</p>
+                                    ${vehicleTypes.length > 0 ? 
+                                        `<p><strong>Типы транспорта:</strong> ${vehicleTypes.join(', ')}</p>` : ''
+                                    }
+                                    ${driver.workingAreas ? 
+                                        `<p><strong>Рабочие зоны:</strong> ${driver.workingAreas}</p>` : ''
+                                    }
+                                </div>
+
+                                <div class="flex justify-between items-center">
+                                    <span class="px-3 py-1 rounded-full text-sm ${driver.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        ${driver.isActive ? 'Активен' : 'Неактивен'}
+                                    </span>
+                                    <div class="text-sm text-gray-500">
+                                        Рейтинг: ${driver.rating || 'Нет оценок'}/5.0
+                                    </div>
+                                </div>
+
+                                ${documents.length > 0 ? 
+                                    `<div class="mt-3 pt-3 border-t">
+                                        <p class="text-sm text-gray-600">Документы: ${documents.length} файл(ов)</p>
+                                    </div>` : ''
+                                }
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    driversList.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <div class="bg-gray-50 rounded-xl p-8">
+                                <i class="fas fa-car text-gray-400 text-4xl mb-4"></i>
+                                <h3 class="text-lg font-semibold text-gray-600 mb-2">Нет водителей</h3>
+                                <p class="text-gray-500 mb-4">Добавьте первого водителя для управления автопарком</p>
+                                <button onclick="openDriverModal()" class="btn btn-primary">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Добавить водителя
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                console.log(`📋 Загружено ${data.data?.length || 0} водителей`);
+                
+            } catch (error) {
+                console.error('Ошибка загрузки водителей:', error);
+                document.getElementById('driversList').innerHTML = `
+                    <div class="col-span-full">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
+                                <span class="text-red-800">Ошибка загрузки водителей: ${error.message}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Открытие модального окна для добавления водителя
+        function openDriverModal() {
+            selectedDriverLanguages = [];
+            selectedDriverVehicleTypes = [];
+            selectedDriverLicenseCategories = [];
+            driverAvatarFile = null;
+            driverDocumentFiles = [];
+            
+            const modal = `
+                <div id="driverModal" class="modal active">
+                    <div class="modal-content" style="width: 800px; max-height: 90vh; overflow-y: auto;">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-semibold">Добавить водителя</h2>
+                            <button onclick="closeDriverModal()" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="driverForm">
+                            <div class="grid grid-cols-1 gap-4">
+                                <div class="form-group">
+                                    <label class="form-label">ФИО *</label>
+                                    <input type="text" class="form-input" id="driverFullName" placeholder="Иванов Иван Иванович" required>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Телефон *</label>
+                                        <input type="tel" class="form-input" id="driverPhone" placeholder="+992901234567" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-input" id="driverEmail" placeholder="driver@example.com" required>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Стаж (лет) *</label>
+                                        <input type="number" class="form-input" id="driverExperience" min="0" max="50" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Номер прав</label>
+                                        <input type="text" class="form-input" id="driverLicenseNumber" placeholder="AB 1234567">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Категория прав *</label>
+                                        <select class="form-input" id="driverLicenseCategory" required>
+                                            <option value="">Выберите категорию</option>
+                                            <option value="A">A (Мотоциклы)</option>
+                                            <option value="B">B (Легковые)</option>
+                                            <option value="C">C (Грузовые)</option>
+                                            <option value="D">D (Автобусы)</option>
+                                            <option value="E">E (С прицепом)</option>
+                                            <option value="BE">BE (B с прицепом)</option>
+                                            <option value="CE">CE (C с прицепом)</option>
+                                            <option value="DE">DE (D с прицепом)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Типы транспорта *</label>
+                                    <div class="flex gap-2 mb-2">
+                                        <select class="form-input flex-1" id="driverAvailableVehicleTypes">
+                                            <option value="">Выберите тип транспорта</option>
+                                            <option value="sedan">Легковой автомобиль</option>
+                                            <option value="suv">Внедорожник</option>
+                                            <option value="minibus">Минивэн</option>
+                                            <option value="bus">Автобус</option>
+                                            <option value="truck">Грузовик</option>
+                                            <option value="motorcycle">Мотоцикл</option>
+                                            <option value="taxi">Такси</option>
+                                        </select>
+                                        <button type="button" onclick="addVehicleTypeToDriver()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div id="selectedDriverVehicleTypes" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                                        <small class="text-gray-500">Выбранные типы транспорта появятся здесь</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Языки</label>
+                                    <div class="flex gap-2 mb-2">
+                                        <select class="form-input flex-1" id="driverAvailableLanguages">
+                                            <option value="">Выберите язык</option>
+                                            <option value="Русский">Русский</option>
+                                            <option value="English">English</option>
+                                            <option value="Тоҷикӣ">Тоҷикӣ</option>
+                                            <option value="Ўзбек">Ўзбек</option>
+                                            <option value="Қырған">Қырған</option>
+                                            <option value="Türkmen">Türkmen</option>
+                                        </select>
+                                        <button type="button" onclick="addLanguageToDriver()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div id="selectedDriverLanguages" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                                        <small class="text-gray-500">Выбранные языки появятся здесь</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Рабочие зоны/города</label>
+                                    <input type="text" class="form-input" id="driverWorkingAreas" placeholder="Душанбе, Худжанд, Куляб">
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Цена за день (TJS)</label>
+                                        <input type="number" class="form-input" id="driverPricePerDay" step="0.01" min="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Цена за час (TJS)</label>
+                                        <input type="number" class="form-input" id="driverPricePerHour" step="0.01" min="0">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Логин для кабинета</label>
+                                    <input type="text" class="form-input" id="driverLogin" placeholder="driver_login">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Пароль</label>
+                                    <input type="password" class="form-input" id="driverPassword" placeholder="Пароль для входа в кабинет">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Комментарии</label>
+                                    <textarea class="form-input" rows="3" id="driverComments" placeholder="Дополнительная информация о водителе..."></textarea>
+                                </div>
+
+                                <!-- Загрузка аватара -->
+                                <div class="form-group">
+                                    <label class="form-label">Фото водителя</label>
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                                        <input type="file" id="driverAvatar" accept="image/*" class="hidden" onchange="handleDriverAvatarUpload(this)">
+                                        <div class="text-center">
+                                            <div id="driverAvatarPreview" class="mb-3" style="display: none;">
+                                                <img id="driverAvatarImg" alt="Предпросмотр" class="w-24 h-24 object-cover rounded-full mx-auto">
+                                            </div>
+                                            <button type="button" onclick="document.getElementById('driverAvatar').click()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                                                <i class="fas fa-upload mr-2"></i>Выбрать фото
+                                            </button>
+                                            <p class="text-sm text-gray-500 mt-2">JPG, PNG до 5MB</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Загрузка документов -->
+                                <div class="form-group">
+                                    <label class="form-label">Документы водителя</label>
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                                        <input type="file" id="driverDocuments" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="hidden" onchange="handleDriverDocumentsUpload(this)">
+                                        <div class="text-center">
+                                            <button type="button" onclick="document.getElementById('driverDocuments').click()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md">
+                                                <i class="fas fa-file-upload mr-2"></i>Выбрать документы
+                                            </button>
+                                            <p class="text-sm text-gray-500 mt-2">PDF, DOC, DOCX, JPG, PNG до 10MB каждый</p>
+                                        </div>
+                                        <div id="driverDocumentsList" class="mt-3" style="display: none;">
+                                            <h4 class="font-medium text-gray-700 mb-2">Выбранные файлы:</h4>
+                                            <div id="driverDocumentsPreview" class="space-y-1"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end gap-3 mt-6">
+                                <button type="button" onclick="closeDriverModal()" class="btn btn-secondary">Отмена</button>
+                                <button type="submit" class="btn btn-primary">Создать водителя</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modal);
+            
+            document.getElementById('driverForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveDriver();
+            });
+        }
+
+        // Закрытие модального окна водителя
+        function closeDriverModal() {
+            const modal = document.getElementById('driverModal');
+            if (modal) {
+                modal.remove();
+            }
+            selectedDriverLanguages = [];
+            selectedDriverVehicleTypes = [];
+            driverAvatarFile = null;
+            driverDocumentFiles = [];
+        }
+
+        // Добавление языка к водителю
+        function addLanguageToDriver() {
+            const select = document.getElementById('driverAvailableLanguages');
+            const selectedLanguage = select.value;
+            
+            if (selectedLanguage && !selectedDriverLanguages.includes(selectedLanguage)) {
+                selectedDriverLanguages.push(selectedLanguage);
+                updateSelectedDriverLanguagesDisplay();
+                select.value = '';
+            }
+        }
+
+        // Обновление отображения выбранных языков
+        function updateSelectedDriverLanguagesDisplay() {
+            const container = document.getElementById('selectedDriverLanguages');
+            if (selectedDriverLanguages.length > 0) {
+                container.innerHTML = selectedDriverLanguages.map((language, index) => `
+                    <div class="flex justify-between items-center bg-blue-50 px-3 py-1 rounded-md">
+                        <span class="text-blue-800">${language}</span>
+                        <button type="button" onclick="removeLanguageFromDriver(${index})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<small class="text-gray-500">Выбранные языки появятся здесь</small>';
+            }
+        }
+
+        // Удаление языка у водителя
+        function removeLanguageFromDriver(index) {
+            selectedDriverLanguages.splice(index, 1);
+            updateSelectedDriverLanguagesDisplay();
+        }
+
+        // Добавление типа транспорта к водителю
+        function addVehicleTypeToDriver() {
+            const select = document.getElementById('driverAvailableVehicleTypes');
+            const selectedType = select.value;
+            
+            if (selectedType && !selectedDriverVehicleTypes.includes(selectedType)) {
+                selectedDriverVehicleTypes.push(selectedType);
+                updateSelectedDriverVehicleTypesDisplay();
+                select.value = '';
+            }
+        }
+
+        // Обновление отображения выбранных типов транспорта
+        function updateSelectedDriverVehicleTypesDisplay() {
+            const container = document.getElementById('selectedDriverVehicleTypes');
+            const typeLabels = {
+                'sedan': 'Легковой автомобиль',
+                'suv': 'Внедорожник',
+                'minibus': 'Минивэн',
+                'bus': 'Автобус',
+                'truck': 'Грузовик',
+                'motorcycle': 'Мотоцикл',
+                'taxi': 'Такси'
+            };
+            
+            if (selectedDriverVehicleTypes.length > 0) {
+                container.innerHTML = selectedDriverVehicleTypes.map((type, index) => `
+                    <div class="flex justify-between items-center bg-green-50 px-3 py-1 rounded-md">
+                        <span class="text-green-800">${typeLabels[type] || type}</span>
+                        <button type="button" onclick="removeVehicleTypeFromDriver(${index})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<small class="text-gray-500">Выбранные типы транспорта появятся здесь</small>';
+            }
+        }
+
+        // Удаление типа транспорта у водителя
+        function removeVehicleTypeFromDriver(index) {
+            selectedDriverVehicleTypes.splice(index, 1);
+            updateSelectedDriverVehicleTypesDisplay();
+        }
+
+        // Обработка загрузки аватара водителя
+        function handleDriverAvatarUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                // Проверка типа файла
+                if (!file.type.startsWith('image/')) {
+                    alert('Пожалуйста, выберите файл изображения');
+                    input.value = '';
+                    return;
+                }
+                
+                // Проверка размера файла (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Размер файла не должен превышать 5MB');
+                    input.value = '';
+                    return;
+                }
+                
+                driverAvatarFile = file;
+                
+                // Показать предпросмотр
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('driverAvatarPreview');
+                    const img = document.getElementById('driverAvatarImg');
+                    img.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Обработка загрузки документов водителя
+        function handleDriverDocumentsUpload(input) {
+            const files = Array.from(input.files);
+            
+            // Проверка файлов
+            for (let file of files) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert(`Файл ${file.name} слишком большой. Максимальный размер: 10MB`);
+                    return;
+                }
+            }
+            
+            driverDocumentFiles = files;
+            
+            // Показать список выбранных файлов
+            const listContainer = document.getElementById('driverDocumentsList');
+            const previewContainer = document.getElementById('driverDocumentsPreview');
+            
+            if (files.length > 0) {
+                listContainer.style.display = 'block';
+                previewContainer.innerHTML = files.map((file, index) => `
+                    <div class="flex justify-between items-center bg-gray-100 px-3 py-2 rounded-md">
+                        <div class="flex items-center">
+                            <i class="fas fa-file mr-2 text-gray-600"></i>
+                            <span class="text-sm">${file.name}</span>
+                            <span class="text-xs text-gray-500 ml-2">(${(file.size / 1024).toFixed(1)} KB)</span>
+                        </div>
+                        <button type="button" onclick="removeDriverDocument(${index})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                listContainer.style.display = 'none';
+            }
+        }
+
+        // Удаление документа водителя
+        function removeDriverDocument(index) {
+            driverDocumentFiles.splice(index, 1);
+            
+            // Обновить input
+            const input = document.getElementById('driverDocuments');
+            const dt = new DataTransfer();
+            driverDocumentFiles.forEach(file => dt.items.add(file));
+            input.files = dt.files;
+            
+            // Обновить предпросмотр
+            handleDriverDocumentsUpload(input);
+        }
+
+        // Сохранение водителя
+        async function saveDriver() {
+            const fullName = document.getElementById('driverFullName').value.trim();
+            const phone = document.getElementById('driverPhone').value.trim();
+            const email = document.getElementById('driverEmail').value.trim();
+            const experience = parseInt(document.getElementById('driverExperience').value);
+            const licenseCategory = document.getElementById('driverLicenseCategory').value;
+            const licenseNumber = document.getElementById('driverLicenseNumber').value.trim();
+            const workingAreas = document.getElementById('driverWorkingAreas').value.trim();
+            const pricePerDay = parseFloat(document.getElementById('driverPricePerDay').value) || 0;
+            const pricePerHour = parseFloat(document.getElementById('driverPricePerHour').value) || 0;
+            const login = document.getElementById('driverLogin').value.trim();
+            const password = document.getElementById('driverPassword').value.trim();
+            const comments = document.getElementById('driverComments').value.trim();
+            
+            // Проверка обязательных полей
+            if (!fullName || !phone || !email || !experience || !licenseCategory || selectedDriverVehicleTypes.length === 0) {
+                alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой)');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('name', fullName);
+                formData.append('phone', phone);
+                formData.append('email', email);
+                formData.append('experience', experience.toString());
+                formData.append('licenseCategory', licenseCategory);
+                formData.append('licenseNumber', licenseNumber);
+                formData.append('languages', selectedDriverLanguages.join(', '));
+                formData.append('vehicleTypes', JSON.stringify(selectedDriverVehicleTypes));
+                formData.append('workingAreas', workingAreas);
+                formData.append('pricePerDay', pricePerDay.toString());
+                formData.append('pricePerHour', pricePerHour.toString());
+                formData.append('login', login);
+                formData.append('password', password);
+                formData.append('description', comments);
+                formData.append('isActive', 'true');
+                
+                // Добавляем аватар
+                if (driverAvatarFile) {
+                    formData.append('avatar', driverAvatarFile);
+                }
+                
+                // Добавляем документы
+                driverDocumentFiles.forEach(file => {
+                    formData.append('documents', file);
+                });
+                
+                const headers = getAuthHeaders();
+                delete headers['Content-Type']; // Позволить браузеру установить правильный Content-Type
+                
+                const response = await fetch(`${getApiUrl()}/drivers/create-with-auth`, {
+                    method: 'POST',
+                    headers: headers,
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Водитель успешно создан!');
+                    closeDriverModal();
+                    loadDrivers();
+                } else {
+                    alert('Ошибка при создании водителя: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Ошибка сохранения водителя:', error);
+                alert('Ошибка при сохранении водителя: ' + error.message);
+            }
+        }
+
+        // Удаление водителя
+        async function deleteDriver(driverId) {
+            if (!confirm('Вы уверены, что хотите удалить этого водителя? Это действие нельзя отменить.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/drivers/${driverId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Водитель успешно удален!');
+                    loadDrivers();
+                } else {
+                    alert('Ошибка при удалении водителя: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Ошибка удаления водителя:', error);
+                alert('Ошибка при удалении водителя: ' + error.message);
+            }
+        }
+
+        // Редактирование водителя (базовая версия)
+        async function editDriver(driverId) {
+            alert(`Редактирование водителя ${driverId} будет добавлено в следующих версиях`);
         }
 
         function saveGuide() {

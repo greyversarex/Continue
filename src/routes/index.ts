@@ -23,6 +23,8 @@ import priceCalculatorRoutes from './priceCalculatorRoutes';
 // Tour guide cabinet system
 import tourGuideRoutes from './tourGuideRoutes';
 import adminTourHistoryRoutes from './adminTourHistoryRoutes';
+// Driver system
+import driverRoutes from './driverRoutes';
 
 // Remove old SQLite database routes (now using Prisma)
 
@@ -51,6 +53,7 @@ router.use('/objects', objectsRoutes); // Add objects endpoint for ObjectUploade
 router.use('/price-calculator', priceCalculatorRoutes); // Add price calculator endpoints
 router.use('/guide', tourGuideRoutes); // Tour guide authentication and management
 router.use('/admin', adminTourHistoryRoutes); // Admin tour history and guide management
+router.use('/drivers', driverRoutes); // Driver management and authentication
 router.use('/', objectStorageRoutes);
 
 // All data access now through Prisma models
