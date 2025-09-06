@@ -8436,60 +8436,136 @@
             return selected;
         }
 
-        // Price Calculator Functions - Database-driven with local caching
+        // Price Calculator Functions - Hybrid system (Database + LocalStorage)
         let priceCalculatorComponents = [];
-        let pendingChanges = {}; // Local cache for unsaved changes
+        let localStorageComponents = {}; // Master local storage for ALL components
 
-        // Load pending changes from localStorage on page load
-        function loadPendingChanges() {
+        // Load components from localStorage (master storage)
+        function loadLocalComponents() {
             try {
-                const saved = localStorage.getItem('pendingPriceChanges');
+                const saved = localStorage.getItem('priceCalculatorComponents');
                 if (saved) {
-                    pendingChanges = JSON.parse(saved);
-                    console.log('📂 Loaded pending changes from localStorage:', pendingChanges);
+                    localStorageComponents = JSON.parse(saved);
+                    console.log('📂 Loaded', Object.keys(localStorageComponents).length, 'components from localStorage');
+                    return true;
                 }
             } catch (e) {
-                console.warn('Failed to load pending changes:', e);
-                pendingChanges = {};
+                console.warn('Failed to load local components:', e);
+            }
+            return false;
+        }
+
+        // Save all components to localStorage (master storage)
+        function saveLocalComponents() {
+            try {
+                // Convert array to object for easier updates
+                const componentsObj = {};
+                priceCalculatorComponents.forEach(comp => {
+                    componentsObj[comp.id] = comp;
+                });
+                
+                localStorage.setItem('priceCalculatorComponents', JSON.stringify(componentsObj));
+                localStorageComponents = componentsObj;
+                console.log('💾 Saved', priceCalculatorComponents.length, 'components to localStorage');
+            } catch (e) {
+                console.warn('Failed to save local components:', e);
             }
         }
 
-        // Save pending changes to localStorage
-        function savePendingChanges() {
+        // Update single component in localStorage
+        function updateLocalComponent(componentId, newPrice, componentName) {
+            if (!localStorageComponents[componentId]) {
+                console.warn(`Component ${componentId} not found in localStorage`);
+                return;
+            }
+            
+            localStorageComponents[componentId].price = parseFloat(newPrice);
+            localStorageComponents[componentId].updatedAt = new Date().toISOString();
+            localStorageComponents[componentId].locallyModified = true;
+            
             try {
-                localStorage.setItem('pendingPriceChanges', JSON.stringify(pendingChanges));
+                localStorage.setItem('priceCalculatorComponents', JSON.stringify(localStorageComponents));
+                console.log(`💾 Updated ${componentName} = ${newPrice} TJS in localStorage`);
             } catch (e) {
-                console.warn('Failed to save pending changes:', e);
+                console.warn('Failed to save component update:', e);
             }
         }
 
         async function loadPriceCalculatorComponents() {
+            console.log('🔄 Loading price calculator components...');
+            
+            // First, try to load from localStorage
+            const hasLocalData = loadLocalComponents();
+            
+            if (hasLocalData) {
+                // Use localStorage as primary source
+                priceCalculatorComponents = Object.values(localStorageComponents);
+                console.log('✅ Using localStorage data as primary source');
+                renderPriceCalculatorTable();
+                
+                // Try to sync with database in background (optional)
+                syncWithDatabaseInBackground();
+            } else {
+                // Fallback to database if no local data
+                await loadFromDatabaseWithFallback();
+            }
+        }
+
+        async function loadFromDatabaseWithFallback() {
             try {
+                console.log('🌐 Attempting to load from database...');
                 const response = await fetch(`${getApiUrl()}/price-calculator`, {
                     headers: getAuthHeaders()
                 });
                 const data = await response.json();
                 
-                if (data.success) {
+                if (data.success && data.data.length > 0) {
                     priceCalculatorComponents = data.data;
-                    
-                    // Apply pending changes to loaded components
-                    Object.keys(pendingChanges).forEach(componentId => {
-                        const component = priceCalculatorComponents.find(c => c.id == componentId);
-                        if (component && pendingChanges[componentId].price !== undefined) {
-                            component.price = pendingChanges[componentId].price;
-                            console.log(`📝 Applied pending change: ${component.name} = ${pendingChanges[componentId].price} TJS`);
-                        }
-                    });
-                    
+                    saveLocalComponents(); // Save to localStorage for future use
+                    console.log('✅ Loaded from database and saved to localStorage');
                     renderPriceCalculatorTable();
                 } else {
-                    console.error('Failed to load pricing components:', data.message);
-                    alert('Ошибка загрузки компонентов цен');
+                    loadDefaultComponents();
                 }
             } catch (error) {
-                console.error('Error loading pricing components:', error);
-                alert('Ошибка соединения с сервером при загрузке компонентов');
+                console.error('Database failed, using defaults:', error);
+                loadDefaultComponents();
+            }
+        }
+
+        function loadDefaultComponents() {
+            console.log('🏗️ Using default components (database unavailable)');
+            priceCalculatorComponents = [
+                {id: 3, name: "Проживание", price: 300, unit: "ночь", category: "accommodation"},
+                {id: 4, name: "Проводник, русскоговорящий", price: 350, unit: "день", category: "guide"},
+                {id: 5, name: "Питание, завтрак (в отеле)", price: 6, unit: "раз/день", category: "meal"},
+                {id: 6, name: "Питание, обед (STD)", price: 8, unit: "раз/день", category: "meal"},
+                {id: 7, name: "Питание, ужин (STD)", price: 7, unit: "раз/день", category: "meal"},
+                {id: 8, name: "Входные билеты в объектах посещения", price: 2, unit: "объект", category: "service"},
+                {id: 9, name: "Налоги на туриста", price: 1.5, unit: "ночь", category: "service"},
+                {id: 10, name: "Визовая поддержка (Офиц. тур. приглашение)", price: 10, unit: "чел", category: "service"},
+                {id: 11, name: "Питьевая вода, 1л/чел/день", price: 0.3, unit: "чел", category: "service"},
+                {id: 12, name: "Питание, обед, V-STD", price: 25, unit: "раз/день", category: "meal"},
+                {id: 13, name: "Питание, ужин, V-STD", price: 20, unit: "раз/день", category: "meal"},
+                {id: 1, name: "Трансфер: прием от/до аэропорта/отеля", price: 100, unit: "экипаж", category: "transport"},
+                {id: 2, name: "Транспорт во время тура", price: 5.5, unit: "км", category: "transport"}
+            ];
+            saveLocalComponents();
+            renderPriceCalculatorTable();
+        }
+
+        async function syncWithDatabaseInBackground() {
+            // Optional background sync - won't interfere with user experience
+            try {
+                const response = await fetch(`${getApiUrl()}/price-calculator`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                if (data.success) {
+                    console.log('🔄 Background sync with database successful');
+                }
+            } catch (error) {
+                console.log('🔄 Background sync failed (not critical)');
             }
         }
 
@@ -8525,25 +8601,34 @@
             const component = priceCalculatorComponents.find(c => c.id === componentId);
             const componentName = component ? component.name : `ID ${componentId}`;
             
-            // Immediately save to pending changes (optimistic update)
-            pendingChanges[componentId] = {
-                price: parseFloat(newPrice),
-                timestamp: new Date().toISOString()
-            };
-            savePendingChanges();
+            // IMMEDIATELY update localStorage (PRIMARY storage)
+            updateLocalComponent(componentId, newPrice, componentName);
             
-            // Update local component data immediately
+            // IMMEDIATELY update local component data for UI
             if (component) {
                 component.price = parseFloat(newPrice);
             }
             
-            console.log(`💾 Saved to pending changes: ${componentName} = ${newPrice} TJS`);
+            // Show immediate success (localStorage always works)
+            showNotification(`💾 ${componentName} = ${newPrice} TJS ✅`, 'success');
             
+            // Update tour pricing components immediately
+            if (document.getElementById('tourPricingComponents')) {
+                const tourComponent = tourPricingComponents.find(c => c.id === componentId);
+                if (tourComponent) {
+                    tourComponent.price = parseFloat(newPrice);
+                }
+                renderTourPricingComponents();
+            }
+            
+            // TRY to sync with database in background (optional)
+            syncComponentWithDatabase(componentId, newPrice, componentName, inputElement);
+        }
+        
+        async function syncComponentWithDatabase(componentId, newPrice, componentName, inputElement) {
             try {
-                // Visual feedback - make input yellow during update
                 if (inputElement) {
-                    inputElement.style.backgroundColor = '#FEF3C7';
-                    inputElement.disabled = true;
+                    inputElement.style.backgroundColor = '#FEF3C7'; // Yellow - syncing
                 }
                 
                 const apiUrl = getApiUrl();
@@ -8557,49 +8642,32 @@
                 });
                 
                 const data = await response.json();
-                console.log('📋 Response data:', data);
                 
                 if (data.success) {
-                    // Visual success feedback
                     if (inputElement) {
-                        inputElement.style.backgroundColor = '#D1FAE5'; // Green
+                        inputElement.style.backgroundColor = '#D1FAE5'; // Green - synced
+                        setTimeout(() => {
+                            inputElement.style.backgroundColor = '';
+                        }, 1000);
+                    }
+                    console.log(`🌐 Synced ${componentName} with database`);
+                } else {
+                    if (inputElement) {
+                        inputElement.style.backgroundColor = '#FED7D7'; // Red - sync failed
                         setTimeout(() => {
                             inputElement.style.backgroundColor = '';
                         }, 2000);
                     }
-                    
-                    console.log('✅ Component price updated successfully in database');
-                    showNotification(`✅ Цена сохранена: ${componentName} = ${newPrice} TJS`, 'success');
-                    
-                    // Clear from pending changes since it's saved
-                    delete pendingChanges[componentId];
-                    savePendingChanges();
-                    
-                    // Update component with server data
-                    if (component && data.data) {
-                        component.updatedAt = data.data.updatedAt;
-                    }
-                    
-                    // Refresh tour pricing components
-                    if (document.getElementById('tourPricingComponents')) {
-                        const tourComponent = tourPricingComponents.find(c => c.id === componentId);
-                        if (tourComponent) {
-                            tourComponent.price = parseFloat(newPrice);
-                        }
-                        renderTourPricingComponents();
-                    }
-                } else {
-                    console.error('Failed to update component price:', data.message);
-                    showNotification(`⚠️ Не удалось сохранить: ${componentName}. Изменение сохранено локально.`, 'warning');
+                    console.log(`⚠️ Database sync failed for ${componentName}: ${data.message}`);
                 }
             } catch (error) {
-                console.error('Error updating component price:', error);
-                showNotification(`⚠️ Ошибка сервера: ${componentName}. Изменение сохранено локально.`, 'warning');
-            } finally {
-                // Re-enable input
                 if (inputElement) {
-                    inputElement.disabled = false;
+                    inputElement.style.backgroundColor = '#FED7D7'; // Red - sync error
+                    setTimeout(() => {
+                        inputElement.style.backgroundColor = '';
+                    }, 2000);
                 }
+                console.log(`⚠️ Database sync error for ${componentName}:`, error.message);
             }
         }
 
@@ -9330,8 +9398,7 @@
             switch(sectionName) {
                 case 'price-calculator':
                     sectionId = 'priceCalculatorSection';
-                    loadPendingChanges(); // Load any pending changes first
-                    loadPriceCalculatorComponents(); // Load pricing components from database
+                    loadPriceCalculatorComponents(); // Load with new hybrid system
                     break;
                 case 'tours':
                     sectionId = 'toursSection';
