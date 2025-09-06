@@ -9946,18 +9946,18 @@
                                     <span class="text-sm text-gray-600 font-medium">TJS</span>
                                     <input type="number" min="0" step="0.01" value="${component.price}" 
                                            class="w-24 px-2 py-1 border rounded text-center font-semibold text-blue-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                                           id="price_${component.id}"
-                                           onchange="updateComponentPrice(${component.id}, this.value)"
-                                           oninput="console.log('💰 Изменение цены компонента ${component.id}:', this.value)"
+                                           id="tour_price_${component.id}"
+                                           onchange="updateTourComponentPrice(${component.id}, this.value)"
+                                           oninput="console.log('💰 Изменение цены тур-компонента ${component.id}:', this.value)"
                                            disabled>
                                     <span class="text-sm text-gray-500">/ ${component.unit}</span>
                                 </div>
-                                <div class="flex items-center gap-2" id="quantity_container_${component.id}" style="display: none;">
+                                <div class="flex items-center gap-2" id="tour_quantity_container_${component.id}" style="display: none;">
                                     <span class="text-sm font-medium">Кол-во:</span>
                                     <input type="number" min="1" value="1" 
                                            class="w-16 px-2 py-1 border rounded text-center"
-                                           id="quantity_${component.id}"
-                                           onchange="updateComponentQuantity(${component.id}, this.value)">
+                                           id="tour_quantity_${component.id}"
+                                           onchange="updateTourComponentQuantity(${component.id}, this.value)">
                                 </div>
                             </div>
                         `).join('')}
@@ -9968,11 +9968,12 @@
 
 
         function toggleTourComponent(componentId, isChecked) {
-            const quantityContainer = document.getElementById(`quantity_container_${componentId}`);
-            const priceInput = document.getElementById(`price_${componentId}`);
+            const quantityContainer = document.getElementById(`tour_quantity_container_${componentId}`);
+            const priceInput = document.getElementById(`tour_price_${componentId}`);
             
-            console.log(`🔘 Переключение компонента ${componentId}, отмечен: ${isChecked}`);
+            console.log(`🔘 Переключение тур-компонента ${componentId}, отмечен: ${isChecked}`);
             console.log(`📊 Input поле найдено:`, priceInput ? 'ДА' : 'НЕТ');
+            console.log(`📊 Quantity контейнер найден:`, quantityContainer ? 'ДА' : 'НЕТ');
             
             if (isChecked) {
                 quantityContainer.style.display = 'flex';
@@ -9980,7 +9981,7 @@
                 priceInput.style.backgroundColor = 'white'; // Визуально показать что доступно
                 priceInput.style.cursor = 'text';
                 
-                console.log(`✅ Разблокировали input для компонента ${componentId}`);
+                console.log(`✅ Разблокировали input для тур-компонента ${componentId}`);
                 console.log(`🔓 Disabled статус после разблокировки:`, priceInput.disabled);
                 
                 const component = tourPricingComponents.find(c => c.id === componentId);
@@ -10003,27 +10004,43 @@
                 priceInput.value = tourPricingComponents.find(c => c.id === componentId)?.price || 0; // Reset to original price
                 selectedTourComponents = selectedTourComponents.filter(c => c.id !== componentId);
                 
-                console.log(`❌ Заблокировали input для компонента ${componentId}`);
+                console.log(`❌ Заблокировали input для тур-компонента ${componentId}`);
             }
             
             calculateTourTotalPrice();
             syncIncludedServices(); // 🔄 Автоматическая синхронизация услуг
         }
 
-        function updateComponentPrice(componentId, newPrice) {
+        function updateTourComponentPrice(componentId, newPrice) {
             const component = selectedTourComponents.find(c => c.id === componentId);
             if (component) {
-                component.price = parseFloat(newPrice) || 0;
+                const numericPrice = parseFloat(newPrice) || 0;
+                component.price = numericPrice;
                 calculateTourTotalPrice();
-                console.log(`Updated price for ${component.name}: ${newPrice} TJS`);
+                console.log(`💰 Обновлена цена тур-компонента ${component.name}: ${numericPrice} TJS`);
+                
+                // Визуальная обратная связь
+                const priceInput = document.getElementById(`tour_price_${componentId}`);
+                if (priceInput) {
+                    priceInput.style.backgroundColor = '#dcfce7'; // Зеленый фон на 1 сек
+                    setTimeout(() => {
+                        priceInput.style.backgroundColor = 'white';
+                    }, 1000);
+                }
+            } else {
+                console.error(`❌ Компонент ${componentId} не найден в выбранных тур-компонентах`);
             }
         }
 
-        function updateComponentQuantity(componentId, quantity) {
+        function updateTourComponentQuantity(componentId, quantity) {
             const component = selectedTourComponents.find(c => c.id === componentId);
             if (component) {
-                component.quantity = parseInt(quantity) || 1;
+                const numericQuantity = parseInt(quantity) || 1;
+                component.quantity = numericQuantity;
                 calculateTourTotalPrice();
+                console.log(`📊 Обновлено количество тур-компонента ${component.name}: ${numericQuantity}`);
+            } else {
+                console.error(`❌ Компонент ${componentId} не найден в выбранных тур-компонентах`);
             }
         }
 
@@ -10091,11 +10108,13 @@
             document.querySelectorAll('#tourPricingComponents input[type="checkbox"]').forEach(checkbox => {
                 checkbox.checked = false;
             });
-            document.querySelectorAll('[id^="quantity_container_"]').forEach(container => {
+            document.querySelectorAll('[id^="tour_quantity_container_"]').forEach(container => {
                 container.style.display = 'none';
             });
-            document.querySelectorAll('[id^="price_"]').forEach(priceInput => {
+            document.querySelectorAll('[id^="tour_price_"]').forEach(priceInput => {
                 priceInput.disabled = true;
+                priceInput.style.backgroundColor = '#f3f4f6';
+                priceInput.style.cursor = 'not-allowed';
             });
             
             if (!savedComponents || savedComponents.length === 0) {
@@ -10115,19 +10134,19 @@
                     checkbox.checked = true;
                     
                     // Show quantity container and enable price input
-                    const quantityContainer = document.getElementById(`quantity_container_${componentId}`);
+                    const quantityContainer = document.getElementById(`tour_quantity_container_${componentId}`);
                     if (quantityContainer) {
                         quantityContainer.style.display = 'flex';
                     }
                     
-                    const priceInput = document.getElementById(`price_${componentId}`);
+                    const priceInput = document.getElementById(`tour_price_${componentId}`);
                     if (priceInput) {
                         priceInput.disabled = false;
                         priceInput.value = price; // Set saved custom price
                     }
                     
                     // Set quantity
-                    const quantityInput = document.getElementById(`quantity_${componentId}`);
+                    const quantityInput = document.getElementById(`tour_quantity_${componentId}`);
                     if (quantityInput) {
                         quantityInput.value = quantity;
                     }
