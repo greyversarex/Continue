@@ -120,33 +120,62 @@ export const createComponent = async (req: Request, res: Response) => {
 };
 
 /**
- * Update a pricing component
+ * Update a pricing component with retry mechanism
  */
 export const updateComponent = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { name, price, unit, description, sortOrder, isActive } = req.body;
-    
-    const component = await PriceCalculatorModel.update(parseInt(id), {
-      name,
-      price: price !== undefined ? parseFloat(price) : undefined,
-      unit,
-      description,
-      sortOrder,
-      isActive
-    });
-    
-    res.json({
-      success: true,
-      data: component,
-      message: 'Компонент успешно обновлен'
-    });
-  } catch (error) {
-    console.error('Error updating pricing component:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Ошибка при обновлении компонента'
-    });
+  const { id } = req.params;
+  const { name, price, unit, description, sortOrder, isActive } = req.body;
+  
+  console.log(`🔄 Attempting to update component ${id} with price ${price}`);
+  
+  let retryCount = 0;
+  const maxRetries = 3;
+  
+  while (retryCount <= maxRetries) {
+    try {
+      const component = await PriceCalculatorModel.update(parseInt(id), {
+        name,
+        price: price !== undefined ? parseFloat(price) : undefined,
+        unit,
+        description,
+        sortOrder,
+        isActive
+      });
+      
+      console.log(`✅ Component ${id} updated successfully on attempt ${retryCount + 1}`);
+      
+      res.json({
+        success: true,
+        data: component,
+        message: 'Компонент успешно обновлен'
+      });
+      return;
+      
+    } catch (error: any) {
+      retryCount++;
+      console.error(`❌ Attempt ${retryCount} failed for component ${id}:`, error.message);
+      
+      // Check if it's a database connection error
+      const isDbError = error.message?.includes('connection') || 
+                       error.message?.includes('terminating') ||
+                       error.code === 'P1001' || error.code === 'P1017';
+      
+      if (isDbError && retryCount <= maxRetries) {
+        console.log(`🔄 Retrying in ${retryCount * 1000}ms... (attempt ${retryCount}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, retryCount * 1000));
+        continue;
+      }
+      
+      // If all retries failed or it's not a DB error, return error
+      console.error('❌ All retry attempts failed or non-retryable error');
+      res.status(500).json({
+        success: false,
+        message: retryCount > maxRetries ? 
+          `Ошибка соединения с базой данных. Попробовано ${maxRetries} раз.` : 
+          'Ошибка при обновлении компонента'
+      });
+      return;
+    }
   }
 };
 

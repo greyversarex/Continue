@@ -8436,8 +8436,32 @@
             return selected;
         }
 
-        // Price Calculator Functions - Database-driven
+        // Price Calculator Functions - Database-driven with local caching
         let priceCalculatorComponents = [];
+        let pendingChanges = {}; // Local cache for unsaved changes
+
+        // Load pending changes from localStorage on page load
+        function loadPendingChanges() {
+            try {
+                const saved = localStorage.getItem('pendingPriceChanges');
+                if (saved) {
+                    pendingChanges = JSON.parse(saved);
+                    console.log('📂 Loaded pending changes from localStorage:', pendingChanges);
+                }
+            } catch (e) {
+                console.warn('Failed to load pending changes:', e);
+                pendingChanges = {};
+            }
+        }
+
+        // Save pending changes to localStorage
+        function savePendingChanges() {
+            try {
+                localStorage.setItem('pendingPriceChanges', JSON.stringify(pendingChanges));
+            } catch (e) {
+                console.warn('Failed to save pending changes:', e);
+            }
+        }
 
         async function loadPriceCalculatorComponents() {
             try {
@@ -8448,6 +8472,16 @@
                 
                 if (data.success) {
                     priceCalculatorComponents = data.data;
+                    
+                    // Apply pending changes to loaded components
+                    Object.keys(pendingChanges).forEach(componentId => {
+                        const component = priceCalculatorComponents.find(c => c.id == componentId);
+                        if (component && pendingChanges[componentId].price !== undefined) {
+                            component.price = pendingChanges[componentId].price;
+                            console.log(`📝 Applied pending change: ${component.name} = ${pendingChanges[componentId].price} TJS`);
+                        }
+                    });
+                    
                     renderPriceCalculatorTable();
                 } else {
                     console.error('Failed to load pricing components:', data.message);
@@ -8488,6 +8522,22 @@
             console.log('🔄 Updating component price:', { componentId, newPrice });
             
             const inputElement = document.querySelector(`input[onchange="updateComponentPrice(${componentId}, this.value)"]`);
+            const component = priceCalculatorComponents.find(c => c.id === componentId);
+            const componentName = component ? component.name : `ID ${componentId}`;
+            
+            // Immediately save to pending changes (optimistic update)
+            pendingChanges[componentId] = {
+                price: parseFloat(newPrice),
+                timestamp: new Date().toISOString()
+            };
+            savePendingChanges();
+            
+            // Update local component data immediately
+            if (component) {
+                component.price = parseFloat(newPrice);
+            }
+            
+            console.log(`💾 Saved to pending changes: ${componentName} = ${newPrice} TJS`);
             
             try {
                 // Visual feedback - make input yellow during update
@@ -8500,20 +8550,11 @@
                 const headers = getAuthHeaders();
                 const requestBody = { price: parseFloat(newPrice) };
                 
-                console.log('📞 API Request details:', {
-                    url: `${apiUrl}/price-calculator/${componentId}`,
-                    method: 'PUT',
-                    headers,
-                    body: requestBody
-                });
-                
                 const response = await fetch(`${apiUrl}/price-calculator/${componentId}`, {
                     method: 'PUT',
                     headers: headers,
                     body: JSON.stringify(requestBody)
                 });
-                
-                console.log('📨 Response status:', response.status, response.statusText);
                 
                 const data = await response.json();
                 console.log('📋 Response data:', data);
@@ -8527,21 +8568,20 @@
                         }, 2000);
                     }
                     
-                    console.log('✅ Component price updated successfully');
+                    console.log('✅ Component price updated successfully in database');
+                    showNotification(`✅ Цена сохранена: ${componentName} = ${newPrice} TJS`, 'success');
                     
-                    // Show success message  
-                    showNotification(`💰 Цена обновлена: ${data.data.name} = ${newPrice} TJS`, 'success');
+                    // Clear from pending changes since it's saved
+                    delete pendingChanges[componentId];
+                    savePendingChanges();
                     
-                    // CRITICAL: Update local data immediately to prevent resets
-                    const component = priceCalculatorComponents.find(c => c.id === componentId);
-                    if (component) {
-                        component.price = parseFloat(newPrice);
-                        component.updatedAt = new Date().toISOString();
+                    // Update component with server data
+                    if (component && data.data) {
+                        component.updatedAt = data.data.updatedAt;
                     }
                     
-                    // Refresh tour pricing components with new data  
+                    // Refresh tour pricing components
                     if (document.getElementById('tourPricingComponents')) {
-                        // Update tour pricing components array too
                         const tourComponent = tourPricingComponents.find(c => c.id === componentId);
                         if (tourComponent) {
                             tourComponent.price = parseFloat(newPrice);
@@ -8550,13 +8590,11 @@
                     }
                 } else {
                     console.error('Failed to update component price:', data.message);
-                    showNotification('❌ Ошибка: ' + data.message, 'error');
-                    // DON'T reload - keep user's input visible
+                    showNotification(`⚠️ Не удалось сохранить: ${componentName}. Изменение сохранено локально.`, 'warning');
                 }
             } catch (error) {
                 console.error('Error updating component price:', error);
-                showNotification('❌ Ошибка подключения к серверу', 'error');
-                // DON'T reload - keep user's input visible
+                showNotification(`⚠️ Ошибка сервера: ${componentName}. Изменение сохранено локально.`, 'warning');
             } finally {
                 // Re-enable input
                 if (inputElement) {
@@ -9292,6 +9330,7 @@
             switch(sectionName) {
                 case 'price-calculator':
                     sectionId = 'priceCalculatorSection';
+                    loadPendingChanges(); // Load any pending changes first
                     loadPriceCalculatorComponents(); // Load pricing components from database
                     break;
                 case 'tours':
