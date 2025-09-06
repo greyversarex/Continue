@@ -121,6 +121,13 @@ export const initializeExchangeRates = async (req: Request, res: Response) => {
                 symbol: '₽',
                 name: 'Российский рубль',
                 isActive: true
+            },
+            {
+                currency: 'CNY',
+                rate: 0.758,
+                symbol: '¥',
+                name: 'Китайский юань',
+                isActive: true
             }
         ];
 
