@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { 
   getAllComponents, 
+  getComponentById,
   getComponentByKey, 
   createComponent, 
   updateComponent, 
@@ -14,7 +15,10 @@ const router = Router();
 // Get all pricing components
 router.get('/', getAllComponents);
 
-// Get component by key
+// Get component by ID (numeric)  
+router.get('/id/:id', getComponentById);
+
+// Get component by key (string)
 router.get('/:key', getComponentByKey);
 
 // Create new component

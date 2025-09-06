@@ -22,6 +22,36 @@ export const getAllComponents = async (req: Request, res: Response) => {
 };
 
 /**
+ * Get pricing component by ID
+ */
+export const getComponentById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const allComponents = await PriceCalculatorModel.findAll();
+    const component = allComponents.find(c => c.id === parseInt(id));
+    
+    if (!component) {
+      res.status(404).json({
+        success: false,
+        message: 'Компонент не найден'
+      });
+      return;
+    }
+    
+    res.json({
+      success: true,
+      data: component
+    });
+  } catch (error) {
+    console.error('Error fetching pricing component by ID:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Ошибка при загрузке компонента'
+    });
+  }
+};
+
+/**
  * Get pricing component by key
  */
 export const getComponentByKey = async (req: Request, res: Response) => {
@@ -42,7 +72,7 @@ export const getComponentByKey = async (req: Request, res: Response) => {
       data: component
     });
   } catch (error) {
-    console.error('Error fetching pricing component:', error);
+    console.error('Error fetching pricing component by key:', error);
     res.status(500).json({
       success: false,
       message: 'Ошибка при загрузке компонента'
