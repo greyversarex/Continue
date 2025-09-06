@@ -197,10 +197,14 @@ export const createDriverProfile = async (req: Request, res: Response): Promise<
       licenseCategory,
       vehicleTypes,
       vehicleInfo,
+      vehicleBrand,
+      vehicleYear,
       workingAreas,
       pricePerDay,
       pricePerHour,
       currency,
+      countryId,
+      cityId,
       isActive 
     } = req.body;
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
@@ -249,6 +253,25 @@ export const createDriverProfile = async (req: Request, res: Response): Promise<
       console.log('📄 Документы сохранены:', documentsArray.length);
     }
 
+    // Обрабатываем загруженные фото транспорта
+    let vehiclePhotosArray: Array<{
+      filename: string;
+      originalName: string;
+      path: string;
+      size: number;
+      mimeType: string;
+    }> = [];
+    if (files && files.vehiclePhotos && files.vehiclePhotos.length > 0) {
+      vehiclePhotosArray = files.vehiclePhotos.map(file => ({
+        filename: file.filename,
+        originalName: file.originalname,
+        path: file.path,
+        size: file.size,
+        mimeType: file.mimetype
+      }));
+      console.log('🚗 Фото транспорта сохранены:', vehiclePhotosArray.length);
+    }
+
     // Парсим типы транспорта и информацию о машинах
     let parsedVehicleTypes = [];
     if (vehicleTypes) {
@@ -295,10 +318,15 @@ export const createDriverProfile = async (req: Request, res: Response): Promise<
         licenseCategory: licenseCategory,
         vehicleTypes: parsedVehicleTypes.length > 0 ? JSON.stringify(parsedVehicleTypes) : null,
         vehicleInfo: parsedVehicleInfo.length > 0 ? JSON.stringify(parsedVehicleInfo) : null,
+        vehicleBrand: vehicleBrand,
+        vehicleYear: vehicleYear ? parseInt(vehicleYear) : null,
+        vehiclePhotos: vehiclePhotosArray.length > 0 ? JSON.stringify(vehiclePhotosArray) : null,
         workingAreas: workingAreas,
         pricePerDay: pricePerDay ? parseFloat(pricePerDay) : null,
         pricePerHour: pricePerHour ? parseFloat(pricePerHour) : null,
-        currency: currency || 'TJS'
+        currency: currency || 'TJS',
+        countryId: countryId ? parseInt(countryId) : null,
+        cityId: cityId ? parseInt(cityId) : null
       }
     });
 

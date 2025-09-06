@@ -19,13 +19,15 @@ router.post('/login', loginDriver);
 // Создание водителя с аутентификацией (для админ панели) - с поддержкой загрузки файлов
 router.post('/create-with-auth', upload.fields([
   { name: 'avatar', maxCount: 1 },
-  { name: 'documents', maxCount: 10 }
+  { name: 'documents', maxCount: 10 },
+  { name: 'vehiclePhotos', maxCount: 5 }
 ]), createDriverProfile);
 
 // Маршруты для управления профилем водителя (админ панель) - с поддержкой загрузки файлов
 router.put('/profile/:id', upload.fields([
   { name: 'avatar', maxCount: 1 },
-  { name: 'documents', maxCount: 10 }
+  { name: 'documents', maxCount: 10 },
+  { name: 'vehiclePhotos', maxCount: 5 }
 ]), updateDriverProfile);
 
 // Получение всех водителей (для админ панели)
