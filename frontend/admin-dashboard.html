@@ -2656,26 +2656,7 @@
             return selectedServices;
         }
 
-        function removeHighlight(index) {
-            window.tourHighlights.splice(index, 1);
-            updateHighlightsList();
-        }
-
-        function updateHighlightsList() {
-            const highlightsContainer = document.getElementById('highlightsList');
-            if (!highlightsContainer) {
-                console.warn('highlightsList container not found');
-                return;
-            }
-            highlightsContainer.innerHTML = window.tourHighlights.map((highlight, index) => `
-                <div class="flex items-center justify-between bg-gray-50 p-2 rounded">
-                    <span>✓ ${highlight}</span>
-                    <button type="button" onclick="removeHighlight(${index})" class="text-red-500 hover:text-red-700">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
+        // Функции removeHighlight и updateHighlightsList удалены - используем выбор услуг из калькулятора
 
         // Инициализация глобальных переменных для галереи
         window.tourGalleryImages = window.tourGalleryImages || [];
@@ -2885,8 +2866,8 @@
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
                 
-                // Дополнительная информация из формы
-                highlights: JSON.stringify(window.tourHighlights || [])
+                // Услуги включенные в тур (заменяет highlights)
+                services: JSON.stringify(getSelectedServices())
             };
             
             console.log('💾 Используем правильную функцию saveTourForm для основной формы');
@@ -2960,7 +2941,7 @@
                 pickupInfo: safeGetValue('tourPickupInfo', ''),
                 mainImage: safeGetValue('tourMainImage', ''),
                 images: JSON.stringify(window.tourGalleryImages || []),
-                highlights: JSON.stringify(window.tourHighlights || []),
+                services: JSON.stringify(getSelectedServices()),
                 itinerary: JSON.stringify(window.tourItinerary || []),
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
                 languages: JSON.stringify(window.tourLanguages || ['Русский']),
@@ -3047,7 +3028,7 @@
             
             // Обновляем отображение (updateIncludesList удален - используем чекбоксы)
             updateGalleryImagesList();
-            updateHighlightsList();
+            // updateHighlightsList удален - используем чекбоксы услуг
             updateItineraryList();
             updateStartTimesList();
         }
@@ -3508,6 +3489,9 @@
             // ИСПРАВЛЕНО: Очищаем выбранные категории при открытии модального окна
             selectedCategories = [];
             updateSelectedCategoriesDisplay();
+            
+            // Загружаем услуги для выбора
+            loadTourServices();
             
             document.getElementById('tourModal').classList.add('active');
             
@@ -4091,7 +4075,7 @@
                 pickupInfo: tourPickupInfoEl ? tourPickupInfoEl.value || '' : '',
                 minPeople: tourMinPeopleEl && tourMinPeopleEl.value ? parseInt(tourMinPeopleEl.value) : null,
                 maxPeople: tourMaxPeopleEl && tourMaxPeopleEl.value ? parseInt(tourMaxPeopleEl.value) : null,
-                highlights: JSON.stringify(window.tourHighlights || []),
+                services: JSON.stringify(getSelectedServices()),
                 itinerary: JSON.stringify(window.tourItinerary || []),
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
                 languages: JSON.stringify(window.tourLanguages || ['Русский']),
@@ -4202,20 +4186,7 @@
             return Array.from(checkboxes).map(cb => cb.id.replace(prefix, ''));
         }
         
-        function updateHighlightsList() {
-            const container = document.getElementById('highlightsList');
-            if (!container) return;
-            
-            const highlights = window.tourHighlights || [];
-            container.innerHTML = highlights.map((highlight, index) => `
-                <div class="flex items-center justify-between bg-gray-50 p-3 rounded">
-                    <span>${highlight}</span>
-                    <button type="button" onclick="removeHighlight(${index})" class="text-red-500 hover:text-red-700">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
+        // Функция updateHighlightsList удалена - используем чекбоксы услуг
         
         function updateItineraryList() {
             const container = document.getElementById('itineraryList');
@@ -4273,10 +4244,7 @@
         // Функции для работы с динамическими списками
         // Убрана функция addHighlight - заменена на выбор услуг из калькулятора
         
-        function removeHighlight(index) {
-            window.tourHighlights.splice(index, 1);
-            updateHighlightsList();
-        }
+        // Функция removeHighlight удалена - используем чекбоксы услуг
         
         function addItinerary2() {
             const time = document.getElementById('newItineraryTime').value;
