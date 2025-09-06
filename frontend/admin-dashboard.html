@@ -6954,6 +6954,7 @@
             selectedDriverLicenseCategories = [];
             driverAvatarFile = null;
             driverDocumentFiles = [];
+            driverVehiclePhotosFiles = [];
             
             const modal = `
                 <div id="driverModal" class="modal active">
@@ -7051,9 +7052,25 @@
                                     </div>
                                 </div>
 
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Страна *</label>
+                                        <select class="form-input" id="driverCountry" required>
+                                            <option value="">Выберите страну</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Город *</label>
+                                        <select class="form-input" id="driverCity" required disabled>
+                                            <option value="">Сначала выберите страну</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
-                                    <label class="form-label">Рабочие зоны/города</label>
-                                    <input type="text" class="form-input" id="driverWorkingAreas" placeholder="Душанбе, Худжанд, Куляб">
+                                    <label class="form-label">Дополнительные рабочие зоны</label>
+                                    <input type="text" class="form-input" id="driverWorkingAreas" placeholder="Другие города и районы (через запятую)">
+                                    <small class="text-gray-500">Укажите дополнительные города или районы, где работает водитель</small>
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -7064,6 +7081,17 @@
                                     <div class="form-group">
                                         <label class="form-label">Цена за час (TJS)</label>
                                         <input type="number" class="form-input" id="driverPricePerHour" step="0.01" min="0">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Марка автомобиля *</label>
+                                        <input type="text" class="form-input" id="driverVehicleBrand" placeholder="Toyota, Nissan, Hyundai" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Год выпуска *</label>
+                                        <input type="number" class="form-input" id="driverVehicleYear" min="1990" max="2025" required>
                                     </div>
                                 </div>
 
@@ -7116,6 +7144,23 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Загрузка фото транспорта -->
+                                <div class="form-group">
+                                    <label class="form-label">Фото транспорта *</label>
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                                        <input type="file" id="driverVehiclePhotos" multiple accept="image/*" class="hidden" onchange="handleDriverVehiclePhotosUpload(this)" required>
+                                        <div class="text-center">
+                                            <div id="driverVehiclePhotosPreview" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3" style="display: none;">
+                                            </div>
+                                            <button type="button" onclick="document.getElementById('driverVehiclePhotos').click()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md">
+                                                <i class="fas fa-camera mr-2"></i>Выбрать фото транспорта
+                                            </button>
+                                            <p class="text-sm text-gray-500 mt-2">JPG, PNG до 5MB каждое. Минимум 1 фото.</p>
+                                            <small class="block text-xs text-gray-400 mt-1">Добавьте фото автомобиля снаружи и салона</small>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="flex justify-end gap-3 mt-6">
@@ -7133,6 +7178,24 @@
                 e.preventDefault();
                 saveDriver();
             });
+            
+            // Загружаем страны
+            loadCountriesForSelect('driverCountry');
+            
+            // Добавляем обработчик изменения страны
+            document.getElementById('driverCountry').addEventListener('change', function(e) {
+                const selectedCountry = e.target.options[e.target.selectedIndex];
+                const countryName = selectedCountry ? selectedCountry.text : '';
+                const citySelect = document.getElementById('driverCity');
+                
+                if (countryName && countryName !== 'Выберите страну') {
+                    citySelect.disabled = false;
+                    loadCitiesForCountry(countryName, 'driverCity');
+                } else {
+                    citySelect.disabled = true;
+                    citySelect.innerHTML = '<option value="">Сначала выберите страну</option>';
+                }
+            });
         }
 
         // Закрытие модального окна водителя
@@ -7145,6 +7208,7 @@
             selectedDriverVehicleTypes = [];
             driverAvatarFile = null;
             driverDocumentFiles = [];
+            driverVehiclePhotosFiles = [];
         }
 
         // Добавление языка к водителю
@@ -7310,6 +7374,78 @@
             handleDriverDocumentsUpload(input);
         }
 
+        // Обработка загрузки фото транспорта
+        let driverVehiclePhotosFiles = [];
+        
+        function handleDriverVehiclePhotosUpload(input) {
+            const files = Array.from(input.files);
+            
+            // Проверка файлов
+            for (let file of files) {
+                if (!file.type.startsWith('image/')) {
+                    alert('Пожалуйста, выбирайте только изображения');
+                    input.value = '';
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    alert(`Файл ${file.name} слишком большой. Максимальный размер: 5MB`);
+                    input.value = '';
+                    return;
+                }
+            }
+            
+            if (files.length === 0) {
+                alert('Пожалуйста, выберите минимум 1 фото транспорта');
+                return;
+            }
+            
+            driverVehiclePhotosFiles = files;
+            
+            // Показать превью фото
+            const previewContainer = document.getElementById('driverVehiclePhotosPreview');
+            previewContainer.style.display = 'grid';
+            
+            previewContainer.innerHTML = '';
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = 'relative';
+                    imgDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Фото ${index + 1}" 
+                             class="w-full h-20 object-cover rounded-md border">
+                        <button type="button" onclick="removeVehiclePhoto(${index})" 
+                                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
+                            ×
+                        </button>
+                        <div class="text-xs text-gray-500 mt-1 truncate">${file.name}</div>
+                    `;
+                    previewContainer.appendChild(imgDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        function removeVehiclePhoto(index) {
+            const filesArray = Array.from(driverVehiclePhotosFiles);
+            filesArray.splice(index, 1);
+            driverVehiclePhotosFiles = filesArray;
+            
+            // Обновляем input
+            const input = document.getElementById('driverVehiclePhotos');
+            const dt = new DataTransfer();
+            filesArray.forEach(file => dt.items.add(file));
+            input.files = dt.files;
+            
+            // Обновляем превью
+            if (filesArray.length > 0) {
+                handleDriverVehiclePhotosUpload(input);
+            } else {
+                document.getElementById('driverVehiclePhotosPreview').style.display = 'none';
+                document.getElementById('driverVehiclePhotosPreview').innerHTML = '';
+            }
+        }
+
         // Сохранение водителя
         async function saveDriver() {
             const fullName = document.getElementById('driverFullName').value.trim();
@@ -7325,9 +7461,17 @@
             const password = document.getElementById('driverPassword').value.trim();
             const comments = document.getElementById('driverComments').value.trim();
             
+            // Новые поля
+            const countryId = document.getElementById('driverCountry').value;
+            const cityId = document.getElementById('driverCity').value;
+            const vehicleBrand = document.getElementById('driverVehicleBrand').value.trim();
+            const vehicleYear = parseInt(document.getElementById('driverVehicleYear').value);
+            
             // Проверка обязательных полей
-            if (!fullName || !phone || !email || !experience || !licenseCategory || selectedDriverVehicleTypes.length === 0) {
-                alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой)');
+            if (!fullName || !phone || !email || !experience || !licenseCategory || 
+                selectedDriverVehicleTypes.length === 0 || !countryId || !cityId || 
+                !vehicleBrand || !vehicleYear || driverVehiclePhotosFiles.length === 0) {
+                alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой) и загрузите минимум 1 фото транспорта');
                 return;
             }
             
@@ -7349,6 +7493,12 @@
                 formData.append('description', comments);
                 formData.append('isActive', 'true');
                 
+                // Новые поля
+                formData.append('countryId', countryId);
+                formData.append('cityId', cityId);
+                formData.append('vehicleBrand', vehicleBrand);
+                formData.append('vehicleYear', vehicleYear.toString());
+                
                 // Добавляем аватар
                 if (driverAvatarFile) {
                     formData.append('avatar', driverAvatarFile);
@@ -7357,6 +7507,11 @@
                 // Добавляем документы
                 driverDocumentFiles.forEach(file => {
                     formData.append('documents', file);
+                });
+                
+                // Добавляем фото транспорта
+                driverVehiclePhotosFiles.forEach(file => {
+                    formData.append('vehiclePhotos', file);
                 });
                 
                 const headers = getAuthHeaders();
