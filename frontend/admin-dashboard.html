@@ -1011,9 +1011,9 @@
                         </div>
                         
                         <div class="mt-6 flex gap-4">
-                            <button class="btn btn-success" onclick="savePriceCalculator()">
-                                <i class="fas fa-save mr-2"></i>
-                                Сохранить все изменения
+                            <button class="btn btn-danger" onclick="clearLocalStorage()">
+                                <i class="fas fa-trash mr-2"></i>
+                                Сбросить localStorage
                             </button>
                             <button class="btn btn-primary" onclick="addNewPriceRow()">
                                 <i class="fas fa-plus mr-2"></i>
@@ -8512,18 +8512,30 @@
         }
 
         async function loadFromDatabaseWithFallback() {
+            // ONLY load from database if NO localStorage data exists
+            console.log('🌐 No localStorage data, attempting database fallback...');
             try {
-                console.log('🌐 Attempting to load from database...');
                 const response = await fetch(`${getApiUrl()}/price-calculator`, {
                     headers: getAuthHeaders()
                 });
                 const data = await response.json();
                 
                 if (data.success && data.data.length > 0) {
-                    priceCalculatorComponents = data.data;
-                    saveLocalComponents(); // Save to localStorage for future use
-                    console.log('✅ Loaded from database and saved to localStorage');
-                    renderPriceCalculatorTable();
+                    // IMPORTANT: Check if localStorage already has modifications
+                    const hasLocalModifications = Object.keys(localStorageComponents).some(id => 
+                        localStorageComponents[id].locallyModified
+                    );
+                    
+                    if (hasLocalModifications) {
+                        console.log('⚠️ Found local modifications, keeping localStorage data');
+                        priceCalculatorComponents = Object.values(localStorageComponents);
+                        renderPriceCalculatorTable();
+                    } else {
+                        priceCalculatorComponents = data.data;
+                        saveLocalComponents(); // Save to localStorage for future use
+                        console.log('✅ Loaded from database and saved to localStorage');
+                        renderPriceCalculatorTable();
+                    }
                 } else {
                     loadDefaultComponents();
                 }
@@ -8555,18 +8567,9 @@
         }
 
         async function syncWithDatabaseInBackground() {
-            // Optional background sync - won't interfere with user experience
-            try {
-                const response = await fetch(`${getApiUrl()}/price-calculator`, {
-                    headers: getAuthHeaders()
-                });
-                const data = await response.json();
-                if (data.success) {
-                    console.log('🔄 Background sync with database successful');
-                }
-            } catch (error) {
-                console.log('🔄 Background sync failed (not critical)');
-            }
+            // DISABLED - we use localStorage as PRIMARY source
+            // Background sync was overwriting local changes
+            console.log('🔄 Background sync disabled - localStorage is primary storage');
         }
 
         function renderPriceCalculatorTable() {
@@ -8668,6 +8671,19 @@
                     }, 2000);
                 }
                 console.log(`⚠️ Database sync error for ${componentName}:`, error.message);
+            }
+        }
+        
+        // Function to clear localStorage and reset to database values
+        function clearLocalStorage() {
+            if (confirm('⚠️ Это удалит все локальные изменения цен. Продолжить?')) {
+                localStorage.removeItem('priceCalculatorComponents');
+                localStorageComponents = {};
+                console.log('🧹 localStorage очищен');
+                showNotification('🧹 LocalStorage очищен. Перезагружаем...', 'success');
+                setTimeout(() => {
+                    loadPriceCalculatorComponents();
+                }, 1000);
             }
         }
 
