@@ -8485,6 +8485,8 @@
         }
 
         async function updateComponentPrice(componentId, newPrice) {
+            console.log('🔄 Updating component price:', { componentId, newPrice });
+            
             const inputElement = document.querySelector(`input[onchange="updateComponentPrice(${componentId}, this.value)"]`);
             
             try {
@@ -8494,15 +8496,28 @@
                     inputElement.disabled = true;
                 }
                 
-                const response = await fetch(`${getApiUrl()}/price-calculator/${componentId}`, {
+                const apiUrl = getApiUrl();
+                const headers = getAuthHeaders();
+                const requestBody = { price: parseFloat(newPrice) };
+                
+                console.log('📞 API Request details:', {
+                    url: `${apiUrl}/price-calculator/${componentId}`,
                     method: 'PUT',
-                    headers: getAuthHeaders(),
-                    body: JSON.stringify({
-                        price: parseFloat(newPrice)
-                    })
+                    headers,
+                    body: requestBody
                 });
                 
+                const response = await fetch(`${apiUrl}/price-calculator/${componentId}`, {
+                    method: 'PUT',
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                });
+                
+                console.log('📨 Response status:', response.status, response.statusText);
+                
                 const data = await response.json();
+                console.log('📋 Response data:', data);
+                
                 if (data.success) {
                     // Update local data
                     const component = priceCalculatorComponents.find(c => c.id === componentId);
