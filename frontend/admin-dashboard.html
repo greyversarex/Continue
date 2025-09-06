@@ -1011,6 +1011,10 @@
                         </div>
                         
                         <div class="mt-6 flex gap-4">
+                            <button class="btn btn-success" onclick="syncAllWithDatabase()">
+                                <i class="fas fa-save mr-2"></i>
+                                Синхронизировать с БД
+                            </button>
                             <button class="btn btn-danger" onclick="clearLocalStorage()">
                                 <i class="fas fa-trash mr-2"></i>
                                 Сбросить localStorage
@@ -8671,6 +8675,62 @@
                     }, 2000);
                 }
                 console.log(`⚠️ Database sync error for ${componentName}:`, error.message);
+            }
+        }
+        
+        // Function to sync localStorage data with database
+        async function syncAllWithDatabase() {
+            if (!localStorageComponents || Object.keys(localStorageComponents).length === 0) {
+                showNotification('❌ Нет данных в localStorage для синхронизации', 'error');
+                return;
+            }
+            
+            const componentsToSync = Object.values(localStorageComponents).filter(comp => comp.locallyModified);
+            
+            if (componentsToSync.length === 0) {
+                showNotification('✅ Все данные уже синхронизированы', 'success');
+                return;
+            }
+            
+            console.log(`🔄 Синхронизируем ${componentsToSync.length} компонентов с базой данных...`);
+            showNotification(`🔄 Синхронизируем ${componentsToSync.length} компонентов...`, 'info');
+            
+            let successCount = 0;
+            let errorCount = 0;
+            
+            for (const component of componentsToSync) {
+                try {
+                    const response = await fetch(`${getApiUrl()}/price-calculator/${component.id}`, {
+                        method: 'PUT',
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify({ price: component.price })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        // Remove the locallyModified flag
+                        localStorageComponents[component.id].locallyModified = false;
+                        successCount++;
+                        console.log(`✅ Синхронизирован: ${component.name} = ${component.price} TJS`);
+                    } else {
+                        errorCount++;
+                        console.log(`❌ Ошибка синхронизации: ${component.name}`);
+                    }
+                } catch (error) {
+                    errorCount++;
+                    console.log(`❌ Сетевая ошибка: ${component.name}:`, error.message);
+                }
+            }
+            
+            // Update localStorage without modified flags
+            localStorage.setItem('priceCalculatorComponents', JSON.stringify(localStorageComponents));
+            
+            if (errorCount === 0) {
+                showNotification(`✅ Все ${successCount} компонентов синхронизированы с базой данных!`, 'success');
+            } else if (successCount > 0) {
+                showNotification(`⚠️ Синхронизированы ${successCount} из ${componentsToSync.length} компонентов. ${errorCount} с ошибками.`, 'warning');
+            } else {
+                showNotification(`❌ Не удалось синхронизировать ни один компонент. База данных недоступна.`, 'error');
             }
         }
         
