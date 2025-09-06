@@ -1013,7 +1013,7 @@
                         <div class="mt-6 flex gap-4">
                             <button class="btn btn-success" onclick="savePriceCalculator()">
                                 <i class="fas fa-save mr-2"></i>
-                                Сохранить цены
+                                Сохранить все изменения
                             </button>
                             <button class="btn btn-primary" onclick="addNewPriceRow()">
                                 <i class="fas fa-plus mr-2"></i>
@@ -8559,12 +8559,39 @@
             }
         }
 
-        function savePriceCalculator() {
-            // Force reload to ensure sync
-            loadPriceCalculatorComponents();
+        async function savePriceCalculator() {
+            console.log('💾 Manual save triggered - collecting all current prices');
             
-            // Show comprehensive status
-            showNotification('✅ Все цены синхронизированы с базой данных и формами туров!', 'success');
+            // Get all current input values and save them
+            const priceInputs = document.querySelectorAll('#priceCalculatorTable input[type="number"]');
+            const savePromises = [];
+            
+            for (let input of priceInputs) {
+                const onchangeAttr = input.getAttribute('onchange');
+                const componentId = onchangeAttr.match(/updateComponentPrice\((\d+),/)?.[1];
+                
+                if (componentId && input.value) {
+                    const currentPrice = parseFloat(input.value);
+                    const originalComponent = priceCalculatorComponents.find(c => c.id == componentId);
+                    
+                    // Only save if price actually changed
+                    if (originalComponent && originalComponent.price !== currentPrice) {
+                        console.log(`💰 Saving changed price: ${originalComponent.name} ${originalComponent.price} → ${currentPrice}`);
+                        savePromises.push(updateComponentPrice(componentId, currentPrice));
+                    }
+                }
+            }
+            
+            if (savePromises.length > 0) {
+                try {
+                    await Promise.all(savePromises);
+                    showNotification(`✅ Сохранено ${savePromises.length} изменений цен!`, 'success');
+                } catch (error) {
+                    showNotification('❌ Ошибка при сохранении некоторых цен', 'error');
+                }
+            } else {
+                showNotification('ℹ️ Нет изменений для сохранения', 'info');
+            }
         }
 
         function addNewPriceRow() {
