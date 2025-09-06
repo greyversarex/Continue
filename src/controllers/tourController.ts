@@ -217,7 +217,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, pricingComponents } = req.body;
+      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -424,6 +424,29 @@ export class TourController {
         }
       }
 
+      // Create driver associations if provided
+      if (driverIds && Array.isArray(driverIds) && driverIds.length > 0) {
+        console.log('🚗 Creating driver associations:', driverIds);
+        try {
+          const tourDriverData = driverIds.map((driverId: number) => ({
+            tourId: tour.id,
+            driverId: driverId,
+            isDefault: false
+          }));
+          
+          console.log('🚗 TourDriver data to create:', tourDriverData);
+          
+          await prisma.tourDriver.createMany({
+            data: tourDriverData
+          });
+          
+          console.log('✅ Driver associations created successfully');
+        } catch (driverError) {
+          console.error('❌ Error creating driver associations:', driverError);
+          throw driverError;
+        }
+      }
+
       // Parse JSON fields for response with safe parsing
       let parsedTour;
       try {
@@ -495,7 +518,7 @@ export class TourController {
         });
       }
 
-      let { title, description, duration, price, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, pricingComponents } = req.body;
+      let { title, description, duration, price, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed (same as createTour)
       if (typeof title === 'string') {
@@ -639,6 +662,29 @@ export class TourController {
           
           await prisma.tourGuide.createMany({
             data: tourGuideData
+          });
+        }
+      }
+
+      // Update driver associations if provided
+      if (driverIds && Array.isArray(driverIds)) {
+        console.log('🚗 Updating driver associations:', driverIds);
+        
+        // Delete existing associations
+        await prisma.tourDriver.deleteMany({
+          where: { tourId: id }
+        });
+        
+        // Create new associations
+        if (driverIds.length > 0) {
+          const tourDriverData = driverIds.map(driverId => ({
+            tourId: id,
+            driverId: driverId,
+            isDefault: false
+          }));
+          
+          await prisma.tourDriver.createMany({
+            data: tourDriverData
           });
         }
       }

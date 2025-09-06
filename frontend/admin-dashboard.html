@@ -1893,6 +1893,13 @@
                             <!-- Guides will be loaded here -->
                         </div>
                     </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Назначенные водители</label>
+                        <div class="checkbox-group" id="driverCheckboxes">
+                            <!-- Drivers will be loaded here -->
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="flex justify-end gap-3 mt-6">
@@ -3427,6 +3434,7 @@
             // Load hotels and guides for checkboxes
             loadHotelsForCheckboxes();
             loadGuidesForCheckboxes();
+            loadDriversForCheckboxes();
             
             // Load categories for tour form
             loadCategories();
@@ -3957,8 +3965,15 @@
                 selectedGuides.push(parseInt(checkbox.value));
             });
             
+            // Собираем выбранных водителей
+            const selectedDrivers = [];
+            document.querySelectorAll('input[name="selectedDrivers"]:checked').forEach(checkbox => {
+                selectedDrivers.push(parseInt(checkbox.value));
+            });
+            
             console.log('🏨 Selected hotels:', selectedHotels);
             console.log('👨‍🏫 Selected guides:', selectedGuides);
+            console.log('🚗 Selected drivers:', selectedDrivers);
             
             // Формируем данные для отправки (с проверками на существование элементов)
             const tourDescRuEl = document.getElementById('tourDescRu');
@@ -4005,6 +4020,7 @@
                 images: JSON.stringify(window.tourGalleryImages || []),
                 hotelIds: selectedHotels,
                 guideIds: selectedGuides,
+                driverIds: selectedDrivers,
                 isActive: true,
                 isFeatured: false
             };
@@ -4290,6 +4306,48 @@
                             </label>
                         `;
                     }).join('');
+                });
+        }
+        
+        function loadDriversForCheckboxes() {
+            fetch(`${getApiUrl()}/drivers`, {
+                headers: getAuthHeaders()
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('driverCheckboxes');
+                    const drivers = data.data || [];
+                    
+                    if (drivers.length === 0) {
+                        container.innerHTML = '<p class="text-gray-500">Нет доступных водителей</p>';
+                        return;
+                    }
+                    
+                    container.innerHTML = drivers.map(driver => {
+                        let displayName = driver.name || 'Водитель';
+                        let vehicleInfo = '';
+                        
+                        // Добавляем информацию о транспорте
+                        if (driver.vehicleBrand) {
+                            vehicleInfo = ` (${driver.vehicleBrand}`;
+                            if (driver.vehicleYear) {
+                                vehicleInfo += ` ${driver.vehicleYear}`;
+                            }
+                            vehicleInfo += ')';
+                        }
+                        
+                        return `
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="selectedDrivers" value="${driver.id}"> 
+                                ${displayName}${vehicleInfo}
+                            </label>
+                        `;
+                    }).join('');
+                })
+                .catch(err => {
+                    console.error('Error loading drivers for checkboxes:', err);
+                    document.getElementById('driverCheckboxes').innerHTML = 
+                        '<p class="text-red-500">Ошибка загрузки водителей</p>';
                 });
         }
         
