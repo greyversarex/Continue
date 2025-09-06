@@ -1000,20 +1000,7 @@
                                 <i class="fas fa-plus mr-2"></i>
                                 Добавить новый компонент
                             </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Категория</label>
-                                    <select id="newComponentCategory" class="form-input">
-                                        <option value="transport">Транспорт</option>
-                                        <option value="accommodation">Проживание</option>
-                                        <option value="meals">Питание</option>
-                                        <option value="guides">Гиды/Сопровождение</option>
-                                        <option value="tickets">Билеты/Входы</option>
-                                        <option value="transfer">Трансфер</option>
-                                        <option value="documents">Документы</option>
-                                        <option value="other">Прочее</option>
-                                    </select>
-                                </div>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Название услуги</label>
                                     <input type="text" id="newComponentName" class="form-input" placeholder="Например: Обед в ресторане">
@@ -8605,14 +8592,42 @@
             };
             return icons[category] || 'fa-cube';
         }
+        
+        // Auto-determine category based on service name
+        function determineCategory(name) {
+            if (name.includes('проживание') || name.includes('отель') || name.includes('гостиница') || name.includes('ночь')) {
+                return 'accommodation';
+            }
+            if (name.includes('питание') || name.includes('завтрак') || name.includes('обед') || name.includes('ужин') || name.includes('еда')) {
+                return 'meals';
+            }
+            if (name.includes('проводник') || name.includes('гид') || name.includes('экскурсовод') || name.includes('сопровождение')) {
+                return 'guides';
+            }
+            if (name.includes('трансфер') || name.includes('аэропорт') || name.includes('встреча')) {
+                return 'transfer';
+            }
+            if (name.includes('транспорт') || name.includes('автобус') || name.includes('машина') || name.includes('км')) {
+                return 'transport';
+            }
+            if (name.includes('билет') || name.includes('вход') || name.includes('посещение') || name.includes('музей')) {
+                return 'tickets';
+            }
+            if (name.includes('виза') || name.includes('документ') || name.includes('приглашение')) {
+                return 'documents';
+            }
+            return 'other'; // Default category
+        }
 
         // Add new component
         async function addNewComponent() {
-            const category = document.getElementById('newComponentCategory').value;
             const name = document.getElementById('newComponentName').value.trim();
             const price = parseFloat(document.getElementById('newComponentPrice').value);
             const unit = document.getElementById('newComponentUnit').value.trim();
             const description = document.getElementById('newComponentDescription').value.trim();
+            
+            // Auto-determine category based on keywords
+            const category = determineCategory(name.toLowerCase());
             
             // Validation
             if (!name) {
@@ -9631,19 +9646,7 @@
         }
 
         // Load functions for new sections
-        function loadPriceCalculator() {
-            // Load saved prices from localStorage if available
-            const savedPrices = localStorage.getItem('priceCalculatorData');
-            if (savedPrices) {
-                try {
-                    const prices = JSON.parse(savedPrices);
-                    // Update table with saved prices
-                    console.log('Loaded saved prices:', prices);
-                } catch (e) {
-                    console.error('Error loading saved prices:', e);
-                }
-            }
-        }
+        // REMOVED - old loadPriceCalculator function (conflicted with new one)
 
         function loadBannerManagement() {
             loadCurrentSlides();
