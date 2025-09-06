@@ -7411,7 +7411,369 @@
 
         // Редактирование водителя (базовая версия)
         async function editDriver(driverId) {
-            alert(`Редактирование водителя ${driverId} будет добавлено в следующих версиях`);
+            try {
+                // Получаем данные водителя
+                const response = await fetch(`${getApiUrl()}/drivers/${driverId}`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Не удалось загрузить данные водителя');
+                }
+                
+                const data = await response.json();
+                const driver = data.data;
+                
+                // Открываем модальное окно редактирования
+                openEditDriverModal(driver);
+                
+            } catch (err) {
+                console.error('Error loading driver:', err);
+                alert('Ошибка при загрузке данных водителя');
+            }
+        }
+
+        // Открытие модального окна для редактирования водителя
+        function openEditDriverModal(driver) {
+            // Парсим данные водителя
+            let contact = {};
+            try {
+                contact = driver.contact ? JSON.parse(driver.contact) : {};
+            } catch (e) {
+                console.warn('Error parsing driver contact:', e);
+            }
+            
+            let languages = [];
+            try {
+                languages = driver.languages ? driver.languages.split(', ').filter(lang => lang.trim()) : [];
+            } catch (e) {
+                console.warn('Error parsing driver languages:', e);
+            }
+            
+            let vehicleTypes = [];
+            try {
+                vehicleTypes = driver.vehicleTypes ? JSON.parse(driver.vehicleTypes) : [];
+            } catch (e) {
+                console.warn('Error parsing driver vehicle types:', e);
+            }
+            
+            let licenseCategories = [];
+            try {
+                licenseCategories = driver.licenseCategories ? driver.licenseCategories.split(', ').filter(cat => cat.trim()) : [];
+            } catch (e) {
+                console.warn('Error parsing driver license categories:', e);
+            }
+            
+            // Устанавливаем глобальные переменные
+            selectedDriverLanguages = [...languages];
+            selectedDriverVehicleTypes = [...vehicleTypes];
+            selectedDriverLicenseCategories = [...licenseCategories];
+            
+            const modal = `
+                <div id="editDriverModal" class="modal active">
+                    <div class="modal-content" style="width: 800px; max-height: 90vh; overflow-y: auto;">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-semibold">Редактировать водителя</h2>
+                            <button onclick="closeEditDriverModal()" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="editDriverForm">
+                            <input type="hidden" id="editDriverId" value="${driver.id}">
+                            <div class="grid grid-cols-1 gap-4">
+                                <div class="form-group">
+                                    <label class="form-label">ФИО *</label>
+                                    <input type="text" class="form-input" id="editDriverFullName" placeholder="Иванов Иван Иванович" value="${driver.name || ''}" required>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Телефон *</label>
+                                        <input type="tel" class="form-input" id="editDriverPhone" placeholder="+992901234567" value="${contact.phone || ''}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-input" id="editDriverEmail" placeholder="driver@example.com" value="${contact.email || ''}" required>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Стаж (лет) *</label>
+                                        <input type="number" class="form-input" id="editDriverExperience" min="0" max="50" value="${driver.experience || 0}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Номер прав</label>
+                                        <input type="text" class="form-input" id="editDriverLicenseNumber" placeholder="AB 1234567" value="${driver.licenseNumber || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Категория прав *</label>
+                                        <select class="form-input" id="editDriverLicenseCategory" required>
+                                            <option value="">Выберите категорию</option>
+                                            <option value="A" ${driver.licenseCategory === 'A' ? 'selected' : ''}>A (Мотоциклы)</option>
+                                            <option value="B" ${driver.licenseCategory === 'B' ? 'selected' : ''}>B (Легковые)</option>
+                                            <option value="C" ${driver.licenseCategory === 'C' ? 'selected' : ''}>C (Грузовые)</option>
+                                            <option value="D" ${driver.licenseCategory === 'D' ? 'selected' : ''}>D (Автобусы)</option>
+                                            <option value="E" ${driver.licenseCategory === 'E' ? 'selected' : ''}>E (С прицепом)</option>
+                                            <option value="BE" ${driver.licenseCategory === 'BE' ? 'selected' : ''}>BE (B с прицепом)</option>
+                                            <option value="CE" ${driver.licenseCategory === 'CE' ? 'selected' : ''}>CE (C с прицепом)</option>
+                                            <option value="DE" ${driver.licenseCategory === 'DE' ? 'selected' : ''}>DE (D с прицепом)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Типы транспорта *</label>
+                                    <div class="flex gap-2 mb-2">
+                                        <select class="form-input flex-1" id="editDriverAvailableVehicleTypes">
+                                            <option value="">Выберите тип транспорта</option>
+                                            <option value="sedan">Легковой автомобиль</option>
+                                            <option value="suv">Внедорожник</option>
+                                            <option value="minibus">Минивэн</option>
+                                            <option value="bus">Автобус</option>
+                                            <option value="truck">Грузовик</option>
+                                            <option value="motorcycle">Мотоцикл</option>
+                                            <option value="taxi">Такси</option>
+                                        </select>
+                                        <button type="button" onclick="addVehicleTypeToEditDriver()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div id="editSelectedDriverVehicleTypes" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                                        <small class="text-gray-500">Выбранные типы транспорта появятся здесь</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Языки</label>
+                                    <div class="flex gap-2 mb-2">
+                                        <select class="form-input flex-1" id="editDriverAvailableLanguages">
+                                            <option value="">Выберите язык</option>
+                                            <option value="Русский">Русский</option>
+                                            <option value="English">English</option>
+                                            <option value="Тоҷикӣ">Тоҷикӣ</option>
+                                            <option value="Ўзбек">Ўзбек</option>
+                                            <option value="Қырған">Қырған</option>
+                                            <option value="Türkmen">Türkmen</option>
+                                        </select>
+                                        <button type="button" onclick="addLanguageToEditDriver()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div id="editSelectedDriverLanguages" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                                        <small class="text-gray-500">Выбранные языки появятся здесь</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Рабочие зоны/города</label>
+                                    <input type="text" class="form-input" id="editDriverWorkingAreas" placeholder="Душанбе, Худжанд, Куляб" value="${driver.workingAreas || ''}">
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Цена за день (TJS)</label>
+                                        <input type="number" class="form-input" id="editDriverPricePerDay" step="0.01" min="0" value="${driver.pricePerDay || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Цена за час (TJS)</label>
+                                        <input type="number" class="form-input" id="editDriverPricePerHour" step="0.01" min="0" value="${driver.pricePerHour || ''}">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Логин для кабинета</label>
+                                    <input type="text" class="form-input" id="editDriverLogin" placeholder="driver_login" value="${driver.login || ''}" readonly>
+                                    <small class="text-gray-500">Логин нельзя изменить после создания</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Новый пароль (оставьте пустым, чтобы не менять)</label>
+                                    <input type="password" class="form-input" id="editDriverPassword" placeholder="Новый пароль">
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end gap-3 mt-6">
+                                <button type="button" onclick="closeEditDriverModal()" class="btn btn-secondary">Отмена</button>
+                                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modal);
+            
+            // Заполняем выбранные элементы
+            updateEditSelectedDriverLanguagesDisplay();
+            updateEditSelectedDriverVehicleTypesDisplay();
+            
+            document.getElementById('editDriverForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveEditDriver();
+            });
+        }
+        
+        function closeEditDriverModal() {
+            const modal = document.getElementById('editDriverModal');
+            if (modal) {
+                modal.remove();
+            }
+            selectedDriverLanguages = [];
+            selectedDriverVehicleTypes = [];
+            selectedDriverLicenseCategories = [];
+        }
+        
+        // Функции для управления языками водителя при редактировании
+        function addLanguageToEditDriver() {
+            const select = document.getElementById('editDriverAvailableLanguages');
+            const language = select.value;
+            
+            if (!language || selectedDriverLanguages.includes(language)) {
+                return;
+            }
+            
+            selectedDriverLanguages.push(language);
+            updateEditSelectedDriverLanguagesDisplay();
+            select.value = '';
+        }
+        
+        function updateEditSelectedDriverLanguagesDisplay() {
+            const container = document.getElementById('editSelectedDriverLanguages');
+            
+            if (selectedDriverLanguages.length === 0) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные языки появятся здесь</small>';
+                return;
+            }
+            
+            container.innerHTML = selectedDriverLanguages.map((language, index) => `
+                <div class="flex items-center justify-between bg-blue-50 p-2 rounded">
+                    <span class="text-sm font-medium text-blue-800">${language}</span>
+                    <button type="button" onclick="removeEditLanguageFromDriver(${index})" class="text-red-500 hover:text-red-700 text-sm">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function removeEditLanguageFromDriver(index) {
+            selectedDriverLanguages.splice(index, 1);
+            updateEditSelectedDriverLanguagesDisplay();
+        }
+        
+        // Функции для управления типами транспорта при редактировании
+        function addVehicleTypeToEditDriver() {
+            const select = document.getElementById('editDriverAvailableVehicleTypes');
+            const vehicleType = select.value;
+            
+            if (!vehicleType || selectedDriverVehicleTypes.includes(vehicleType)) {
+                return;
+            }
+            
+            selectedDriverVehicleTypes.push(vehicleType);
+            updateEditSelectedDriverVehicleTypesDisplay();
+            select.value = '';
+        }
+        
+        function updateEditSelectedDriverVehicleTypesDisplay() {
+            const container = document.getElementById('editSelectedDriverVehicleTypes');
+            
+            if (selectedDriverVehicleTypes.length === 0) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные типы транспорта появятся здесь</small>';
+                return;
+            }
+            
+            const vehicleTypeNames = {
+                'sedan': 'Легковой автомобиль',
+                'suv': 'Внедорожник',
+                'minibus': 'Минивэн',
+                'bus': 'Автобус',
+                'truck': 'Грузовик',
+                'motorcycle': 'Мотоцикл',
+                'taxi': 'Такси'
+            };
+            
+            container.innerHTML = selectedDriverVehicleTypes.map((type, index) => `
+                <div class="flex items-center justify-between bg-green-50 p-2 rounded">
+                    <span class="text-sm font-medium text-green-800">${vehicleTypeNames[type] || type}</span>
+                    <button type="button" onclick="removeEditVehicleTypeFromDriver(${index})" class="text-red-500 hover:text-red-700 text-sm">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function removeEditVehicleTypeFromDriver(index) {
+            selectedDriverVehicleTypes.splice(index, 1);
+            updateEditSelectedDriverVehicleTypesDisplay();
+        }
+        
+        // Сохранение изменений водителя
+        async function saveEditDriver() {
+            const driverId = document.getElementById('editDriverId').value;
+            const name = document.getElementById('editDriverFullName').value.trim();
+            const phone = document.getElementById('editDriverPhone').value.trim();
+            const email = document.getElementById('editDriverEmail').value.trim();
+            const experience = parseInt(document.getElementById('editDriverExperience').value);
+            const licenseNumber = document.getElementById('editDriverLicenseNumber').value.trim();
+            const licenseCategory = document.getElementById('editDriverLicenseCategory').value;
+            const workingAreas = document.getElementById('editDriverWorkingAreas').value.trim();
+            const pricePerDay = parseFloat(document.getElementById('editDriverPricePerDay').value) || 0;
+            const pricePerHour = parseFloat(document.getElementById('editDriverPricePerHour').value) || 0;
+            const password = document.getElementById('editDriverPassword').value.trim();
+            
+            // Валидация
+            if (!name || !phone || !email || isNaN(experience) || !licenseCategory) {
+                alert('Пожалуйста, заполните все обязательные поля');
+                return;
+            }
+            
+            if (selectedDriverVehicleTypes.length === 0) {
+                alert('Выберите хотя бы один тип транспорта');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('phone', phone);
+                formData.append('email', email);
+                formData.append('experience', experience.toString());
+                formData.append('licenseNumber', licenseNumber);
+                formData.append('licenseCategory', licenseCategory);
+                formData.append('vehicleTypes', JSON.stringify(selectedDriverVehicleTypes));
+                formData.append('languages', selectedDriverLanguages.join(', '));
+                formData.append('workingAreas', workingAreas);
+                formData.append('pricePerDay', pricePerDay.toString());
+                formData.append('pricePerHour', pricePerHour.toString());
+                
+                if (password) {
+                    formData.append('password', password);
+                }
+                
+                const headers = getAuthHeaders();
+                delete headers['Content-Type']; // Пусть браузер сам установит для FormData
+                
+                const response = await fetch(`${getApiUrl()}/drivers/${driverId}`, {
+                    method: 'PUT',
+                    headers: headers,
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Водитель успешно обновлен!');
+                    closeEditDriverModal();
+                    loadDrivers();
+                } else {
+                    alert('Ошибка при обновлении водителя: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Ошибка сохранения водителя:', error);
+                alert('Ошибка при сохранении водителя: ' + error.message);
+            }
         }
 
         function saveGuide() {
