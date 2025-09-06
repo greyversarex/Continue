@@ -2655,6 +2655,26 @@
             
             return selectedServices;
         }
+        
+        function selectTourServices(services) {
+            console.log('🎯 Выбираем услуги для редактирования тура:', services);
+            
+            // Сначала очищаем все чекбоксы
+            const allCheckboxes = document.querySelectorAll('input[name="includedServices"]');
+            allCheckboxes.forEach(checkbox => checkbox.checked = false);
+            
+            // Затем выбираем нужные
+            services.forEach(service => {
+                const serviceKey = service.key || service; // поддержка старого формата
+                const checkbox = document.querySelector(`input[name="includedServices"][value="${serviceKey}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    console.log('✅ Выбрана услуга:', serviceKey);
+                } else {
+                    console.warn('⚠️ Не найден чекбокс для услуги:', serviceKey);
+                }
+            });
+        }
 
         // Функции removeHighlight и updateHighlightsList удалены - используем выбор услуг из калькулятора
 
@@ -3692,13 +3712,14 @@
                         }
                         
                         // Заполняем сложные поля (массивы)
-                        if (tour.highlights) {
+                        if (tour.services || tour.highlights) {
                             try {
-                                const highlights = typeof tour.highlights === 'string' ? JSON.parse(tour.highlights) : tour.highlights;
-                                window.tourHighlights = highlights || [];
-                                updateHighlightsList();
+                                const services = tour.services ? (typeof tour.services === 'string' ? JSON.parse(tour.services) : tour.services) 
+                                                              : (tour.highlights ? (typeof tour.highlights === 'string' ? JSON.parse(tour.highlights) : tour.highlights) : []);
+                                // Выбираем соответствующие чекбоксы услуг
+                                selectTourServices(services);
                             } catch (e) {
-                                console.warn('Failed to parse highlights:', e);
+                                console.warn('Failed to parse services:', e);
                             }
                         }
                         
@@ -3821,21 +3842,17 @@
                             console.log('✅ Loaded tourPickupInfo:', tour.pickupInfo);
                         }
                         
-                        // Загрузка основных моментов (highlights)
-                        window.tourHighlights = [];
-                        if (tour.highlights) {
+                        // Загрузка услуг тура (заменяет highlights)
+                        if (tour.services || tour.highlights) {
                             try {
-                                window.tourHighlights = typeof tour.highlights === 'string' ? JSON.parse(tour.highlights) : tour.highlights;
+                                const services = tour.services ? (typeof tour.services === 'string' ? JSON.parse(tour.services) : tour.services) 
+                                                              : (tour.highlights ? (typeof tour.highlights === 'string' ? JSON.parse(tour.highlights) : tour.highlights) : []);
+                                // Выбираем соответствующие чекбоксы услуг для второго места загрузки
+                                setTimeout(() => selectTourServices(services), 500); // Отложенный вызов для убеждения, что чекбоксы уже созданы
+                                console.log('✅ Загружены услуги для редактирования тура');
                             } catch (e) {
-                                console.warn('Failed to parse highlights:', e);
-                                window.tourHighlights = [];
+                                console.error('❌ Ошибка при загрузке услуг:', e);
                             }
-                        }
-                        try {
-                            updateHighlightsList();
-                            console.log('✅ Updated highlights list');
-                        } catch (e) {
-                            console.error('❌ Failed to update highlights list:', e);
                         }
                         
                         // Загрузка маршрута (itinerary)
@@ -4151,7 +4168,6 @@
             window.currentTourId = null;
             
             // Очищаем все дополнительные данные
-            window.tourHighlights = [];
             window.tourItinerary = [];
             window.tourGalleryImages = [];
             window.editStartTimes = [];
@@ -4159,8 +4175,11 @@
             window.tourLanguages = window.tourLanguages || [];
             window.tourImageURLs = [];
             
-            // Обновляем списки
-            updateHighlightsList();
+            // Очищаем чекбоксы услуг
+            const serviceCheckboxes = document.querySelectorAll('input[name="includedServices"]');
+            serviceCheckboxes.forEach(checkbox => checkbox.checked = false);
+            
+            // Обновляем списки (без updateHighlightsList)
             updateItineraryList();
             updateGalleryImagesList();
             updateEditStartTimesList();
