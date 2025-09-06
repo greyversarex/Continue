@@ -8485,7 +8485,15 @@
         }
 
         async function updateComponentPrice(componentId, newPrice) {
+            const inputElement = document.querySelector(`input[onchange="updateComponentPrice(${componentId}, this.value)"]`);
+            
             try {
+                // Visual feedback - make input yellow during update
+                if (inputElement) {
+                    inputElement.style.backgroundColor = '#FEF3C7';
+                    inputElement.disabled = true;
+                }
+                
                 const response = await fetch(`${getApiUrl()}/price-calculator/${componentId}`, {
                     method: 'PUT',
                     headers: getAuthHeaders(),
@@ -8501,22 +8509,47 @@
                     if (component) {
                         component.price = parseFloat(newPrice);
                     }
+                    
+                    // Visual success feedback
+                    if (inputElement) {
+                        inputElement.style.backgroundColor = '#D1FAE5'; // Green
+                        setTimeout(() => {
+                            inputElement.style.backgroundColor = '';
+                        }, 2000);
+                    }
+                    
                     console.log('✅ Component price updated successfully');
+                    
+                    // Show success message
+                    showNotification(`💰 Цена обновлена: ${data.data.name} = ${newPrice} TJS`, 'success');
+                    
+                    // Refresh tour pricing components if tour form is open
+                    if (document.getElementById('tourPricingComponents')) {
+                        loadTourPricingComponents();
+                    }
                 } else {
                     console.error('Failed to update component price:', data.message);
-                    alert('Ошибка обновления цены: ' + data.message);
+                    showNotification('❌ Ошибка: ' + data.message, 'error');
                     loadPriceCalculatorComponents(); // Reload to reset
                 }
             } catch (error) {
                 console.error('Error updating component price:', error);
-                alert('Ошибка соединения с сервером');
+                showNotification('❌ Ошибка подключения к серверу', 'error');
                 loadPriceCalculatorComponents(); // Reload to reset
+            } finally {
+                // Re-enable input
+                if (inputElement) {
+                    inputElement.disabled = false;
+                }
             }
         }
 
         function savePriceCalculator() {
-            // All prices are already saved automatically when changed
-            alert('✅ Все изменения автоматически сохранены в базе данных!');
+            // Force reload to ensure sync
+            loadPriceCalculatorComponents();
+            
+            // Show comprehensive status
+            showNotification('✅ Все цены синхронизированы с базой данных и формами туров!', 'success');
         }
 
         function addNewPriceRow() {
