@@ -9945,9 +9945,10 @@
                                 <div class="flex items-center gap-2">
                                     <span class="text-sm text-gray-600 font-medium">TJS</span>
                                     <input type="number" min="0" step="0.01" value="${component.price}" 
-                                           class="w-24 px-2 py-1 border rounded text-center font-semibold text-blue-600"
+                                           class="w-24 px-2 py-1 border rounded text-center font-semibold text-blue-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
                                            id="price_${component.id}"
                                            onchange="updateComponentPrice(${component.id}, this.value)"
+                                           oninput="console.log('💰 Изменение цены компонента ${component.id}:', this.value)"
                                            disabled>
                                     <span class="text-sm text-gray-500">/ ${component.unit}</span>
                                 </div>
@@ -9970,9 +9971,17 @@
             const quantityContainer = document.getElementById(`quantity_container_${componentId}`);
             const priceInput = document.getElementById(`price_${componentId}`);
             
+            console.log(`🔘 Переключение компонента ${componentId}, отмечен: ${isChecked}`);
+            console.log(`📊 Input поле найдено:`, priceInput ? 'ДА' : 'НЕТ');
+            
             if (isChecked) {
                 quantityContainer.style.display = 'flex';
                 priceInput.disabled = false; // Enable price editing when selected
+                priceInput.style.backgroundColor = 'white'; // Визуально показать что доступно
+                priceInput.style.cursor = 'text';
+                
+                console.log(`✅ Разблокировали input для компонента ${componentId}`);
+                console.log(`🔓 Disabled статус после разблокировки:`, priceInput.disabled);
                 
                 const component = tourPricingComponents.find(c => c.id === componentId);
                 if (component) {
@@ -9984,12 +9993,17 @@
                         unit: component.unit,
                         quantity: 1
                     });
+                    console.log(`📝 Добавили компонент в выбранные:`, component.name, 'цена:', priceInput.value);
                 }
             } else {
                 quantityContainer.style.display = 'none';
                 priceInput.disabled = true; // Disable price editing when unselected
+                priceInput.style.backgroundColor = '#f3f4f6'; // Серый фон для заблокированного
+                priceInput.style.cursor = 'not-allowed';
                 priceInput.value = tourPricingComponents.find(c => c.id === componentId)?.price || 0; // Reset to original price
                 selectedTourComponents = selectedTourComponents.filter(c => c.id !== componentId);
+                
+                console.log(`❌ Заблокировали input для компонента ${componentId}`);
             }
             
             calculateTourTotalPrice();
