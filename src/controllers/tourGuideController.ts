@@ -667,7 +667,7 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
         rating: 5.0, // Начальный рейтинг
         login: login, // Добавляем логин
         password: hashedPassword, // ✅ БЕЗОПАСНО: Храним хешированный пароль
-        isActive: isActive !== undefined ? isActive : true,
+        isActive: isActive === 'true' || isActive === true,
         photo: photoPath, // Путь к аватару
         documents: documentsArray.length > 0 ? JSON.stringify(documentsArray) : null // Документы в JSON
       }
