@@ -661,14 +661,13 @@
 
         // Функция создания карточки турагента
         function createAgentCard(agent) {
-            // Парсим JSON данные если они есть
-            const name = JSON.parse(agent.name || '{}');
-            const bio = JSON.parse(agent.bio || '{}');
-            const specializations = JSON.parse(agent.specializations || '{}');
-            const languages = agent.languages || [];
+            // Используем данные напрямую из API
+            const name = agent.name || 'Гид';
+            const description = agent.description || 'Опытный турагент с глубокими знаниями культуры и истории Центральной Азии. Создает незабываемые путешествия для клиентов со всего мира.';
+            const languages = agent.languages ? agent.languages.split(',').map(lang => lang.trim()) : ['Русский', 'Английский'];
             
             // Определяем аватар
-            const avatarUrl = agent.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(name.ru || 'Гид')}&background=667eea&color=fff&size=240`;
+            const avatarUrl = agent.photo || agent.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=667eea&color=fff&size=240`;
             
             // Создаем карточку
             return `
@@ -682,11 +681,11 @@
                     <div class="p-8 text-center">
                         <!-- Аватар -->
                         <div class="mb-6">
-                            <img src="${avatarUrl}" alt="${name.ru || 'Турагент'}" class="agent-avatar mx-auto">
+                            <img src="${avatarUrl}" alt="${name}" class="agent-avatar mx-auto">
                         </div>
                         
                         <!-- Имя и должность -->
-                        <h3 class="text-2xl font-bold text-gray-900 mb-2">${name.ru || 'Турагент'}</h3>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">${name}</h3>
                         <div class="experience-badge mb-4">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
@@ -696,16 +695,14 @@
                         
                         <!-- Описание -->
                         <p class="text-gray-600 mb-6 leading-relaxed">
-                            ${bio.ru || 'Опытный турагент с глубокими знаниями культуры и истории Центральной Азии. Создает незабываемые путешествия для клиентов со всего мира.'}
+                            ${description}
                         </p>
                         
                         <!-- Специализации -->
                         <div class="mb-6">
                             <h4 class="text-sm font-semibold text-gray-700 mb-3">СПЕЦИАЛИЗАЦИИ</h4>
                             <div class="flex flex-wrap gap-2 justify-center">
-                                ${specializations.ru ? specializations.ru.split(',').map(spec => 
-                                    `<span class="skill-tag">${spec.trim()}</span>`
-                                ).join('') : '<span class="skill-tag">Туризм</span><span class="skill-tag">Экскурсии</span>'}
+                                <span class="skill-tag">Туризм</span><span class="skill-tag">Экскурсии</span><span class="skill-tag">Культурные туры</span>
                             </div>
                         </div>
                         
@@ -713,9 +710,9 @@
                         <div class="mb-8">
                             <h4 class="text-sm font-semibold text-gray-700 mb-3">ЯЗЫКИ</h4>
                             <div class="flex flex-wrap gap-2 justify-center">
-                                ${languages.length > 0 ? languages.map(lang => 
+                                ${languages.map(lang => 
                                     `<span class="skill-tag">${lang}</span>`
-                                ).join('') : '<span class="skill-tag">Русский</span><span class="skill-tag">Английский</span>'}
+                                ).join('')}
                             </div>
                         </div>
                         
@@ -742,7 +739,7 @@
                         </div>
                         
                         <!-- Кнопка связи -->
-                        <button class="contact-btn w-full" onclick="contactAgent('${agent.id}', '${name.ru || 'Турагент'}')">
+                        <button class="contact-btn w-full" onclick="contactAgent('${agent.id}', '${name}')">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
