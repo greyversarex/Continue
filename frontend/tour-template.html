@@ -1133,16 +1133,40 @@
                 }
             }
             
-            // Обновляем "Что включено"
-            if (tourData.highlights && tourData.highlights.length > 0) {
-                const includesElement = document.getElementById('tour-includes');
-                if (includesElement) {
-                    includesElement.innerHTML = tourData.highlights.map(highlight => `
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-3 mt-1">✓</span>
-                            <span class="text-gray-700">${highlight}</span>
-                        </li>
-                    `).join('');
+            // Обновляем "Что включено" из services (компоненты тура)
+            const includesElement = document.getElementById('tour-includes');
+            if (includesElement && tourData.services) {
+                try {
+                    let services = [];
+                    
+                    // Парсим services если это JSON строка
+                    if (typeof tourData.services === 'string') {
+                        services = JSON.parse(tourData.services);
+                    } else if (Array.isArray(tourData.services)) {
+                        services = tourData.services;
+                    }
+                    
+                    if (services.length > 0) {
+                        console.log('📋 Отображаем услуги тура:', services);
+                        includesElement.innerHTML = services.map(service => `
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-3 mt-1">✓</span>
+                                <span class="text-gray-700">${service.name}</span>
+                            </li>
+                        `).join('');
+                    }
+                } catch (error) {
+                    console.error('❌ Ошибка парсинга services:', error);
+                    
+                    // Fallback к highlights если services недоступны
+                    if (tourData.highlights && tourData.highlights.length > 0) {
+                        includesElement.innerHTML = tourData.highlights.map(highlight => `
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-3 mt-1">✓</span>
+                                <span class="text-gray-700">${highlight}</span>
+                            </li>
+                        `).join('');
+                    }
                 }
             }
             
