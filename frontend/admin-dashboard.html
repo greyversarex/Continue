@@ -8475,23 +8475,25 @@
         
         // Load all components from database via API (like tour form does)
         async function loadCalculatorComponents() {
-            console.log('🔄 Loading calculator components from database...');
-            const response = await fetch(`${getApiUrl()}/price-calculator`, {
-                headers: getAuthHeaders()
-            });
-            const data = await response.json();
-            
-            if (data.success) {
-                calculatorComponents = data.data;
-                console.log('✅ Loaded', calculatorComponents.length, 'components from database');
-                renderCalculatorComponents();
-            } else {
-                console.error('❌ Failed to load components:', data.message);
-                showErrorMessage('Ошибка загрузки компонентов: ' + data.message);
+            try {
+                console.log('🔄 Loading calculator components from database...');
+                const response = await fetch(`${getApiUrl()}/price-calculator`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    calculatorComponents = data.data;
+                    console.log('✅ Loaded', calculatorComponents.length, 'components from database');
+                    renderCalculatorComponents();
+                } else {
+                    console.error('❌ Failed to load components:', data.message);
+                    showErrorMessage('Ошибка загрузки компонентов: ' + data.message);
+                }
+            } catch (error) {
+                console.error('💥 Error loading components:', error);
+                showErrorMessage('Ошибка соединения с сервером');
             }
-        } catch (error) {
-            console.error('💥 Error loading components:', error);
-            showErrorMessage('Ошибка соединения с сервером');
         }
 
         // Render components grouped by category
