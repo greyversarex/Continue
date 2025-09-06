@@ -752,12 +752,15 @@
 
         // Функция отображения турагентов
         async function displayTourAgents() {
+            console.log('🔄 Starting to load tour agents...');
             const loading = document.getElementById('loading');
             const container = document.getElementById('agentsContainer');
             const emptyState = document.getElementById('emptyState');
             
             try {
+                console.log('📡 Fetching tour agents from API...');
                 const agents = await fetchTourAgents();
+                console.log('✅ Tour agents loaded:', agents);
                 
                 // Скрываем загрузку
                 loading.classList.add('hidden');

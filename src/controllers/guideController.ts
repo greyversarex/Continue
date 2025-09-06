@@ -77,8 +77,16 @@ export const getAllGuides = async (req: Request, res: Response) => {
 
     const formattedGuides = guides.map(guide => {
       try {
+        // Fix photo path to be web-accessible
+        let photoPath = guide.photo;
+        if (photoPath && photoPath.includes('/home/runner/workspace/uploads/')) {
+          // Convert absolute path to relative web path
+          photoPath = photoPath.replace('/home/runner/workspace/', '/');
+        }
+
         return {
           ...guide,
+          photo: photoPath,
           name: typeof guide.name === 'string' && guide.name.startsWith('{') ? JSON.parse(guide.name) : guide.name,
           description: guide.description && typeof guide.description === 'string' && guide.description.startsWith('{') ? JSON.parse(guide.description) : guide.description,
           languages: typeof guide.languages === 'string' && (guide.languages.startsWith('[') || guide.languages.startsWith('"[')) ? 
