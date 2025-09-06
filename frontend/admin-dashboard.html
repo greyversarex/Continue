@@ -1563,16 +1563,6 @@
                         <textarea class="form-input" rows="4" id="tourDescEn" required></textarea>
                     </div>
 
-                    <!-- Услуги включенные в тур -->
-                    <div class="form-group col-span-2">
-                        <label class="form-label">Услуги включенные в тур</label>
-                        <div id="tourServicesContainer" class="grid grid-cols-2 gap-4 p-4 border rounded-lg bg-gray-50">
-                            <div class="text-center col-span-2 text-gray-500" id="servicesLoading">
-                                <i class="fas fa-spinner fa-spin"></i> Загрузка услуг...
-                            </div>
-                        </div>
-                        <small class="text-gray-500">Выберите услуги, которые включены в стоимость тура</small>
-                    </div>
 
                     <!-- Программа тура -->
                     <div class="form-group col-span-2">
@@ -2570,111 +2560,6 @@
         window.tourStartTimes = [];
         window.editStartTimes = [];
 
-        // Функции управления "Услуги включенные в тур"
-        async function loadTourServices() {
-            try {
-                console.log('🔄 Загружаем компоненты цены для формы тура...');
-                const response = await fetch('/api/price-calculator/');
-                const data = await response.json();
-                
-                console.log('📋 Ответ API компонентов цены:', data);
-                
-                if (data.success) {
-                    renderTourServices(data.data);
-                    console.log('✅ Компоненты загружены, количество:', data.data.length);
-                } else {
-                    console.error('❌ Ошибка загрузки компонентов:', data.message);
-                    showServicesError('Ошибка загрузки услуг');
-                }
-            } catch (error) {
-                console.error('❌ Ошибка при загрузке компонентов цены:', error);
-                showServicesError('Ошибка подключения к серверу');
-            }
-        }
-        
-        function renderTourServices(components) {
-            const container = document.getElementById('tourServicesContainer');
-            if (!container) {
-                console.error('❌ Контейнер tourServicesContainer не найден');
-                return;
-            }
-            
-            console.log('📝 Список компонентов:', components.map(c => c.name));
-            console.log('🎨 Начинаем рендеринг компонентов цены...');
-            
-            const servicesHTML = components.map(component => {
-                const categoryIcon = {
-                    'transport': '🚗',
-                    'accommodation': '🏨',
-                    'guide': '👤',
-                    'meal': '🍽️',
-                    'service': '⚙️'
-                }[component.category] || '📋';
-                
-                return `
-                    <div class="flex items-center space-x-2 p-2 bg-white rounded border">
-                        <input type="checkbox" id="service_${component.key}" name="includedServices" 
-                               value="${component.key}" class="rounded" data-price="${component.price}" 
-                               data-unit="${component.unit}" data-name="${component.name}">
-                        <label for="service_${component.key}" class="flex-1 text-sm cursor-pointer">
-                            <span class="mr-1">${categoryIcon}</span>
-                            <strong>${component.name}</strong><br>
-                            <span class="text-xs text-gray-600">${component.price} TJS за ${component.unit}</span>
-                        </label>
-                    </div>
-                `;
-            }).join('');
-            
-            container.innerHTML = servicesHTML;
-            console.log('🔧 Рендерим компоненты, количество:', components.length);
-        }
-        
-        function showServicesError(message) {
-            const container = document.getElementById('tourServicesContainer');
-            if (container) {
-                container.innerHTML = `
-                    <div class="text-center col-span-2 text-red-500">
-                        <i class="fas fa-exclamation-triangle"></i> ${message}
-                    </div>
-                `;
-            }
-        }
-        
-        function getSelectedServices() {
-            const selectedServices = [];
-            const checkboxes = document.querySelectorAll('input[name="includedServices"]:checked');
-            
-            checkboxes.forEach(checkbox => {
-                selectedServices.push({
-                    key: checkbox.value,
-                    name: checkbox.dataset.name,
-                    price: parseFloat(checkbox.dataset.price),
-                    unit: checkbox.dataset.unit
-                });
-            });
-            
-            return selectedServices;
-        }
-        
-        function selectTourServices(services) {
-            console.log('🎯 Выбираем услуги для редактирования тура:', services);
-            
-            // Сначала очищаем все чекбоксы
-            const allCheckboxes = document.querySelectorAll('input[name="includedServices"]');
-            allCheckboxes.forEach(checkbox => checkbox.checked = false);
-            
-            // Затем выбираем нужные
-            services.forEach(service => {
-                const serviceKey = service.key || service; // поддержка старого формата
-                const checkbox = document.querySelector(`input[name="includedServices"][value="${serviceKey}"]`);
-                if (checkbox) {
-                    checkbox.checked = true;
-                    console.log('✅ Выбрана услуга:', serviceKey);
-                } else {
-                    console.warn('⚠️ Не найден чекбокс для услуги:', serviceKey);
-                }
-            });
-        }
 
         // Функции removeHighlight и updateHighlightsList удалены - используем выбор услуг из калькулятора
 
@@ -2886,8 +2771,7 @@
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
                 availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
                 
-                // Услуги включенные в тур (заменяет highlights)
-                services: JSON.stringify(getSelectedServices())
+                // Услуги автоматически синхронизируются из компонентов тура
             };
             
             console.log('💾 Используем правильную функцию saveTourForm для основной формы');
@@ -2961,7 +2845,7 @@
                 pickupInfo: safeGetValue('tourPickupInfo', ''),
                 mainImage: safeGetValue('tourMainImage', ''),
                 images: JSON.stringify(window.tourGalleryImages || []),
-                services: JSON.stringify(getSelectedServices()),
+                // Услуги синхронизируются автоматически
                 itinerary: JSON.stringify(window.tourItinerary || []),
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
                 languages: JSON.stringify(window.tourLanguages || ['Русский']),
@@ -3510,8 +3394,6 @@
             selectedCategories = [];
             updateSelectedCategoriesDisplay();
             
-            // Загружаем услуги для выбора
-            loadTourServices();
             
             document.getElementById('tourModal').classList.add('active');
             
@@ -4092,7 +3974,7 @@
                 pickupInfo: tourPickupInfoEl ? tourPickupInfoEl.value || '' : '',
                 minPeople: tourMinPeopleEl && tourMinPeopleEl.value ? parseInt(tourMinPeopleEl.value) : null,
                 maxPeople: tourMaxPeopleEl && tourMaxPeopleEl.value ? parseInt(tourMaxPeopleEl.value) : null,
-                services: JSON.stringify(getSelectedServices()),
+                // Услуги синхронизируются автоматически
                 itinerary: JSON.stringify(window.tourItinerary || []),
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
                 languages: JSON.stringify(window.tourLanguages || ['Русский']),
