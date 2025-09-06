@@ -8902,7 +8902,7 @@
                 const data = await response.json();
                 if (data.success) {
                     console.log('✅ New component created successfully');
-                    loadPriceCalculatorComponents(); // Reload table
+                    loadCalculatorComponents(); // Reload table
                 } else {
                     console.error('Failed to create component:', data.message);
                     alert('Ошибка создания компонента: ' + data.message);
@@ -8925,7 +8925,7 @@
                 const data = await response.json();
                 if (data.success) {
                     console.log('✅ Component deleted successfully');
-                    loadPriceCalculatorComponents(); // Reload table
+                    loadCalculatorComponents(); // Reload table
                 } else {
                     console.error('Failed to delete component:', data.message);
                     alert('Ошибка удаления компонента: ' + data.message);
@@ -8956,7 +8956,7 @@
                     const data = await response.json();
                     if (data.success) {
                         console.log('✅ Default components initialized');
-                        loadPriceCalculatorComponents(); // Reload table
+                        loadCalculatorComponents(); // Reload table
                         alert('Стандартные цены восстановлены!');
                     } else {
                         console.error('Failed to initialize defaults:', data.message);
@@ -9562,7 +9562,7 @@
             switch(sectionName) {
                 case 'price-calculator':
                     sectionId = 'priceCalculatorSection';
-                    loadPriceCalculatorComponents(); // Load with new hybrid system
+                    loadPriceCalculator(); // Load with new system
                     break;
                 case 'tours':
                     sectionId = 'toursSection';
