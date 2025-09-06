@@ -9,13 +9,14 @@ Bunyod-Tour is a comprehensive tourism booking platform focused on Central Asia.
 Preferred communication style: Simple, everyday language.
 Development approach: Improve existing files rather than creating new ones. User prefers enhancement of existing admin-dashboard.html over creation of separate admin panels.
 Frontend structure alignment: Admin panel must perfectly match the frontend homepage structure with exact block names and tour organization as shown in provided screenshots.
+System integration preference: User requires simplified and unified pricing systems with single source of truth. Eliminated complex manual categorization in favor of automatic detection.
 
 ## System Architecture
 
 ### Backend Framework
 The backend is built with **Express.js and TypeScript**, chosen for type safety, developer productivity, and robust ecosystem support. It follows a **modular architecture** organized into controllers, models, routes, and middleware, adhering to an **MVC pattern** for clear separation of concerns.
 
-### System Status (Updated September 5, 2025)
+### System Status (Updated September 6, 2025)
 - **✅ Full CRUD Operations**: All create, read, update, delete operations tested and working
 - **✅ Multilingual Support**: JSON-based multilingual content properly implemented (Russian, English, Tajik)
 - **✅ Database Integration**: PostgreSQL with Prisma ORM fully operational
@@ -29,6 +30,8 @@ The backend is built with **Express.js and TypeScript**, chosen for type safety,
 - **✅ Tour Guide Cabinet System**: Fully operational with real-time tour management, status updates, and tourist tracking. All demo data replaced with live API integration.
 - **✅ Driver Management System**: Complete driver management system with authentication, vehicle categories, and admin panel integration successfully implemented and tested.
 - **✅ Country and City Management System**: Full geographic management system with models for 5 Central Asian countries (Tajikistan, Uzbekistan, Kyrgyzstan, Kazakhstan, Turkmenistan) and 10 cities. Includes multilingual support, admin panel integration, and dynamic dropdown lists for forms.
+- **✅ Unified Pricing System**: Fixed critical disconnection between price calculator and tour components. Eliminated duplicate loadPriceCalculator() functions and established single source of truth for pricing components.
+- **✅ Simplified Component Creation**: Removed manual category selection from price calculator form and implemented automatic category detection based on service name keywords.
 
 ### Database Layer
 **PostgreSQL with Prisma ORM** is used for the database. PostgreSQL provides robust relational database features with excellent scalability, while Prisma provides type-safe database access and excellent TypeScript integration. The schema includes **Tours** with multilingual JSON fields, **Categories** for classification, **TourBlocks** for frontend organization, and new **TourGuideProfile** and **GuideReview** models for tour guide management, maintaining foreign key relationships. The database contains tours organized into blocks matching the frontend structure. A global Prisma client instance manages database connections with graceful shutdown.
