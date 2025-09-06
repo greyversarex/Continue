@@ -8519,12 +8519,6 @@
                 console.log('📋 Response data:', data);
                 
                 if (data.success) {
-                    // Update local data
-                    const component = priceCalculatorComponents.find(c => c.id === componentId);
-                    if (component) {
-                        component.price = parseFloat(newPrice);
-                    }
-                    
                     // Visual success feedback
                     if (inputElement) {
                         inputElement.style.backgroundColor = '#D1FAE5'; // Green
