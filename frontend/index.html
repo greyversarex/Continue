@@ -2206,6 +2206,8 @@
                     date: document.getElementById('dateFilter').value
                 };
 
+                console.log('🔍 Searching tours with filters:', filters);
+
                 // Убираем пустые фильтры
                 const queryParams = new URLSearchParams();
                 Object.entries(filters).forEach(([key, value]) => {
@@ -2214,20 +2216,43 @@
                     }
                 });
 
-                const response = await fetch(`${window.location.origin}/api/tours/search?${queryParams}`);
-                const result = await response.json();
+                // Конвертируем страны и города в ID для API запроса
+                if (filters.country) {
+                    const country = countriesData.find(c => c.nameRu === filters.country);
+                    if (country) {
+                        queryParams.set('countryId', country.id.toString());
+                        queryParams.delete('country');
+                    }
+                }
                 
+                if (filters.city) {
+                    const city = citiesData.find(c => c.nameRu === filters.city);
+                    if (city) {
+                        queryParams.set('cityId', city.id.toString());
+                        queryParams.delete('city');
+                    }
+                }
+
+                // Вызываем API для поиска туров
+                const apiUrl = `/api/tours?${queryParams.toString()}`;
+                console.log('📡 API URL:', apiUrl);
+                
+                const response = await fetch(apiUrl);
+                const result = await response.json();
+
                 if (result.success) {
+                    console.log('✅ Tours found:', result.data.length);
                     displaySearchResults(result.data);
                 } else {
-                    console.error('Ошибка поиска:', result.error);
+                    console.error('❌ Search error:', result.error);
                     displayMockSearchResults('');
                 }
             } catch (error) {
-                console.error('Ошибка загрузки туров:', error);
+                console.error('❌ Error searching tours:', error);
                 displayMockSearchResults('');
             }
         }
+
 
         // Функция для отображения демо результатов
         function displayMockSearchResults(query) {
