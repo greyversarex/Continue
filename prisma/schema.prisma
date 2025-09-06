@@ -199,6 +199,9 @@ model Driver {
   licenseCategory  String?     // Категория прав (B, C, D, E и т.д.)
   vehicleTypes     String?     // JSON массив типов транспорта ["sedan", "suv", "minibus", "bus", "truck"]
   vehicleInfo      String?     // JSON информация о транспорте [{model: "", year: "", plate: "", capacity: ""}]
+  vehicleBrand     String?     // Марка автомобиля
+  vehicleYear      Int?        // Год выпуска автомобиля
+  vehiclePhotos    String?     // JSON массив фотографий транспорта
   experience       Int?        // Стаж вождения в годах
   contact          String?     // JSON контактная информация
   rating           Float?      // Рейтинг водителя
