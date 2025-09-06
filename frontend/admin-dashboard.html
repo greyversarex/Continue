@@ -3160,9 +3160,9 @@
         }
 
         function updateEditStartTimesList() {
-            const container = document.getElementById('editStartTimesList');
+            const container = document.getElementById('startTimesList');
             if (!container) {
-                console.warn('editStartTimesList container not found');
+                console.warn('startTimesList container not found');
                 return;
             }
             container.innerHTML = window.editStartTimes.map((time, index) => `
