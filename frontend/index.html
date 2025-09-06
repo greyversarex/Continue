@@ -1852,14 +1852,57 @@
             }
         }
 
-        // Данные о городах по странам
-        const citiesByCountry = {
-            'Таджикистан': ['Душанбе', 'Худжанд', 'Хорог', 'Куляб', 'Курган-Тюбе', 'Истаравшан'],
-            'Узбекистан': ['Самарканд', 'Ташкент', 'Бухара', 'Хива', 'Фергана', 'Андижан'],
-            'Киргизстан': ['Бишкек', 'Ош', 'Каракол', 'Нарын', 'Джалал-Абад'],
-            'Казахстан': ['Алматы', 'Нур-Султан', 'Шымкент', 'Караганда', 'Актобе'],
-            'Туркменистан': ['Ашхабад', 'Туркменабад', 'Дашогуз', 'Мары', 'Балканабад']
-        };
+        // Данные о городах по странам - загружаются динамически из API
+        let citiesByCountry = {};
+        let countriesData = [];
+        let citiesData = [];
+        
+        // Загрузка стран и городов из API
+        async function loadCountriesAndCities() {
+            try {
+                // Загружаем страны
+                const countriesResponse = await fetch('/api/countries');
+                if (countriesResponse.ok) {
+                    const countriesResult = await countriesResponse.json();
+                    if (countriesResult.success) {
+                        countriesData = countriesResult.data;
+                        console.log('✅ Countries loaded:', countriesData.length);
+                    }
+                }
+                
+                // Загружаем города
+                const citiesResponse = await fetch('/api/cities');
+                if (citiesResponse.ok) {
+                    const citiesResult = await citiesResponse.json();
+                    if (citiesResult.success) {
+                        citiesData = citiesResult.data;
+                        console.log('✅ Cities loaded:', citiesData.length);
+                        
+                        // Группируем города по странам
+                        citiesByCountry = {};
+                        countriesData.forEach(country => {
+                            const countryName = country.nameRu;
+                            const countryCities = citiesData.filter(city => 
+                                city.countryId === country.id
+                            ).map(city => city.nameRu);
+                            citiesByCountry[countryName] = countryCities;
+                        });
+                        
+                        console.log('✅ Cities organized by country:', citiesByCountry);
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Error loading countries and cities:', error);
+                // Fallback к старым данным если API недоступен
+                citiesByCountry = {
+                    'Таджикистан': ['Душанбе', 'Худжанд', 'Хорог'],
+                    'Узбекистан': ['Ташкент', 'Самарканд', 'Бухара'],
+                    'Кыргызстан': ['Бишкек'],
+                    'Казахстан': ['Астана', 'Алматы'],
+                    'Туркменистан': ['Ашхабад']
+                };
+            }
+        }
 
         // Данные отелей по странам
         const hotelsByCountry = {
@@ -1958,8 +2001,8 @@
                 return;
             }
             
-            // Включаем фильтры для определённых стран
-            const countriesWithHotels = ['Таджикистан', 'Узбекистан', 'Кыргызстан', 'Казахстан'];
+            // Включаем фильтры для определённых стран (используем динамические данные)
+            const countriesWithHotels = countriesData.map(c => c.nameRu) || ['Таджикистан', 'Узбекистан', 'Кыргызстан', 'Казахстан'];
             
             if (countriesWithHotels.includes(country)) {
                 hotelBrandFilter.disabled = false;
@@ -2986,8 +3029,12 @@
         }
 
         // Загружаем туры и слайды при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM loaded, initializing...');
+            
+            // Сначала загружаем страны и города для фильтров
+            await loadCountriesAndCities();
+            
             loadTourBlocks();
             loadSlides();
             initializeCurrency();

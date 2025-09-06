@@ -614,14 +614,48 @@
     </div>
 
     <script>
-        // Данные городов по странам
-        const citiesByCountry = {
-            "Таджикистан": ["Душанбе", "Хорог", "Худжанд"],
-            "Узбекистан": ["Ташкент", "Самарканд", "Бухара"],
-            "Киргизстан": ["Бишкек"],
-            "Казахстан": ["Астана", "Алматы"],
-            "Туркменистан": ["Ашхабад"]
-        };
+        // Данные городов по странам - загружаются динамически из API
+        let citiesByCountry = {};
+        
+        // Загрузка стран и городов из API
+        async function loadCountriesAndCities() {
+            try {
+                // Загружаем страны
+                const countriesResponse = await fetch('/api/countries');
+                const countriesResult = await countriesResponse.json();
+                
+                // Загружаем города
+                const citiesResponse = await fetch('/api/cities');
+                const citiesResult = await citiesResponse.json();
+                
+                if (countriesResult.success && citiesResult.success) {
+                    const countriesData = countriesResult.data;
+                    const citiesData = citiesResult.data;
+                    
+                    // Группируем города по странам
+                    citiesByCountry = {};
+                    countriesData.forEach(country => {
+                        const countryName = country.nameRu;
+                        const countryCities = citiesData.filter(city => 
+                            city.countryId === country.id
+                        ).map(city => city.nameRu);
+                        citiesByCountry[countryName] = countryCities;
+                    });
+                    
+                    console.log('✅ Cities loaded for tours page:', citiesByCountry);
+                }
+            } catch (error) {
+                console.error('❌ Error loading countries and cities:', error);
+                // Fallback к старым данным
+                citiesByCountry = {
+                    "Таджикистан": ["Душанбе", "Хорог", "Худжанд"],
+                    "Узбекистан": ["Ташкент", "Самарканд", "Бухара"],
+                    "Кыргызстан": ["Бишкек"],
+                    "Казахстан": ["Астана", "Алматы"],
+                    "Туркменистан": ["Ашхабад"]
+                };
+            }
+        }
 
         // Обработчик изменения страны
         document.getElementById('countrySelect').addEventListener('change', function() {
@@ -647,7 +681,11 @@
         });
 
         // Загрузка туров при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Сначала загружаем страны и города
+            await loadCountriesAndCities();
+            
+            // Затем загружаем туры
             loadTours();
         });
 
