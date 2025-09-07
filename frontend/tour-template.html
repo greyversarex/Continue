@@ -1123,23 +1123,34 @@
             if (includesElement) {
                 let includedServices = [];
                 
+                console.log('🔍 Проверяем поле services в tourData:', tourData.services);
+                console.log('🔍 Тип поля services:', typeof tourData.services);
+                
                 // Основной источник: компоненты тура (services) - они автоматически синхронизируются в админ панели
                 if (tourData.services) {
                     try {
                         let services = [];
                         if (typeof tourData.services === 'string') {
+                            console.log('🔍 Парсим services как JSON строку:', tourData.services);
                             services = JSON.parse(tourData.services);
                         } else if (Array.isArray(tourData.services)) {
+                            console.log('🔍 Services уже массив:', tourData.services);
                             services = tourData.services;
                         }
+                        
+                        console.log('🔍 Распарсенные services:', services);
                         
                         if (services.length > 0) {
                             includedServices = services.map(service => service.name);
                             console.log('📋 Отображаем услуги из компонентов тура:', includedServices);
+                        } else {
+                            console.log('⚠️ Массив services пустой');
                         }
                     } catch (error) {
-                        console.error('❌ Ошибка парсинга services:', error);
+                        console.error('❌ Ошибка парсинга services:', error, 'Исходные данные:', tourData.services);
                     }
+                } else {
+                    console.log('⚠️ Поле services отсутствует в tourData');
                 }
                 
                 // Отображаем услуги
@@ -1151,12 +1162,18 @@
                         </li>
                     `).join('');
                 } else {
-                    includesElement.innerHTML = `
+                    // Добавляем отладочную информацию
+                    const debugInfo = `
+                        <li class="flex items-start">
+                            <span class="text-gray-400 mr-3 mt-1">🔍</span>
+                            <span class="text-gray-500">ОТЛАДКА: tourData.services = ${JSON.stringify(tourData.services)}</span>
+                        </li>
                         <li class="flex items-start">
                             <span class="text-gray-400 mr-3 mt-1">ℹ</span>
                             <span class="text-gray-500">Выберите компоненты тура в админ панели</span>
                         </li>
                     `;
+                    includesElement.innerHTML = debugInfo;
                 }
             }
             
