@@ -68,7 +68,6 @@ export const paylerController = {
       };
 
       // Отправить запрос к боевому Payler StartSession API (убрали sandbox)
-      const fetch = require('node-fetch');
       const response = await fetch('https://secure.payler.com/gapi/StartSession', {
         method: 'POST',
         headers: {
