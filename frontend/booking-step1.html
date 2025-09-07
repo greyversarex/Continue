@@ -568,7 +568,13 @@
             updatePriceSummary();
             
             // 🎯 КРИТИЧНО: Обновляем итоговую цену при изменении номеров
-            updateTotalPriceWithServerCalculation();
+            // Добавляем небольшую задержку чтобы избежать спама запросов
+            if (updateTotalPriceWithServerCalculation.timeout) {
+                clearTimeout(updateTotalPriceWithServerCalculation.timeout);
+            }
+            updateTotalPriceWithServerCalculation.timeout = setTimeout(() => {
+                updateTotalPriceWithServerCalculation();
+            }, 300);
         }
 
         function selectMeal(hotelId, mealType, price) {
@@ -1022,23 +1028,67 @@
             }
         }
 
-        // 🎯 НОВАЯ ФУНКЦИЯ: Обновляет итоговую цену через сервер
+        // 🎯 ИСПРАВЛЕННАЯ ФУНКЦИЯ: Обновляет итоговую цену через сервер
         async function updateTotalPriceWithServerCalculation() {
-            if (!bookingState.selectedHotel || !bookingState.bookingId) {
+            // Нужен только bookingId, отель может быть любой из доступных
+            if (!bookingState.bookingId || !bookingState.availableHotels) {
+                console.log('⚠️ Cannot calculate price - missing bookingId or hotels');
+                return;
+            }
+
+            // Найти отель с выбранными номерами
+            let targetHotelId = null;
+            let roomSelectionForAPI = {};
+            
+            for (const [hotelId, rooms] of Object.entries(bookingState.roomSelection)) {
+                const hasSelectedRooms = Object.values(rooms).some(quantity => quantity > 0);
+                if (hasSelectedRooms) {
+                    targetHotelId = parseInt(hotelId);
+                    
+                    // Преобразуем данные в формат для API
+                    for (const [roomType, quantity] of Object.entries(rooms)) {
+                        if (quantity > 0) {
+                            // Найти цену комнаты из данных отеля
+                            const hotelData = bookingState.availableHotels.find(h => h.id == hotelId);
+                            if (hotelData && hotelData.roomTypes) {
+                                let roomTypes = {};
+                                try {
+                                    roomTypes = typeof hotelData.roomTypes === 'string' ? 
+                                        JSON.parse(hotelData.roomTypes) : hotelData.roomTypes;
+                                } catch (e) {
+                                    console.warn('Failed to parse room types:', hotelData.roomTypes);
+                                }
+                                
+                                if (roomTypes[roomType]) {
+                                    roomSelectionForAPI[roomType] = {
+                                        price: parseFloat(roomTypes[roomType].price),
+                                        quantity: quantity
+                                    };
+                                }
+                            }
+                        }
+                    }
+                    break; // Используем первый отель с выбранными номерами
+                }
+            }
+
+            if (!targetHotelId) {
+                console.log('⚠️ No hotel with selected rooms found');
                 return;
             }
 
             try {
-                // Отправляем текущие выборы на сервер для пересчёта
+                console.log(`💰 Calculating price for hotel ${targetHotelId} with rooms:`, roomSelectionForAPI);
+                
                 const response = await fetch(`/api/booking/${bookingState.bookingId}/calculate-price`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        hotelId: parseInt(bookingState.selectedHotel),
-                        roomSelection: bookingState.roomSelection[bookingState.selectedHotel] || {},
-                        mealSelection: bookingState.mealSelection[bookingState.selectedHotel] || {}
+                        hotelId: targetHotelId,
+                        roomSelection: roomSelectionForAPI,
+                        mealSelection: bookingState.mealSelection[targetHotelId] || {}
                     })
                 });
 
@@ -1049,6 +1099,8 @@
                         console.log(`💰 Updated price from server: ${data.data.totalPrice} TJS`);
                         updateTotalPrice();
                     }
+                } else {
+                    console.error('Price calculation failed:', response.status);
                 }
             } catch (error) {
                 console.error('Error calculating price:', error);
