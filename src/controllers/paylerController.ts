@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/database';
 import { emailService } from '../services/emailService';
 import crypto from 'crypto';
+import fetch from 'node-fetch';
 
 export const paylerController = {
   /**
