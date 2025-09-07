@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bunyod-Tour - Кабинет водителя</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .event-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #3b82f6;
+        }
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .event-pending {
+            border-left-color: #f59e0b;
+        }
+        .event-started {
+            border-left-color: #10b981;
+        }
+        .event-completed {
+            border-left-color: #6b7280;
+        }
+        .btn-action {
+            transition: all 0.3s ease;
+        }
+        .btn-action:hover {
+            transform: scale(1.05);
+        }
+        .status-badge {
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        .status-started {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-completed {
+            background: #e5e7eb;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen p-6">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="dashboard-card p-6 mb-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">
+                            <i class="fas fa-car mr-3 text-blue-600"></i>
+                            Кабинет водителя
+                        </h1>
+                        <p class="text-gray-600 mt-2">Управление назначенными событиями и турами</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500">Добро пожаловать,</p>
+                            <p class="font-semibold text-gray-800" id="driverName">Водитель</p>
+                        </div>
+                        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Выйти
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div class="dashboard-card p-6 text-center">
+                    <div class="text-3xl font-bold text-yellow-600" id="pendingCount">0</div>
+                    <div class="text-gray-600">Ожидающие</div>
+                </div>
+                <div class="dashboard-card p-6 text-center">
+                    <div class="text-3xl font-bold text-green-600" id="startedCount">0</div>
+                    <div class="text-gray-600">В процессе</div>
+                </div>
+                <div class="dashboard-card p-6 text-center">
+                    <div class="text-3xl font-bold text-gray-600" id="completedCount">0</div>
+                    <div class="text-gray-600">Завершённые</div>
+                </div>
+                <div class="dashboard-card p-6 text-center">
+                    <div class="text-3xl font-bold text-blue-600" id="totalCount">0</div>
+                    <div class="text-gray-600">Всего событий</div>
+                </div>
+            </div>
+
+            <!-- Events List -->
+            <div class="dashboard-card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-calendar-alt mr-3 text-blue-600"></i>
+                        Назначенные события
+                    </h2>
+                    <button onclick="refreshEvents()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
+                        <i class="fas fa-sync-alt mr-2"></i>Обновить
+                    </button>
+                </div>
+
+                <!-- Loading state -->
+                <div id="loadingEvents" class="text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-3xl text-blue-600 mb-4"></i>
+                    <p class="text-gray-600">Загрузка событий...</p>
+                </div>
+
+                <!-- No events message -->
+                <div id="noEvents" class="text-center py-8 hidden">
+                    <i class="fas fa-calendar-times text-6xl text-gray-400 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Нет назначенных событий</h3>
+                    <p class="text-gray-500">В данный момент у вас нет назначенных событий</p>
+                </div>
+
+                <!-- Events container -->
+                <div id="eventsContainer" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let driverToken = localStorage.getItem('driverToken');
+        let driverInfo = JSON.parse(localStorage.getItem('driverInfo') || '{}');
+
+        // Check authentication
+        if (!driverToken) {
+            window.location.href = '/driver-login.html';
+        }
+
+        // Set driver name
+        if (driverInfo.name) {
+            document.getElementById('driverName').textContent = driverInfo.name;
+        }
+
+        // Load events on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEvents();
+        });
+
+        async function loadEvents() {
+            try {
+                showLoading(true);
+                
+                const response = await fetch('/api/drivers/my-events', {
+                    headers: {
+                        'Authorization': `Bearer ${driverToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayEvents(data.data);
+                    updateStats(data.data);
+                } else {
+                    throw new Error(data.message || 'Ошибка загрузки событий');
+                }
+            } catch (error) {
+                console.error('Error loading events:', error);
+                showError('Ошибка загрузки событий: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayEvents(events) {
+            const container = document.getElementById('eventsContainer');
+            const noEventsDiv = document.getElementById('noEvents');
+            
+            if (!events || events.length === 0) {
+                container.innerHTML = '';
+                noEventsDiv.classList.remove('hidden');
+                return;
+            }
+
+            noEventsDiv.classList.add('hidden');
+            
+            container.innerHTML = events.map(event => `
+                <div class="event-card event-${event.status} bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-2">
+                                <h3 class="text-xl font-semibold text-gray-800 mr-3">${event.title}</h3>
+                                <span class="status-badge status-${event.status}">
+                                    ${getStatusText(event.status)}
+                                </span>
+                            </div>
+                            <p class="text-gray-600 mb-2">
+                                <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>
+                                Тур: ${event.tourTitle}
+                            </p>
+                            <p class="text-gray-600 mb-2">
+                                <i class="fas fa-clock mr-2 text-blue-500"></i>
+                                Время: ${event.time}
+                            </p>
+                            <p class="text-gray-600">
+                                <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                                ${event.description}
+                            </p>
+                        </div>
+                        <div class="flex flex-col space-y-2 ml-4">
+                            ${getActionButtons(event)}
+                        </div>
+                    </div>
+                    
+                    ${event.startedAt ? `
+                        <div class="mt-4 p-3 bg-green-50 rounded-lg">
+                            <p class="text-sm text-green-700">
+                                <i class="fas fa-play mr-2"></i>
+                                Запущено: ${formatDateTime(event.startedAt)}
+                            </p>
+                        </div>
+                    ` : ''}
+                    
+                    ${event.completedAt ? `
+                        <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                            <p class="text-sm text-gray-700">
+                                <i class="fas fa-check mr-2"></i>
+                                Завершено: ${formatDateTime(event.completedAt)}
+                            </p>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'Ожидает',
+                'started': 'В процессе',
+                'completed': 'Завершено'
+            };
+            return statusMap[status] || status;
+        }
+
+        function getActionButtons(event) {
+            if (event.status === 'pending') {
+                return `
+                    <button onclick="startEvent('${event.id}')" 
+                            class="btn-action bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-play mr-2"></i>Запустить
+                    </button>
+                `;
+            } else if (event.status === 'started') {
+                return `
+                    <button onclick="completeEvent('${event.id}')" 
+                            class="btn-action bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-check mr-2"></i>Завершить
+                    </button>
+                `;
+            } else {
+                return `
+                    <span class="text-gray-500 text-sm">
+                        <i class="fas fa-check-circle mr-2"></i>Выполнено
+                    </span>
+                `;
+            }
+        }
+
+        async function startEvent(eventId) {
+            if (!confirm('Вы уверены, что хотите запустить это событие?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/drivers/events/${eventId}/start`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${driverToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccess('Событие успешно запущено');
+                    loadEvents(); // Reload events
+                } else {
+                    throw new Error(data.message || 'Ошибка запуска события');
+                }
+            } catch (error) {
+                console.error('Error starting event:', error);
+                showError('Ошибка запуска события: ' + error.message);
+            }
+        }
+
+        async function completeEvent(eventId) {
+            if (!confirm('Вы уверены, что хотите завершить это событие?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/drivers/events/${eventId}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${driverToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccess('Событие успешно завершено');
+                    loadEvents(); // Reload events
+                } else {
+                    throw new Error(data.message || 'Ошибка завершения события');
+                }
+            } catch (error) {
+                console.error('Error completing event:', error);
+                showError('Ошибка завершения события: ' + error.message);
+            }
+        }
+
+        function updateStats(events) {
+            const stats = events.reduce((acc, event) => {
+                acc[event.status] = (acc[event.status] || 0) + 1;
+                acc.total++;
+                return acc;
+            }, { pending: 0, started: 0, completed: 0, total: 0 });
+
+            document.getElementById('pendingCount').textContent = stats.pending;
+            document.getElementById('startedCount').textContent = stats.started;
+            document.getElementById('completedCount').textContent = stats.completed;
+            document.getElementById('totalCount').textContent = stats.total;
+        }
+
+        function refreshEvents() {
+            loadEvents();
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loadingEvents');
+            const container = document.getElementById('eventsContainer');
+            const noEvents = document.getElementById('noEvents');
+            
+            if (show) {
+                loading.classList.remove('hidden');
+                container.innerHTML = '';
+                noEvents.classList.add('hidden');
+            } else {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function formatDateTime(dateTimeString) {
+            const date = new Date(dateTimeString);
+            return date.toLocaleString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showSuccess(message) {
+            // Simple success notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    ${message}
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function showError(message) {
+            // Simple error notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg z-50';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    ${message}
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                localStorage.removeItem('driverToken');
+                localStorage.removeItem('driverInfo');
+                window.location.href = '/driver-login.html';
+            }
+        }
+    </script>
+</body>
+</html>

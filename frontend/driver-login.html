@@ -221,8 +221,8 @@
                 
                 if (data.success) {
                     // Сохраняем токен
-                    localStorage.setItem('driverToken', data.token);
-                    localStorage.setItem('driverProfile', JSON.stringify(data.driver));
+                    localStorage.setItem('driverToken', data.data.token);
+                    localStorage.setItem('driverInfo', JSON.stringify(data.data.driver));
                     
                     showSuccess('Авторизация успешна! Перенаправление...');
                     

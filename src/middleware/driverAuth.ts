@@ -51,8 +51,8 @@ export const authenticateDriver = async (req: AuthenticatedRequest, res: Respons
     }
 
     // Добавляем информацию о водителе в запрос
-    req.driverId = driver.id;
-    req.driver = driver;
+    (req as any).driverId = driver.id;
+    (req as any).driver = driver;
 
     next();
 
