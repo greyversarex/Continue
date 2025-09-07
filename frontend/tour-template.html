@@ -1118,40 +1118,65 @@
                 }
             }
             
-            // Обновляем "Что включено" из services (компоненты тура)
+            // Обновляем "Что включено" из includes (админ панель "Услуги включенные в тур")
             const includesElement = document.getElementById('tour-includes');
-            if (includesElement && tourData.services) {
-                try {
-                    let services = [];
-                    
-                    // Парсим services если это JSON строка
-                    if (typeof tourData.services === 'string') {
-                        services = JSON.parse(tourData.services);
-                    } else if (Array.isArray(tourData.services)) {
-                        services = tourData.services;
+            if (includesElement) {
+                let includedServices = [];
+                
+                // Приоритет 1: данные из поля includes (админ панель)
+                if (tourData.includes) {
+                    try {
+                        if (typeof tourData.includes === 'string') {
+                            includedServices = JSON.parse(tourData.includes);
+                        } else if (Array.isArray(tourData.includes)) {
+                            includedServices = tourData.includes;
+                        }
+                        console.log('📋 Загружены включенные услуги из админ панели:', includedServices);
+                    } catch (error) {
+                        console.error('❌ Ошибка парсинга includes:', error);
                     }
-                    
-                    if (services.length > 0) {
-                        console.log('📋 Отображаем услуги тура:', services);
-                        includesElement.innerHTML = services.map(service => `
-                            <li class="flex items-start">
-                                <span class="text-green-600 mr-3 mt-1">✓</span>
-                                <span class="text-gray-700">${service.name}</span>
-                            </li>
-                        `).join('');
+                }
+                
+                // Приоритет 2: данные из поля services (компоненты тура) 
+                if (includedServices.length === 0 && tourData.services) {
+                    try {
+                        let services = [];
+                        if (typeof tourData.services === 'string') {
+                            services = JSON.parse(tourData.services);
+                        } else if (Array.isArray(tourData.services)) {
+                            services = tourData.services;
+                        }
+                        
+                        if (services.length > 0) {
+                            includedServices = services.map(service => service.name);
+                            console.log('📋 Загружены услуги из компонентов тура:', includedServices);
+                        }
+                    } catch (error) {
+                        console.error('❌ Ошибка парсинга services:', error);
                     }
-                } catch (error) {
-                    console.error('❌ Ошибка парсинга services:', error);
-                    
-                    // Fallback к highlights если services недоступны
-                    if (tourData.highlights && tourData.highlights.length > 0) {
-                        includesElement.innerHTML = tourData.highlights.map(highlight => `
-                            <li class="flex items-start">
-                                <span class="text-green-600 mr-3 mt-1">✓</span>
-                                <span class="text-gray-700">${highlight}</span>
-                            </li>
-                        `).join('');
-                    }
+                }
+                
+                // Приоритет 3: данные из поля highlights (fallback)
+                if (includedServices.length === 0 && tourData.highlights && tourData.highlights.length > 0) {
+                    includedServices = tourData.highlights;
+                    console.log('📋 Загружены услуги из highlights:', includedServices);
+                }
+                
+                // Отображаем услуги
+                if (includedServices.length > 0) {
+                    includesElement.innerHTML = includedServices.map(service => `
+                        <li class="flex items-start">
+                            <span class="text-green-600 mr-3 mt-1">✓</span>
+                            <span class="text-gray-700">${service}</span>
+                        </li>
+                    `).join('');
+                } else {
+                    includesElement.innerHTML = `
+                        <li class="flex items-start">
+                            <span class="text-gray-400 mr-3 mt-1">ℹ</span>
+                            <span class="text-gray-500">Информация о включенных услугах не указана</span>
+                        </li>
+                    `;
                 }
             }
             
