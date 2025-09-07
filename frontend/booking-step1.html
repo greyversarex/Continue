@@ -566,6 +566,9 @@
             }
             
             updatePriceSummary();
+            
+            // 🎯 КРИТИЧНО: Обновляем итоговую цену при изменении номеров
+            updateTotalPriceWithServerCalculation();
         }
 
         function selectMeal(hotelId, mealType, price) {
@@ -583,6 +586,9 @@
             }
             
             updatePriceSummary();
+            
+            // 🎯 КРИТИЧНО: Обновляем итоговую цену при изменении питания
+            updateTotalPriceWithServerCalculation();
         }
 
         function selectHotel(hotelId) {
@@ -1013,6 +1019,39 @@
             const totalPriceElement = document.getElementById('total-price');
             if (totalPriceElement && bookingState.totalPrice) {
                 totalPriceElement.textContent = formatCurrencyWithEquivalent(bookingState.totalPrice);
+            }
+        }
+
+        // 🎯 НОВАЯ ФУНКЦИЯ: Обновляет итоговую цену через сервер
+        async function updateTotalPriceWithServerCalculation() {
+            if (!bookingState.selectedHotel || !bookingState.bookingId) {
+                return;
+            }
+
+            try {
+                // Отправляем текущие выборы на сервер для пересчёта
+                const response = await fetch(`/api/booking/${bookingState.bookingId}/calculate-price`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        hotelId: parseInt(bookingState.selectedHotel),
+                        roomSelection: bookingState.roomSelection[bookingState.selectedHotel] || {},
+                        mealSelection: bookingState.mealSelection[bookingState.selectedHotel] || {}
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.data && data.data.totalPrice) {
+                        bookingState.totalPrice = data.data.totalPrice;
+                        console.log(`💰 Updated price from server: ${data.data.totalPrice} TJS`);
+                        updateTotalPrice();
+                    }
+                }
+            } catch (error) {
+                console.error('Error calculating price:', error);
             }
         }
 

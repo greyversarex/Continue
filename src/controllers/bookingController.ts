@@ -67,6 +67,118 @@ interface BookingPaymentData {
 
 export const bookingController = {
   /**
+   * Рассчитать цену бронирования без сохранения (для live-обновлений)
+   */
+  async calculatePrice(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { hotelId, roomSelection, mealSelection } = req.body;
+
+      // Найти бронирование
+      const existingBooking = await prisma.booking.findUnique({
+        where: { id: parseInt(id) },
+        include: {
+          tour: true,
+          hotel: true
+        }
+      });
+
+      if (!existingBooking) {
+        return res.status(404).json({
+          success: false,
+          message: 'Booking not found'
+        });
+      }
+
+      // Рассчитать общую стоимость (копия логики из updateBooking)
+      let totalPrice = 0;
+      
+      // Базовая стоимость тура
+      const tourPrice = parseFloat(existingBooking.tour.price);
+      const tourPriceType = existingBooking.tour.priceType;
+      
+      if (tourPriceType === 'за человека') {
+        totalPrice += tourPrice * existingBooking.numberOfTourists;
+      } else {
+        totalPrice += tourPrice; // За группу
+      }
+
+      // ЛОГИКА ЗАМЕНЫ ПРОЖИВАНИЯ: Если выбран отель, вычесть компонент проживания тура и добавить отель
+      if (roomSelection && hotelId) {
+        const tourDuration = parseInt(existingBooking.tour.duration.replace(/\D/g, '')) || 1;
+        
+        // Получаем цену проживания из компонентов тура
+        const tourAccommodationPrice = await getAccommodationPriceFromTour(existingBooking.tour.services || '');
+        
+        console.log(`💰 Calculate - Tour base price: ${totalPrice} TJS`);
+        console.log(`🏨 Calculate - Tour accommodation component: ${tourAccommodationPrice} TJS`);
+        
+        // Вычитаем стоимость компонента проживания из тура
+        if (tourAccommodationPrice > 0) {
+          if (tourPriceType === 'за человека') {
+            // Для цены "за человека" вычитаем проживание на всех туристов
+            totalPrice -= tourAccommodationPrice * existingBooking.numberOfTourists;
+            console.log(`➖ Calculate - Subtracted accommodation (per person): ${tourAccommodationPrice} x ${existingBooking.numberOfTourists} = ${tourAccommodationPrice * existingBooking.numberOfTourists} TJS`);
+          } else {
+            // Для цены "за группу" вычитаем проживание один раз
+            totalPrice -= tourAccommodationPrice;
+            console.log(`➖ Calculate - Subtracted accommodation (per group): ${tourAccommodationPrice} TJS`);
+          }
+        }
+        
+        console.log(`💰 Calculate - Price after accommodation subtraction: ${totalPrice} TJS`);
+        
+        // Добавляем стоимость выбранных номеров отеля
+        let hotelRoomsCost = 0;
+        for (const [roomType, roomData] of Object.entries(roomSelection as any)) {
+          const room = roomData as any;
+          if (room.quantity > 0) {
+            const roomCost = room.price * room.quantity * tourDuration;
+            totalPrice += roomCost;
+            hotelRoomsCost += roomCost;
+            console.log(`➕ Calculate - Added hotel room: ${room.quantity} x ${room.price} x ${tourDuration} days = ${roomCost} TJS`);
+          }
+        }
+        
+        console.log(`💰 Calculate - Final price: ${totalPrice} TJS (hotel rooms: ${hotelRoomsCost} TJS)`);
+      }
+
+      // Добавить стоимость питания (если выбрано)
+      if (mealSelection && hotelId) {
+        const tourDuration = parseInt(existingBooking.tour.duration.replace(/\D/g, '')) || 1;
+        
+        for (const [mealType, mealData] of Object.entries(mealSelection as any)) {
+          const meal = mealData as any;
+          if (meal.selected) {
+            totalPrice += meal.price * existingBooking.numberOfTourists * tourDuration;
+          }
+        }
+      }
+
+      return res.json({
+        success: true,
+        data: {
+          totalPrice: totalPrice,
+          breakdown: {
+            tourPrice: parseFloat(existingBooking.tour.price),
+            accommodationDeduction: await getAccommodationPriceFromTour(existingBooking.tour.services || ''),
+            hotelRoomsCost: 0, // Можно вычислить отдельно если нужно
+            mealsCost: 0
+          }
+        },
+        message: 'Price calculated successfully'
+      });
+
+    } catch (error) {
+      console.error('Error calculating booking price:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to calculate price'
+      });
+    }
+  },
+
+  /**
    * Создать черновик бронирования (Шаг 1)
    * POST /api/booking/start
    */
