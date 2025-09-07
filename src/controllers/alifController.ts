@@ -48,6 +48,12 @@ export const alifController = {
         });
       }
 
+      // Генерируем HMAC-SHA256 хэш от пароля для безопасности
+      const hashedPassword = crypto
+        .createHmac('sha256', alifMerchantKey)
+        .update(alifMerchantPassword)
+        .digest('hex');
+
       // Преобразовать сумму в тийины (умножить на 100)
       const amount = Math.round(order.totalAmount * 100);
       const orderId = order.id.toString();
@@ -63,7 +69,7 @@ export const alifController = {
       const info = `Оплата тура №${orderNumber}`;
 
       // Generate HMAC token: HMAC_SHA256(key+orderId+amount+callbackUrl, HMAC_SHA256(password, key))
-      const step1 = crypto.createHmac('sha256', alifMerchantPassword).update(alifMerchantKey).digest('hex');
+      const step1 = crypto.createHmac('sha256', hashedPassword).update(alifMerchantKey).digest('hex');
       const step2Data = alifMerchantKey + orderId + amount + callbackUrl;
       const token = crypto.createHmac('sha256', step1).update(step2Data).digest('hex');
 
@@ -129,15 +135,22 @@ export const alifController = {
       }
 
       // ✅ КРИТИЧЕСКИ ВАЖНО: Валидация подписи
+      const alifMerchantKey = process.env.ALIF_MERCHANT_KEY;
       const alifMerchantPassword = process.env.ALIF_MERCHANT_PASSWORD;
       
-      if (!alifMerchantPassword) {
+      if (!alifMerchantKey || !alifMerchantPassword) {
         console.error('❌ AlifPay configuration missing for callback validation');
         return res.status(500).json({
           success: false,
           message: 'Payment configuration error'
         });
       }
+
+      // Генерируем HMAC-SHA256 хэш от пароля для безопасности
+      const hashedPassword = crypto
+        .createHmac('sha256', alifMerchantKey)
+        .update(alifMerchantPassword)
+        .digest('hex');
 
       if (!signature) {
         console.error('❌ Missing signature in AlifPay callback');
@@ -150,7 +163,7 @@ export const alifController = {
       // Формируем строку для проверки подписи (order_id + status)
       const message = `${order_id}${status}`;
       const expected = crypto
-        .createHmac('sha256', alifMerchantPassword)
+        .createHmac('sha256', hashedPassword)
         .update(message)
         .digest('hex');
 
