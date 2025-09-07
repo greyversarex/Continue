@@ -456,8 +456,10 @@
                                 <div class="flex items-center mb-2">
                                     ${hotel.stars ? Array(hotel.stars).fill().map(() => '<i class="fas fa-star text-yellow-400"></i>').join('') : ''}
                                     ${hotel.rating ? `<span class="ml-2 text-sm text-gray-600">(${hotel.rating})</span>` : ''}
+                                    ${hotel.category ? `<span class="ml-2 bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium">${hotel.category}</span>` : ''}
                                 </div>
                                 ${hotel.address ? `<p class="text-gray-600 text-sm mb-2"><i class="fas fa-map-marker-alt text-blue-500 mr-1"></i>${hotel.address}</p>` : ''}
+                                ${hotel.description ? `<p class="text-gray-600 text-sm mb-2">${hotel.description.ru || hotel.description.en || hotel.description}</p>` : ''}
                             </div>
 
                             <!-- Amenities -->
