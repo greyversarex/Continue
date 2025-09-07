@@ -47,15 +47,8 @@
 				},
 				"url": {
 					"raw": "{{BASE_URL}}/api/payments/payler/create",
-					"host": [
-						"{{BASE_URL}}"
-					],
-					"path": [
-						"api",
-						"payments",
-						"payler",
-						"create"
-					]
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "payments", "payler", "create"]
 				},
 				"description": "Создает новый платеж через Payler StartSession API.\nВ случае успеха возвращает redirectUrl для перенаправления пользователя на страницу оплаты Payler."
 			},
@@ -123,15 +116,8 @@
 				},
 				"url": {
 					"raw": "{{BASE_URL}}/api/payments/payler/callback",
-					"host": [
-						"{{BASE_URL}}"
-					],
-					"path": [
-						"api",
-						"payments",
-						"payler",
-						"callback"
-					]
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "payments", "payler", "callback"]
 				},
 				"description": "Имитирует успешный callback от Payler с корректной HMAC подписью.\nДолжен обновить статус заказа на 'paid' и отправить email подтверждение."
 			},
@@ -199,15 +185,8 @@
 				},
 				"url": {
 					"raw": "{{BASE_URL}}/api/payments/payler/callback",
-					"host": [
-						"{{BASE_URL}}"
-					],
-					"path": [
-						"api",
-						"payments",
-						"payler",
-						"callback"
-					]
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "payments", "payler", "callback"]
 				},
 				"description": "Имитирует неуспешный callback от Payler с корректной HMAC подписью.\nДолжен обновить статус заказа на 'failed'."
 			},
@@ -259,15 +238,8 @@
 				},
 				"url": {
 					"raw": "{{BASE_URL}}/api/payments/payler/callback",
-					"host": [
-						"{{BASE_URL}}"
-					],
-					"path": [
-						"api",
-						"payments",
-						"payler",
-						"callback"
-					]
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "payments", "payler", "callback"]
 				},
 				"description": "Тестирует безопасность системы, отправляя callback с неправильной HMAC подписью.\nДолжен вернуть 403 Forbidden с сообщением 'Invalid signature'."
 			},
@@ -309,15 +281,8 @@
 				},
 				"url": {
 					"raw": "{{BASE_URL}}/api/payments/payler/callback",
-					"host": [
-						"{{BASE_URL}}"
-					],
-					"path": [
-						"api",
-						"payments",
-						"payler",
-						"callback"
-					]
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "payments", "payler", "callback"]
 				},
 				"description": "Тестирует безопасность системы, отправляя callback без HMAC подписи.\nДолжен вернуть 403 Forbidden."
 			},
@@ -357,14 +322,8 @@
 				"header": [],
 				"url": {
 					"raw": "{{BASE_URL}}/api/orders/1",
-					"host": [
-						"{{BASE_URL}}"
-					],
-					"path": [
-						"api",
-						"orders",
-						"1"
-					]
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "orders", "1"]
 				},
 				"description": "Получает информацию о заказе для проверки текущего статуса оплаты.\nИспользуется для верификации результатов предыдущих callback запросов."
 			},
@@ -398,14 +357,8 @@
 				"header": [],
 				"url": {
 					"raw": "{{BASE_URL}}/api/payments/payment-methods",
-					"host": [
-						"{{BASE_URL}}"
-					],
-					"path": [
-						"api",
-						"payments",
-						"payment-methods"
-					]
+					"host": ["{{BASE_URL}}"],
+					"path": ["api", "payments", "payment-methods"]
 				},
 				"description": "Проверяет доступность Payler в списке методов оплаты.\nПоказывает статус конфигурации PAYLER_KEY."
 			},
