@@ -1118,27 +1118,13 @@
                 }
             }
             
-            // Обновляем "Что включено" из includes (админ панель "Услуги включенные в тур")
+            // Обновляем "Что включено" из компонентов тура (services)
             const includesElement = document.getElementById('tour-includes');
             if (includesElement) {
                 let includedServices = [];
                 
-                // Приоритет 1: данные из поля includes (админ панель)
-                if (tourData.includes) {
-                    try {
-                        if (typeof tourData.includes === 'string') {
-                            includedServices = JSON.parse(tourData.includes);
-                        } else if (Array.isArray(tourData.includes)) {
-                            includedServices = tourData.includes;
-                        }
-                        console.log('📋 Загружены включенные услуги из админ панели:', includedServices);
-                    } catch (error) {
-                        console.error('❌ Ошибка парсинга includes:', error);
-                    }
-                }
-                
-                // Приоритет 2: данные из поля services (компоненты тура) 
-                if (includedServices.length === 0 && tourData.services) {
+                // Основной источник: компоненты тура (services) - они автоматически синхронизируются в админ панели
+                if (tourData.services) {
                     try {
                         let services = [];
                         if (typeof tourData.services === 'string') {
@@ -1149,17 +1135,11 @@
                         
                         if (services.length > 0) {
                             includedServices = services.map(service => service.name);
-                            console.log('📋 Загружены услуги из компонентов тура:', includedServices);
+                            console.log('📋 Отображаем услуги из компонентов тура:', includedServices);
                         }
                     } catch (error) {
                         console.error('❌ Ошибка парсинга services:', error);
                     }
-                }
-                
-                // Приоритет 3: данные из поля highlights (fallback)
-                if (includedServices.length === 0 && tourData.highlights && tourData.highlights.length > 0) {
-                    includedServices = tourData.highlights;
-                    console.log('📋 Загружены услуги из highlights:', includedServices);
                 }
                 
                 // Отображаем услуги
@@ -1174,7 +1154,7 @@
                     includesElement.innerHTML = `
                         <li class="flex items-start">
                             <span class="text-gray-400 mr-3 mt-1">ℹ</span>
-                            <span class="text-gray-500">Информация о включенных услугах не указана</span>
+                            <span class="text-gray-500">Выберите компоненты тура в админ панели</span>
                         </li>
                     `;
                 }
