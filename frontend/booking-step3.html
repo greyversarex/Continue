@@ -599,14 +599,13 @@
                 
                 // Route to appropriate payment system
                 if (selectedPaymentMethod === 'alif' || selectedPaymentMethod === 'alifpay') {
-                    paymentResponse = await fetch('/api/payments/alif', {
+                    paymentResponse = await fetch('/api/payments/alif/create', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            orderNumber: orderNumber,
-                            gate: selectedPaymentMethod === 'korti-milli' ? 'km' : 'vsa'
+                            orderNumber: orderNumber
                         })
                     });
                 } else if (selectedPaymentMethod === 'payler') {
