@@ -74,19 +74,36 @@ export const getSlideById = async (req: Request, res: Response): Promise<void> =
 };
 
 // Create new slide
-export const createSlide = async (req: Request, res: Response) => {
+export const createSlide = async (req: any, res: Response): Promise<void> => {
   try {
-    const { title, description, image, link, buttonText, order, isActive } = req.body;
+    // Handle file upload
+    if (!req.file) {
+      res.status(400).json({
+        success: false,
+        message: 'Image file is required'
+      });
+      return;
+    }
+
+    const imagePath = `/uploads/slides/${req.file.filename}`;
+    
+    // Parse form data
+    const title = req.body.title ? JSON.parse(req.body.title) : {};
+    const description = req.body.description ? JSON.parse(req.body.description) : {};
+    const buttonText = req.body.buttonText ? JSON.parse(req.body.buttonText) : null;
+    const link = req.body.link || '';
+    const order = parseInt(req.body.order) || 0;
+    const isActive = req.body.isActive === 'true';
 
     const slide = await prisma.slide.create({
       data: {
         title: JSON.stringify(title),
         description: JSON.stringify(description),
-        image,
+        image: imagePath,
         link,
         buttonText: buttonText ? JSON.stringify(buttonText) : null,
-        order: order || 0,
-        isActive: isActive !== undefined ? isActive : true
+        order,
+        isActive
       }
     });
 
