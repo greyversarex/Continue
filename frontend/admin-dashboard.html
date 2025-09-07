@@ -3574,16 +3574,28 @@
                             console.log('✅ Loaded tour block:', tour.tourBlockId);
                         }
                         
-                        const tourCountry = document.getElementById('tourCountry');
-                        if (tourCountry) {
-                            tourCountry.value = tour.country || '';
-                            console.log('✅ Loaded country:', tour.country);
-                        }
-                        
-                        const tourCity = document.getElementById('tourCity');
-                        if (tourCity) {
-                            tourCity.value = tour.city || '';
-                            console.log('✅ Loaded city:', tour.city);
+                        // Загрузка страны и города с правильной последовательностью
+                        if (tour.country) {
+                            setTimeout(() => {
+                                const tourCountry = document.getElementById('tourCountry');
+                                if (tourCountry) {
+                                    tourCountry.value = tour.country;
+                                    console.log('✅ Loaded country:', tour.country);
+                                    
+                                    // После установки страны загружаем города
+                                    if (tour.city) {
+                                        loadCitiesForCountry(tour.country, 'tourCity').then(() => {
+                                            setTimeout(() => {
+                                                const tourCity = document.getElementById('tourCity');
+                                                if (tourCity) {
+                                                    tourCity.value = tour.city;
+                                                    console.log('✅ Loaded city:', tour.city);
+                                                }
+                                            }, 200);
+                                        });
+                                    }
+                                }
+                            }, 700); // Ждем загрузки стран
                         }
                         
                         const tourDurationDays = document.getElementById('tourDurationDays');
@@ -3934,6 +3946,23 @@
                             });
                         } else {
                             console.log('❌ No tourGuides found or not array:', tour.tourGuides);
+                        }
+                        
+                        // Загрузка выбранных водителей
+                        if (tour.tourDrivers && Array.isArray(tour.tourDrivers)) {
+                            console.log('✅ Loading selected drivers:', tour.tourDrivers.map(td => td.driverId));
+                            tour.tourDrivers.forEach(tourDriver => {
+                                const driverId = tourDriver.driverId;
+                                const checkbox = document.querySelector(`input[name="selectedDrivers"][value="${driverId}"]`);
+                                if (checkbox) {
+                                    checkbox.checked = true;
+                                    console.log('✅ Checked driver:', driverId);
+                                } else {
+                                    console.warn('❌ Driver checkbox not found for:', driverId);
+                                }
+                            });
+                        } else {
+                            console.log('❌ No tourDrivers found or not array:', tour.tourDrivers);
                         }
                         
                         console.log('✅ Tour data loaded successfully for editing:', tour.id);
@@ -10610,14 +10639,14 @@
         async function loadCitiesForCountry(countryName, citySelectId) {
             const citySelect = document.getElementById(citySelectId);
             
-            if (!citySelect) return;
+            if (!citySelect) return Promise.resolve();
             
             // Очищаем список городов
             citySelect.innerHTML = '<option value="">Загружаем города...</option>';
             
             if (!countryName) {
                 citySelect.innerHTML = '<option value="">Сначала выберите страну</option>';
-                return;
+                return Promise.resolve();
             }
             
             try {
@@ -10652,9 +10681,11 @@
                     }
                 }
                 
+                return Promise.resolve();
             } catch (error) {
                 console.error('Ошибка загрузки городов:', error);
                 citySelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+                return Promise.resolve();
             }
         }
         

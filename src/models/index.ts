@@ -40,6 +40,11 @@ export class TourModel {
           include: {
             guide: true
           }
+        },
+        tourDrivers: {
+          include: {
+            driver: true
+          }
         }
       }
     });
