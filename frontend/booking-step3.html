@@ -422,9 +422,20 @@
                             <div>
                                 <h4 class="font-semibold text-gray-800 mb-3">Включено:</h4>
                                 <div class="text-gray-700 space-y-1 text-sm">
-                                    ${booking.tour.services ? booking.tour.services.map(service => 
-                                        `<div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> ${service.name}</div>`
-                                    ).join('') : ''}
+                                    ${(() => {
+                                        let services = [];
+                                        try {
+                                            if (booking.tour.services) {
+                                                services = typeof booking.tour.services === 'string' ? 
+                                                    JSON.parse(booking.tour.services) : booking.tour.services;
+                                            }
+                                        } catch (e) {
+                                            console.warn('Error parsing tour services:', e);
+                                        }
+                                        return services.map ? services.map(service => 
+                                            `<div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> ${service.name}</div>`
+                                        ).join('') : '';
+                                    })()}
                                     ${booking.hotel ? '<div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Проживание в отеле</div>' : ''}
                                 </div>
                             </div>
