@@ -998,6 +998,7 @@
                         description: apiTour.description?.ru || apiTour.description || '',
                         rating: apiTour.rating || 0,
                         reviews_count: apiTour.reviewsCount || 0,
+                        services: apiTour.services || null, // Добавляем поле services!
                         pickupInfo: apiTour.pickupInfo || 'Включен',
                         difficulty: apiTour.difficulty || '',
                         languages: apiTour.languages ? (typeof apiTour.languages === 'string' ? JSON.parse(apiTour.languages) : apiTour.languages) : [],
@@ -1162,18 +1163,12 @@
                         </li>
                     `).join('');
                 } else {
-                    // Добавляем отладочную информацию
-                    const debugInfo = `
-                        <li class="flex items-start">
-                            <span class="text-gray-400 mr-3 mt-1">🔍</span>
-                            <span class="text-gray-500">ОТЛАДКА: tourData.services = ${JSON.stringify(tourData.services)}</span>
-                        </li>
+                    includesElement.innerHTML = `
                         <li class="flex items-start">
                             <span class="text-gray-400 mr-3 mt-1">ℹ</span>
                             <span class="text-gray-500">Выберите компоненты тура в админ панели</span>
                         </li>
                     `;
-                    includesElement.innerHTML = debugInfo;
                 }
             }
             
