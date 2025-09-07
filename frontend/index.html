@@ -2770,8 +2770,22 @@
         }
         
         function renderTourCard(tour) {
-            const title = tour.title;
-            const description = tour.description;
+            // Парсим JSON поля для корректного отображения
+            let title, description;
+            try {
+                title = typeof tour.title === 'string' ? JSON.parse(tour.title) : tour.title;
+                title = title.ru || title.en || 'Название не указано';
+            } catch (e) {
+                title = tour.title || 'Название не указано';
+            }
+            
+            try {
+                description = typeof tour.description === 'string' ? JSON.parse(tour.description) : tour.description;
+                description = description.ru || description.en || 'Описание не указано';
+            } catch (e) {
+                description = tour.description || 'Описание не указано';
+            }
+            
             const shortDesc = tour.shortDesc || null;
             
             // Создаем массив изображений для слайд-эффекта
@@ -2807,7 +2821,7 @@
                             ${tourImages.length > 0 ? 
                                 tourImages.map((imgSrc, index) => `
                                     <img src="${imgSrc}" 
-                                         alt="${title.ru || title}" 
+                                         alt="${title}" 
                                          class="tour-slide-image w-full h-full object-cover absolute inset-0 transition-opacity duration-500 ${index === 0 ? 'opacity-100' : 'opacity-0'}" 
                                          data-slide-index="${index}"
                                          data-tour-id="${tour.id}"
@@ -2818,7 +2832,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 616 0z"/>
                                     </svg>
-                                    <div class="text-sm font-medium text-blue-600">${(title && typeof title === 'object' && title.ru) ? title.ru : (typeof title === 'string' ? title : 'Название тура')}</div>
+                                    <div class="text-sm font-medium text-blue-600">${title}</div>
                                 </div>`
                             }
                         </div>
@@ -2861,7 +2875,7 @@
                             <span class="text-gray-500 ml-1">(${tour.reviewsCount || 0})</span>
                         </div>` : ''}
                         <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
-                            ${(shortDesc && typeof shortDesc === 'object' && shortDesc.ru) ? shortDesc.ru : (title && typeof title === 'object' && title.ru) ? title.ru : (typeof title === 'string' ? title : 'Название тура')}
+                            ${title}
                         </h3>
                         <div class="flex items-center justify-between mt-auto">
                             <div>
