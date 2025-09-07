@@ -2975,11 +2975,11 @@
             const desc = safeGetValue('newItineraryDesc', '').trim();
             const driverId = safeGetValue('newItineraryDriver', '');
             
-            if (time && itineraryTitle && desc) {
+            if (time && itineraryTitle) {
                 const itineraryItem = { 
                     time, 
                     title: itineraryTitle, 
-                    description: desc 
+                    description: desc || '' // Описание необязательное
                 };
                 
                 // Добавляем водителя только если выбран
@@ -2987,6 +2987,7 @@
                     itineraryItem.driverId = parseInt(driverId);
                 }
                 
+                window.tourItinerary = window.tourItinerary || [];
                 window.tourItinerary.push(itineraryItem);
                 updateItineraryList();
                 document.getElementById('newItineraryTime').value = '';
@@ -2994,7 +2995,7 @@
                 document.getElementById('newItineraryDesc').value = '';
                 document.getElementById('newItineraryDriver').value = '';
             } else {
-                alert('Пожалуйста, заполните все обязательные поля программы тура');
+                alert('Пожалуйста, заполните время и название этапа тура');
             }
         }
 
@@ -4246,28 +4247,6 @@
         
         // Функция removeHighlight удалена - используем чекбоксы услуг
         
-        function addItinerary2() {
-            const time = document.getElementById('newItineraryTime').value;
-            const itineraryTitle2 = document.getElementById('newItineraryTitle').value.trim();
-            const description = document.getElementById('newItineraryDesc').value.trim();
-            
-            if (time && itineraryTitle2) {
-                window.tourItinerary = window.tourItinerary || [];
-                window.tourItinerary.push({ time, title: itineraryTitle2, description });
-                
-                // Очищаем поля
-                document.getElementById('newItineraryTime').value = '';
-                document.getElementById('newItineraryTitle').value = '';
-                document.getElementById('newItineraryDesc').value = '';
-                
-                updateItineraryList();
-            }
-        }
-        
-        function removeItinerary(index) {
-            window.tourItinerary.splice(index, 1);
-            updateItineraryList();
-        }
         
         function addStartTime() {
             const startTimeInput = document.getElementById('newStartTime');
