@@ -3774,16 +3774,27 @@
                             console.log('✅ Loaded tourPickupInfo:', tour.pickupInfo);
                         }
                         
-                        // Загрузка услуг тура (заменяет highlights)
-                        if (tour.services || tour.highlights) {
+                        // Загрузка компонентов тура из services (новый формат)
+                        if (tour.services) {
                             try {
-                                const services = tour.services ? (typeof tour.services === 'string' ? JSON.parse(tour.services) : tour.services) 
-                                                              : (tour.highlights ? (typeof tour.highlights === 'string' ? JSON.parse(tour.highlights) : tour.highlights) : []);
-                                // Выбираем соответствующие чекбоксы услуг для второго места загрузки
-                                setTimeout(() => selectTourServices(services), 500); // Отложенный вызов для убеждения, что чекбоксы уже созданы
-                                console.log('✅ Загружены услуги для редактирования тура');
+                                const services = typeof tour.services === 'string' ? JSON.parse(tour.services) : tour.services;
+                                console.log('✅ Загружаем компоненты тура из services:', services);
+                                // Используем правильную функцию для загрузки компонентов калькулятора цен
+                                setTimeout(() => {
+                                    loadTourPricingComponentsForEdit(services);
+                                }, 600); // Немного больше задержки для загрузки компонентов
                             } catch (e) {
-                                console.error('❌ Ошибка при загрузке услуг:', e);
+                                console.error('❌ Ошибка при загрузке services:', e);
+                            }
+                        }
+                        // Fallback к highlights для старых туров
+                        else if (tour.highlights) {
+                            try {
+                                const highlights = typeof tour.highlights === 'string' ? JSON.parse(tour.highlights) : tour.highlights;
+                                setTimeout(() => selectTourServices(highlights), 500);
+                                console.log('✅ Загружены highlights для старого тура');
+                            } catch (e) {
+                                console.error('❌ Ошибка при загрузке highlights:', e);
                             }
                         }
                         
@@ -4031,7 +4042,8 @@
                 pickupInfo: tourPickupInfoEl ? tourPickupInfoEl.value || '' : '',
                 minPeople: tourMinPeopleEl && tourMinPeopleEl.value ? parseInt(tourMinPeopleEl.value) : null,
                 maxPeople: tourMaxPeopleEl && tourMaxPeopleEl.value ? parseInt(tourMaxPeopleEl.value) : null,
-                // Услуги синхронизируются автоматически
+                // Сохраняем выбранные компоненты тура в поле services
+                services: JSON.stringify(selectedTourComponents || []),
                 itinerary: JSON.stringify(window.tourItinerary || []),
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
                 languages: JSON.stringify(window.tourLanguages || ['Русский']),
