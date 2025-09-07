@@ -97,7 +97,7 @@ export const alifController = {
         });
       }
 
-      const responseData = await response.json();
+      const responseData = await response.json() as any;
       console.log('🔄 AlifPay API response:', responseData);
 
       if (!responseData.success || !responseData.redirectUrl) {

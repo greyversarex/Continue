@@ -4,6 +4,7 @@ import prisma from '../config/database';
 import { paymentService } from '../services/paymentService';
 import { emailService } from '../services/emailService';
 import { paylerController } from '../controllers/paylerController';
+import { alifController } from '../controllers/alifController';
 import Stripe from 'stripe';
 
 const router = Router();
@@ -684,5 +685,12 @@ router.post('/payler/create', paylerController.createPayment);
 
 // Callback от Payler с улучшенной валидацией
 router.post('/payler/callback', paylerController.callback);
+
+// ✅ НОВЫЕ БЕЗОПАСНЫЕ ALIF РОУТЫ
+// Создание платежа через AlifPay контроллер
+router.post('/alif/create', alifController.createPayment);
+
+// Callback от AlifPay с проверкой подписи
+router.post('/alif/callback', alifController.callback);
 
 export default router;
