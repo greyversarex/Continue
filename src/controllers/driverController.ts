@@ -713,7 +713,7 @@ export const getDriverAssignedEvents = async (req: Request, res: Response): Prom
     // Парсим события и фильтруем только те, где назначен данный водитель
     const assignedEvents: any[] = [];
     
-    tours.forEach(tour => {
+    tours.forEach((tour: any) => {
       if (tour.itinerary) {
         try {
           const itinerary = JSON.parse(tour.itinerary);
