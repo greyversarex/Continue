@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/database';
 import { paymentService } from '../services/paymentService';
 import { emailService } from '../services/emailService';
+import { paylerController } from '../controllers/paylerController';
 import Stripe from 'stripe';
 
 const router = Router();
@@ -676,5 +677,12 @@ router.post('/payler-callback', async (req: Request, res: Response) => {
     return res.status(500).send('Internal Server Error');
   }
 });
+
+// ✅ НОВЫЕ БЕЗОПАСНЫЕ PAYLER РОУТЫ
+// Создание платежа через улучшенный Payler контроллер
+router.post('/payler/create', paylerController.createPayment);
+
+// Callback от Payler с улучшенной валидацией
+router.post('/payler/callback', paylerController.callback);
 
 export default router;
