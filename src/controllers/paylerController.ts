@@ -151,13 +151,17 @@ export const paylerController = {
    */
   async callback(req: Request, res: Response) {
     try {
-      const { order_id, status, session_id, amount } = req.body;
+      const { orderId, status } = req.body;
+      const signature = req.headers['x-payler-signature'] as string;
       
-      console.log('🔄 Payler callback received:', { order_id, status, session_id, amount });
+      console.log('🔄 Payler callback received:', { orderId, status, signature: signature ? 'present' : 'missing' });
 
-      if (!order_id) {
-        console.error('❌ Missing order_id in Payler callback');
-        return res.status(400).send('Bad Request - Missing order_id');
+      if (!orderId || !status) {
+        console.error('❌ Missing required fields in Payler callback');
+        return res.status(400).json({
+          success: false,
+          message: 'Missing orderId or status'
+        });
       }
 
       // ✅ КРИТИЧЕСКИ ВАЖНО: Валидация HMAC подписи
@@ -171,15 +175,38 @@ export const paylerController = {
         });
       }
 
-      // TODO: Добавить проверку HMAC подписи когда будет документация от Payler
-      // Пока что Payler не предоставляет четкой документации по HMAC валидации callbacks
-      // В отличие от AlifPay, где есть четкая схема проверки подписи
-      
-      console.log('⚠️ HMAC validation for Payler not implemented - waiting for official documentation');
+      if (!signature) {
+        console.error('❌ Missing signature in Payler callback');
+        return res.status(403).json({
+          success: false,
+          message: 'Invalid signature'
+        });
+      }
+
+      // Формируем строку для HMAC (orderId + status)
+      const message = `${orderId}${status}`;
+      const expected = crypto
+        .createHmac('sha256', paylerKey)
+        .update(message)
+        .digest('hex');
+
+      if (signature !== expected) {
+        console.error('❌ Invalid HMAC signature in Payler callback:', {
+          received: signature,
+          expected: expected,
+          message: message
+        });
+        return res.status(403).json({
+          success: false,
+          message: 'Invalid signature'
+        });
+      }
+
+      console.log('✅ Payler callback signature validated successfully');
 
       // Найти заказ
       const order = await prisma.order.findUnique({
-        where: { id: parseInt(order_id) },
+        where: { id: Number(orderId) },
         include: {
           customer: true,
           tour: true,
@@ -187,43 +214,49 @@ export const paylerController = {
       });
 
       if (!order) {
-        console.error('❌ Order not found for Payler callback:', order_id);
-        return res.status(404).send('Order Not Found');
+        console.error('❌ Order not found for Payler callback:', orderId);
+        return res.status(404).json({
+          success: false,
+          message: 'Order not found'
+        });
       }
 
       // ✅ Обновить статус платежа
-      if (status === 'Charged' || status === 'success') {
+      if (status === 'Charged') {
         await prisma.order.update({
-          where: { id: order.id },
+          where: { id: Number(orderId) },
           data: {
             paymentStatus: 'paid',
           },
         });
 
-        console.log('✅ Payment confirmed for order:', order_id);
+        console.log('✅ Payment confirmed for order:', orderId);
 
         // Отправить email подтверждение
         try {
           await emailService.sendPaymentConfirmation(order, order.customer);
-          console.log('✅ Confirmation email sent for order:', order_id);
+          console.log('✅ Confirmation email sent for order:', orderId);
         } catch (emailError) {
           console.error('❌ Email sending failed:', emailError);
         }
       } else {
         await prisma.order.update({
-          where: { id: order.id },
+          where: { id: Number(orderId) },
           data: {
             paymentStatus: 'failed',
           },
         });
-        console.log('⚠️ Payment failed for order:', order_id);
+        console.log('⚠️ Payment failed for order:', orderId, 'with status:', status);
       }
 
-      return res.status(200).send('OK');
+      return res.json({ success: true });
 
     } catch (error) {
       console.error('❌ Payler callback error:', error);
-      return res.status(500).send('Internal Server Error');
+      return res.status(500).json({
+        success: false,
+        message: 'Server error'
+      });
     }
   }
 };
