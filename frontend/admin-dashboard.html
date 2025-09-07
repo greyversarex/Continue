@@ -9280,6 +9280,10 @@
                                                    onchange="updateComponentPriceInline(${component.id}, this.value, '${component.name.replace(/'/g, "\\'")}' )"
                                                    oninput="this.style.backgroundColor = this.value != ${component.price} ? '#fef3c7' : 'white'">
                                         </div>
+                                        <button class="btn btn-sm btn-primary" onclick="renameComponent(${component.id}, '${component.name.replace(/'/g, "\\'")}' )" 
+                                                title="Переименовать услугу">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
                                         <button class="btn btn-sm btn-danger" onclick="deleteComponentFromCalculator(${component.id}, '${component.name.replace(/'/g, "\\'")}' )" 
                                                 title="Удалить компонент">
                                             <i class="fas fa-trash"></i>
@@ -9477,6 +9481,54 @@
                 alert('Ошибка соединения с сервером');
                 // Reset to original value
                 document.getElementById(`price_${componentId}`).value = calculatorComponents.find(c => c.id === componentId)?.price || 0;
+            }
+        }
+
+        // Rename a component
+        async function renameComponent(componentId, currentName) {
+            const newName = prompt(`Переименовать услугу "${currentName}".\nВведите новое название:`, currentName);
+            
+            if (!newName || newName.trim() === '' || newName.trim() === currentName) {
+                return; // User cancelled or no changes
+            }
+            
+            const trimmedName = newName.trim();
+            
+            try {
+                console.log(`✏️ Renaming component ${componentId}: "${currentName}" → "${trimmedName}"`);
+                
+                const response = await fetch(`${getApiUrl()}/price-calculator/${componentId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        name: trimmedName
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showNotification(`✅ Услуга переименована: "${trimmedName}"`, 'success');
+                    
+                    // Update local component data
+                    const componentIndex = calculatorComponents.findIndex(c => c.id === componentId);
+                    if (componentIndex !== -1) {
+                        calculatorComponents[componentIndex].name = trimmedName;
+                    }
+                    
+                    // Refresh display
+                    renderCalculatorComponents();
+                    
+                    // Update tour pricing components if loaded
+                    if (typeof loadTourPricingComponents === 'function') {
+                        await loadTourPricingComponents();
+                    }
+                } else {
+                    console.error('Failed to rename component:', data.message);
+                    alert('Ошибка переименования услуги: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error renaming component:', error);
+                alert('Ошибка соединения с сервером');
             }
         }
 
