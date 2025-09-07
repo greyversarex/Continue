@@ -361,7 +361,10 @@ export const bookingController = {
 
       return res.json({
         success: true,
-        data: updatedBooking,
+        data: {
+          ...updatedBooking,
+          totalPrice: totalPrice // 🎯 Отправляем рассчитанную цену на фронтенд
+        },
         message: 'Booking details updated successfully'
       });
 
