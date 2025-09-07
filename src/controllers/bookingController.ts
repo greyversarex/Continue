@@ -4,26 +4,38 @@ import { emailService } from '../services/emailService';
 
 const prisma = new PrismaClient();
 
-// Вспомогательная функция для получения базовой цены проживания
-async function getBasicAccommodationPrice(): Promise<number> {
+// Вспомогательная функция для получения цены проживания из компонентов тура
+async function getAccommodationPriceFromTour(tourServices: string): Promise<number> {
   try {
-    // Ищем базовый компонент проживания в новой системе калькулятора
-    const accommodationComponent = await prisma.priceCalculatorComponent.findUnique({
-      where: { 
-        key: 'accommodation_basic',
-        isActive: true
-      }
-    });
-    
-    if (accommodationComponent) {
-      return accommodationComponent.price;
+    if (!tourServices) {
+      return 0;
     }
     
-    // Если компонент не найден, возвращаем дефолтную цену $25
-    return 25.0;
+    // Парсим услуги тура
+    const services = JSON.parse(tourServices);
+    
+    // Ищем компонент проживания (accommodation) среди услуг тура
+    const accommodationService = services.find((service: any) => {
+      return service.key && (
+        service.key.includes('accommodation') || 
+        service.key.includes('хостел') || 
+        service.key.includes('гостиница') ||
+        service.name.toLowerCase().includes('хостел') ||
+        service.name.toLowerCase().includes('гостиница') ||
+        service.name.toLowerCase().includes('проживание')
+      );
+    });
+    
+    if (accommodationService) {
+      console.log(`🏨 Found accommodation in tour: ${accommodationService.name} = ${accommodationService.price} TJS`);
+      return parseFloat(accommodationService.price) || 0;
+    }
+    
+    console.log('⚠️ No accommodation component found in tour services');
+    return 0;
   } catch (error) {
-    console.error('Error getting basic accommodation price:', error);
-    return 25.0; // Дефолтная цена
+    console.error('Error getting accommodation price from tour:', error);
+    return 0;
   }
 }
 
@@ -126,34 +138,44 @@ export const bookingController = {
         totalPrice += tourPrice; // За группу
       }
 
-      // НОВАЯ ЛОГИКА: Если выбран отель, вычесть хостел и добавить отель
+      // ЛОГИКА ЗАМЕНЫ ПРОЖИВАНИЯ: Если выбран отель, вычесть компонент проживания тура и добавить отель
       if (roomSelection && hotel) {
         const tourDuration = parseInt(tour.duration.replace(/\D/g, '')) || 1;
         
-        // Получаем базовую цену проживания из компонентов калькулятора
-        const basicAccommodationPrice = await getBasicAccommodationPrice();
+        // Получаем цену проживания из компонентов тура
+        const tourAccommodationPrice = await getAccommodationPriceFromTour(tour.services || '');
         
-        // Вычитаем базовое проживание из базовой цены (базовое проживание включено в базовую цену)
-        if (tourPriceType === 'за человека') {
-          // Для цены "за человека" нужно вычесть базовое проживание на каждого туриста
-          const numberOfTouristsNum = parseInt(numberOfTourists.toString());
-          // Предполагаем, что базовое проживание рассчитывается на номер (обычно 2 человека)
-          const accommodationRoomsNeeded = Math.ceil(numberOfTouristsNum / 2);
-          totalPrice -= basicAccommodationPrice * accommodationRoomsNeeded * tourDuration;
-        } else {
-          // Для цены "за группу" вычитаем базовое проживание для всей группы
-          const numberOfTouristsNum = parseInt(numberOfTourists.toString());
-          const accommodationRoomsNeeded = Math.ceil(numberOfTouristsNum / 2);
-          totalPrice -= basicAccommodationPrice * accommodationRoomsNeeded * tourDuration;
+        console.log(`💰 Tour base price: ${totalPrice} TJS`);
+        console.log(`🏨 Tour accommodation component: ${tourAccommodationPrice} TJS`);
+        
+        // Вычитаем стоимость компонента проживания из тура
+        if (tourAccommodationPrice > 0) {
+          if (tourPriceType === 'за человека') {
+            // Для цены "за человека" вычитаем проживание на всех туристов
+            totalPrice -= tourAccommodationPrice * parseInt(numberOfTourists.toString());
+            console.log(`➖ Subtracted accommodation (per person): ${tourAccommodationPrice} x ${numberOfTourists} = ${tourAccommodationPrice * parseInt(numberOfTourists.toString())} TJS`);
+          } else {
+            // Для цены "за группу" вычитаем проживание один раз
+            totalPrice -= tourAccommodationPrice;
+            console.log(`➖ Subtracted accommodation (per group): ${tourAccommodationPrice} TJS`);
+          }
         }
         
+        console.log(`💰 Price after accommodation subtraction: ${totalPrice} TJS`);
+        
         // Добавляем стоимость выбранных номеров отеля
+        let hotelRoomsCost = 0;
         for (const [roomType, roomData] of Object.entries(roomSelection as any)) {
           const room = roomData as any;
           if (room.quantity > 0) {
-            totalPrice += room.price * room.quantity * tourDuration;
+            const roomCost = room.price * room.quantity * tourDuration;
+            totalPrice += roomCost;
+            hotelRoomsCost += roomCost;
+            console.log(`➕ Added hotel room: ${room.quantity} x ${room.price} x ${tourDuration} days = ${roomCost} TJS`);
           }
         }
+        
+        console.log(`💰 Final price: ${totalPrice} TJS (hotel rooms: ${hotelRoomsCost} TJS)`);
       }
 
       // Добавить стоимость питания (если выбрано)
@@ -273,27 +295,40 @@ export const bookingController = {
       if (roomSelection && existingBooking.hotel) {
         const tourDuration = parseInt(existingBooking.tour.duration.replace(/\D/g, '')) || 1;
         
-        // Получаем базовую цену проживания из компонентов калькулятора
-        const basicAccommodationPrice = await getBasicAccommodationPrice();
+        // Получаем цену проживания из компонентов тура
+        const tourAccommodationPrice = await getAccommodationPriceFromTour(existingBooking.tour.services || '');
         
-        // Вычитаем базовое проживание из базовой цены
-        if (tourPriceType === 'за человека') {
-          // Для цены "за человека" вычитаем базовое проживание на группу
-          const accommodationRoomsNeeded = Math.ceil(existingBooking.numberOfTourists / 2);
-          totalPrice -= basicAccommodationPrice * accommodationRoomsNeeded * tourDuration;
-        } else {
-          // Для цены "за группу" вычитаем базовое проживание для группы
-          const accommodationRoomsNeeded = Math.ceil(existingBooking.numberOfTourists / 2);
-          totalPrice -= basicAccommodationPrice * accommodationRoomsNeeded * tourDuration;
+        console.log(`💰 Update - Tour base price: ${totalPrice} TJS`);
+        console.log(`🏨 Update - Tour accommodation component: ${tourAccommodationPrice} TJS`);
+        
+        // Вычитаем стоимость компонента проживания из тура
+        if (tourAccommodationPrice > 0) {
+          if (tourPriceType === 'за человека') {
+            // Для цены "за человека" вычитаем проживание на всех туристов
+            totalPrice -= tourAccommodationPrice * existingBooking.numberOfTourists;
+            console.log(`➖ Update - Subtracted accommodation (per person): ${tourAccommodationPrice} x ${existingBooking.numberOfTourists} = ${tourAccommodationPrice * existingBooking.numberOfTourists} TJS`);
+          } else {
+            // Для цены "за группу" вычитаем проживание один раз
+            totalPrice -= tourAccommodationPrice;
+            console.log(`➖ Update - Subtracted accommodation (per group): ${tourAccommodationPrice} TJS`);
+          }
         }
         
+        console.log(`💰 Update - Price after accommodation subtraction: ${totalPrice} TJS`);
+        
         // Добавляем стоимость выбранных номеров отеля
+        let hotelRoomsCost = 0;
         for (const [roomType, roomData] of Object.entries(roomSelection as any)) {
           const room = roomData as any;
           if (room.quantity > 0) {
-            totalPrice += room.price * room.quantity * tourDuration;
+            const roomCost = room.price * room.quantity * tourDuration;
+            totalPrice += roomCost;
+            hotelRoomsCost += roomCost;
+            console.log(`➕ Update - Added hotel room: ${room.quantity} x ${room.price} x ${tourDuration} days = ${roomCost} TJS`);
           }
         }
+        
+        console.log(`💰 Update - Final price: ${totalPrice} TJS (hotel rooms: ${hotelRoomsCost} TJS)`);
       }
 
       // Добавить стоимость питания (если выбрано)
