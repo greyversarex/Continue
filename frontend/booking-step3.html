@@ -241,19 +241,38 @@
 
         async function loadBookingSummary(bookingId) {
             try {
+                console.log('Loading booking summary for ID:', bookingId);
                 const response = await fetch(`/api/booking/${bookingId}`);
-                const data = await response.json();
+                console.log('Response status:', response.status);
                 
-                if (data.success) {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (data.success && data.data) {
                     displayBookingSummary(data.data);
                 } else {
-                    alert('Ошибка загрузки данных бронирования: ' + data.message);
+                    console.error('API returned error:', data.message);
+                    document.getElementById('booking-summary').innerHTML = `
+                        <div class="text-center py-4">
+                            <p class="text-red-600">Ошибка загрузки данных бронирования: ${data.message || 'Неизвестная ошибка'}</p>
+                            <button onclick="loadBookingSummary(${bookingId})" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                                Попробовать снова
+                            </button>
+                        </div>
+                    `;
                 }
             } catch (error) {
                 console.error('Error loading booking summary:', error);
                 document.getElementById('booking-summary').innerHTML = `
                     <div class="text-center py-4">
-                        <p class="text-red-600">Ошибка загрузки данных</p>
+                        <p class="text-red-600">Ошибка загрузки данных: ${error.message}</p>
+                        <button onclick="loadBookingSummary(${bookingId})" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Попробовать снова
+                        </button>
                     </div>
                 `;
             }
