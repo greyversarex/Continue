@@ -610,7 +610,7 @@
                         })
                     });
                 } else if (selectedPaymentMethod === 'payler') {
-                    paymentResponse = await fetch('/api/payments/payler', {
+                    paymentResponse = await fetch('/api/payments/payler/create', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -648,13 +648,15 @@
                     }));
                     
                     // Redirect to payment gateway or show success
-                    if (paymentData.paymentUrl) {
+                    if (paymentData.paymentUrl || paymentData.redirectUrl) {
+                        const redirectUrl = paymentData.paymentUrl || paymentData.redirectUrl;
                         if (paymentData.method === 'POST' && paymentData.formData) {
                             // Create form for AlifPay redirect
-                            redirectToAlifPay(paymentData.paymentUrl, paymentData.formData);
+                            redirectToAlifPay(redirectUrl, paymentData.formData);
                         } else {
-                            // Direct redirect for Payler
-                            window.location.href = paymentData.paymentUrl;
+                            // Direct redirect for Payler and other gateways
+                            console.log('🔄 Redirecting to payment gateway:', redirectUrl);
+                            window.location.href = redirectUrl;
                         }
                     } else if (paymentData.clientSecret) {
                         // Handle Stripe payment
