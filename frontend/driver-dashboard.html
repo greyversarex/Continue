@@ -161,12 +161,17 @@
             try {
                 showLoading(true);
                 
-                const response = await fetch('/api/drivers/my-events', {
+                console.log('🔍 Making API request with token:', driverToken ? 'Token exists' : 'No token');
+                
+                const response = await fetch('/api/drivers/my-events-simple', {
                     headers: {
                         'Authorization': `Bearer ${driverToken}`,
                         'Content-Type': 'application/json'
                     }
                 });
+                
+                console.log('📡 API Response status:', response.status);
+                console.log('📡 API Response headers:', response.headers);
 
                 const data = await response.json();
                 

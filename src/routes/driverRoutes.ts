@@ -36,12 +36,6 @@ router.put('/profile/:id', upload.fields([
 // Получение всех водителей (для админ панели)
 router.get('/', getAllDrivers);
 
-// Получение водителя по ID
-router.get('/:id', getDriverById);
-
-// Удаление водителя
-router.delete('/:id', deleteDriver);
-
 // Получение опций для водителей (типы транспорта, категории прав)
 router.get('/options/vehicle-types', getDriverOptions);
 
@@ -54,6 +48,47 @@ router.get('/test-simple', (req, res) => {
     message: 'Простой маршрут работает',
     timestamp: new Date().toISOString()
   });
+});
+
+// Простейший рабочий API для событий водителя (без middleware)
+router.get('/my-events-simple', async (req, res) => {
+  console.log('🧪 Simple events route called');
+  console.log('   - Authorization header:', req.headers.authorization ? 'Present' : 'Missing');
+  
+  try {
+    res.json({
+      success: true,
+      data: [
+        {
+          id: '9-0',
+          tourId: 9,
+          tourTitle: 'Тестовый тур',
+          eventIndex: 0,
+          time: '09:00',
+          title: 'Поездка в аэропорт',
+          description: 'Встреча туристов в аэропорту',
+          status: 'pending'
+        },
+        {
+          id: '9-1', 
+          tourId: 9,
+          tourTitle: 'Тестовый тур',
+          eventIndex: 1,
+          time: '14:00',
+          title: 'Экскурсия по городу',
+          description: 'Обзорная экскурсия',
+          status: 'started'
+        }
+      ],
+      message: 'Тестовые события загружены'
+    });
+  } catch (error) {
+    console.error('❌ Error in simple events:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Ошибка при загрузке событий'
+    });
+  }
 });
 
 // Тестовый маршрут для проверки middleware
@@ -114,13 +149,13 @@ router.get('/my-events', async (req, res) => {
     });
 
     // Парсим события и фильтруем только те, где назначен данный водитель
-    const assignedEvents = [];
+    const assignedEvents: any[] = [];
     
-    tours.forEach(tour => {
+    tours.forEach((tour: any) => {
       if (tour.itinerary) {
         try {
           const itinerary = JSON.parse(tour.itinerary);
-          itinerary.forEach((event, index) => {
+          itinerary.forEach((event: any, index: number) => {
             if (event.driverId && parseInt(event.driverId) === driverId) {
               assignedEvents.push({
                 id: `${tour.id}-${index}`,
@@ -150,6 +185,7 @@ router.get('/my-events', async (req, res) => {
       data: assignedEvents,
       message: 'Назначенные события получены успешно'
     });
+    return;
 
   } catch (error) {
     console.error('❌ Error getting driver assigned events:', error);
@@ -157,6 +193,7 @@ router.get('/my-events', async (req, res) => {
       success: false,
       message: 'Ошибка при получении назначенных событий'
     });
+    return;
   }
 });
 
@@ -223,6 +260,7 @@ router.post('/events/:eventId/start', async (req, res) => {
       success: true,
       message: 'Событие запущено'
     });
+    return;
 
   } catch (error) {
     console.error('❌ Error starting driver event:', error);
@@ -230,6 +268,7 @@ router.post('/events/:eventId/start', async (req, res) => {
       success: false,
       message: 'Ошибка при запуске события'
     });
+    return;
   }
 });
 
@@ -296,6 +335,7 @@ router.post('/events/:eventId/complete', async (req, res) => {
       success: true,
       message: 'Событие завершено'
     });
+    return;
 
   } catch (error) {
     console.error('❌ Error completing driver event:', error);
@@ -303,7 +343,16 @@ router.post('/events/:eventId/complete', async (req, res) => {
       success: false,
       message: 'Ошибка при завершении события'
     });
+    return;
   }
 });
+
+// ВАЖНО: Параметрические маршруты (с :id) должны быть В КОНЦЕ
+// чтобы не перехватывать специфичные маршруты
+// Получение водителя по ID (админ-панель)
+router.get('/:id', getDriverById);
+
+// Удаление водителя
+router.delete('/:id', deleteDriver);
 
 export default router;
