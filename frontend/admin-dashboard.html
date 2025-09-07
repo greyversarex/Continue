@@ -6870,6 +6870,7 @@
         let driverDocumentFiles = [];
         let editDriverAvatarFile = null;
         let editDriverDocumentFiles = [];
+        let selectedDriverWorkingAreas = [];
 
         // Доступные типы транспорта
         const VEHICLE_TYPES = [
@@ -7648,13 +7649,10 @@
 
         // Открытие модального окна для редактирования водителя
         function openEditDriverModal(driver) {
-            // Парсим данные водителя
-            let contact = {};
-            try {
-                contact = driver.contact ? JSON.parse(driver.contact) : {};
-            } catch (e) {
-                console.warn('Error parsing driver contact:', e);
-            }
+            console.log('🔍 Данные водителя для редактирования:', driver);
+            
+            // Парсим данные водителя - contact уже объект, не JSON строка
+            const contact = driver.contact || {};
             
             let languages = [];
             try {
@@ -7663,12 +7661,9 @@
                 console.warn('Error parsing driver languages:', e);
             }
             
-            let vehicleTypes = [];
-            try {
-                vehicleTypes = driver.vehicleTypes ? JSON.parse(driver.vehicleTypes) : [];
-            } catch (e) {
-                console.warn('Error parsing driver vehicle types:', e);
-            }
+            // vehicleTypes уже массив, не JSON строка
+            const vehicleTypes = Array.isArray(driver.vehicleTypes) ? driver.vehicleTypes : [];
+            console.log('🚗 Типы транспорта:', vehicleTypes);
             
             let licenseCategories = [];
             try {
@@ -7677,10 +7672,19 @@
                 console.warn('Error parsing driver license categories:', e);
             }
             
+            // Парсим рабочие зоны
+            let workingAreas = [];
+            try {
+                workingAreas = driver.workingAreas ? driver.workingAreas.split(', ').filter(area => area.trim()) : [];
+            } catch (e) {
+                console.warn('Error parsing driver working areas:', e);
+            }
+            
             // Устанавливаем глобальные переменные
             selectedDriverLanguages = [...languages];
             selectedDriverVehicleTypes = [...vehicleTypes];
             selectedDriverLicenseCategories = [...licenseCategories];
+            selectedDriverWorkingAreas = [...workingAreas];
             
             const modal = `
                 <div id="editDriverModal" class="modal active">
@@ -7781,7 +7785,17 @@
 
                                 <div class="form-group">
                                     <label class="form-label">Рабочие зоны/города</label>
-                                    <input type="text" class="form-input" id="editDriverWorkingAreas" placeholder="Душанбе, Худжанд, Куляб" value="${driver.workingAreas || ''}">
+                                    <div class="flex gap-2 mb-2">
+                                        <select class="form-input flex-1" id="editDriverAvailableWorkingAreas">
+                                            <option value="">Выберите город</option>
+                                        </select>
+                                        <button type="button" onclick="addWorkingAreaToEditDriver()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div id="editSelectedDriverWorkingAreas" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                                        <small class="text-gray-500">Выбранные города появятся здесь</small>
+                                    </div>
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -7821,6 +7835,8 @@
             // Заполняем выбранные элементы
             updateEditSelectedDriverLanguagesDisplay();
             updateEditSelectedDriverVehicleTypesDisplay();
+            loadEditDriverWorkingAreasCities();
+            updateEditSelectedDriverWorkingAreasDisplay();
             
             document.getElementById('editDriverForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -7836,6 +7852,7 @@
             selectedDriverLanguages = [];
             selectedDriverVehicleTypes = [];
             selectedDriverLicenseCategories = [];
+            selectedDriverWorkingAreas = [];
         }
         
         // Функции для управления языками водителя при редактировании
@@ -7922,6 +7939,68 @@
             updateEditSelectedDriverVehicleTypesDisplay();
         }
         
+        // Функции для управления рабочими зонами при редактировании
+        async function loadEditDriverWorkingAreasCities() {
+            try {
+                const response = await fetch(`${getApiUrl()}/cities`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    const select = document.getElementById('editDriverAvailableWorkingAreas');
+                    if (select) {
+                        select.innerHTML = '<option value="">Выберите город</option>';
+                        data.data.forEach(city => {
+                            select.innerHTML += `<option value="${city.name_ru}">${city.name_ru}, ${city.country_name_ru}</option>`;
+                        });
+                    }
+                } else {
+                    console.error('Failed to load cities for working areas:', data.message);
+                }
+            } catch (error) {
+                console.error('Error loading cities for working areas:', error);
+            }
+        }
+        
+        function addWorkingAreaToEditDriver() {
+            const select = document.getElementById('editDriverAvailableWorkingAreas');
+            const workingArea = select.value;
+            
+            if (!workingArea || selectedDriverWorkingAreas.includes(workingArea)) {
+                return;
+            }
+            
+            selectedDriverWorkingAreas.push(workingArea);
+            updateEditSelectedDriverWorkingAreasDisplay();
+            select.value = '';
+        }
+        
+        function updateEditSelectedDriverWorkingAreasDisplay() {
+            const container = document.getElementById('editSelectedDriverWorkingAreas');
+            
+            if (!container) return;
+            
+            if (selectedDriverWorkingAreas.length === 0) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные города появятся здесь</small>';
+                return;
+            }
+            
+            container.innerHTML = selectedDriverWorkingAreas.map((area, index) => `
+                <div class="flex items-center justify-between bg-green-50 p-2 rounded">
+                    <span class="text-sm font-medium text-green-800">${area}</span>
+                    <button type="button" onclick="removeEditWorkingAreaFromDriver(${index})" class="text-red-500 hover:text-red-700 text-sm">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function removeEditWorkingAreaFromDriver(index) {
+            selectedDriverWorkingAreas.splice(index, 1);
+            updateEditSelectedDriverWorkingAreasDisplay();
+        }
+        
         // Сохранение изменений водителя
         async function saveEditDriver() {
             const driverId = document.getElementById('editDriverId').value;
@@ -7931,7 +8010,7 @@
             const experience = parseInt(document.getElementById('editDriverExperience').value);
             const licenseNumber = document.getElementById('editDriverLicenseNumber').value.trim();
             const licenseCategory = document.getElementById('editDriverLicenseCategory').value;
-            const workingAreas = document.getElementById('editDriverWorkingAreas').value.trim();
+            const workingAreas = selectedDriverWorkingAreas.join(', ');
             const pricePerDay = parseFloat(document.getElementById('editDriverPricePerDay').value) || 0;
             const pricePerHour = parseFloat(document.getElementById('editDriverPricePerHour').value) || 0;
             const password = document.getElementById('editDriverPassword').value.trim();
