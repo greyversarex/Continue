@@ -57,7 +57,7 @@ export const paylerController = {
 
       // Подготовить данные для StartSession API (как в PHP-версии)
       const fields = {
-        key: process.env.PAYLER_KEY, // ключ берём теперь из .env
+        key: paylerKey, // ключ берём теперь из .env
         type: 'OneStep',
         currency: 'TJS',
         lang: 'en',
