@@ -217,7 +217,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, pricingComponents } = req.body;
+      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -447,6 +447,29 @@ export class TourController {
         }
       }
 
+      // Create tour block associations if provided
+      if (tourBlockIds && Array.isArray(tourBlockIds) && tourBlockIds.length > 0) {
+        console.log('📦 Creating tour block associations:', tourBlockIds);
+        try {
+          const tourBlockData = tourBlockIds.map((blockId: number, index: number) => ({
+            tourId: tour.id,
+            tourBlockId: blockId,
+            isPrimary: index === 0 // Первый блок считается основным
+          }));
+          
+          console.log('📦 TourBlockAssignment data to create:', tourBlockData);
+          
+          await prisma.tourBlockAssignment.createMany({
+            data: tourBlockData
+          });
+          
+          console.log('✅ Tour block associations created successfully');
+        } catch (blockError) {
+          console.error('❌ Error creating tour block associations:', blockError);
+          throw blockError;
+        }
+      }
+
       // Parse JSON fields for response with safe parsing
       let parsedTour;
       try {
@@ -518,7 +541,7 @@ export class TourController {
         });
       }
 
-      let { title, description, duration, price, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, pricingComponents } = req.body;
+      let { title, description, duration, price, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed (same as createTour)
       if (typeof title === 'string') {
