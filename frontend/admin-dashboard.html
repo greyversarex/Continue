@@ -1592,9 +1592,12 @@
                             <!-- Динамически добавляемые элементы -->
                         </div>
                         <div class="bg-gray-50 p-4 rounded border">
-                            <div class="grid grid-cols-4 gap-3 mb-3">
+                            <div class="grid grid-cols-5 gap-3 mb-3">
                                 <input type="time" class="form-input" id="newItineraryTime" placeholder="08:00">
                                 <input type="text" class="form-input col-span-2" id="newItineraryTitle" placeholder="Встреча с гидом">
+                                <select class="form-input" id="newItineraryDriver">
+                                    <option value="">Водитель (необязательно)</option>
+                                </select>
                                 <button type="button" onclick="addItinerary()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
                                     Добавить
                                 </button>
@@ -2970,15 +2973,28 @@
             const time = safeGetValue('newItineraryTime', '');
             const itineraryTitle = safeGetValue('newItineraryTitle', '').trim();
             const desc = safeGetValue('newItineraryDesc', '').trim();
+            const driverId = safeGetValue('newItineraryDriver', '');
             
             if (time && itineraryTitle && desc) {
-                window.tourItinerary.push({ time, title: itineraryTitle, description: desc });
+                const itineraryItem = { 
+                    time, 
+                    title: itineraryTitle, 
+                    description: desc 
+                };
+                
+                // Добавляем водителя только если выбран
+                if (driverId) {
+                    itineraryItem.driverId = parseInt(driverId);
+                }
+                
+                window.tourItinerary.push(itineraryItem);
                 updateItineraryList();
                 document.getElementById('newItineraryTime').value = '';
                 document.getElementById('newItineraryTitle').value = '';
                 document.getElementById('newItineraryDesc').value = '';
+                document.getElementById('newItineraryDriver').value = '';
             } else {
-                alert('Пожалуйста, заполните все поля программы тура');
+                alert('Пожалуйста, заполните все обязательные поля программы тура');
             }
         }
 
@@ -2993,12 +3009,17 @@
                 console.warn('itineraryList container not found');
                 return;
             }
-            itineraryContainer.innerHTML = window.tourItinerary.map((item, index) => `
+            itineraryContainer.innerHTML = window.tourItinerary.map((item, index) => {
+                const driverInfo = item.driverId ? getDriverNameById(item.driverId) : null;
+                return `
                 <div class="bg-gray-50 p-3 rounded border">
                     <div class="flex justify-between items-start mb-2">
                         <div class="flex items-center gap-3">
                             <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium">${item.time}</span>
                             <strong>${item.title}</strong>
+                            ${driverInfo ? `<span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
+                                <i class="fas fa-car mr-1"></i>${driverInfo}
+                            </span>` : ''}
                         </div>
                         <button type="button" onclick="removeItinerary(${index})" class="text-red-500 hover:text-red-700">
                             <i class="fas fa-times"></i>
@@ -3006,7 +3027,7 @@
                     </div>
                     <p class="text-gray-600 text-sm ml-16">${item.description}</p>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // Функции управления временем начала тура (быстрое создание)
@@ -6871,6 +6892,7 @@
         let editDriverAvatarFile = null;
         let editDriverDocumentFiles = [];
         let selectedDriverWorkingAreas = [];
+        let availableDrivers = []; // Для хранения списка всех водителей
 
         // Доступные типы транспорта
         const VEHICLE_TYPES = [
@@ -7999,6 +8021,42 @@
         function removeEditWorkingAreaFromDriver(index) {
             selectedDriverWorkingAreas.splice(index, 1);
             updateEditSelectedDriverWorkingAreasDisplay();
+        }
+        
+        // Загрузка списка водителей для селекта в программе тура
+        async function loadDriversForItinerary() {
+            try {
+                const response = await fetch(`${getApiUrl()}/drivers`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    availableDrivers = data.data || [];
+                    updateDriverDropdowns();
+                } else {
+                    console.error('Failed to load drivers:', data.message);
+                }
+            } catch (error) {
+                console.error('Error loading drivers:', error);
+            }
+        }
+        
+        // Обновление dropdown списков водителей
+        function updateDriverDropdowns() {
+            const driverSelect = document.getElementById('newItineraryDriver');
+            if (driverSelect) {
+                driverSelect.innerHTML = '<option value="">Водитель (необязательно)</option>';
+                availableDrivers.forEach(driver => {
+                    driverSelect.innerHTML += `<option value="${driver.id}">${driver.name}</option>`;
+                });
+            }
+        }
+        
+        // Получение имени водителя по ID
+        function getDriverNameById(driverId) {
+            const driver = availableDrivers.find(d => d.id === parseInt(driverId));
+            return driver ? driver.name : 'Неизвестный водитель';
         }
         
         // Сохранение изменений водителя
