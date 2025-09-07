@@ -2488,7 +2488,12 @@
         function startImageSlideshow(tourId) {
             // Проверяем есть ли изображения для слайдшоу
             const images = document.querySelectorAll(`img[data-tour-id="${tourId}"]`);
-            if (images.length <= 1) return; // Если одно изображение или меньше - не запускаем слайдшоу
+            console.log(`🎬 Starting slideshow for tour ${tourId}: found ${images.length} images`);
+            
+            if (images.length <= 1) {
+                console.log(`⚠️ Not enough images for slideshow (${images.length})`);
+                return; // Если одно изображение или меньше - не запускаем слайдшоу
+            }
             
             let currentIndex = 0;
             
@@ -2521,6 +2526,7 @@
         }
         
         function stopImageSlideshow(tourId) {
+            console.log(`🛑 Stopping slideshow for tour ${tourId}`);
             const slideshow = tourSlideshows.get(tourId);
             if (slideshow) {
                 clearInterval(slideshow.interval);
@@ -2788,26 +2794,25 @@
             
             const shortDesc = tour.shortDesc || null;
             
-            // Создаем массив изображений для слайд-эффекта
+            // Генерируем массив изображений для слайдшоу из реальных данных тура
             const tourImages = [];
             
-            // Добавляем основное изображение
-            if (tour.hasImages || tour.images || tour.mainImage) {
-                tourImages.push(`/api/tours/${tour.id}/main-image`);
-                
-                // Добавляем дополнительные изображения (если есть)
-                if (tour.images && Array.isArray(tour.images)) {
-                    tour.images.forEach((img, index) => {
-                        if (index > 0) { // Пропускаем первое, так как это main-image
-                            tourImages.push(`/api/tours/${tour.id}/image/${index}`);
-                        }
-                    });
-                } else {
-                    // Добавляем несколько копий для демонстрации слайд-эффекта
-                    for (let i = 1; i <= 3; i++) {
-                        tourImages.push(`/api/tours/${tour.id}/main-image`);
+            // Парсим строку с изображениями из базы данных
+            if (tour.images) {
+                try {
+                    const imageArray = typeof tour.images === 'string' ? JSON.parse(tour.images) : tour.images;
+                    if (Array.isArray(imageArray) && imageArray.length > 0) {
+                        tourImages.push(...imageArray);
+                        console.log(`🖼️ Tour ${tour.id} images:`, imageArray);
                     }
+                } catch (e) {
+                    console.warn('Failed to parse tour images:', e);
                 }
+            }
+            
+            // Если нет изображений, используем placeholder
+            if (tourImages.length === 0) {
+                tourImages.push('/placeholder-tour.jpg'); // Placeholder если нет изображений
             }
             
             return `
