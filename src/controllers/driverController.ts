@@ -685,10 +685,6 @@ export const getDriverAssignedEvents = async (req: Request, res: Response): Prom
   try {
     const driverId = (req as any).driverId; // Из middleware
     
-    console.log('🔍 Debug getDriverAssignedEvents:');
-    console.log('  - req.driverId:', driverId);
-    console.log('  - Type of driverId:', typeof driverId);
-    console.log('  - Req headers:', req.headers.authorization ? 'Token present' : 'No token');
     
     if (!driverId) {
       res.status(401).json({

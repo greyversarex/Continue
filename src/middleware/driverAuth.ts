@@ -54,6 +54,11 @@ export const authenticateDriver = async (req: AuthenticatedRequest, res: Respons
     (req as any).driverId = driver.id;
     (req as any).driver = driver;
 
+    console.log('✅ Driver middleware success:');
+    console.log('  - Driver ID:', driver.id);
+    console.log('  - Driver Name:', driver.name);
+    console.log('  - Request path:', req.path);
+    
     next();
 
   } catch (error) {
