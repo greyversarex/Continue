@@ -204,7 +204,6 @@ model Driver {
   vehiclePhotos    String?     // JSON массив фотографий транспорта
   experience       Int?        // Стаж вождения в годах
   contact          String?     // JSON контактная информация
-  rating           Float?      // Рейтинг водителя
   login            String?     // Логин для входа в кабинет
   password         String?     // Хешированный пароль
   isActive         Boolean     @default(true)
