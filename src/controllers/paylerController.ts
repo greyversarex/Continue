@@ -55,20 +55,19 @@ export const paylerController = {
 
       console.log(`🔄 Creating Payler payment: Order ${orderId}, Amount ${amount} копеек`);
 
-      // Подготовить данные для StartSession API
+      // Подготовить данные для StartSession API (как в PHP-версии)
       const fields = {
-        key: paylerKey,
+        key: process.env.PAYLER_KEY, // ключ берём теперь из .env
         type: 'OneStep',
-        currency: 'TJS', // Используем TJS для Таджикистана (как в оригинальном PHP)
+        currency: 'TJS',
         lang: 'en',
         amount: amount.toString(),
         order_id: orderId,
-        // Добавляем URL для возврата
         return_url: returnUrl,
-        fail_url: failUrl,
+        fail_url: failUrl
       };
 
-      // Отправить запрос к Payler StartSession API
+      // Отправить запрос к боевому Payler StartSession API (убрали sandbox)
       const fetch = require('node-fetch');
       const response = await fetch('https://secure.payler.com/gapi/StartSession', {
         method: 'POST',
