@@ -58,56 +58,14 @@ export const alifController = {
 
       console.log(`🔄 Creating AlifPay payment: Order ${orderId}, Amount ${amount} тийинов`);
 
-      // Подготовить данные для AlifPay API
-      const paymentData = {
-        merchant_id: alifMerchantKey,
-        amount: amount,
-        order_id: orderId,
-        return_url: returnUrl || defaultReturnUrl,
-        fail_url: failUrl || defaultFailUrl
-      };
+      // Использовать формат как в старой интеграции AlifPay
+      const callbackUrl = `${baseUrl}/api/payments/alif/callback`;
+      const info = `Оплата тура №${orderNumber}`;
 
-      // Создать подпись с помощью ALIF_MERCHANT_PASSWORD
-      const signatureString = `${paymentData.merchant_id}${paymentData.amount}${paymentData.order_id}${paymentData.return_url}${paymentData.fail_url}`;
-      const signature = crypto
-        .createHmac('sha256', alifMerchantPassword)
-        .update(signatureString)
-        .digest('hex');
-
-      // Добавить подпись к данным
-      const requestData = {
-        ...paymentData,
-        signature
-      };
-
-      // Отправить запрос к AlifPay API
-      const response = await fetch(`${alifApiUrl}/merchant/pay`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      });
-
-      if (!response.ok) {
-        console.error('❌ AlifPay API failed:', response.statusText);
-        return res.status(500).json({
-          success: false,
-          message: 'Failed to communicate with AlifPay API',
-        });
-      }
-
-      const responseData = await response.json() as any;
-      console.log('🔄 AlifPay API response:', responseData);
-
-      if (!responseData.success || !responseData.redirectUrl) {
-        console.error('❌ AlifPay payment creation failed:', responseData);
-        return res.status(500).json({
-          success: false,
-          message: 'Failed to create AlifPay payment',
-          error: responseData.error || 'Unknown error',
-        });
-      }
+      // Generate HMAC token: HMAC_SHA256(key+orderId+amount+callbackUrl, HMAC_SHA256(password, key))
+      const step1 = crypto.createHmac('sha256', alifMerchantPassword).update(alifMerchantKey).digest('hex');
+      const step2Data = alifMerchantKey + orderId + amount + callbackUrl;
+      const token = crypto.createHmac('sha256', step1).update(step2Data).digest('hex');
 
       // Обновить заказ в БД
       await prisma.order.update({
@@ -115,17 +73,31 @@ export const alifController = {
         data: {
           paymentMethod: 'alif',
           paymentStatus: 'processing',
-          paymentIntentId: responseData.paymentId || orderId,
+          paymentIntentId: orderId,
         },
       });
 
-      console.log(`✅ AlifPay payment created successfully`);
+      console.log(`✅ AlifPay payment data prepared successfully`);
 
-      // Вернуть URL для редиректа
+      // Return form data for redirect to Alif (использует веб-форму, а не прямой API)
+      const alifFormData = {
+        key: alifMerchantKey,
+        orderId: orderId,
+        amount: amount,
+        info: info,
+        returnUrl: returnUrl || defaultReturnUrl,
+        callbackUrl: callbackUrl,
+        email: order.customer.email,
+        phone: order.customer.phone || '',
+        gate: 'vsa',
+        token: token,
+      };
+
       return res.json({
         success: true,
-        redirectUrl: responseData.redirectUrl,
-        paymentId: responseData.paymentId || orderId,
+        paymentUrl: 'https://web.alif.tj/',
+        formData: alifFormData,
+        method: 'POST',
       });
 
     } catch (error) {
