@@ -308,7 +308,6 @@ export const createDriverProfile = async (req: Request, res: Response): Promise<
         languages: languages || 'Русский',
         contact: JSON.stringify({ email, phone }),
         experience: experience ? parseInt(experience) : 0,
-        rating: 5.0, // Начальный рейтинг
         login: login,
         password: hashedPassword,
         isActive: isActive === 'true' || isActive === true || isActive === undefined,
@@ -341,7 +340,6 @@ export const createDriverProfile = async (req: Request, res: Response): Promise<
         languages: driver.languages,
         contact: driver.contact,
         experience: driver.experience,
-        rating: driver.rating,
         isActive: driver.isActive,
         photo: driver.photo,
         documents: driver.documents,

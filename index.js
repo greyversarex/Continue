@@ -63,16 +63,20 @@ app.get('/simple-admin-panel.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'simple-admin-panel.html'));
 });
 
-// Import TypeScript backend routes directly
-require('ts-node/register');
-const apiRoutes = require('./src/routes/index.ts').default;
-
-// Use the API routes
-app.use('/api', apiRoutes);
-
-// Add object storage routes directly (without /api prefix) for image serving
-const objectStorageRoutes = require('./src/routes/objectStorageRoutes.ts').default;
-app.use('/', objectStorageRoutes);
+// Import TypeScript backend routes directly (with better error handling)
+try {
+  require('ts-node/register');
+  const apiRoutes = require('./src/routes/index.ts').default;
+  app.use('/api', apiRoutes);
+  
+  // Add object storage routes directly (without /api prefix) for image serving
+  const objectStorageRoutes = require('./src/routes/objectStorageRoutes.ts').default;
+  app.use('/', objectStorageRoutes);
+  console.log('✅ Backend API routes loaded successfully');
+} catch (error) {
+  console.error('❌ Error loading backend routes:', error.message);
+  console.log('🔄 Running in frontend-only mode');
+}
 
 // ИСПРАВЛЕНИЕ: Обработка repl_preview параметров и всех возможных путей
 app.get('/', (req, res) => {
