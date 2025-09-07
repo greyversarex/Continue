@@ -9848,30 +9848,53 @@
         });
 
         async function saveBannerSlide() {
+            // Проверяем наличие изображения
+            const imageFile = document.getElementById('bannerImageFile').files[0];
+            if (!imageFile) {
+                alert('Пожалуйста, выберите изображение для баннера');
+                return;
+            }
+
+            // Создаем FormData для загрузки файла и данных
+            const formData = new FormData();
+            
+            // Добавляем изображение
+            formData.append('image', imageFile);
+            
+            // Подготавливаем данные слайда
             const slideData = {
                 title: {
-                    ru: safeGetValue('bannerTitleRu', ''),
-                    en: safeGetValue('bannerTitleEn', '')
+                    ru: safeGetValue('bannerTitleRu', '')
                 },
                 description: {
-                    ru: safeGetValue('bannerDescRu', ''),
-                    en: safeGetValue('bannerDescEn', '')
+                    ru: safeGetValue('bannerDescRu', '')
                 },
-                image: safeGetValue('bannerImage', ''),
                 link: safeGetValue('bannerLink', ''),
                 buttonText: {
-                    ru: safeGetValue('bannerButtonTextRu', ''),
-                    en: safeGetValue('bannerButtonTextEn', '')
+                    ru: safeGetValue('bannerButtonTextRu', '')
                 },
                 order: safeGetValue('bannerOrder', 1, 'int'),
                 isActive: safeGetValue('bannerActive', false, 'checkbox')
             };
+            
+            // Добавляем JSON данные
+            Object.keys(slideData).forEach(key => {
+                if (typeof slideData[key] === 'object') {
+                    formData.append(key, JSON.stringify(slideData[key]));
+                } else {
+                    formData.append(key, slideData[key]);
+                }
+            });
 
             try {
+                // Не добавляем Content-Type заголовок для FormData
+                const headers = getAuthHeaders();
+                delete headers['Content-Type'];
+                
                 const response = await fetch(`${getApiUrl()}/slides`, {
                     method: 'POST',
-                    headers: getAuthHeaders(),
-                    body: JSON.stringify(slideData)
+                    headers: headers,
+                    body: formData
                 });
 
                 const result = await response.json();
