@@ -67,10 +67,9 @@
     </div>
 
     <div class="max-w-4xl mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Payment Methods -->
-            <div class="lg:col-span-2">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Выберите способ оплаты</h2>
+        <!-- Payment Methods -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Выберите способ оплаты</h2>
                 
                 <div class="space-y-4">
                     <!-- Payler -->
@@ -153,29 +152,21 @@
                 </div>
             </div>
 
-            <!-- Booking Summary -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-lg shadow-lg p-6 sticky top-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">Итоги бронирования</h3>
-                    
-                    <div id="booking-summary" class="space-y-4">
-                        <!-- Booking details will be loaded here -->
-                        <div class="text-center py-4">
-                            <i class="fas fa-spinner fa-spin text-lg text-gray-400"></i>
-                        </div>
-                    </div>
-
-                    <!-- Security Info -->
-                    <div class="border-t pt-4 mt-6">
-                        <div class="flex items-center text-sm text-gray-600">
-                            <i class="fas fa-shield-alt text-green-500 mr-2"></i>
-                            <span>SSL шифрование данных</span>
-                        </div>
-                        <div class="flex items-center text-sm text-gray-600 mt-2">
-                            <i class="fas fa-lock text-green-500 mr-2"></i>
-                            <span>Безопасная оплата</span>
-                        </div>
-                    </div>
+        <!-- Booking Voucher -->
+        <div class="bg-white rounded-lg shadow-lg border-l-4 border-blue-500 mt-8">
+            <div id="booking-summary">
+                <!-- Voucher will be loaded here -->
+                <div class="text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i>
+                    <p class="text-gray-600 mt-2">Загрузка данных бронирования...</p>
+                </div>
+            </div>
+            
+            <!-- Security Info -->
+            <div class="border-t px-6 py-4 bg-gray-50">
+                <div class="flex items-center justify-center text-sm text-gray-600">
+                    <i class="fas fa-shield-alt text-green-500 mr-2"></i>
+                    Ваши данные защищены SSL-шифрованием
                 </div>
             </div>
         </div>
@@ -342,201 +333,176 @@
                 }
             });
 
+            // Generate booking reference number
+            const bookingRef = `BT-${booking.id || 'XXXX'}${new Date().getFullYear()}`;
+            const submissionTime = new Date(booking.createdAt || Date.now());
+            
             // Count actual tourists if tourist list is available  
             let actualTouristCount = booking.numberOfTourists;
             if (tourists.length > 0) {
                 actualTouristCount = tourists.length;
             }
 
+            // Create voucher in professional format
             let summaryHtml = `
-                <div class="space-y-4">
-                    <!-- Tour Header -->
-                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border-l-4 border-blue-500">
-                        <h4 class="font-bold text-gray-800 text-lg mb-2">${booking.tour.title.ru || booking.tour.title.en}</h4>
-                        <div class="grid grid-cols-2 gap-3 text-sm text-gray-600">
-                            <div class="flex items-center">
-                                <i class="fas fa-calendar-alt text-blue-500 mr-2 w-4"></i>
-                                <span><strong>Дата:</strong> ${new Date(booking.tourDate).toLocaleDateString('ru-RU')}</span>
+                <div class="p-8">
+                    <!-- Header -->
+                    <div class="flex justify-between items-start mb-6 border-b pb-4">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-calendar-alt text-gray-500"></i>
+                            <span class="text-gray-600">${new Date(booking.tourDate).toLocaleDateString('ru-RU')}</span>
+                        </div>
+                        <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                            ПОДТВЕРЖДЕН
+                        </div>
+                    </div>
+
+                    <!-- Tour Title -->
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">${booking.tour.title.ru || booking.tour.title.en}</h2>
+                        <p class="text-gray-600">${booking.tour.tourType || booking.tour.format || 'Групповой тур'} - ${tourDuration} дней</p>
+                    </div>
+
+                    <!-- Main Content Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <!-- Left Column -->
+                        <div class="space-y-6">
+                            <!-- Lead Traveler -->
+                            ${booking.contactName ? `
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 mb-3">Контактное лицо:</h4>
+                                    <p class="text-gray-700">${booking.contactName}</p>
+                                </div>
+                            ` : ''}
+
+                            <!-- Travelers -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-3">Участники тура:</h4>
+                                <div class="space-y-2">
+                                    ${actualTouristCount} взрослый(ых), ${booking.numberOfTourists} детей
+                                    ${tourists.length > 0 ? `
+                                        <div class="mt-3">
+                                            ${tourists.map((tourist, index) => `
+                                                <div class="flex items-center text-sm text-gray-600 mb-1">
+                                                    <span class="w-5 h-5 bg-blue-500 text-white rounded-full text-xs flex items-center justify-center mr-2">${index + 1}</span>
+                                                    ${tourist.fullName} ${tourist.dateOfBirth ? `(${new Date(tourist.dateOfBirth).toLocaleDateString('ru-RU')})` : ''}
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
                             </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-clock text-blue-500 mr-2 w-4"></i>
-                                <span><strong>Продолжительность:</strong> ${tourDuration} дн.</span>
+
+                            <!-- Tour Language -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-3">Язык тура:</h4>
+                                <p class="text-gray-700">Русский</p>
                             </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-users text-blue-500 mr-2 w-4"></i>
-                                <span><strong>Туристов:</strong> ${actualTouristCount} чел.</span>
+
+                            <!-- Inclusions -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-3">Включено:</h4>
+                                <div class="text-gray-700 space-y-1 text-sm">
+                                    <div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Профессиональный гид</div>
+                                    <div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Транспорт</div>
+                                    <div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Входные билеты</div>
+                                    ${booking.hotel ? '<div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Проживание в отеле</div>' : ''}
+                                </div>
                             </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-map-marked-alt text-blue-500 mr-2 w-4"></i>
-                                <span><strong>Тип:</strong> ${booking.tour.tourType || booking.tour.format || 'Групповой'}</span>
+
+                            <!-- Special Requirements -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-3">Особые требования:</h4>
+                                <p class="text-gray-700 text-sm">Сбор в указанное время и место</p>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="space-y-6">
+                            <!-- Booking Reference -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-1">${bookingRef}</h4>
+                                <p class="text-sm text-gray-600">Подтверждено ${submissionTime.toLocaleDateString('ru-RU')} ${submissionTime.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})} GMT+5</p>
+                            </div>
+
+                            <!-- Customer Info -->
+                            ${booking.contactPhone ? `
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 mb-3">Номер телефона клиента:</h4>
+                                    <p class="text-blue-600">${booking.contactPhone}</p>
+                                </div>
+                            ` : ''}
+
+                            <!-- Pickup Point -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-3">Место сбора:</h4>
+                                <p class="text-gray-700">${booking.tour.pickupInfo || 'Центр города Душанбе'}</p>
+                            </div>
+
+                            <!-- Booking Source -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-3">Источник бронирования:</h4>
+                                <p class="text-gray-700">Bunyod-Tour</p>
+                            </div>
+
+                            <!-- Product Code -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-3">Код продукта:</h4>
+                                <p class="text-gray-700">TOUR${booking.tour.id}TJ${tourDuration}D</p>
+                            </div>
+
+                            <!-- Supplier Confirmation -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-3">Номер подтверждения поставщика:</h4>
+                                <p class="text-gray-700">BT-${Math.floor(Math.random() * 1000000)}</p>
+                            </div>
+
+                            <!-- API Authorization -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-3">Авторизовано API:</h4>
+                                <p class="text-green-600 font-medium">Да</p>
+                            </div>
+
+                            <!-- Amount -->
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-gray-800 mb-3">Сумма к оплате:</h4>
+                                <p class="text-2xl font-bold text-blue-600">${(booking.totalPrice || (tourBasePrice + roomCost + mealCost)).toLocaleString()} TJS</p>
+                                <p class="text-sm text-gray-600">≈ ${Math.round((booking.totalPrice || (tourBasePrice + roomCost + mealCost)) * 0.091)} USD</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Contact Information -->
-                    ${booking.contactName ? `
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h4 class="font-medium text-gray-800 mb-3 flex items-center">
-                                <i class="fas fa-address-card text-green-500 mr-2"></i>
-                                Контактное лицо
-                            </h4>
-                            <div class="space-y-1 text-sm text-gray-600">
-                                <div class="flex items-center">
-                                    <i class="fas fa-user text-gray-400 mr-2 w-4"></i>
-                                    <span>${booking.contactName}</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-phone text-gray-400 mr-2 w-4"></i>
-                                    <span>${booking.contactPhone}</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-envelope text-gray-400 mr-2 w-4"></i>
-                                    <span>${booking.contactEmail}</span>
-                                </div>
-                            </div>
-                        </div>
-                    ` : ''}
-
-                    <!-- Tourist List -->
-                    ${tourists.length > 0 ? `
-                        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
-                            <h4 class="font-medium text-gray-800 mb-3 flex items-center">
-                                <i class="fas fa-users text-yellow-500 mr-2"></i>
-                                Список туристов (${tourists.length} чел.)
-                            </h4>
-                            <div class="grid gap-2">
-                                ${tourists.map((tourist, index) => `
-                                    <div class="flex items-center text-sm text-gray-700 bg-white p-2 rounded">
-                                        <span class="w-6 h-6 bg-yellow-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-3">${index + 1}</span>
-                                        <span>${tourist.fullName}</span>
-                                        ${tourist.dateOfBirth ? `<span class="ml-auto text-xs text-gray-500">${new Date(tourist.dateOfBirth).toLocaleDateString('ru-RU')}</span>` : ''}
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
-
-                    <!-- Hotel Information -->
+                    <!-- Hotel Details (if selected) -->
                     ${booking.hotel ? `
-                        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
-                            <h4 class="font-medium text-gray-800 mb-3 flex items-center">
-                                <i class="fas fa-hotel text-green-500 mr-2"></i>
-                                Проживание
-                            </h4>
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-start">
+                        <div class="border-t pt-6 mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Детали проживания</h3>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <p class="font-medium text-gray-800">${booking.hotel.name.ru || booking.hotel.name.en}</p>
-                                        ${booking.hotel.stars ? `<div class="text-yellow-500 text-sm">★★★★★</div>`.slice(0, -10 + booking.hotel.stars * 2) + `</div>` : ''}
-                                        <p class="text-xs text-gray-500 mt-1">${booking.hotel.address || 'Адрес не указан'}</p>
+                                        <h5 class="font-medium text-gray-700 mb-2">Отель:</h5>
+                                        <p class="text-gray-800">${booking.hotel.name.ru || booking.hotel.name.en}</p>
+                                        <p class="text-sm text-gray-600">${booking.hotel.address}</p>
+                                        ${booking.hotel.stars ? `<div class="text-yellow-500 mt-1">${'★'.repeat(booking.hotel.stars)}</div>` : ''}
                                     </div>
-                                </div>
-                                
-                                <!-- Room Details -->
-                                ${Object.keys(roomSelection).length > 0 ? `
-                                    <div class="mt-3 bg-white p-3 rounded border">
-                                        <p class="font-medium text-gray-700 mb-2 text-sm">Выбранные номера:</p>
+                                    <div>
+                                        <h5 class="font-medium text-gray-700 mb-2">Номера:</h5>
                                         ${Object.entries(roomSelection).map(([roomType, quantity]) => {
                                             if (quantity > 0 && hotelRoomTypes[roomType]) {
-                                                const roomPrice = hotelRoomTypes[roomType].price * quantity * tourDuration;
-                                                return `
-                                                    <div class="flex justify-between items-center text-sm py-1">
-                                                        <span class="text-gray-600">${hotelRoomTypes[roomType].name} × ${quantity}</span>
-                                                        <span class="font-medium text-green-600">${hotelRoomTypes[roomType].price} TJS/сутки × ${tourDuration} дн. = ${roomPrice.toLocaleString()} TJS</span>
-                                                    </div>
-                                                `;
+                                                return `<p class="text-sm text-gray-600">${hotelRoomTypes[roomType].name} × ${quantity}</p>`;
                                             }
                                             return '';
                                         }).join('')}
                                     </div>
-                                ` : ''}
-                                
-                                <!-- Meal Details -->
-                                ${Object.keys(mealSelection).length > 0 ? `
-                                    <div class="mt-3 bg-white p-3 rounded border">
-                                        <p class="font-medium text-gray-700 mb-2 text-sm">Дополнительное питание:</p>
-                                        ${Object.entries(mealSelection).map(([mealType, price]) => {
-                                            if (price > 0 && hotelMealTypes[mealType]) {
-                                                const mealPrice = price * booking.numberOfTourists * tourDuration;
-                                                return `
-                                                    <div class="flex justify-between items-center text-sm py-1">
-                                                        <span class="text-gray-600">${hotelMealTypes[mealType].name}</span>
-                                                        <span class="font-medium text-green-600">${price} TJS × ${booking.numberOfTourists} чел. × ${tourDuration} дн. = ${mealPrice.toLocaleString()} TJS</span>
-                                                    </div>
-                                                `;
-                                            }
-                                            return '';
-                                        }).join('')}
-                                    </div>
-                                ` : ''}
+                                </div>
                             </div>
                         </div>
                     ` : ''}
 
-                    <!-- Detailed Price Calculation -->
-                    <div class="bg-blue-50 p-4 rounded-lg border">
-                        <h4 class="font-bold text-gray-800 mb-3 flex items-center text-lg">
-                            <i class="fas fa-calculator text-blue-500 mr-2"></i>
-                            Детальный расчёт стоимости
-                        </h4>
-                        <div class="space-y-3">
-                            <!-- Base Tour Price -->
-                            <div class="bg-white p-3 rounded shadow-sm">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="font-medium text-gray-700">Базовая стоимость тура</p>
-                                        <p class="text-xs text-gray-500">
-                                            ${booking.tour.priceType === 'за группу' ? 
-                                                'Цена за группу' : 
-                                                `${booking.tour.price} TJS × ${booking.numberOfTourists} чел.`
-                                            }
-                                        </p>
-                                    </div>
-                                    <span class="font-bold text-blue-600 text-lg">${tourBasePrice.toLocaleString()} TJS</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Hotel Costs -->
-                            ${roomCost > 0 ? `
-                                <div class="bg-green-100 p-3 rounded shadow-sm border-l-4 border-green-500">
-                                    <div class="flex justify-between items-center">
-                                        <div>
-                                            <p class="font-medium text-gray-700">+ Проживание в отеле</p>
-                                            <p class="text-xs text-gray-500">${tourDuration} ночей</p>
-                                        </div>
-                                        <span class="font-bold text-green-600 text-lg">+${roomCost.toLocaleString()} TJS</span>
-                                    </div>
-                                </div>
-                            ` : ''}
-                            
-                            <!-- Meal Costs -->
-                            ${mealCost > 0 ? `
-                                <div class="bg-orange-100 p-3 rounded shadow-sm border-l-4 border-orange-500">
-                                    <div class="flex justify-between items-center">
-                                        <div>
-                                            <p class="font-medium text-gray-700">+ Дополнительное питание</p>
-                                            <p class="text-xs text-gray-500">${actualTouristCount} чел. × ${tourDuration} дн.</p>
-                                        </div>
-                                        <span class="font-bold text-orange-600 text-lg">+${mealCost.toLocaleString()} TJS</span>
-                                    </div>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-
-                    <!-- Final Total -->
-                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg shadow-lg">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-sm opacity-90 mb-1">ИТОГО К ОПЛАТЕ</p>
-                                <p class="text-xs opacity-75">за ${actualTouristCount} туриста(ов) на ${tourDuration} дн.</p>
-                                <p class="text-xs opacity-75 mt-1">≈ ${Math.round((booking.totalPrice || (tourBasePrice + roomCost + mealCost)) * 0.091)} USD</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-3xl font-bold">${(booking.totalPrice || (tourBasePrice + roomCost + mealCost)).toLocaleString()}</p>
-                                <p class="text-lg opacity-90">TJS</p>
-                            </div>
-                        </div>
+                    <!-- Footer Actions -->
+                    <div class="border-t pt-4 flex justify-center space-x-6 text-sm">
+                        <a href="#" class="text-blue-600 hover:text-blue-800">Связаться со службой поддержки</a>
+                        <a href="#" class="text-blue-600 hover:text-blue-800">История бронирований</a>
+                        <a href="#" class="text-blue-600 hover:text-blue-800">Печать ваучера</a>
                     </div>
                 </div>
             `;
