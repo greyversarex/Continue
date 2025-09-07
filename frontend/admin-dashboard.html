@@ -8047,7 +8047,7 @@
                 const headers = getAuthHeaders();
                 delete headers['Content-Type']; // Пусть браузер сам установит для FormData
                 
-                const response = await fetch(`${getApiUrl()}/drivers/${driverId}`, {
+                const response = await fetch(`${getApiUrl()}/drivers/profile/${driverId}`, {
                     method: 'PUT',
                     headers: headers,
                     body: formData

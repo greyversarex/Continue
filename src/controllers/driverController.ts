@@ -437,10 +437,21 @@ export const updateDriverProfile = async (req: Request, res: Response): Promise<
     if (vehicleTypes) {
       let parsedVehicleTypes = [];
       try {
+        // Если это уже JSON строка, парсим её
         parsedVehicleTypes = typeof vehicleTypes === 'string' ? 
-          vehicleTypes.split(',').map(v => v.trim()) : vehicleTypes;
+          JSON.parse(vehicleTypes) : vehicleTypes;
+        
+        // Убеждаемся, что это массив
+        if (!Array.isArray(parsedVehicleTypes)) {
+          parsedVehicleTypes = [parsedVehicleTypes];
+        }
       } catch (e) {
-        parsedVehicleTypes = [];
+        // Если JSON.parse не работает, возможно это строка с разделителями
+        try {
+          parsedVehicleTypes = vehicleTypes.split(',').map((v: string) => v.trim());
+        } catch (e2) {
+          parsedVehicleTypes = [];
+        }
       }
       updateData.vehicleTypes = JSON.stringify(parsedVehicleTypes);
     }
