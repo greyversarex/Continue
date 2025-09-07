@@ -680,4 +680,202 @@ export const getDriverOptions = async (req: Request, res: Response): Promise<voi
   }
 };
 
+// Получение назначенных событий водителя
+export const getDriverAssignedEvents = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const driverId = (req as any).driverId; // Из middleware
+    
+    if (!driverId) {
+      res.status(401).json({
+        success: false,
+        message: 'Необходима авторизация'
+      });
+      return;
+    }
+
+    // Получаем все туры с событиями, где назначен данный водитель
+    const tours = await prisma.tour.findMany({
+      where: {
+        isActive: true,
+        itinerary: {
+          contains: `"driverId":${driverId}`
+        }
+      },
+      select: {
+        id: true,
+        title: true,
+        itinerary: true,
+        startDate: true,
+        endDate: true,
+        status: true
+      }
+    });
+
+    // Парсим события и фильтруем только те, где назначен данный водитель
+    const assignedEvents: any[] = [];
+    
+    tours.forEach(tour => {
+      if (tour.itinerary) {
+        try {
+          const itinerary = JSON.parse(tour.itinerary);
+          itinerary.forEach((event: any, index: number) => {
+            if (event.driverId && parseInt(event.driverId) === driverId) {
+              assignedEvents.push({
+                id: `${tour.id}-${index}`, // Уникальный ID события
+                tourId: tour.id,
+                tourTitle: tour.title,
+                eventIndex: index,
+                time: event.time,
+                title: event.title,
+                description: event.description,
+                status: event.status || 'pending', // pending, started, completed
+                tourStatus: tour.status,
+                startDate: tour.startDate,
+                endDate: tour.endDate
+              });
+            }
+          });
+        } catch (e) {
+          console.warn('Error parsing itinerary for tour', tour.id, e);
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      data: assignedEvents,
+      message: 'Назначенные события получены успешно'
+    });
+
+  } catch (error) {
+    console.error('❌ Error getting driver assigned events:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Ошибка при получении назначенных событий'
+    });
+  }
+};
+
+// Запуск события водителем
+export const startDriverEvent = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const driverId = (req as any).driverId;
+    const { eventId } = req.params; // Формат: tourId-eventIndex
+    
+    if (!driverId || !eventId) {
+      res.status(400).json({
+        success: false,
+        message: 'Необходимы параметры driverId и eventId'
+      });
+      return;
+    }
+
+    const [tourId, eventIndex] = eventId.split('-');
+    const tour = await prisma.tour.findUnique({
+      where: { id: parseInt(tourId) }
+    });
+
+    if (!tour || !tour.itinerary) {
+      res.status(404).json({
+        success: false,
+        message: 'Тур или программа не найдены'
+      });
+      return;
+    }
+
+    const itinerary = JSON.parse(tour.itinerary);
+    const eventIdx = parseInt(eventIndex);
+    
+    if (eventIdx >= itinerary.length || itinerary[eventIdx].driverId !== driverId) {
+      res.status(403).json({
+        success: false,
+        message: 'Событие не назначено данному водителю'
+      });
+      return;
+    }
+
+    // Обновляем статус события
+    itinerary[eventIdx].status = 'started';
+    itinerary[eventIdx].startedAt = new Date().toISOString();
+
+    await prisma.tour.update({
+      where: { id: parseInt(tourId) },
+      data: { itinerary: JSON.stringify(itinerary) }
+    });
+
+    res.json({
+      success: true,
+      message: 'Событие запущено'
+    });
+
+  } catch (error) {
+    console.error('❌ Error starting driver event:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Ошибка при запуске события'
+    });
+  }
+};
+
+// Завершение события водителем
+export const completeDriverEvent = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const driverId = (req as any).driverId;
+    const { eventId } = req.params;
+    
+    if (!driverId || !eventId) {
+      res.status(400).json({
+        success: false,
+        message: 'Необходимы параметры driverId и eventId'
+      });
+      return;
+    }
+
+    const [tourId, eventIndex] = eventId.split('-');
+    const tour = await prisma.tour.findUnique({
+      where: { id: parseInt(tourId) }
+    });
+
+    if (!tour || !tour.itinerary) {
+      res.status(404).json({
+        success: false,
+        message: 'Тур или программа не найдены'
+      });
+      return;
+    }
+
+    const itinerary = JSON.parse(tour.itinerary);
+    const eventIdx = parseInt(eventIndex);
+    
+    if (eventIdx >= itinerary.length || itinerary[eventIdx].driverId !== driverId) {
+      res.status(403).json({
+        success: false,
+        message: 'Событие не назначено данному водителю'
+      });
+      return;
+    }
+
+    // Обновляем статус события
+    itinerary[eventIdx].status = 'completed';
+    itinerary[eventIdx].completedAt = new Date().toISOString();
+
+    await prisma.tour.update({
+      where: { id: parseInt(tourId) },
+      data: { itinerary: JSON.stringify(itinerary) }
+    });
+
+    res.json({
+      success: true,
+      message: 'Событие завершено'
+    });
+
+  } catch (error) {
+    console.error('❌ Error completing driver event:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Ошибка при завершении события'
+    });
+  }
+};
+
 export { DEFAULT_VEHICLE_TYPES, LICENSE_CATEGORIES };

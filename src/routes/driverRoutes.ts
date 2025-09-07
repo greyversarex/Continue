@@ -8,6 +8,9 @@ import {
   updateDriverProfile,
   deleteDriver,
   getDriverOptions,
+  getDriverAssignedEvents,
+  startDriverEvent,
+  completeDriverEvent,
   upload
 } from '../controllers/driverController';
 
@@ -43,10 +46,11 @@ router.delete('/:id', deleteDriver);
 router.get('/options/vehicle-types', getDriverOptions);
 
 // Защищённые маршруты для водителей (требуют авторизации)
-// Здесь будут добавлены маршруты для кабинета водителя
-// router.get('/dashboard', authenticateDriver, getDriverDashboard);
-// router.get('/assignments', authenticateDriver, getDriverAssignments);
-// router.post('/assignments/:id/accept', authenticateDriver, acceptAssignment);
-// router.post('/assignments/:id/complete', authenticateDriver, completeAssignment);
+// Получение назначенных событий водителя
+router.get('/my-events', authenticateDriver, getDriverAssignedEvents);
+// Запуск события 
+router.post('/events/:eventId/start', authenticateDriver, startDriverEvent);
+// Завершение события
+router.post('/events/:eventId/complete', authenticateDriver, completeDriverEvent);
 
 export default router;
