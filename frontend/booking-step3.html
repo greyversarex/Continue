@@ -153,7 +153,7 @@
             </div>
 
         <!-- Booking Voucher -->
-        <div class="bg-white rounded-lg shadow-lg border-l-4 border-blue-500 mt-8">
+        <div class="bg-white rounded-lg shadow-lg mt-8">
             <div id="booking-summary">
                 <!-- Voucher will be loaded here -->
                 <div class="text-center py-8">
@@ -403,9 +403,9 @@
                             <div>
                                 <h4 class="font-semibold text-gray-800 mb-3">Включено:</h4>
                                 <div class="text-gray-700 space-y-1 text-sm">
-                                    <div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Профессиональный гид</div>
-                                    <div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Транспорт</div>
-                                    <div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Входные билеты</div>
+                                    ${booking.tour.services ? booking.tour.services.map(service => 
+                                        `<div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> ${service.name}</div>`
+                                    ).join('') : ''}
                                     ${booking.hotel ? '<div class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Проживание в отеле</div>' : ''}
                                 </div>
                             </div>
@@ -451,23 +451,17 @@
                                 <p class="text-gray-700">TOUR${booking.tour.id}TJ${tourDuration}D</p>
                             </div>
 
-                            <!-- Supplier Confirmation -->
+                            <!-- Tour Guide -->
                             <div>
-                                <h4 class="font-semibold text-gray-800 mb-3">Номер подтверждения поставщика:</h4>
-                                <p class="text-gray-700">BT-${Math.floor(Math.random() * 1000000)}</p>
-                            </div>
-
-                            <!-- API Authorization -->
-                            <div>
-                                <h4 class="font-semibold text-gray-800 mb-3">Авторизовано API:</h4>
-                                <p class="text-green-600 font-medium">Да</p>
+                                <h4 class="font-semibold text-gray-800 mb-3">Гид тура:</h4>
+                                <p class="text-gray-700">${booking.tour.guide || 'Назначается при начале тура'}</p>
                             </div>
 
                             <!-- Amount -->
                             <div class="bg-blue-50 p-4 rounded-lg">
                                 <h4 class="font-semibold text-gray-800 mb-3">Сумма к оплате:</h4>
-                                <p class="text-2xl font-bold text-blue-600">${(booking.totalPrice || (tourBasePrice + roomCost + mealCost)).toLocaleString()} TJS</p>
-                                <p class="text-sm text-gray-600">≈ ${Math.round((booking.totalPrice || (tourBasePrice + roomCost + mealCost)) * 0.091)} USD</p>
+                                <p class="text-2xl font-bold text-blue-600">${(tourBasePrice + roomCost + mealCost).toLocaleString()} TJS</p>
+                                <p class="text-sm text-gray-600">≈ ${Math.round((tourBasePrice + roomCost + mealCost) * 0.091)} USD</p>
                             </div>
                         </div>
                     </div>
