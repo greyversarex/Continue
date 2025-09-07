@@ -64,14 +64,48 @@ export const alifController = {
 
       console.log(`🔄 Creating AlifPay payment: Order ${orderId}, Amount ${amount} тийинов`);
 
-      // Использовать формат как в старой интеграции AlifPay
+      // Alif WebCheckout API payload
       const callbackUrl = `${baseUrl}/api/payments/alif/callback`;
-      const info = `Оплата тура №${orderNumber}`;
+      const paymentData = {
+        merchant_id: alifMerchantKey,
+        password: hashedPassword,  // Отправляем хэшированный пароль
+        amount: amount,            // Сумма в тийинах
+        order_id: orderId,
+        description: `Оплата тура №${orderNumber}`,
+        return_url: returnUrl || defaultReturnUrl,
+        callback_url: callbackUrl,
+        customer_email: order.customer.email,
+        customer_phone: order.customer.phone || ''
+      };
 
-      // Generate HMAC token: HMAC_SHA256(key+orderId+amount+callbackUrl, HMAC_SHA256(password, key))
-      const step1 = crypto.createHmac('sha256', hashedPassword).update(alifMerchantKey).digest('hex');
-      const step2Data = alifMerchantKey + orderId + amount + callbackUrl;
-      const token = crypto.createHmac('sha256', step1).update(step2Data).digest('hex');
+      // Отправить запрос к Alif WebCheckout API
+      const response = await fetch(`${alifApiUrl}/payments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentData),
+      });
+
+      if (!response.ok) {
+        console.error('❌ Alif WebCheckout API failed:', response.statusText);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to communicate with Alif WebCheckout API',
+        });
+      }
+
+      const responseData = await response.json() as any;
+      console.log('🔄 Alif WebCheckout API response:', responseData);
+
+      if (!responseData.success || !responseData.token) {
+        console.error('❌ Alif WebCheckout payment creation failed:', responseData);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to create Alif WebCheckout payment',
+          error: responseData.error || 'Unknown error',
+        });
+      }
 
       // Обновить заказ в БД
       await prisma.order.update({
@@ -79,31 +113,19 @@ export const alifController = {
         data: {
           paymentMethod: 'alif',
           paymentStatus: 'processing',
-          paymentIntentId: orderId,
+          paymentIntentId: responseData.token,
         },
       });
 
-      console.log(`✅ AlifPay payment data prepared successfully`);
+      console.log(`✅ Alif WebCheckout payment created successfully`);
 
-      // Return form data for redirect to Alif (использует веб-форму, а не прямой API)
-      const alifFormData = {
-        key: alifMerchantKey,
-        orderId: orderId,
-        amount: amount,
-        info: info,
-        returnUrl: returnUrl || defaultReturnUrl,
-        callbackUrl: callbackUrl,
-        email: order.customer.email,
-        phone: order.customer.phone || '',
-        gate: 'vsa',
-        token: token,
-      };
+      // Возвращаем redirectUrl в формате https://web.alif.tj/checkout/<token>
+      const redirectUrl = `https://web.alif.tj/checkout/${responseData.token}`;
 
       return res.json({
         success: true,
-        paymentUrl: 'https://web.alif.tj/',
-        formData: alifFormData,
-        method: 'POST',
+        redirectUrl: redirectUrl,
+        token: responseData.token,
       });
 
     } catch (error) {
@@ -199,7 +221,7 @@ export const alifController = {
       }
 
       // ✅ Обновить статус платежа
-      if (status === 'paid') {
+      if (status === 'PAID') {
         await prisma.order.update({
           where: { id: Number(order_id) },
           data: {
@@ -216,7 +238,7 @@ export const alifController = {
         } catch (emailError) {
           console.error('❌ Email sending failed:', emailError);
         }
-      } else {
+      } else if (status === 'FAILED') {
         await prisma.order.update({
           where: { id: Number(order_id) },
           data: {
@@ -224,6 +246,8 @@ export const alifController = {
           },
         });
         console.log('⚠️ Payment failed for order:', order_id, 'with status:', status);
+      } else {
+        console.log('ℹ️ Unknown payment status for order:', order_id, 'status:', status);
       }
 
       return res.json({ success: true });
