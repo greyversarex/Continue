@@ -7553,8 +7553,8 @@
                                 <div class="flex justify-between items-start mb-4">
                                     <div class="flex items-center">
                                         <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
-                                            ${driver.photo ? 
-                                                `<img src="${driver.photo}" alt="${driver.name}" class="w-12 h-12 rounded-full object-cover">` :
+                                            ${driver.photo && !driver.photo.includes('${') ? 
+                                                `<img src="${driver.photo}" alt="${driver.name || 'Водитель'}" class="w-12 h-12 rounded-full object-cover" onerror="this.parentElement.innerHTML='<i class=\"fas fa-car text-blue-600\"></i>'">` :
                                                 `<i class="fas fa-car text-blue-600"></i>`
                                             }
                                         </div>
@@ -7623,16 +7623,19 @@
                 
             } catch (error) {
                 console.error('Ошибка загрузки водителей:', error);
-                document.getElementById('driversList').innerHTML = `
-                    <div class="col-span-full">
-                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                            <div class="flex items-center">
-                                <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
-                                <span class="text-red-800">Ошибка загрузки водителей: ${error.message}</span>
+                const driversList = document.getElementById('driversList');
+                if (driversList) {
+                    driversList.innerHTML = `
+                        <div class="col-span-full">
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <div class="flex items-center">
+                                    <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
+                                    <span class="text-red-800">Ошибка загрузки водителей: ${error.message || 'Неизвестная ошибка'}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
             }
         }
 
