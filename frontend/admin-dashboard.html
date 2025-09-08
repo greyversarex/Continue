@@ -5974,6 +5974,13 @@
                             </div>
                         `;
                     }).join('');
+                })
+                .catch(error => {
+                    console.error('Error loading guides:', error);
+                    const container = document.getElementById('guidesList');
+                    if (container) {
+                        container.innerHTML = '<p class="text-red-500">Ошибка загрузки гидов</p>';
+                    }
                 });
         }
         
