@@ -610,3 +610,55 @@ enum NewsCategory {
   tips
   general
 }
+
+model DriverProfile {
+  id                Int      @id @default(autoincrement())
+  name              String
+  phone             String
+  email             String?
+  dateOfBirth       DateTime?
+  experience        Int      // Опыт вождения (в годах)
+  licenseCategories String   // Категории прав (JSON массив)
+  licenseNumber     String   // Номер водительского удостоверения
+  vehicleTypes      String   // Типы транспорта (JSON массив)
+  vehicleBrand      String?  // Марка автомобиля
+  vehicleYear       Int?     // Год выпуска автомобиля
+  languages         String   // Языки (JSON массив)
+  workingAreas      String   // Зоны работы (JSON массив)
+  dailyRate         Float    // Дневная ставка (TJS)
+  hourlyRate        Float    // Почасовая ставка (TJS)
+  rating            Float?   // Рейтинг водителя
+  totalTrips        Int      @default(0) // Общее количество поездок
+  photo             String?  // Аватар водителя
+  vehiclePhotos     String?  // Фото транспорта (JSON массив)
+  documents         String?  // Документы (JSON массив)
+  isActive          Boolean  @default(true) // Активен ли водитель
+  password          String   // Пароль для авторизации
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Связь с поездками
+  trips             Trip[]
+
+  @@map("driver_profiles")
+}
+
+model Trip {
+  id              Int      @id @default(autoincrement())
+  direction       String   // Направление (например, "Аэропорт - Город")
+  pickupTime      String   // Время приёма
+  pickupLocation  String   // Место приёма
+  routeFrom       String   // Откуда
+  routeTo         String   // Куда
+  dropoffLocation String   // Место высадки
+  dropoffTime     String   // Время высадки
+  driverId        Int      // ID водителя
+  status          String   @default("pending") // Статус: pending, in_progress, completed, cancelled
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Связь с водителем
+  driver          DriverProfile @relation(fields: [driverId], references: [id], onDelete: Cascade)
+
+  @@map("trips")
+}
