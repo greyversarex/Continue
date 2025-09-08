@@ -3453,6 +3453,20 @@
             selectedCategories = [];
             updateSelectedCategoriesDisplay();
             
+            // Очищаем исключенные услуги при открытии модального окна
+            const excludedContainer = document.getElementById('excludedOptions');
+            const excludedPlaceholder = document.getElementById('excludedPlaceholder');
+            if (excludedContainer) {
+                // Удаляем все чекбоксы исключенных услуг
+                const checkboxes = excludedContainer.querySelectorAll('.checkbox-item');
+                checkboxes.forEach(checkbox => checkbox.remove());
+                
+                // Показываем placeholder
+                if (excludedPlaceholder) {
+                    excludedPlaceholder.style.display = 'block';
+                }
+            }
+            
             
             document.getElementById('tourModal').classList.add('active');
             
@@ -3975,6 +3989,38 @@
                             console.log('❌ No tourDrivers found or not array:', tour.tourDrivers);
                         }
                         
+                        // Загружаем исключенные услуги
+                        if (tour.excluded) {
+                            try {
+                                const excludedServices = typeof tour.excluded === 'string' 
+                                    ? JSON.parse(tour.excluded) 
+                                    : tour.excluded;
+                                
+                                if (Array.isArray(excludedServices)) {
+                                    const excludedContainer = document.getElementById('excludedOptions');
+                                    const placeholder = document.getElementById('excludedPlaceholder');
+                                    
+                                    if (placeholder) placeholder.style.display = 'none';
+                                    
+                                    excludedServices.forEach(service => {
+                                        const newCheckbox = document.createElement('label');
+                                        newCheckbox.className = 'checkbox-item';
+                                        newCheckbox.innerHTML = `
+                                            <input type="checkbox" value="${service}" checked> ${service}
+                                            <button type="button" onclick="removeExcludedService(this)" class="ml-2 text-red-500 hover:text-red-700">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        `;
+                                        excludedContainer.appendChild(newCheckbox);
+                                    });
+                                    
+                                    console.log('✅ Loaded excluded services:', excludedServices);
+                                }
+                            } catch (e) {
+                                console.warn('Failed to parse excluded services:', e);
+                            }
+                        }
+                        
                         console.log('✅ Tour data loaded successfully for editing:', tour.id);
                         console.log('🔍 Final currentTourId check:', currentTourId, 'window.currentTourId:', window.currentTourId);
                         
@@ -4051,6 +4097,7 @@
             console.log('🏨 Selected hotels:', selectedHotels);
             console.log('👨‍🏫 Selected guides:', selectedGuides);
             console.log('🚗 Selected drivers:', selectedDrivers);
+            console.log('❌ Excluded services:', excludedServices);
             
             // Формируем данные для отправки (с проверками на существование элементов)
             const tourDescRuEl = document.getElementById('tourDescRu');
