@@ -2347,15 +2347,6 @@
                 document.querySelectorAll('.nav-item, .nav-subitem').forEach(nav => nav.classList.remove('active'));
                 this.classList.add('active');
                 
-                // If this is a subitem, also keep the parent drivers menu open
-                if (this.classList.contains('nav-subitem')) {
-                    const driversSubmenu = document.getElementById('driversSubmenu');
-                    const driversArrow = document.getElementById('driversArrow');
-                    if (driversSubmenu) {
-                        driversSubmenu.style.display = 'block';
-                        driversArrow.classList.add('rotated');
-                    }
-                }
             });
         });
         
@@ -2376,9 +2367,6 @@
                 bookings: 'Управление заказами',
                 hotels: 'Управление отелями',
                 guides: 'Управление гидами',
-                drivers: 'Управление водителями',
-                'drivers-management': 'Управление водителями',
-                'driver-trips': 'Управление поездками',
                 countries: 'Управление странами',
                 cities: 'Управление городами',
                 customers: 'Клиенты',
@@ -2409,15 +2397,7 @@
                 case 'guides':
                     loadGuides();
                     break;
-                case 'drivers-management':
-                    loadDrivers();
-                    break;
-                case 'driver-trips':
-                    loadDriverTrips();
-                    break;
-                case 'transfers':
-                    loadTransfers();
-                    break;
+
                 case 'countries':
                     loadCountries();
                     break;
@@ -7231,243 +7211,14 @@
         // ============== УПРАВЛЕНИЕ ВОДИТЕЛЯМИ ==============
         
         // Функция переключения подменю водителей
-        function toggleDriverSubMenu(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            const submenu = document.getElementById('driversSubmenu');
-            const arrow = document.getElementById('driversArrow');
-            
-            if (submenu.style.display === 'none') {
-                submenu.style.display = 'block';
-                arrow.classList.add('rotated');
-            } else {
-                submenu.style.display = 'none';
-                arrow.classList.remove('rotated');
-            }
-        }
         
         // Функции для новых разделов
-        function loadDriverTrips() {
-            console.log('Loading driver trips...');
-            const mainContent = document.getElementById('mainContent');
-            if (!mainContent) {
-                console.error('mainContent element not found');
-                return;
-            }
-            
-            mainContent.innerHTML = `
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-2xl font-bold">Поездки</h1>
-                        <button onclick="openTripModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-                            <i class="fas fa-plus mr-2"></i>Создать поездку
-                        </button>
-                    </div>
-                    
-                    <div class="bg-white rounded-lg shadow overflow-hidden">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Направление</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Маршрут</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Водитель</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Время приёма</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действия</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tripsTableBody" class="bg-white divide-y divide-gray-200">
-                                <!-- Поездки будут загружаться динамически -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-            
-            // Подождем немного, чтобы DOM обновился
-            setTimeout(() => {
-                loadExistingTrips();
-            }, 100);
-        }
         
-        function loadTransfers() {
-            console.log('Loading transfers...');
-            const mainContent = document.getElementById('mainContent');
-            if (!mainContent) {
-                console.error('mainContent element not found for transfers');
-                return;
-            }
-            
-            mainContent.innerHTML = `
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-2xl font-bold">Управление трансферами</h1>
-                        <button onclick="alert('Функционал в разработке')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-                            <i class="fas fa-plus mr-2"></i>Добавить трансфер
-                        </button>
-                    </div>
-                    
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="text-center py-12">
-                            <i class="fas fa-car text-6xl text-gray-300 mb-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-600 mb-2">Раздел в разработке</h3>
-                            <p class="text-gray-500">Управление трансферами будет доступно в следующих обновлениях</p>
-                            <div class="mt-6">
-                                <p class="text-sm text-gray-400">Пока вы можете использовать раздел "Водители → Поездки"</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
         
-        // Функции для управления поездками
-        function openTripModal() {
-            document.getElementById('tripModal').style.display = 'flex';
-            loadDriversForTrip();
-        }
         
-        function closeTripModal() {
-            document.getElementById('tripModal').style.display = 'none';
-            document.getElementById('tripForm').reset();
-        }
         
-        async function loadDriversForTrip() {
-            try {
-                const response = await fetch('/api/drivers');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const drivers = await response.json();
-                
-                const select = document.getElementById('tripDriverId');
-                if (!select) {
-                    console.error('tripDriverId element not found');
-                    return;
-                }
-                
-                select.innerHTML = '<option value="">Выберите водителя</option>';
-                
-                if (Array.isArray(drivers) && drivers.length > 0) {
-                    drivers.forEach(driver => {
-                        if (driver && driver.id && driver.name) {
-                            select.innerHTML += `<option value="${driver.id}">${driver.name}</option>`;
-                        }
-                    });
-                } else {
-                    select.innerHTML += '<option disabled>Водители не найдены</option>';
-                }
-            } catch (error) {
-                console.error('Ошибка загрузки водителей:', error);
-                const select = document.getElementById('tripDriverId');
-                if (select) {
-                    select.innerHTML = '<option value="">Ошибка загрузки</option>';
-                }
-            }
-        }
         
-        async function createTrip() {
-            const form = document.getElementById('tripForm');
-            const formData = new FormData(form);
-            
-            const tripData = {
-                direction: formData.get('direction'),
-                pickupTime: formData.get('pickupTime'),
-                pickupLocation: formData.get('pickupLocation'),
-                routeFrom: formData.get('routeFrom'),
-                routeTo: formData.get('routeTo'),
-                dropoffLocation: formData.get('dropoffLocation'),
-                dropoffTime: formData.get('dropoffTime'),
-                driverId: formData.get('driverId')
-            };
-            
-            try {
-                const response = await fetch('/api/trips', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(tripData)
-                });
-                
-                if (response.ok) {
-                    closeTripModal();
-                    loadExistingTrips();
-                    alert('Поездка успешно создана!');
-                } else {
-                    alert('Ошибка при создании поездки');
-                }
-            } catch (error) {
-                console.error('Ошибка:', error);
-                alert('Ошибка при создании поездки');
-            }
-        }
         
-        async function loadExistingTrips() {
-            try {
-                const response = await fetch('/api/trips');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const trips = await response.json();
-                
-                const tbody = document.getElementById('tripsTableBody');
-                if (!tbody) {
-                    console.error('tripsTableBody element not found');
-                    return;
-                }
-                
-                if (Array.isArray(trips) && trips.length > 0) {
-                    tbody.innerHTML = trips.map(trip => `
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.id || '-'}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.direction || '-'}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.routeFrom || '-'} - ${trip.routeTo || '-'}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.driverName || 'Не назначен'}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.pickupTime || '-'}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button onclick="deleteTrip(${trip.id})" class="text-red-600 hover:text-red-900 ml-2">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('');
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Поездок нет</td></tr>';
-                }
-            } catch (error) {
-                console.error('Ошибка загрузки поездок:', error);
-                const tbody = document.getElementById('tripsTableBody');
-                if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Ошибка загрузки данных</td></tr>';
-                }
-            }
-        }
-        
-        async function deleteTrip(tripId) {
-            if (confirm('Вы уверены, что хотите удалить эту поездку?')) {
-                try {
-                    const response = await fetch(`/api/trips/${tripId}`, {
-                        method: 'DELETE'
-                    });
-                    
-                    if (response.ok) {
-                        loadExistingTrips();
-                        alert('Поездка успешно удалена!');
-                    } else {
-                        alert('Ошибка при удалении поездки');
-                    }
-                } catch (error) {
-                    console.error('Ошибка:', error);
-                    alert('Ошибка при удалении поездки');
-                }
-            }
-        }
         
         // Переменные для хранения данных водителей
         let selectedDriverLanguages = [];
@@ -11055,15 +10806,7 @@
                 case 'guides':
                     loadGuides();
                     break;
-                case 'drivers-management':
-                    loadDrivers();
-                    break;
-                case 'driver-trips':
-                    loadDriverTrips();
-                    break;
-                case 'transfers':
-                    loadTransfers();
-                    break;
+
                 case 'countries':
                     loadCountries();
                     break;
