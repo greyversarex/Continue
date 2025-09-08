@@ -25,8 +25,6 @@ import tourGuideRoutes from './tourGuideRoutes';
 import adminTourHistoryRoutes from './adminTourHistoryRoutes';
 // Driver system
 import driverRoutes from './driverRoutes';
-// Trip system
-import tripRoutes from './tripRoutes';
 // Location system
 import countryRoutes from './countryRoutes';
 import cityRoutes from './cityRoutes';
@@ -59,7 +57,6 @@ router.use('/price-calculator', priceCalculatorRoutes); // Add price calculator 
 router.use('/guide', tourGuideRoutes); // Tour guide authentication and management
 router.use('/admin', adminTourHistoryRoutes); // Admin tour history and guide management
 router.use('/drivers', driverRoutes); // Driver management and authentication
-router.use('/trips', tripRoutes); // Trip management
 router.use('/countries', countryRoutes); // Countries management
 router.use('/cities', cityRoutes); // Cities management
 router.use('/', objectStorageRoutes);
