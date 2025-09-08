@@ -377,6 +377,10 @@
                     <i class="fas fa-car"></i>
                     <span>Водители</span>
                 </a>
+                <a href="#" class="nav-item" data-section="driver-tasks">
+                    <i class="fas fa-tasks"></i>
+                    <span>Задания водителей</span>
+                </a>
                 <a href="#" class="nav-item" data-section="countries">
                     <i class="fas fa-globe"></i>
                     <span>Страны</span>
@@ -1906,12 +1910,6 @@
                         </div>
                     </div>
                     
-                    <div class="form-group col-span-2">
-                        <label class="form-label">Назначенные водители</label>
-                        <div class="checkbox-group" id="driverCheckboxes">
-                            <!-- Drivers will be loaded here -->
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="flex justify-end gap-3 mt-6">
@@ -2309,6 +2307,9 @@
                     break;
                 case 'drivers':
                     loadDrivers();
+                    break;
+                case 'driver-tasks':
+                    loadDriverTasks();
                     break;
                 case 'countries':
                     loadCountries();
@@ -3479,7 +3480,6 @@
             // Load hotels and guides for checkboxes
             loadHotelsForCheckboxes();
             loadGuidesForCheckboxes();
-            loadDriversForCheckboxes();
             
             // Load categories for tour form
             loadCategories();
@@ -4082,11 +4082,6 @@
                 selectedGuides.push(parseInt(checkbox.value));
             });
             
-            // Собираем выбранных водителей
-            const selectedDrivers = [];
-            document.querySelectorAll('input[name="selectedDrivers"]:checked').forEach(checkbox => {
-                selectedDrivers.push(parseInt(checkbox.value));
-            });
             
             // Собираем исключенные услуги
             const excludedServices = [];
@@ -4096,7 +4091,6 @@
             
             console.log('🏨 Selected hotels:', selectedHotels);
             console.log('👨‍🏫 Selected guides:', selectedGuides);
-            console.log('🚗 Selected drivers:', selectedDrivers);
             console.log('❌ Excluded services:', excludedServices);
             
             // Формируем данные для отправки (с проверками на существование элементов)
@@ -4145,7 +4139,6 @@
                 images: JSON.stringify(window.tourGalleryImages || []),
                 hotelIds: selectedHotels,
                 guideIds: selectedGuides,
-                driverIds: selectedDrivers,
                 excluded: JSON.stringify(excludedServices),
                 isActive: true,
                 isFeatured: false
@@ -4413,47 +4406,6 @@
                 });
         }
         
-        function loadDriversForCheckboxes() {
-            fetch(`${getApiUrl()}/drivers`, {
-                headers: getAuthHeaders()
-            })
-                .then(res => res.json())
-                .then(data => {
-                    const container = document.getElementById('driverCheckboxes');
-                    const drivers = data.data || [];
-                    
-                    if (drivers.length === 0) {
-                        container.innerHTML = '<p class="text-gray-500">Нет доступных водителей</p>';
-                        return;
-                    }
-                    
-                    container.innerHTML = drivers.map(driver => {
-                        let displayName = driver.name || 'Водитель';
-                        let vehicleInfo = '';
-                        
-                        // Добавляем информацию о транспорте
-                        if (driver.vehicleBrand) {
-                            vehicleInfo = ` (${driver.vehicleBrand}`;
-                            if (driver.vehicleYear) {
-                                vehicleInfo += ` ${driver.vehicleYear}`;
-                            }
-                            vehicleInfo += ')';
-                        }
-                        
-                        return `
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="selectedDrivers" value="${driver.id}"> 
-                                ${displayName}${vehicleInfo}
-                            </label>
-                        `;
-                    }).join('');
-                })
-                .catch(err => {
-                    console.error('Error loading drivers for checkboxes:', err);
-                    document.getElementById('driverCheckboxes').innerHTML = 
-                        '<p class="text-red-500">Ошибка загрузки водителей</p>';
-                });
-        }
         
         // Hotels functions
         // Удалено: currentHotelId - используем hotel-id
@@ -10672,7 +10624,7 @@
         // Show section function
         function showSection(sectionName) {
             // Hide all sections
-            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'reviewsSection', 'cmsSection', 'translationSection', 'settingsSection'];
+            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'driversSection', 'driverTasksSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
             sections.forEach(sectionId => {
                 const element = document.getElementById(sectionId);
                 if (element) element.style.display = 'none';
@@ -10726,6 +10678,9 @@
                     break;
                 case 'drivers':
                     loadDrivers();
+                    break;
+                case 'driver-tasks':
+                    loadDriverTasks();
                     break;
                 case 'countries':
                     loadCountries();
