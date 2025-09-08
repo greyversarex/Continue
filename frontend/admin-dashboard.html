@@ -704,6 +704,88 @@
                     </div>
                 </section>
 
+                <!-- Drivers Section -->
+                <section id="driversSection" style="display: none;">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold">Управление водителями</h2>
+                        <button class="btn btn-primary" onclick="openDriverModal()">
+                            <i class="fas fa-plus"></i>
+                            Добавить водителя
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="driversList">
+                        <!-- Drivers will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Trips Section -->
+                <section id="tripsSection" style="display: none;">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold">Управление поездками</h2>
+                        <button class="btn btn-primary" onclick="openTripModal()">
+                            <i class="fas fa-plus"></i>
+                            Добавить поездку
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Направление</th>
+                                        <th>От</th>
+                                        <th>До</th>
+                                        <th>Водитель</th>
+                                        <th>Время отправления</th>
+                                        <th>Время прибытия</th>
+                                        <th>Статус</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tripsTable">
+                                    <!-- Trips will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Transfers Section -->
+                <section id="transfersSection" style="display: none;">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold">Управление трансферами</h2>
+                        <button class="btn btn-primary" onclick="openTransferModal()">
+                            <i class="fas fa-plus"></i>
+                            Добавить трансфер
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Клиент</th>
+                                        <th>Маршрут</th>
+                                        <th>Водитель</th>
+                                        <th>Дата и время</th>
+                                        <th>Тип транспорта</th>
+                                        <th>Статус</th>
+                                        <th>Стоимость</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transfersTable">
+                                    <!-- Transfers will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
 
                 <!-- Countries Section -->
                 <section id="countriesSection" style="display: none;">
