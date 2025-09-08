@@ -2430,6 +2430,8 @@
                     loadGuides();
                     break;
                 case 'drivers-management':
+                    // Clear mainContent and load drivers interface
+                    document.getElementById('mainContent').innerHTML = '';
                     loadDrivers();
                     break;
                 case 'driver-trips':
@@ -10937,12 +10939,22 @@
 
         // Show section function
         function showSection(sectionName) {
+            console.log('🔄 Switching to section:', sectionName);
+            
             // Hide all sections
             const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'driversSection', 'driverTripsSection', 'transfersSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
             sections.forEach(sectionId => {
                 const element = document.getElementById(sectionId);
                 if (element) element.style.display = 'none';
             });
+            
+            // Clear mainContent if switching away from dynamic sections  
+            if (!['drivers-management', 'driver-trips', 'transfers', 'countries', 'cities'].includes(sectionName)) {
+                const mainContent = document.getElementById('mainContent');
+                if (mainContent) {
+                    mainContent.innerHTML = '';
+                }
+            }
 
             // Show selected section - map section names to section IDs
             let sectionId;
@@ -10991,6 +11003,8 @@
                     loadGuides();
                     break;
                 case 'drivers-management':
+                    // Clear mainContent and load drivers interface
+                    document.getElementById('mainContent').innerHTML = '';
                     loadDrivers();
                     break;
                 case 'driver-trips':
