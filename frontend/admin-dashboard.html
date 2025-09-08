@@ -1872,6 +1872,26 @@
                         </div>
                     </div>
                     
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Не включено в тур</label>
+                        <div class="text-sm text-gray-600 mb-3">
+                            ❌ Услуги и расходы, которые туристы оплачивают самостоятельно
+                        </div>
+                        <div class="flex gap-2 mb-3">
+                            <input type="text" id="newExcludedService" class="form-input flex-1" placeholder="Введите название услуги">
+                            <button type="button" onclick="addNewExcludedService()" class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="checkbox-group" id="excludedOptions">
+                            <!-- Исключенные услуги будут добавлены здесь -->
+                            <div class="text-center text-gray-400 py-4" id="excludedPlaceholder">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Добавьте услуги, которые не включены в стоимость тура
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="form-group col-span-2" id="hotelSection">
                         <label class="form-label">Связанные отели</label>
                         <div class="checkbox-group" id="hotelCheckboxes">
@@ -4022,6 +4042,12 @@
                 selectedDrivers.push(parseInt(checkbox.value));
             });
             
+            // Собираем исключенные услуги
+            const excludedServices = [];
+            document.querySelectorAll('#excludedOptions input[type="checkbox"]:checked').forEach(checkbox => {
+                excludedServices.push(checkbox.value);
+            });
+            
             console.log('🏨 Selected hotels:', selectedHotels);
             console.log('👨‍🏫 Selected guides:', selectedGuides);
             console.log('🚗 Selected drivers:', selectedDrivers);
@@ -4073,6 +4099,7 @@
                 hotelIds: selectedHotels,
                 guideIds: selectedGuides,
                 driverIds: selectedDrivers,
+                excluded: JSON.stringify(excludedServices),
                 isActive: true,
                 isFeatured: false
             };
@@ -4950,6 +4977,62 @@
             
             servicesContainer.appendChild(newCheckbox);
             newServiceInput.value = '';
+        }
+        
+        // Функция для добавления новой исключенной услуги
+        function addNewExcludedService() {
+            const newServiceInput = document.getElementById('newExcludedService');
+            const serviceName = newServiceInput.value.trim();
+            
+            if (!serviceName) {
+                alert('Введите название услуги');
+                return;
+            }
+            
+            // Проверить, не существует ли уже такая услуга
+            const existingServices = document.querySelectorAll('#excludedOptions input[type="checkbox"]');
+            for (let checkbox of existingServices) {
+                if (checkbox.value === serviceName) {
+                    alert('Такая услуга уже существует');
+                    return;
+                }
+            }
+            
+            // Скрыть placeholder если это первая услуга
+            const placeholder = document.getElementById('excludedPlaceholder');
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
+            
+            // Создать новый чекбокс
+            const servicesContainer = document.getElementById('excludedOptions');
+            const newCheckbox = document.createElement('label');
+            newCheckbox.className = 'checkbox-item';
+            newCheckbox.innerHTML = `
+                <input type="checkbox" value="${serviceName}" checked> ${serviceName}
+                <button type="button" onclick="removeExcludedService(this)" class="ml-2 text-red-500 hover:text-red-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            servicesContainer.appendChild(newCheckbox);
+            newServiceInput.value = '';
+        }
+        
+        // Функция для удаления исключенной услуги
+        function removeExcludedService(button) {
+            const labelElement = button.closest('label');
+            labelElement.remove();
+            
+            // Показать placeholder если услуг больше нет
+            const servicesContainer = document.getElementById('excludedOptions');
+            const remainingServices = servicesContainer.querySelectorAll('input[type="checkbox"]');
+            if (remainingServices.length === 0) {
+                const placeholder = document.getElementById('excludedPlaceholder');
+                if (placeholder) {
+                    placeholder.style.display = 'block';
+                }
+            }
         }
         
         // Обработчик изменения селекта бренда

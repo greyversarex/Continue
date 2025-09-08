@@ -492,6 +492,13 @@
                             <ul class="space-y-2" id="tour-includes">
                                 <!-- Данные загружаются динамически из админ панели -->
                             </ul>
+                            
+                            <div id="tour-excludes-section" style="display: none;">
+                                <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-4">Не включено в тур:</h3>
+                                <ul class="space-y-2" id="tour-excludes">
+                                    <!-- Данные загружаются динамически из админ панели -->
+                                </ul>
+                            </div>
                         </div>
 
                         <!-- Program Tab -->
@@ -1157,6 +1164,41 @@
                             <span class="text-gray-500">Выберите компоненты тура в админ панели</span>
                         </li>
                     `;
+                }
+            }
+            
+            // Обновляем "Не включено в тур" из поля excluded
+            const excludesElement = document.getElementById('tour-excludes');
+            const excludesSection = document.getElementById('tour-excludes-section');
+            if (excludesElement && excludesSection) {
+                let excludedServices = [];
+                
+                if (tourData.excluded) {
+                    try {
+                        if (typeof tourData.excluded === 'string') {
+                            const excludedArray = JSON.parse(tourData.excluded);
+                            if (Array.isArray(excludedArray)) {
+                                excludedServices = excludedArray;
+                            }
+                        } else if (Array.isArray(tourData.excluded)) {
+                            excludedServices = tourData.excluded;
+                        }
+                    } catch (e) {
+                        console.log('⚠️ Could not parse excluded field');
+                    }
+                }
+                
+                // Показываем секцию только если есть исключенные услуги
+                if (excludedServices.length > 0) {
+                    excludesSection.style.display = 'block';
+                    excludesElement.innerHTML = excludedServices.map(service => `
+                        <li class="flex items-start">
+                            <span class="text-red-600 mr-3 mt-1">✗</span>
+                            <span class="text-gray-700">${service}</span>
+                        </li>
+                    `).join('');
+                } else {
+                    excludesSection.style.display = 'none';
                 }
             }
             
