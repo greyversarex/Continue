@@ -5794,6 +5794,30 @@
                                     </div>
                                 </div>
                                 
+                                <div class="grid grid-cols-2 gap-3 mb-3 text-sm">
+                                    <div>
+                                        <p class="text-gray-600">Локация:</p>
+                                        <p class="font-medium">${guide.country || 'Не указана'}, ${guide.city || 'Не указан'}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-600">Статус:</p>
+                                        <span class="badge ${guide.isActive ? 'badge-success' : 'badge-danger'} text-xs">
+                                            ${guide.isActive ? 'Активен' : 'Неактивен'}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 gap-2 mb-3 text-sm">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-phone text-gray-400 w-4 mr-2"></i>
+                                        <span>${guide.contact?.phone || guide.phone || 'Не указан'}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-envelope text-gray-400 w-4 mr-2"></i>
+                                        <span>${guide.contact?.email || guide.email || 'Не указан'}</span>
+                                    </div>
+                                </div>
+                                
                                 <div class="mb-3 p-2 bg-gray-50 rounded border">
                                     <p class="text-sm text-gray-600 font-semibold mb-1">Учетные данные:</p>
                                     <div class="text-sm">
@@ -5815,8 +5839,12 @@
                                     <span class="text-yellow-500">
                                         ${'★'.repeat(Math.floor(guide.rating || 5))}${'☆'.repeat(5 - Math.floor(guide.rating || 5))}
                                     </span>
-                                    <div>
-                                        <button onclick="editGuide(${guide.id})" class="text-blue-600 hover:text-blue-800 mr-2">
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="toggleGuideStatus(${guide.id}, ${guide.isActive ? 'false' : 'true'})" 
+                                                class="px-2 py-1 rounded text-xs font-medium ${guide.isActive ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}">
+                                            ${guide.isActive ? 'Деактивировать' : 'Активировать'}
+                                        </button>
+                                        <button onclick="editGuide(${guide.id})" class="text-blue-600 hover:text-blue-800">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button onclick="deleteGuide(${guide.id})" class="text-red-600 hover:text-red-800">
@@ -8470,6 +8498,33 @@
                 .catch(err => {
                     console.error('Error deleting guide:', err);
                     alert('Ошибка при удалении гида');
+                });
+            }
+        }
+        
+        function toggleGuideStatus(guideId, newStatus) {
+            const statusText = newStatus === 'true' ? 'активировать' : 'деактивировать';
+            
+            if (confirm(`Вы уверены, что хотите ${statusText} этого гида?`)) {
+                fetch(`${getApiUrl()}/guides/${guideId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        isActive: newStatus === 'true'
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`Гид успешно ${newStatus === 'true' ? 'активирован' : 'деактивирован'}`);
+                        loadGuides();
+                    } else {
+                        alert('Ошибка при изменении статуса гида: ' + (data.message || 'Неизвестная ошибка'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error toggling guide status:', err);
+                    alert('Ошибка при изменении статуса гида');
                 });
             }
         }
