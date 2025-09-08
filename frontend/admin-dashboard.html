@@ -72,6 +72,49 @@
             color: white;
         }
         
+        .nav-group {
+            margin-bottom: 4px;
+        }
+        
+        .nav-parent {
+            position: relative;
+        }
+        
+        .nav-arrow {
+            margin-left: auto;
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+        
+        .nav-arrow.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .nav-submenu {
+            margin-left: 16px;
+            border-left: 2px solid rgba(255,255,255,0.1);
+            padding-left: 8px;
+        }
+        
+        .nav-subitem {
+            color: rgba(255,255,255,0.6);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 2px;
+        }
+        
+        .nav-subitem:hover, .nav-subitem.active {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.9);
+        }
+        
         .tab-button {
             padding: 10px 24px;
             border: none;
@@ -373,14 +416,23 @@
                     <i class="fas fa-user-tie"></i>
                     <span>Гиды</span>
                 </a>
-                <a href="#" class="nav-item" data-section="drivers">
-                    <i class="fas fa-car"></i>
-                    <span>Водители</span>
-                </a>
-                <a href="#" class="nav-item" data-section="driver-tasks">
-                    <i class="fas fa-tasks"></i>
-                    <span>Задания водителей</span>
-                </a>
+                <div class="nav-group">
+                    <a href="#" class="nav-item nav-parent" data-section="drivers" onclick="toggleDriverSubMenu(event)">
+                        <i class="fas fa-car"></i>
+                        <span>Водители</span>
+                        <i class="fas fa-chevron-down nav-arrow" id="driversArrow"></i>
+                    </a>
+                    <div class="nav-submenu" id="driversSubmenu" style="display: none;">
+                        <a href="#" class="nav-subitem" data-section="drivers-management">
+                            <i class="fas fa-users-cog"></i>
+                            <span>Водители</span>
+                        </a>
+                        <a href="#" class="nav-subitem" data-section="driver-trips">
+                            <i class="fas fa-route"></i>
+                            <span>Поездки</span>
+                        </a>
+                    </div>
+                </div>
                 <a href="#" class="nav-item" data-section="transfers">
                     <i class="fas fa-shuttle-van"></i>
                     <span>Трансферы</span>
@@ -2306,11 +2358,11 @@
                 case 'guides':
                     loadGuides();
                     break;
-                case 'drivers':
+                case 'drivers-management':
                     loadDrivers();
                     break;
-                case 'driver-tasks':
-                    loadDriverTasks();
+                case 'driver-trips':
+                    loadDriverTrips();
                     break;
                 case 'transfers':
                     loadTransfers();
@@ -10610,7 +10662,7 @@
         // Show section function
         function showSection(sectionName) {
             // Hide all sections
-            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'driversSection', 'driverTasksSection', 'transfersSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
+            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'driversSection', 'driverTripsSection', 'transfersSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
             sections.forEach(sectionId => {
                 const element = document.getElementById(sectionId);
                 if (element) element.style.display = 'none';
@@ -10662,11 +10714,11 @@
                 case 'guides':
                     loadGuides();
                     break;
-                case 'drivers':
+                case 'drivers-management':
                     loadDrivers();
                     break;
-                case 'driver-tasks':
-                    loadDriverTasks();
+                case 'driver-trips':
+                    loadDriverTrips();
                     break;
                 case 'transfers':
                     loadTransfers();
