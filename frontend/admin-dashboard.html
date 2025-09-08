@@ -2328,6 +2328,242 @@
         </div>
     </div>
 
+    <!-- Driver Modal -->
+    <div id="driverModal" class="modal">
+        <div class="modal-content" style="width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold">Добавить водителя</h2>
+                <button onclick="closeDriverModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="driverForm" onsubmit="event.preventDefault(); saveDriver();">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Имя *</label>
+                        <input type="text" name="name" class="form-input" placeholder="Полное имя водителя" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" name="email" class="form-input" placeholder="email@example.com" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Телефон</label>
+                        <input type="tel" name="phone" class="form-input" placeholder="+992 000 000 000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Опыт (лет)</label>
+                        <input type="number" name="experience" class="form-input" min="0" max="50" placeholder="5">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Номер удостоверения</label>
+                        <input type="text" name="licenseNumber" class="form-input" placeholder="Серия и номер">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Категория прав</label>
+                        <select name="licenseCategory" class="form-input">
+                            <option value="">Выберите категорию</option>
+                            <option value="B">B - Легковые автомобили</option>
+                            <option value="C">C - Грузовые автомобили</option>
+                            <option value="D">D - Автобусы</option>
+                            <option value="BE">BE - Легковые с прицепом</option>
+                            <option value="CE">CE - Грузовые с прицепом</option>
+                            <option value="DE">DE - Автобусы с прицепом</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Марка автомобиля</label>
+                        <input type="text" name="vehicleBrand" class="form-input" placeholder="Toyota, Mercedes, etc.">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Год выпуска</label>
+                        <input type="number" name="vehicleYear" class="form-input" min="1990" max="2025" placeholder="2020">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Цена за день (TJS)</label>
+                        <input type="number" name="pricePerDay" class="form-input" min="0" step="0.01" placeholder="200.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Цена за час (TJS)</label>
+                        <input type="number" name="pricePerHour" class="form-input" min="0" step="0.01" placeholder="25.00">
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">Языки</label>
+                    <input type="text" name="languages" class="form-input" placeholder="Русский, Таджикский, Английский">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">Рабочие зоны</label>
+                    <input type="text" name="workingAreas" class="form-input" placeholder="Душанбе, Худжанд, Куляб">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">Типы транспорта</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="vehicleTypes" value="sedan"> Седан
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="vehicleTypes" value="suv"> Внедорожник
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="vehicleTypes" value="minibus"> Микроавтобус
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="vehicleTypes" value="bus"> Автобус
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="vehicleTypes" value="truck"> Грузовик
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">Описание</label>
+                    <textarea name="description" class="form-input" rows="3" placeholder="Дополнительная информация о водителе"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Аватар</label>
+                        <input type="file" name="avatar" class="form-input" accept="image/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Фото транспорта</label>
+                        <input type="file" name="vehiclePhotos" class="form-input" accept="image/*" multiple>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-4 mt-6">
+                    <button type="button" onclick="closeDriverModal()" class="btn btn-secondary">
+                        Отмена
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Сохранить водителя
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transferModal" class="modal">
+        <div class="modal-content" style="width: 700px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold">Создать трансфер</h2>
+                <button onclick="closeTransferModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="transferForm" onsubmit="event.preventDefault(); createTransfer();">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Клиент *</label>
+                        <input type="text" name="clientName" class="form-input" placeholder="Имя клиента" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Телефон клиента</label>
+                        <input type="tel" name="clientPhone" class="form-input" placeholder="+992 000 000 000">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">От *</label>
+                        <input type="text" name="pickupLocation" class="form-input" placeholder="Место подачи" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">До *</label>
+                        <input type="text" name="dropoffLocation" class="form-input" placeholder="Место назначения" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Дата *</label>
+                        <input type="date" name="transferDate" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Время *</label>
+                        <input type="time" name="transferTime" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Водитель *</label>
+                        <select name="driverId" id="transferDriverId" class="form-input" required>
+                            <option value="">Выберите водителя</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Тип транспорта</label>
+                        <select name="vehicleType" class="form-input">
+                            <option value="">Выберите тип</option>
+                            <option value="sedan">Седан</option>
+                            <option value="suv">Внедорожник</option>
+                            <option value="minibus">Микроавтобус</option>
+                            <option value="bus">Автобус</option>
+                            <option value="truck">Грузовик</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Стоимость (TJS)</label>
+                        <input type="number" name="cost" class="form-input" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Количество пассажиров</label>
+                        <input type="number" name="passengerCount" class="form-input" min="1" max="50" value="1">
+                    </div>
+                </div>
+
+                <div class="form-group mb-6">
+                    <label class="form-label">Примечания</label>
+                    <textarea name="notes" class="form-input" rows="3" placeholder="Дополнительная информация о трансфере"></textarea>
+                </div>
+                
+                <div class="flex justify-end gap-4">
+                    <button type="button" onclick="closeTransferModal()" class="btn btn-secondary">
+                        Отмена
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Создать трансфер
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="components/ObjectUploader.js"></script>
     <script>
