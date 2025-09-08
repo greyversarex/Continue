@@ -3979,22 +3979,6 @@
                             console.log('❌ No tourGuides found or not array:', tour.tourGuides);
                         }
                         
-                        // Загрузка выбранных водителей
-                        if (tour.tourDrivers && Array.isArray(tour.tourDrivers)) {
-                            console.log('✅ Loading selected drivers:', tour.tourDrivers.map(td => td.driverId));
-                            tour.tourDrivers.forEach(tourDriver => {
-                                const driverId = tourDriver.driverId;
-                                const checkbox = document.querySelector(`input[name="selectedDrivers"][value="${driverId}"]`);
-                                if (checkbox) {
-                                    checkbox.checked = true;
-                                    console.log('✅ Checked driver:', driverId);
-                                } else {
-                                    console.warn('❌ Driver checkbox not found for:', driverId);
-                                }
-                            });
-                        } else {
-                            console.log('❌ No tourDrivers found or not array:', tour.tourDrivers);
-                        }
                         
                         // Загружаем исключенные услуги
                         if (tour.excluded) {
@@ -7084,6 +7068,29 @@
         }
 
         // ============== УПРАВЛЕНИЕ ВОДИТЕЛЯМИ ==============
+        
+        // Функции для новых разделов
+        function loadDriverTasks() {
+            // Заглушка для загрузки заданий водителей
+            console.log('Loading driver tasks...');
+            document.getElementById('mainContent').innerHTML = `
+                <div class="p-6">
+                    <h1 class="text-2xl font-bold mb-6">Задания водителей</h1>
+                    <p class="text-gray-600">Раздел в разработке</p>
+                </div>
+            `;
+        }
+        
+        function loadTransfers() {
+            // Заглушка для управления трансферами
+            console.log('Loading transfers...');
+            document.getElementById('mainContent').innerHTML = `
+                <div class="p-6">
+                    <h1 class="text-2xl font-bold mb-6">Управление трансферами</h1>
+                    <p class="text-gray-600">Раздел в разработке</p>
+                </div>
+            `;
+        }
         
         // Переменные для хранения данных водителей
         let selectedDriverLanguages = [];
