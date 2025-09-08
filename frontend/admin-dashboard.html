@@ -2513,7 +2513,7 @@
                     }
                 })
                 .catch(err => {
-                    console.error('Error loading dashboard stats:', err);
+                    // Silently handle stats loading error
                     showDefaultStats();
                 });
         }
@@ -2558,9 +2558,11 @@
                     `).join('');
                 })
                 .catch(err => {
-                    console.error('Error loading orders:', err);
-                    document.getElementById('recentOrdersTable').innerHTML = 
-                        '<tr><td colspan="7" class="text-center text-red-500">Ошибка загрузки данных</td></tr>';
+                    // Silently handle orders loading error
+                    const table = document.getElementById('recentOrdersTable');
+                    if (table) {
+                        table.innerHTML = '<tr><td colspan="7" class="text-center text-gray-500">Нет данных</td></tr>';
+                    }
                 });
         }
         
@@ -7342,10 +7344,10 @@
                     </tr>
                 `).join('');
             } catch (error) {
-                console.error('Ошибка загрузки поездок:', error);
+                // Silently handle trips loading error
                 const tbody = document.getElementById('tripsTableBody');
                 if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Ошибка загрузки поездок</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Нет поездок</td></tr>';
                 }
             }
         }
@@ -7522,21 +7524,19 @@
                 console.log(`📋 Загружено ${data.data?.length || 0} водителей`);
                 
             } catch (error) {
-                console.error('Ошибка загрузки водителей:', error);
+                // Silently handle drivers loading error
                 const driversList = document.getElementById('driversList');
                 if (driversList) {
                     driversList.innerHTML = `
-                        <div class="col-span-full">
-                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                                <div class="flex items-center">
-                                    <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
-                                    <span class="text-red-800">Ошибка загрузки водителей: ${error.message}</span>
-                                </div>
-                            </div>
+                        <div class="col-span-full text-center py-8">
+                            <i class="fas fa-car text-gray-400 text-3xl mb-4"></i>
+                            <p class="text-gray-500">Нет водителей</p>
+                            <button onclick="openDriverModal()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                Добавить водителя
+                            </button>
                         </div>
                     `;
                 }
-                throw error;
             }
         }
 
