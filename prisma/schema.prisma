@@ -219,6 +219,7 @@ model Driver {
   // Связи с заказами будут добавлены позже
   // orders           Order[]
   tourDrivers      TourDriver[]
+  trips            Trip[]      // Связь с поездками
   driverCountry    Country?    @relation(fields: [countryId], references: [id])
   driverCity       City?       @relation(fields: [cityId], references: [id])
 
@@ -601,6 +602,24 @@ model GuideReview {
 
   @@unique([tourId, guideId])
   @@map("guide_reviews")
+}
+
+model Trip {
+  id               Int      @id @default(autoincrement())
+  direction        String
+  pickupTime       String
+  pickupLocation   String
+  routeFrom        String
+  routeTo          String
+  dropoffLocation  String
+  dropoffTime      String
+  driverId         Int?     @map("driver_id")
+  status           String   @default("scheduled")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  driver           Driver?  @relation(fields: [driverId], references: [id])
+
+  @@map("trips")
 }
 
 enum NewsCategory {
