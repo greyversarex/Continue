@@ -7310,10 +7310,20 @@
         async function loadExistingTrips() {
             try {
                 const response = await fetch('/api/trips');
-                const trips = await response.json();
+                const data = await response.json();
                 
                 const tbody = document.getElementById('tripsTableBody');
-                if (!tbody) return;
+                if (!tbody) {
+                    console.error('tripsTableBody element not found');
+                    return;
+                }
+                
+                const trips = data.success ? (data.data || []) : [];
+                
+                if (trips.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Нет поездок</td></tr>';
+                    return;
+                }
                 
                 tbody.innerHTML = trips.map(trip => `
                     <tr>
@@ -7331,6 +7341,10 @@
                 `).join('');
             } catch (error) {
                 console.error('Ошибка загрузки поездок:', error);
+                const tbody = document.getElementById('tripsTableBody');
+                if (tbody) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Ошибка загрузки поездок</td></tr>';
+                }
             }
         }
         
@@ -7390,6 +7404,27 @@
 
         // Загрузка водителей
         async function loadDrivers() {
+            console.log('🔄 Loading drivers...');
+            
+            // Создаём интерфейс управления водителями
+            document.getElementById('mainContent').innerHTML = `
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold">Управление водителями</h1>
+                        <button onclick="openDriverModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-plus mr-2"></i>Добавить водителя
+                        </button>
+                    </div>
+                    
+                    <div class="grid gap-6" id="driversList">
+                        <div class="text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-gray-400 text-2xl mb-2"></i>
+                            <p class="text-gray-600">Загрузка водителей...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
             try {
                 const response = await fetch(`${getApiUrl()}/drivers`, {
                     headers: getAuthHeaders()
@@ -7486,16 +7521,20 @@
                 
             } catch (error) {
                 console.error('Ошибка загрузки водителей:', error);
-                document.getElementById('driversList').innerHTML = `
-                    <div class="col-span-full">
-                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                            <div class="flex items-center">
-                                <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
-                                <span class="text-red-800">Ошибка загрузки водителей: ${error.message}</span>
+                const driversList = document.getElementById('driversList');
+                if (driversList) {
+                    driversList.innerHTML = `
+                        <div class="col-span-full">
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <div class="flex items-center">
+                                    <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
+                                    <span class="text-red-800">Ошибка загрузки водителей: ${error.message}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
+                throw error;
             }
         }
 
