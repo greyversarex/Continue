@@ -13,16 +13,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Noto Sans', 'Ubuntu', 'Cantarell', 'Helvetica Neue', sans-serif; }
         
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
         
         .card-hover {
             transition: all 0.3s ease;
         }
         .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
 
         /* Стили для выпадающих меню */
@@ -316,20 +313,6 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="gradient-bg text-white py-20">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">
-                Трансферные Услуги
-            </h1>
-            <p class="text-xl md:text-2xl mb-8 opacity-90">
-                Комфортные и безопасные поездки по Центральной Азии
-            </p>
-            <button class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors">
-                Заказать трансфер
-            </button>
-        </div>
-    </section>
 
     <!-- Services Section -->
     <section class="py-16">
@@ -341,8 +324,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Аэропорт -->
                 <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
-                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-plane text-blue-600 text-2xl"></i>
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-plane text-gray-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Трансфер из/в аэропорт</h3>
                     <p class="text-gray-600 mb-4">Комфортная встреча и доставка в аэропорт с профессиональными водителями</p>
@@ -355,8 +338,8 @@
 
                 <!-- Междугородние поездки -->
                 <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-road text-green-600 text-2xl"></i>
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-road text-gray-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Междугородние поездки</h3>
                     <p class="text-gray-600 mb-4">Поездки между городами Таджикистана и соседних стран</p>
@@ -369,8 +352,8 @@
 
                 <!-- Туристические поездки -->
                 <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
-                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-camera text-purple-600 text-2xl"></i>
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-camera text-gray-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Туристические поездки</h3>
                     <p class="text-gray-600 mb-4">Поездки к основным туристическим достопримечательностям</p>
@@ -428,16 +411,16 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="gradient-bg text-white py-16">
-        <div class="max-w-4xl mx-auto px-6 text-center">
+    <section class="bg-white py-16 text-gray-900 text-center">
+        <div class="max-w-4xl mx-auto px-6">
             <h2 class="text-3xl font-bold mb-6">
                 Готовы заказать трансфер?
             </h2>
-            <p class="text-xl mb-8 opacity-90">
+            <p class="text-xl mb-8 text-gray-600">
                 Свяжитесь с нами для бронирования комфортной поездки
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="tel:+992123456789" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors">
+                <a href="tel:+992123456789" class="bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-colors">
                     <i class="fas fa-phone mr-2"></i>
                     Позвонить
                 </a>
