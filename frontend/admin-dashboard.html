@@ -6252,6 +6252,36 @@
                                     <input type="text" class="form-input" id="guideFullName" placeholder="Иванов Иван Иванович" required>
                                 </div>
                                 
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-medium text-gray-700 mb-3">📄 Документы и организация</h4>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Серия паспорта</label>
+                                            <input type="text" class="form-input" id="guidePassportSeries" placeholder="АА 1234567">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Гос. регистрация</label>
+                                            <input type="text" class="form-input" id="guideRegistration" placeholder="Номер свидетельства">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Наименование организации</label>
+                                        <input type="text" class="form-input" id="guideOrganization" placeholder="ООО Туристическая компания">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Адрес проживания</label>
+                                        <input type="text" class="form-input" id="guideResidenceAddress" placeholder="г. Душанбе, ул. Фирдавси, д.1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Адрес организации</label>
+                                        <input type="text" class="form-input" id="guideOrganizationAddress" placeholder="г. Душанбе, ул. Рудаки, д.10">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Сайт</label>
+                                        <input type="url" class="form-input" id="guideWebsite" placeholder="https://example.com">
+                                    </div>
+                                </div>
+                                
                                 <div class="form-group">
                                     <label class="form-label">Языки *</label>
                                     <div class="flex gap-2 mb-2">
@@ -6414,6 +6444,36 @@
                                 <div class="form-group">
                                     <label class="form-label">ФИО *</label>
                                     <input type="text" class="form-input" id="editGuideFullName" placeholder="Иванов Иван Иванович" value="${guide.name || ''}" required>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-medium text-gray-700 mb-3">📄 Документы и организация</h4>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Серия паспорта</label>
+                                            <input type="text" class="form-input" id="editGuidePassportSeries" placeholder="АА 1234567" value="${guide.passportSeries || ''}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Гос. регистрация</label>
+                                            <input type="text" class="form-input" id="editGuideRegistration" placeholder="Номер свидетельства" value="${guide.registration || ''}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Наименование организации</label>
+                                        <input type="text" class="form-input" id="editGuideOrganization" placeholder="ООО Туристическая компания" value="${guide.organization || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Адрес проживания</label>
+                                        <input type="text" class="form-input" id="editGuideResidenceAddress" placeholder="г. Душанбе, ул. Фирдавси, д.1" value="${guide.residenceAddress || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Адрес организации</label>
+                                        <input type="text" class="form-input" id="editGuideOrganizationAddress" placeholder="г. Душанбе, ул. Рудаки, д.10" value="${guide.organizationAddress || ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Сайт</label>
+                                        <input type="url" class="form-input" id="editGuideWebsite" placeholder="https://example.com" value="${guide.website || ''}">
+                                    </div>
                                 </div>
                                 
                                 <div class="form-group">
@@ -6644,6 +6704,14 @@
             const phone = document.getElementById('editGuidePhone').value.trim();
             const description = document.getElementById('editGuideComments').value.trim();
             const experience = document.getElementById('editGuideExperience').value;
+            
+            // Новые поля
+            const passportSeries = document.getElementById('editGuidePassportSeries').value.trim();
+            const registration = document.getElementById('editGuideRegistration').value.trim();
+            const organization = document.getElementById('editGuideOrganization').value.trim();
+            const residenceAddress = document.getElementById('editGuideResidenceAddress').value.trim();
+            const organizationAddress = document.getElementById('editGuideOrganizationAddress').value.trim();
+            const website = document.getElementById('editGuideWebsite').value.trim();
 
             if (!name || !email || selectedGuideLanguages.length === 0) {
                 alert('Пожалуйста, заполните все обязательные поля');
@@ -6665,6 +6733,14 @@
                 formData.append('phone', phone);
                 formData.append('languages', selectedGuideLanguages.join(', '));
                 formData.append('experience', experience);
+                
+                // Добавляем новые поля
+                formData.append('passportSeries', passportSeries);
+                formData.append('registration', registration);
+                formData.append('organization', organization);
+                formData.append('residenceAddress', residenceAddress);
+                formData.append('organizationAddress', organizationAddress);
+                formData.append('website', website);
                 
                 // Добавляем файлы
                 if (editGuideAvatarFile) {
@@ -8278,6 +8354,14 @@
             const password = safeGetValue('guidePassword', '').trim();
             const comments = safeGetValue('guideComments', '').trim();
             
+            // Новые поля
+            const passportSeries = safeGetValue('guidePassportSeries', '').trim();
+            const registration = safeGetValue('guideRegistration', '').trim();
+            const organization = safeGetValue('guideOrganization', '').trim();
+            const residenceAddress = safeGetValue('guideResidenceAddress', '').trim();
+            const organizationAddress = safeGetValue('guideOrganizationAddress', '').trim();
+            const website = safeGetValue('guideWebsite', '').trim();
+            
             // Проверяем обязательные поля
             if (!fullName || !experience || !phone || !email || !login || !password || selectedGuideLanguages.length === 0) {
                 alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой)');
@@ -8295,6 +8379,14 @@
             formData.append('login', login);
             formData.append('password', password);
             formData.append('isActive', 'true');
+            
+            // Добавляем новые поля
+            formData.append('passportSeries', passportSeries);
+            formData.append('registration', registration);
+            formData.append('organization', organization);
+            formData.append('residenceAddress', residenceAddress);
+            formData.append('organizationAddress', organizationAddress);
+            formData.append('website', website);
 
             // Добавляем аватар, если выбран
             if (guideAvatarFile) {
