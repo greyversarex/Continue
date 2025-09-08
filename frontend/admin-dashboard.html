@@ -4549,9 +4549,12 @@
                 })
                 .catch(error => {
                     console.error('Ошибка загрузки гидов для чекбоксов:', error);
+                    console.error('Unhandled promise rejection:', error);
                     const container = document.getElementById('guideCheckboxes');
                     if (container) {
                         container.innerHTML = '<div class="text-red-500">Ошибка загрузки гидов</div>';
+                    } else {
+                        console.error('guideCheckboxes container not found');
                     }
                 });
         }
@@ -5977,9 +5980,12 @@
                 })
                 .catch(error => {
                     console.error('Error loading guides:', error);
+                    console.error('Unhandled promise rejection:', error);
                     const container = document.getElementById('guidesList');
                     if (container) {
                         container.innerHTML = '<p class="text-red-500">Ошибка загрузки гидов</p>';
+                    } else {
+                        console.error('guidesList container not found');
                     }
                 });
         }
@@ -6053,6 +6059,13 @@
                             </td>
                         </tr>
                     `).join('');
+                })
+                .catch(err => {
+                    console.error('Error loading bookings:', err);
+                    const tbody = document.getElementById('bookingsTable');
+                    if (tbody) {
+                        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-red-500">Ошибка загрузки заказов</td></tr>';
+                    }
                 });
         }
         
