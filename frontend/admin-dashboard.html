@@ -7307,12 +7307,32 @@
         }
         
         function loadTransfers() {
-            // Заглушка для управления трансферами
             console.log('Loading transfers...');
-            document.getElementById('mainContent').innerHTML = `
+            const mainContent = document.getElementById('mainContent');
+            if (!mainContent) {
+                console.error('mainContent element not found for transfers');
+                return;
+            }
+            
+            mainContent.innerHTML = `
                 <div class="p-6">
-                    <h1 class="text-2xl font-bold mb-6">Управление трансферами</h1>
-                    <p class="text-gray-600">Раздел в разработке</p>
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold">Управление трансферами</h1>
+                        <button onclick="alert('Функционал в разработке')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-plus mr-2"></i>Добавить трансфер
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="text-center py-12">
+                            <i class="fas fa-car text-6xl text-gray-300 mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-600 mb-2">Раздел в разработке</h3>
+                            <p class="text-gray-500">Управление трансферами будет доступно в следующих обновлениях</p>
+                            <div class="mt-6">
+                                <p class="text-sm text-gray-400">Пока вы можете использовать раздел "Водители → Поездки"</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
         }
@@ -11418,8 +11438,17 @@
                     headers: getAuthHeaders()
                 });
                 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 const citiesList = document.getElementById('citiesList');
+                
+                if (!citiesList) {
+                    console.error('citiesList element not found');
+                    return;
+                }
                 
                 if (data.success && data.data && data.data.length > 0) {
                     citiesList.innerHTML = data.data.map(city => `
@@ -11428,7 +11457,7 @@
                                 <div class="flex items-center">
                                     <i class="fas fa-city text-blue-500 text-xl mr-3"></i>
                                     <div>
-                                        <h3 class="font-semibold text-gray-900">${city.nameRu}</h3>
+                                        <h3 class="font-semibold text-gray-900">${city.nameRu || ''}</h3>
                                         <p class="text-sm text-gray-600">${city.country ? city.country.nameRu : 'Без страны'}</p>
                                     </div>
                                 </div>
@@ -11437,8 +11466,8 @@
                                 </span>
                             </div>
                             <div class="text-sm text-gray-600 mb-3">
-                                <p><strong>EN:</strong> ${city.nameEn}</p>
-                                <p><strong>TJ:</strong> ${city.nameTj}</p>
+                                <p><strong>EN:</strong> ${city.nameEn || ''}</p>
+                                <p><strong>TJ:</strong> ${city.nameTj || ''}</p>
                             </div>
                             <div class="flex gap-2">
                                 <button onclick="editCity(${city.id})" class="btn btn-sm btn-outline-primary">
@@ -11467,6 +11496,16 @@
                 }
             } catch (error) {
                 console.error('Ошибка загрузки городов:', error);
+                const citiesList = document.getElementById('citiesList');
+                if (citiesList) {
+                    citiesList.innerHTML = `
+                        <div class="col-span-full">
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <span class="text-red-700">Ошибка загрузки городов</span>
+                            </div>
+                        </div>
+                    `;
+                }
             }
         }
         
