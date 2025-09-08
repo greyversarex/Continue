@@ -2697,6 +2697,9 @@
                 bookings: 'Управление заказами',
                 hotels: 'Управление отелями',
                 guides: 'Управление гидами',
+                drivers: 'Управление водителями',
+                trips: 'Управление поездками',
+                transfers: 'Управление трансферами',
                 countries: 'Управление странами',
                 cities: 'Управление городами',
                 customers: 'Клиенты',
@@ -2727,7 +2730,15 @@
                 case 'guides':
                     loadGuides();
                     break;
-
+                case 'drivers':
+                    loadDrivers();
+                    break;
+                case 'trips':
+                    loadTrips();
+                    break;
+                case 'transfers':
+                    loadTransfers();
+                    break;
                 case 'countries':
                     loadCountries();
                     break;
