@@ -2422,7 +2422,10 @@
                 cms: 'CMS - Управление контентом',
                 settings: 'Настройки'
             };
-            document.getElementById('sectionTitle').textContent = titles[section] || 'Админ-панель';
+            const sectionTitleElement = document.getElementById('sectionTitle');
+            if (sectionTitleElement) {
+                sectionTitleElement.textContent = titles[section] || 'Админ-панель';
+            }
             
             // Load section data
             switch(section) {
@@ -7211,7 +7214,13 @@
         // Функции для новых разделов
         function loadDriverTrips() {
             console.log('Loading driver trips...');
-            document.getElementById('mainContent').innerHTML = `
+            const mainContent = document.getElementById('mainContent');
+            if (!mainContent) {
+                console.error('mainContent element not found');
+                return;
+            }
+            
+            mainContent.innerHTML = `
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-2xl font-bold">Поездки</h1>
@@ -7240,8 +7249,10 @@
                 </div>
             `;
             
-            // Загрузка существующих поездок
-            loadExistingTrips();
+            // Подождем немного, чтобы DOM обновился
+            setTimeout(() => {
+                loadExistingTrips();
+            }, 100);
         }
         
         function loadTransfers() {
@@ -7269,16 +7280,36 @@
         async function loadDriversForTrip() {
             try {
                 const response = await fetch('/api/drivers');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const drivers = await response.json();
                 
                 const select = document.getElementById('tripDriverId');
+                if (!select) {
+                    console.error('tripDriverId element not found');
+                    return;
+                }
+                
                 select.innerHTML = '<option value="">Выберите водителя</option>';
                 
-                drivers.forEach(driver => {
-                    select.innerHTML += `<option value="${driver.id}">${driver.name}</option>`;
-                });
+                if (Array.isArray(drivers) && drivers.length > 0) {
+                    drivers.forEach(driver => {
+                        if (driver && driver.id && driver.name) {
+                            select.innerHTML += `<option value="${driver.id}">${driver.name}</option>`;
+                        }
+                    });
+                } else {
+                    select.innerHTML += '<option disabled>Водители не найдены</option>';
+                }
             } catch (error) {
                 console.error('Ошибка загрузки водителей:', error);
+                const select = document.getElementById('tripDriverId');
+                if (select) {
+                    select.innerHTML = '<option value="">Ошибка загрузки</option>';
+                }
             }
         }
         
@@ -7322,27 +7353,43 @@
         async function loadExistingTrips() {
             try {
                 const response = await fetch('/api/trips');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const trips = await response.json();
                 
                 const tbody = document.getElementById('tripsTableBody');
-                if (!tbody) return;
+                if (!tbody) {
+                    console.error('tripsTableBody element not found');
+                    return;
+                }
                 
-                tbody.innerHTML = trips.map(trip => `
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.id}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.direction}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.routeFrom} - ${trip.routeTo}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.driverName || 'Не назначен'}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.pickupTime}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onclick="deleteTrip(${trip.id})" class="text-red-600 hover:text-red-900 ml-2">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
+                if (Array.isArray(trips) && trips.length > 0) {
+                    tbody.innerHTML = trips.map(trip => `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.id || '-'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.direction || '-'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.routeFrom || '-'} - ${trip.routeTo || '-'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.driverName || 'Не назначен'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${trip.pickupTime || '-'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button onclick="deleteTrip(${trip.id})" class="text-red-600 hover:text-red-900 ml-2">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Поездок нет</td></tr>';
+                }
             } catch (error) {
                 console.error('Ошибка загрузки поездок:', error);
+                const tbody = document.getElementById('tripsTableBody');
+                if (tbody) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Ошибка загрузки данных</td></tr>';
+                }
             }
         }
         
