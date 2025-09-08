@@ -11,8 +11,7 @@ export const getAllTrips = async (req: Request, res: Response) => {
         driver: {
           select: {
             id: true,
-            name: true,
-            phone: true
+            name: true
           }
         }
       },
@@ -24,7 +23,7 @@ export const getAllTrips = async (req: Request, res: Response) => {
     // Форматируем данные для фронтенда
     const formattedTrips = trips.map(trip => ({
       ...trip,
-      driverName: trip.driver.name
+      driverName: trip.driver?.name || 'Не назначен'
     }));
 
     res.json(formattedTrips);
@@ -88,24 +87,23 @@ export const createTrip = async (req: Request, res: Response) => {
         driver: {
           select: {
             id: true,
-            name: true,
-            phone: true
+            name: true
           }
         }
       }
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       data: {
         ...trip,
-        driverName: trip.driver.name
+        driverName: trip.driver?.name || 'Не назначен'
       },
       message: 'Поездка успешно создана'
     });
   } catch (error) {
     console.error('Error creating trip:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       success: false, 
       message: 'Ошибка при создании поездки' 
     });
@@ -124,8 +122,6 @@ export const getTripById = async (req: Request, res: Response) => {
           select: {
             id: true,
             name: true,
-            phone: true,
-            vehicleTypes: true,
             vehicleBrand: true
           }
         }
@@ -139,16 +135,16 @@ export const getTripById = async (req: Request, res: Response) => {
       });
     }
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         ...trip,
-        driverName: trip.driver.name
+        driverName: trip.driver?.name || 'Не назначен'
       }
     });
   } catch (error) {
     console.error('Error fetching trip:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       success: false, 
       message: 'Ошибка при получении поездки' 
     });
@@ -194,24 +190,23 @@ export const updateTrip = async (req: Request, res: Response) => {
         driver: {
           select: {
             id: true,
-            name: true,
-            phone: true
+            name: true
           }
         }
       }
     });
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         ...trip,
-        driverName: trip.driver.name
+        driverName: trip.driver?.name || 'Не назначен'
       },
       message: 'Поездка успешно обновлена'
     });
   } catch (error) {
     console.error('Error updating trip:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       success: false, 
       message: 'Ошибка при обновлении поездки' 
     });
@@ -239,13 +234,13 @@ export const deleteTrip = async (req: Request, res: Response) => {
       where: { id: parseInt(id) }
     });
 
-    res.json({
+    return res.json({
       success: true,
       message: 'Поездка успешно удалена'
     });
   } catch (error) {
     console.error('Error deleting trip:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       success: false, 
       message: 'Ошибка при удалении поездки' 
     });
@@ -274,24 +269,23 @@ export const updateTripStatus = async (req: Request, res: Response) => {
         driver: {
           select: {
             id: true,
-            name: true,
-            phone: true
+            name: true
           }
         }
       }
     });
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         ...trip,
-        driverName: trip.driver.name
+        driverName: trip.driver?.name || 'Не назначен'
       },
       message: 'Статус поездки обновлен'
     });
   } catch (error) {
     console.error('Error updating trip status:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       success: false, 
       message: 'Ошибка при обновлении статуса поездки' 
     });
