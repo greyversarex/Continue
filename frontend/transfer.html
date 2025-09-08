@@ -31,6 +31,27 @@
             display: inline-block;
         }
         
+        .dropdown-submenu {
+            position: relative;
+        }
+        
+        .dropdown-subcontent {
+            display: none;
+            position: absolute;
+            background-color: #3E3E3E;
+            min-width: 300px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1002;
+            border-radius: 8px;
+            padding: 8px;
+            top: 0;
+            left: 100%;
+        }
+        
+        .dropdown-submenu:hover .dropdown-subcontent {
+            display: block;
+        }
+        
         .dropdown-content {
             display: none;
             position: absolute;
@@ -135,6 +156,7 @@
         .flag-tj { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjQ1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI0NTAiIGZpbGw9IiNkYzE0M2MiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIxNTAiIHk9IjE1MCIgZmlsbD0iI2ZmZiIvPgo8cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjE1MCIgeT0iMzAwIiBmaWxsPSIjMDA2YTRlIi8+Cjwvc3ZnPgo='); }
         .flag-ir { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjU0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI1NDAiIGZpbGw9IiMyMzlhM2QiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIxODAiIHk9IjE4MCIgZmlsbD0iI2ZmZiIvPgo8cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjE4MCIgeT0iMzYwIiBmaWxsPSIjZGExNDI2Ii8+Cjwvc3ZnPgo='); }
         .flag-de { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjU0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI1NDAiIGZpbGw9IiMwMDAiLz4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIxODAiIHk9IjE4MCIgZmlsbD0iI2RkMDAyNyIvPgo8cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjE4MCIgeT0iMzYwIiBmaWxsPSIjZmZjZTAwIi8+Cjwvc3ZnPgo='); }
+        .flag-cn { background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiNkZTI5MTAiLz4KPC9zdmc+'); }
         
         .lang-name {
             font-size: 14px;
@@ -169,7 +191,6 @@
                 
                 <!-- Навигационное меню -->
                 <nav class="hidden md:flex space-x-6">
-                    <a href="index.html" class="text-white hover:text-gray-300 transition-colors">Главная</a>
                     <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors">О нас</a>
                     
                     <!-- Услуги (с выпадающим меню) -->
@@ -256,6 +277,37 @@
                             <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', 'flag-de', 'Deutsch')">
                                 <span class="flag flag-de"></span>
                                 <span class="lang-name">Deutsch</span>
+                            </a>
+                            <a href="#" class="lang-option" data-lang="zh" onclick="selectLanguage('zh', 'flag-cn', '中文')">
+                                <span class="flag flag-cn"></span>
+                                <span class="lang-name">中文</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Валютный селектор -->
+                    <div class="language-dropdown">
+                        <button class="lang-selector-btn" onclick="toggleCurrencyDropdown()">
+                            <span class="selected-currency">TJS</span>
+                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="lang-dropdown-content" id="currencyDropdown">
+                            <a href="#" class="lang-option active" data-currency="TJS" onclick="selectCurrency('TJS', 'TJS')">
+                                <span class="currency-name">TJS</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="USD" onclick="selectCurrency('USD', 'USD')">
+                                <span class="currency-name">USD</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="EUR" onclick="selectCurrency('EUR', 'EUR')">
+                                <span class="currency-name">EUR</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="RUB" onclick="selectCurrency('RUB', 'RUB')">
+                                <span class="currency-name">RUB</span>
+                            </a>
+                            <a href="#" class="lang-option" data-currency="CNY" onclick="selectCurrency('CNY', 'CNY')">
+                                <span class="currency-name">CNY</span>
                             </a>
                         </div>
                     </div>
@@ -510,15 +562,60 @@
             console.log('Selected language:', langCode);
         }
 
-        // Закрытие выпадающего меню при клике вне его
+        // Функция для переключения валютного выпадающего меню
+        function toggleCurrencyDropdown() {
+            const dropdown = document.getElementById('currencyDropdown');
+            const currencyDropdown = dropdown.parentElement;
+            
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+                currencyDropdown.classList.remove('active');
+            } else {
+                dropdown.classList.add('show');
+                currencyDropdown.classList.add('active');
+            }
+        }
+
+        // Функция для выбора валюты
+        function selectCurrency(currencyCode, currencyName) {
+            // Обновляем выбранную валюту в кнопке
+            document.querySelector('.selected-currency').textContent = currencyName;
+            
+            // Убираем активный класс со всех опций
+            document.querySelectorAll('#currencyDropdown .lang-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            
+            // Добавляем активный класс к выбранной опции
+            document.querySelector(`[data-currency="${currencyCode}"]`).classList.add('active');
+            
+            // Закрываем выпадающий список
+            toggleCurrencyDropdown();
+            
+            // Здесь можно добавить логику для смены валюты
+            console.log('Selected currency:', currencyCode);
+        }
+
+        // Закрытие выпадающих меню при клике вне их
         document.addEventListener('click', function(event) {
             const langDropdown = document.querySelector('.language-dropdown');
-            const dropdown = document.getElementById('langDropdown');
+            const langDropdownContent = document.getElementById('langDropdown');
+            const currencyDropdowns = document.querySelectorAll('.language-dropdown');
+            const currencyDropdownContent = document.getElementById('currencyDropdown');
             
+            // Закрытие языкового селектора
             if (!langDropdown.contains(event.target)) {
-                dropdown.classList.remove('show');
+                langDropdownContent.classList.remove('show');
                 langDropdown.classList.remove('active');
             }
+            
+            // Закрытие валютного селектора
+            currencyDropdowns.forEach(dropdown => {
+                if (dropdown.contains(currencyDropdownContent) && !dropdown.contains(event.target)) {
+                    currencyDropdownContent.classList.remove('show');
+                    dropdown.classList.remove('active');
+                }
+            });
         });
     </script>
 </body>
