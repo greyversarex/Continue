@@ -4461,24 +4461,41 @@
             fetch(`${getApiUrl()}/hotels`, {
                 headers: getAuthHeaders()
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then(data => {
                     const container = document.getElementById('hotelCheckboxes');
+                    if (!container) {
+                        console.error('hotelCheckboxes container not found');
+                        return;
+                    }
+                    
                     const hotels = data.data || data.hotels || [];
                     container.innerHTML = hotels.map(hotel => {
                         let name;
-                    try {
-                        name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
-                    } catch (e) {
-                        console.warn('Failed to parse hotel name in checkboxes:', hotel.name);
-                        name = hotel.name || {};
-                    }
+                        try {
+                            name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
+                        } catch (e) {
+                            console.warn('Failed to parse hotel name in checkboxes:', hotel.name);
+                            name = hotel.name || {};
+                        }
                         return `
                             <label class="checkbox-item">
                                 <input type="checkbox" name="selectedHotels" value="${hotel.id}"> ${name.ru || name.en || 'Отель'}
                             </label>
                         `;
                     }).join('');
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки отелей для чекбоксов:', error);
+                    const container = document.getElementById('hotelCheckboxes');
+                    if (container) {
+                        container.innerHTML = '<div class="text-red-500">Ошибка загрузки отелей</div>';
+                    }
                 });
         }
         
@@ -4486,9 +4503,19 @@
             fetch(`${getApiUrl()}/guides`, {
                 headers: getAuthHeaders()
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then(data => {
                     const container = document.getElementById('guideCheckboxes');
+                    if (!container) {
+                        console.error('guideCheckboxes container not found');
+                        return;
+                    }
+                    
                     const guides = data.data || data.guides || [];
                     container.innerHTML = guides.map(guide => {
                         let displayName;
@@ -4519,6 +4546,13 @@
                             </label>
                         `;
                     }).join('');
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки гидов для чекбоксов:', error);
+                    const container = document.getElementById('guideCheckboxes');
+                    if (container) {
+                        container.innerHTML = '<div class="text-red-500">Ошибка загрузки гидов</div>';
+                    }
                 });
         }
         
@@ -5699,6 +5733,10 @@
                 })
                 .catch(err => {
                     console.error('Error loading bookings:', err);
+                    const tbody = document.getElementById('bookingsTable');
+                    if (tbody) {
+                        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-red-500 py-4">Ошибка загрузки данных</td></tr>';
+                    }
                 });
         }
         
@@ -5798,9 +5836,18 @@
             fetch(`${getApiUrl()}/guides`, {
                 headers: getAuthHeaders()
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then(data => {
                     const container = document.getElementById('guidesList');
+                    if (!container) {
+                        console.error('guidesList container not found');
+                        return;
+                    }
                     
                     const guides = data.data || data.guides || [];
                     if (guides.length === 0) {
@@ -5839,17 +5886,21 @@
                             languages = [];
                         }
                         
+                        // Безопасная обработка фото
+                        const safePhotoUrl = guide.photo && typeof guide.photo === 'string' ? guide.photo : '';
+                        const safeName = name.ru || name.en || 'Гид';
+                        
                         return `
                             <div class="bg-white rounded-lg shadow-sm p-4">
                                 <div class="flex items-center mb-4">
-                                    ${guide.photo ? 
-                                        `<img src="${guide.photo}" alt="${name.ru}" class="w-16 h-16 rounded-full object-cover mr-4">` :
+                                    ${safePhotoUrl ? 
+                                        `<img src="${safePhotoUrl}" alt="${safeName}" class="w-16 h-16 rounded-full object-cover mr-4" onerror="this.style.display='none';">` :
                                         `<div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mr-4">
                                             <i class="fas fa-user text-gray-400 text-2xl"></i>
                                         </div>`
                                     }
                                     <div>
-                                        <h3 class="font-semibold text-lg">${name.ru || name.en || 'Гид'}</h3>
+                                        <h3 class="font-semibold text-lg">${safeName}</h3>
                                         <p class="text-sm text-gray-600">${guide.experience || 0} лет опыта</p>
                                     </div>
                                 </div>
