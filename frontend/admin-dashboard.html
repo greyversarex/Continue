@@ -10410,6 +10410,436 @@
             }
         }
 
+        // ============== УПРАВЛЕНИЕ ВОДИТЕЛЯМИ ==============
+        
+        async function loadDrivers() {
+            try {
+                const response = await fetch(`${getApiUrl()}/drivers`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const driversList = document.getElementById('driversList');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    driversList.innerHTML = data.data.map(driver => `
+                        <div class="bg-white rounded-lg shadow-sm border p-4">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                        ${driver.photo && !driver.photo.includes('${') ? 
+                                            `<img src="${driver.photo}" alt="Avatar" class="w-full h-full rounded-full object-cover">` :
+                                            `<i class="fas fa-id-card text-blue-500 text-xl"></i>`
+                                        }
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900">${driver.name}</h3>
+                                        <p class="text-sm text-gray-600">${driver.vehicleBrand || 'Без автомобиля'} ${driver.vehicleYear || ''}</p>
+                                        <p class="text-sm text-gray-500">Опыт: ${driver.experience || 0} лет</p>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-1 text-xs rounded-full ${driver.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${driver.isActive ? 'Активен' : 'Неактивен'}
+                                </span>
+                            </div>
+                            <div class="text-sm text-gray-600 mb-3">
+                                <p><strong>Лицензия:</strong> ${driver.licenseCategory || 'Не указана'}</p>
+                                <p><strong>Цена/день:</strong> ${driver.pricePerDay || 0} ${driver.currency || 'TJS'}</p>
+                                <p><strong>Языки:</strong> ${driver.languages || 'Не указано'}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="editDriver(${driver.id})" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </button>
+                                <button onclick="deleteDriver(${driver.id})" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    driversList.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <div class="bg-gray-50 rounded-xl p-8">
+                                <i class="fas fa-id-card text-gray-400 text-4xl mb-4"></i>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">Нет водителей</h3>
+                                <p class="text-gray-600 mb-6">Добавьте первого водителя</p>
+                                <button onclick="openDriverModal()" class="btn btn-primary">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Добавить водителя
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки водителей:', error);
+                document.getElementById('driversList').innerHTML = `
+                    <div class="col-span-full">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <span class="text-red-700">Ошибка загрузки водителей</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function openDriverModal(driverId = null) {
+            document.getElementById('driverModal').classList.add('active');
+            if (driverId) {
+                // Логика для редактирования водителя (будет добавлена позже)
+                console.log('Editing driver:', driverId);
+            }
+        }
+
+        function closeDriverModal() {
+            document.getElementById('driverModal').classList.remove('active');
+            document.getElementById('driverForm').reset();
+        }
+
+        async function saveDriver() {
+            const form = document.getElementById('driverForm');
+            const formData = new FormData(form);
+            
+            // Собираем типы транспорта
+            const vehicleTypes = [];
+            form.querySelectorAll('input[name="vehicleTypes"]:checked').forEach(checkbox => {
+                vehicleTypes.push(checkbox.value);
+            });
+            formData.set('vehicleTypes', JSON.stringify(vehicleTypes));
+
+            try {
+                const response = await fetch(`${getApiUrl()}/drivers/create-with-auth`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Водитель успешно добавлен!');
+                    closeDriverModal();
+                    loadDrivers();
+                } else {
+                    alert('Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Ошибка сохранения водителя:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+
+        function editDriver(driverId) {
+            // Функция редактирования водителя
+            openDriverModal(driverId);
+        }
+
+        async function deleteDriver(driverId) {
+            if (!confirm('Удалить водителя?')) return;
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/drivers/${driverId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('Водитель удален');
+                    loadDrivers();
+                } else {
+                    alert('Ошибка удаления: ' + (data.message || data.error));
+                }
+            } catch (error) {
+                alert('Ошибка соединения');
+            }
+        }
+
+        // ============== УПРАВЛЕНИЕ ПОЕЗДКАМИ ==============
+        
+        async function loadTrips() {
+            try {
+                const response = await fetch(`${getApiUrl()}/trips`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const tripsTable = document.getElementById('tripsTable');
+                
+                if (data && data.length > 0) {
+                    tripsTable.innerHTML = data.map(trip => `
+                        <tr>
+                            <td>${trip.id}</td>
+                            <td>${trip.direction}</td>
+                            <td>${trip.routeFrom}</td>
+                            <td>${trip.routeTo}</td>
+                            <td>${trip.driverName || 'Не назначен'}</td>
+                            <td>${trip.pickupTime}</td>
+                            <td>${trip.dropoffTime}</td>
+                            <td>
+                                <span class="badge badge-${trip.status === 'completed' ? 'success' : trip.status === 'pending' ? 'warning' : 'info'}">
+                                    ${trip.status}
+                                </span>
+                            </td>
+                            <td>
+                                <button onclick="editTrip(${trip.id})" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteTrip(${trip.id})" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tripsTable.innerHTML = '<tr><td colspan="9" class="text-center py-8 text-gray-500">Нет поездок</td></tr>';
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки поездок:', error);
+                document.getElementById('tripsTable').innerHTML = '<tr><td colspan="9" class="text-center py-8 text-red-500">Ошибка загрузки поездок</td></tr>';
+            }
+        }
+
+        async function loadTripDrivers() {
+            try {
+                const response = await fetch(`${getApiUrl()}/drivers`, {
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                const driverSelect = document.getElementById('tripDriverId');
+                
+                if (data.success && data.data) {
+                    driverSelect.innerHTML = '<option value="">Выберите водителя</option>' +
+                        data.data.map(driver => `<option value="${driver.id}">${driver.name}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки водителей для поездок:', error);
+            }
+        }
+
+        function openTripModal() {
+            document.getElementById('tripModal').classList.add('active');
+            loadTripDrivers();
+        }
+
+        function closeTripModal() {
+            document.getElementById('tripModal').classList.remove('active');
+            document.getElementById('tripForm').reset();
+        }
+
+        async function createTrip() {
+            const form = document.getElementById('tripForm');
+            const formData = new FormData(form);
+            const tripData = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch(`${getApiUrl()}/trips`, {
+                    method: 'POST',
+                    headers: {
+                        ...getAuthHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(tripData)
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Поездка успешно создана!');
+                    closeTripModal();
+                    loadTrips();
+                } else {
+                    alert('Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Ошибка создания поездки:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+
+        function editTrip(tripId) {
+            console.log('Editing trip:', tripId);
+            // Функция редактирования поездки (будет добавлена позже)
+        }
+
+        async function deleteTrip(tripId) {
+            if (!confirm('Удалить поездку?')) return;
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/trips/${tripId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('Поездка удалена');
+                    loadTrips();
+                } else {
+                    alert('Ошибка удаления: ' + (data.message || data.error));
+                }
+            } catch (error) {
+                alert('Ошибка соединения');
+            }
+        }
+
+        // ============== УПРАВЛЕНИЕ ТРАНСФЕРАМИ ==============
+        
+        async function loadTransfers() {
+            try {
+                // Пока используем trips API для трансферов
+                const response = await fetch(`${getApiUrl()}/trips`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const transfersTable = document.getElementById('transfersTable');
+                
+                // Фильтруем только трансферы (можно добавить поле type в будущем)
+                const transfers = data.filter(trip => trip.direction && trip.direction.includes('Трансфер'));
+                
+                if (transfers && transfers.length > 0) {
+                    transfersTable.innerHTML = transfers.map(transfer => `
+                        <tr>
+                            <td>${transfer.id}</td>
+                            <td>Клиент</td>
+                            <td>${transfer.routeFrom} → ${transfer.routeTo}</td>
+                            <td>${transfer.driverName || 'Не назначен'}</td>
+                            <td>${transfer.pickupTime}</td>
+                            <td>Трансфер</td>
+                            <td>
+                                <span class="badge badge-${transfer.status === 'completed' ? 'success' : transfer.status === 'pending' ? 'warning' : 'info'}">
+                                    ${transfer.status}
+                                </span>
+                            </td>
+                            <td>-</td>
+                            <td>
+                                <button onclick="editTransfer(${transfer.id})" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteTransfer(${transfer.id})" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    transfersTable.innerHTML = '<tr><td colspan="9" class="text-center py-8 text-gray-500">Нет трансферов</td></tr>';
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки трансферов:', error);
+                document.getElementById('transfersTable').innerHTML = '<tr><td colspan="9" class="text-center py-8 text-red-500">Ошибка загрузки трансферов</td></tr>';
+            }
+        }
+
+        function openTransferModal() {
+            document.getElementById('transferModal').classList.add('active');
+            loadTransferDrivers();
+        }
+
+        function closeTransferModal() {
+            document.getElementById('transferModal').classList.remove('active');
+            document.getElementById('transferForm').reset();
+        }
+
+        async function loadTransferDrivers() {
+            try {
+                const response = await fetch(`${getApiUrl()}/drivers`, {
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                const driverSelect = document.getElementById('transferDriverId');
+                
+                if (data.success && data.data) {
+                    driverSelect.innerHTML = '<option value="">Выберите водителя</option>' +
+                        data.data.map(driver => `<option value="${driver.id}">${driver.name}</option>`).join('');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки водителей для трансферов:', error);
+            }
+        }
+
+        async function createTransfer() {
+            const form = document.getElementById('transferForm');
+            const formData = new FormData(form);
+            
+            // Преобразуем данные трансфера в формат поездки
+            const transferData = {
+                direction: `Трансфер: ${formData.get('pickupLocation')} → ${formData.get('dropoffLocation')}`,
+                pickupTime: formData.get('transferTime'),
+                pickupLocation: formData.get('pickupLocation'),
+                routeFrom: formData.get('pickupLocation'),
+                routeTo: formData.get('dropoffLocation'),
+                dropoffLocation: formData.get('dropoffLocation'),
+                dropoffTime: formData.get('transferTime'),
+                driverId: formData.get('driverId')
+            };
+
+            try {
+                const response = await fetch(`${getApiUrl()}/trips`, {
+                    method: 'POST',
+                    headers: {
+                        ...getAuthHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transferData)
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Трансфер успешно создан!');
+                    closeTransferModal();
+                    loadTransfers();
+                } else {
+                    alert('Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Ошибка создания трансфера:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+
+        function editTransfer(transferId) {
+            console.log('Editing transfer:', transferId);
+            // Функция редактирования трансфера (будет добавлена позже)
+        }
+
+        async function deleteTransfer(transferId) {
+            if (!confirm('Удалить трансфер?')) return;
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/trips/${transferId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('Трансфер удален');
+                    loadTransfers();
+                } else {
+                    alert('Ошибка удаления: ' + (data.message || data.error));
+                }
+            } catch (error) {
+                alert('Ошибка соединения');
+            }
+        }
+
     </script>
 </body>
 </html>
