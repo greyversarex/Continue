@@ -25,19 +25,28 @@ const emailTemplates = {
       <head>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .container { max-width: 600px; margin: 0 auto; padding: 0; }
+          .company-header { background: #3E3E3E; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+          .company-logo { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 15px; display: block; }
+          .company-name { font-size: 28px; font-weight: bold; margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+          .company-subtitle { font-size: 14px; margin: 5px 0 0 0; opacity: 0.9; }
+          .voucher-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
           .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }
           .order-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
           .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
           .detail-row:last-child { border-bottom: none; }
-          .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+          .button { display: inline-block; padding: 12px 30px; background: #3E3E3E; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; }
           .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
         </style>
       </head>
       <body>
         <div class="container">
-          <div class="header">
+          <div class="company-header">
+            <img src="${process.env.PUBLIC_URL || 'http://localhost:5000'}/Logo-Ru_1754635713718.png" alt="Bunyod-Tour" class="company-logo">
+            <h1 class="company-name">BUNYOD-TOUR</h1>
+            <p class="company-subtitle">Ваш надежный спутник в мире путешествий по Центральной Азии</p>
+          </div>
+          <div class="voucher-header">
             <h1>Спасибо за ваш заказ!</h1>
             <p>Ваше бронирование успешно подтверждено</p>
           </div>
@@ -113,13 +122,22 @@ const emailTemplates = {
       <head>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #ef4444; color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .container { max-width: 600px; margin: 0 auto; padding: 0; }
+          .company-header { background: #3E3E3E; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+          .company-logo { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 15px; display: block; }
+          .company-name { font-size: 28px; font-weight: bold; margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+          .company-subtitle { font-size: 14px; margin: 5px 0 0 0; opacity: 0.9; }
+          .header { background: #ef4444; color: white; padding: 30px; text-align: center; }
           .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }
         </style>
       </head>
       <body>
         <div class="container">
+          <div class="company-header">
+            <img src="${process.env.PUBLIC_URL || 'http://localhost:5000'}/Logo-Ru_1754635713718.png" alt="Bunyod-Tour" class="company-logo">
+            <h1 class="company-name">BUNYOD-TOUR</h1>
+            <p class="company-subtitle">Ваш надежный спутник в мире путешествий по Центральной Азии</p>
+          </div>
           <div class="header">
             <h1>Бронирование отменено</h1>
           </div>
@@ -143,13 +161,22 @@ const emailTemplates = {
       <head>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #10b981; color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .container { max-width: 600px; margin: 0 auto; padding: 0; }
+          .company-header { background: #3E3E3E; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+          .company-logo { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 15px; display: block; }
+          .company-name { font-size: 28px; font-weight: bold; margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+          .company-subtitle { font-size: 14px; margin: 5px 0 0 0; opacity: 0.9; }
+          .header { background: #10b981; color: white; padding: 30px; text-align: center; }
           .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }
         </style>
       </head>
       <body>
         <div class="container">
+          <div class="company-header">
+            <img src="${process.env.PUBLIC_URL || 'http://localhost:5000'}/Logo-Ru_1754635713718.png" alt="Bunyod-Tour" class="company-logo">
+            <h1 class="company-name">BUNYOD-TOUR</h1>
+            <p class="company-subtitle">Ваш надежный спутник в мире путешествий по Центральной Азии</p>
+          </div>
           <div class="header">
             <h1>Оплата получена!</h1>
           </div>
@@ -175,14 +202,23 @@ const emailTemplates = {
       <head>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .container { max-width: 600px; margin: 0 auto; padding: 0; }
+          .company-header { background: #3E3E3E; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+          .company-logo { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 15px; display: block; }
+          .company-name { font-size: 28px; font-weight: bold; margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+          .company-subtitle { font-size: 14px; margin: 5px 0 0 0; opacity: 0.9; }
           .header { background: #667eea; color: white; padding: 20px; text-align: center; }
-          .content { background: #f8f9fa; padding: 20px; }
+          .content { background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; }
           .details { background: white; padding: 15px; margin: 15px 0; border-radius: 5px; }
         </style>
       </head>
       <body>
         <div class="container">
+          <div class="company-header">
+            <img src="${process.env.PUBLIC_URL || 'http://localhost:5000'}/Logo-Ru_1754635713718.png" alt="Bunyod-Tour" class="company-logo">
+            <h1 class="company-name">BUNYOD-TOUR</h1>
+            <p class="company-subtitle">Ваш надежный спутник в мире путешествий по Центральной Азии</p>
+          </div>
           <div class="header">
             <h2>Новый заказ в системе</h2>
           </div>
