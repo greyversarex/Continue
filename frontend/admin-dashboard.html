@@ -381,6 +381,10 @@
                     <i class="fas fa-tasks"></i>
                     <span>Задания водителей</span>
                 </a>
+                <a href="#" class="nav-item" data-section="transfers">
+                    <i class="fas fa-shuttle-van"></i>
+                    <span>Трансферы</span>
+                </a>
                 <a href="#" class="nav-item" data-section="countries">
                     <i class="fas fa-globe"></i>
                     <span>Страны</span>
@@ -2310,6 +2314,9 @@
                     break;
                 case 'driver-tasks':
                     loadDriverTasks();
+                    break;
+                case 'transfers':
+                    loadTransfers();
                     break;
                 case 'countries':
                     loadCountries();
@@ -10624,7 +10631,7 @@
         // Show section function
         function showSection(sectionName) {
             // Hide all sections
-            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'driversSection', 'driverTasksSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
+            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'driversSection', 'driverTasksSection', 'transfersSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
             sections.forEach(sectionId => {
                 const element = document.getElementById(sectionId);
                 if (element) element.style.display = 'none';
@@ -10681,6 +10688,9 @@
                     break;
                 case 'driver-tasks':
                     loadDriverTasks();
+                    break;
+                case 'transfers':
+                    loadTransfers();
                     break;
                 case 'countries':
                     loadCountries();
