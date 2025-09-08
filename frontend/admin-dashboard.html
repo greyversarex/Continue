@@ -10590,6 +10590,20 @@
                     this.classList.add('active');
                 });
             });
+
+            // Add submenu navigation click handlers
+            const navSubItems = document.querySelectorAll('.nav-subitem[data-section]');
+            navSubItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                    
+                    // Update active state for subitems
+                    document.querySelectorAll('.nav-subitem').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
         });
 
         // Tour Pricing Components Functions
