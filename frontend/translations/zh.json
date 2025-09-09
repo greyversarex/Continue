@@ -23,29 +23,37 @@
   },
   "services": {
     "title": "我们的服务",
-    "tours": {
-      "title": "旅游组织",
-      "description": "专业组织中亚地区的团体和个人旅游"
-    },
-    "hotels": {
-      "title": "酒店预订",
-      "description": "从经济型到豪华型酒店的广泛选择"
-    },
-    "visa": {
-      "title": "签证支持",
-      "description": "签证申请和所需文件的全面协助"
-    },
-    "transport": {
-      "title": "接送和交通",
-      "description": "中亚地区舒适的接送和车辆租赁服务"
+    "transfer": {
+      "title": "接送服务",
+      "feature1": "由经验丰富的司机在所有5-STAN国家旅行",
+      "feature2": "在5-STAN的机场、火车站和边境接送",
+      "feature3": "跨国和城际旅行",
+      "feature4": "经济实惠的舒适车辆",
+      "button": "预订接送"
     },
     "guides": {
-      "title": "导游和游览",
-      "description": "具有地区历史和文化知识的经验丰富的导游"
+      "title": "旅游导游",
+      "feature1": "在所有5-STAN国家的经验丰富的旅游导游",
+      "feature2": "专业陪同",
+      "feature3": "本地知识和多语言能力",
+      "feature4": "旅行中的朋友，经济和安全",
+      "button": "预订导游"
+    },
+    "agency": {
+      "title": "代理服务",
+      "feature1": "在所有5-STAN国家的旅行代理服务",
+      "feature2": "现成且实惠的旅游套餐销售",
+      "feature3": "每个售出套餐的奖励",
+      "feature4": "灵活且互惠的合作条款",
+      "button": "成为旅行代理"
     },
     "custom": {
-      "title": "定制程序",
-      "description": "根据您的需求和兴趣创建独特的行程"
+      "title": "定制旅游",
+      "feature1": "根据您的需求定制个人程序",
+      "feature2": "创建独特的路线和游览",
+      "feature3": "灵活的日期和个人方法",
+      "feature4": "从A到Z的全面组织",
+      "button": "创建您的旅游"
     }
   },
   "tour_blocks": {
@@ -63,6 +71,15 @@
     "days": "天",
     "per_person": "每人",
     "per_group": "每组"
+  },
+  "reviews": {
+    "title": "客户评价",
+    "client1_name": "安娜 R.",
+    "client1_text": "优秀的服务！一切都组织得非常完美。导游非常知识渊博且友好。",
+    "client2_name": "迈克尔 K.",
+    "client2_text": "难忘的帕米尔之旅。一切都很完美，从接送到住宿。",
+    "client3_name": "埃琳娜 S.",
+    "client3_text": "向大家推荐！专业的方法和对旅行每个阶段细节的关注。"
   },
   "footer": {
     "about_us": "关于我们",

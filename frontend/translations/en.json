@@ -23,29 +23,37 @@
   },
   "services": {
     "title": "Our Services",
-    "tours": {
-      "title": "Tour Organization",
-      "description": "Professional organization of group and individual tours across Central Asia"
-    },
-    "hotels": {
-      "title": "Hotel Booking",
-      "description": "Wide selection of hotels from economy to luxury options"
-    },
-    "visa": {
-      "title": "Visa Support",
-      "description": "Complete assistance with visa applications and required documents"
-    },
-    "transport": {
-      "title": "Transfer & Transport",
-      "description": "Comfortable transfers and vehicle rental throughout Central Asia"
+    "transfer": {
+      "title": "TRANSFER",
+      "feature1": "Trips throughout all 5-STAN countries with experienced drivers",
+      "feature2": "Airport, railway and border pickups in all 5-STAN",
+      "feature3": "Inter-country and inter-city trips",
+      "feature4": "Affordable and comfortable vehicles",
+      "button": "Order Transfer"
     },
     "guides": {
-      "title": "Guides & Excursions",
-      "description": "Experienced guides with knowledge of regional history and culture"
+      "title": "TOUR GUIDES",
+      "feature1": "Experienced tour guides in all 5-STAN countries",
+      "feature2": "Professional accompaniment",
+      "feature3": "Local knowledge and multilingual abilities",
+      "feature4": "Friend on the trip, economy and safety",
+      "button": "Order Tour Guide"
+    },
+    "agency": {
+      "title": "AGENCY SERVICE",
+      "feature1": "Tour agency services in all 5-STAN countries",
+      "feature2": "Ready and affordable tour packages for sale",
+      "feature3": "Rewards for each sold package",
+      "feature4": "Flexible and mutually beneficial partnership terms",
+      "button": "Become a Tour Agent"
     },
     "custom": {
-      "title": "Custom Programs",
-      "description": "Creating unique itineraries tailored to your needs and interests"
+      "title": "CUSTOM TOUR",
+      "feature1": "Individual programs tailored to your needs",
+      "feature2": "Creating unique routes and excursions",
+      "feature3": "Flexible dates and personal approach",
+      "feature4": "Full organization from A to Z",
+      "button": "Create Your Tour"
     }
   },
   "tour_blocks": {
@@ -63,6 +71,15 @@
     "days": "days",
     "per_person": "per person",
     "per_group": "per group"
+  },
+  "reviews": {
+    "title": "Our Clients' Reviews",
+    "client1_name": "Anna R.",
+    "client1_text": "Excellent service! Everything was organized at the highest level. The guide was very knowledgeable and friendly.",
+    "client2_name": "Michael K.",
+    "client2_text": "Unforgettable Pamir journey. Everything went perfectly, from transfer to accommodation.",
+    "client3_name": "Elena S.",
+    "client3_text": "I recommend to everyone! Professional approach and attention to details at every stage of the trip."
   },
   "footer": {
     "about_us": "About Us",

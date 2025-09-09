@@ -23,29 +23,37 @@
   },
   "services": {
     "title": "Unsere Dienstleistungen",
-    "tours": {
-      "title": "Tourorganisation",
-      "description": "Professionelle Organisation von Gruppen- und Individualreisen in Zentralasien"
-    },
-    "hotels": {
-      "title": "Hotelbuchung",
-      "description": "Große Auswahl an Hotels von Economy- bis Luxusklasse"
-    },
-    "visa": {
-      "title": "Visa-Support",
-      "description": "Vollständige Unterstützung bei Visa-Antrag und erforderlichen Dokumenten"
-    },
-    "transport": {
-      "title": "Transfer & Transport",
-      "description": "Bequeme Transfers und Fahrzeugvermietung in ganz Zentralasien"
+    "transfer": {
+      "title": "TRANSFER",
+      "feature1": "Fahrten in allen 5-STAN Ländern mit erfahrenen Fahrern",
+      "feature2": "Abholung an Flughäfen, Bahnhöfen und Grenzen der 5-STAN",
+      "feature3": "Internationale und interregionale Fahrten",
+      "feature4": "Erschwingliche und komfortable Fahrzeuge",
+      "button": "Transfer bestellen"
     },
     "guides": {
-      "title": "Reiseführer & Exkursionen",
-      "description": "Erfahrene Reiseführer mit Kenntnissen der regionalen Geschichte und Kultur"
+      "title": "REISEFÜHRER",
+      "feature1": "Erfahrene Reiseführer in allen 5-STAN Ländern",
+      "feature2": "Professionelle Begleitung",
+      "feature3": "Lokale Kenntnisse und mehrsprachige Fähigkeiten",
+      "feature4": "Freund auf der Reise, Sparsamkeit und Sicherheit",
+      "button": "Reiseführer bestellen"
+    },
+    "agency": {
+      "title": "AGENTUR-SERVICE",
+      "feature1": "Reiseagentur-Services in allen 5-STAN Ländern",
+      "feature2": "Fertige und erschwingliche Reisepakete zum Verkauf",
+      "feature3": "Belohnungen für jedes verkaufte Paket",
+      "feature4": "Flexible und gegenseitig vorteilhafte Partnerschaftsbedingungen",
+      "button": "Reiseagent werden"
     },
     "custom": {
-      "title": "Individuelle Programme",
-      "description": "Erstellung einzigartiger Reiserouten nach Ihren Bedürfnissen und Interessen"
+      "title": "INDIVIDUELLE TOUR",
+      "feature1": "Individuelle Programme nach Ihren Bedürfnissen",
+      "feature2": "Erstellung einzigartiger Routen und Exkursionen",
+      "feature3": "Flexible Termine und persönlicher Ansatz",
+      "feature4": "Vollständige Organisation von A bis Z",
+      "button": "Ihre Tour erstellen"
     }
   },
   "tour_blocks": {
@@ -63,6 +71,15 @@
     "days": "Tage",
     "per_person": "pro Person",
     "per_group": "pro Gruppe"
+  },
+  "reviews": {
+    "title": "Bewertungen unserer Kunden",
+    "client1_name": "Anna R.",
+    "client1_text": "Ausgezeichneter Service! Alles war auf höchstem Niveau organisiert. Der Reiseführer war sehr erfahren und freundlich.",
+    "client2_name": "Michael K.",
+    "client2_text": "Unvergessliche Pamir-Reise. Alles verlief perfekt, vom Transfer bis zur Unterkunft.",
+    "client3_name": "Elena S.",
+    "client3_text": "Ich empfehle es jedem! Professioneller Ansatz und Aufmerksamkeit für Details in jeder Phase der Reise."
   },
   "footer": {
     "about_us": "Über uns",
