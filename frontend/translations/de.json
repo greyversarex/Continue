@@ -1,0 +1,75 @@
+{
+  "navigation": {
+    "home": "Startseite",
+    "tours": "Touren",
+    "hotels": "Hotels",
+    "transfer": "Transfer",
+    "order_tour": "Tour buchen",
+    "visa_support": "Visa-Support",
+    "tourists": "Für Touristen",
+    "booking_guide": "Buchungsanleitung",
+    "special_notes": "Besondere Hinweise",
+    "contract": "AGB",
+    "payment_rules": "Zahlungs- und Rückerstattungsregeln",
+    "promotions": "Angebote",
+    "news": "Nachrichten",
+    "tour_agents": "Reiseveranstalter"
+  },
+  "hero": {
+    "title": "Entdecken Sie die Schönheit Zentralasiens",
+    "subtitle": "Einzigartige Touren durch Tadschikistan, Usbekistan und Kirgisistan",
+    "search_placeholder": "Touren suchen...",
+    "find_tours": "Touren finden"
+  },
+  "services": {
+    "title": "Unsere Dienstleistungen",
+    "tours": {
+      "title": "Tourorganisation",
+      "description": "Professionelle Organisation von Gruppen- und Individualreisen in Zentralasien"
+    },
+    "hotels": {
+      "title": "Hotelbuchung",
+      "description": "Große Auswahl an Hotels von Economy- bis Luxusklasse"
+    },
+    "visa": {
+      "title": "Visa-Support",
+      "description": "Vollständige Unterstützung bei Visa-Antrag und erforderlichen Dokumenten"
+    },
+    "transport": {
+      "title": "Transfer & Transport",
+      "description": "Bequeme Transfers und Fahrzeugvermietung in ganz Zentralasien"
+    },
+    "guides": {
+      "title": "Reiseführer & Exkursionen",
+      "description": "Erfahrene Reiseführer mit Kenntnissen der regionalen Geschichte und Kultur"
+    },
+    "custom": {
+      "title": "Individuelle Programme",
+      "description": "Erstellung einzigartiger Reiserouten nach Ihren Bedürfnissen und Interessen"
+    }
+  },
+  "tour_blocks": {
+    "popular": "Beliebte Touren",
+    "recommended": "Empfohlene Zentralasien-Touren",
+    "tajikistan": "Tadschikistan-Touren",
+    "uzbekistan": "Usbekistan-Touren",
+    "kyrgyzstan": "Kirgisistan-Touren",
+    "turkmenistan": "Turkmenistan-Touren"
+  },
+  "common": {
+    "book_now": "Jetzt buchen",
+    "learn_more": "Mehr erfahren",
+    "from": "ab",
+    "days": "Tage",
+    "per_person": "pro Person",
+    "per_group": "pro Gruppe"
+  },
+  "footer": {
+    "about_us": "Über uns",
+    "contact": "Kontakt",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "address": "Adresse",
+    "follow_us": "Folgen Sie uns"
+  }
+}

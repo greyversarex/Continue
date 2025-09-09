@@ -1,0 +1,75 @@
+{
+  "navigation": {
+    "home": "首页",
+    "tours": "旅游",
+    "hotels": "酒店",
+    "transfer": "接送",
+    "order_tour": "预订旅游",
+    "visa_support": "签证支持",
+    "tourists": "游客须知",
+    "booking_guide": "预订指南",
+    "special_notes": "特别说明",
+    "contract": "合同条款",
+    "payment_rules": "付款和退款规则",
+    "promotions": "促销",
+    "news": "新闻",
+    "tour_agents": "旅行代理"
+  },
+  "hero": {
+    "title": "探索中亚之美",
+    "subtitle": "塔吉克斯坦、乌兹别克斯坦和吉尔吉斯斯坦的独特旅程",
+    "search_placeholder": "搜索旅游...",
+    "find_tours": "查找旅游"
+  },
+  "services": {
+    "title": "我们的服务",
+    "tours": {
+      "title": "旅游组织",
+      "description": "专业组织中亚地区的团体和个人旅游"
+    },
+    "hotels": {
+      "title": "酒店预订",
+      "description": "从经济型到豪华型酒店的广泛选择"
+    },
+    "visa": {
+      "title": "签证支持",
+      "description": "签证申请和所需文件的全面协助"
+    },
+    "transport": {
+      "title": "接送和交通",
+      "description": "中亚地区舒适的接送和车辆租赁服务"
+    },
+    "guides": {
+      "title": "导游和游览",
+      "description": "具有地区历史和文化知识的经验丰富的导游"
+    },
+    "custom": {
+      "title": "定制程序",
+      "description": "根据您的需求和兴趣创建独特的行程"
+    }
+  },
+  "tour_blocks": {
+    "popular": "热门旅游",
+    "recommended": "推荐的中亚旅游",
+    "tajikistan": "塔吉克斯坦旅游",
+    "uzbekistan": "乌兹别克斯坦旅游",
+    "kyrgyzstan": "吉尔吉斯斯坦旅游",
+    "turkmenistan": "土库曼斯坦旅游"
+  },
+  "common": {
+    "book_now": "立即预订",
+    "learn_more": "了解更多",
+    "from": "从",
+    "days": "天",
+    "per_person": "每人",
+    "per_group": "每组"
+  },
+  "footer": {
+    "about_us": "关于我们",
+    "contact": "联系",
+    "phone": "电话",
+    "email": "邮箱",
+    "address": "地址",
+    "follow_us": "关注我们"
+  }
+}

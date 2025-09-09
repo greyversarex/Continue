@@ -1,0 +1,75 @@
+{
+  "navigation": {
+    "home": "Home",
+    "tours": "Tours",
+    "hotels": "Hotels",
+    "transfer": "Transfer",
+    "order_tour": "Book Tour",
+    "visa_support": "Visa Support",
+    "tourists": "For Tourists",
+    "booking_guide": "Booking Guide",
+    "special_notes": "Special Notes",
+    "contract": "Terms & Conditions",
+    "payment_rules": "Payment & Refund Policy",
+    "promotions": "Promotions",
+    "news": "News",
+    "tour_agents": "Tour Agents"
+  },
+  "hero": {
+    "title": "Discover the Beauty of Central Asia",
+    "subtitle": "Unique tours across Tajikistan, Uzbekistan and Kyrgyzstan",
+    "search_placeholder": "Search tours...",
+    "find_tours": "Find Tours"
+  },
+  "services": {
+    "title": "Our Services",
+    "tours": {
+      "title": "Tour Organization",
+      "description": "Professional organization of group and individual tours across Central Asia"
+    },
+    "hotels": {
+      "title": "Hotel Booking",
+      "description": "Wide selection of hotels from economy to luxury options"
+    },
+    "visa": {
+      "title": "Visa Support",
+      "description": "Complete assistance with visa applications and required documents"
+    },
+    "transport": {
+      "title": "Transfer & Transport",
+      "description": "Comfortable transfers and vehicle rental throughout Central Asia"
+    },
+    "guides": {
+      "title": "Guides & Excursions",
+      "description": "Experienced guides with knowledge of regional history and culture"
+    },
+    "custom": {
+      "title": "Custom Programs",
+      "description": "Creating unique itineraries tailored to your needs and interests"
+    }
+  },
+  "tour_blocks": {
+    "popular": "Popular Tours",
+    "recommended": "Recommended Central Asia Tours",
+    "tajikistan": "Tajikistan Tours",
+    "uzbekistan": "Uzbekistan Tours",
+    "kyrgyzstan": "Kyrgyzstan Tours",
+    "turkmenistan": "Turkmenistan Tours"
+  },
+  "common": {
+    "book_now": "Book Now",
+    "learn_more": "Learn More",
+    "from": "from",
+    "days": "days",
+    "per_person": "per person",
+    "per_group": "per group"
+  },
+  "footer": {
+    "about_us": "About Us",
+    "contact": "Contact",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "follow_us": "Follow Us"
+  }
+}
