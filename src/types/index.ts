@@ -34,10 +34,6 @@ export interface CreateTourData {
   title: MultilingualContent;
   description: MultilingualContent;
   shortDescription?: MultilingualContent;
-  // New extended multilingual fields for 6 languages
-  titleMultilang?: MultilingualContent;
-  descriptionMultilang?: MultilingualContent;
-  shortDescMultilang?: MultilingualContent;
   duration: string;
   price: string;
   priceType?: string;

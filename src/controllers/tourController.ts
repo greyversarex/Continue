@@ -11,13 +11,6 @@ import {
   MultilingualContent 
 } from '../types';
 import prisma from '../config/database';
-import { 
-  getMultilingualContent, 
-  formatForAPI, 
-  createMultilingualContent,
-  SupportedLanguage,
-  getContentWithFallback 
-} from '../utils/multilingual';
 
 export class TourController {
   /**
@@ -38,28 +31,42 @@ export class TourController {
       // Apply limit if specified
       const limitedTours = limit ? tours.slice(0, parseInt(limit as string)) : tours;
       
-      // Получаем язык из query параметра или заголовков
-      const language = (req.query.lang || req.headers['accept-language']?.split(',')[0]?.slice(0, 2)) as SupportedLanguage;
-      
-      // Parse JSON fields for response with multilingual support
+      // Parse JSON fields for response with safe parsing
       const parsedTours = limitedTours.map((tour: any) => {
-        // ОПТИМИЗАЦИЯ: Удаляем большие изображения из списка туров для производительности
-        const tourWithoutImages = { ...tour };
-        delete tourWithoutImages.mainImage;
-        delete tourWithoutImages.images;
-        
-        // Используем новые утилиты многоязычности
-        const formattedTour = formatForAPI(tourWithoutImages, language);
-        
-        // Обрабатываем категорию отдельно
-        if (formattedTour.category) {
-          formattedTour.category = formatForAPI(formattedTour.category, language);
+        try {
+          // ОПТИМИЗАЦИЯ: Удаляем большие изображения из списка туров для производительности
+          const tourWithoutImages = { ...tour };
+          delete tourWithoutImages.mainImage;
+          delete tourWithoutImages.images;
+          
+          return {
+            ...tourWithoutImages,
+            title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
+            description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
+            category: tour.category ? {
+              ...tour.category,
+              name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+            } : null,
+            // Добавляем флаг что изображения есть, но не передаем сами изображения
+            hasImages: !!(tour.mainImage || tour.images)
+          };
+        } catch (jsonError) {
+          console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
+          const tourWithoutImages = { ...tour };
+          delete tourWithoutImages.mainImage;
+          delete tourWithoutImages.images;
+          
+          return {
+            ...tourWithoutImages,
+            title: { ru: tour.title || '', en: tour.title || '' },
+            description: { ru: tour.description || '', en: tour.description || '' },
+            category: tour.category ? {
+              ...tour.category,
+              name: { ru: tour.category.name || '', en: tour.category.name || '' }
+            } : null,
+            hasImages: !!(tour.mainImage || tour.images)
+          };
         }
-        
-        // Добавляем флаг что изображения есть, но не передаем сами изображения
-        formattedTour.hasImages = !!(tour.mainImage || tour.images);
-        
-        return formattedTour;
       });
 
       const response: ApiResponse = {
@@ -162,19 +169,32 @@ export class TourController {
         });
       }
 
-      // Получаем язык из query параметра или заголовков
-      const language = (req.query.lang || req.headers['accept-language']?.split(',')[0]?.slice(0, 2)) as SupportedLanguage;
-      
-      // Parse JSON fields for response using new multilingual utilities
-      // ДЛЯ РЕДАКТИРОВАНИЯ возвращаем ВСЕ данные включая изображения
-      const parsedTour = formatForAPI(tour, language);
-      
-      // Обрабатываем категорию отдельно
-      if (parsedTour.category) {
-        parsedTour.category = formatForAPI(parsedTour.category, language);
+      // Parse JSON fields for response - ДЛЯ РЕДАКТИРОВАНИЯ возвращаем ВСЕ данные включая изображения
+      let parsedTour;
+      try {
+        parsedTour = {
+          ...tour,
+          title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
+          description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
+          category: tour.category ? {
+            ...tour.category,
+            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+          } : null
+          // НЕ удаляем mainImage и images - они нужны для редактирования!
+        };
+      } catch (jsonError) {
+        console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
+        parsedTour = {
+          ...tour,
+          title: { ru: tour.title || '', en: tour.title || '' },
+          description: { ru: tour.description || '', en: tour.description || '' },
+          category: tour.category ? {
+            ...tour.category,
+            name: { ru: tour.category.name || '', en: tour.category.name || '' }
+          } : null
+          // НЕ удаляем mainImage и images - они нужны для редактирования!
+        };
       }
-      
-      // НЕ удаляем mainImage и images - они нужны для редактирования!
 
       const response: ApiResponse = {
         success: true,
@@ -197,7 +217,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, shortDescription, titleMultilang, descriptionMultilang, shortDescMultilang, duration, price, priceType, originalPrice, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
+      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -210,40 +230,6 @@ export class TourController {
             success: false,
             error: 'Invalid title format'
           });
-        }
-      }
-
-      // Parse new multilingual fields
-      if (typeof titleMultilang === 'string') {
-        try {
-          titleMultilang = JSON.parse(titleMultilang);
-          console.log('Parsed titleMultilang:', titleMultilang);
-        } catch (e) {
-          console.error('Failed to parse titleMultilang:', e);
-          // Don't fail the request, just set to null
-          titleMultilang = null;
-        }
-      }
-
-      if (typeof descriptionMultilang === 'string') {
-        try {
-          descriptionMultilang = JSON.parse(descriptionMultilang);
-          console.log('Parsed descriptionMultilang:', descriptionMultilang);
-        } catch (e) {
-          console.error('Failed to parse descriptionMultilang:', e);
-          // Don't fail the request, just set to null
-          descriptionMultilang = null;
-        }
-      }
-
-      if (typeof shortDescMultilang === 'string') {
-        try {
-          shortDescMultilang = JSON.parse(shortDescMultilang);
-          console.log('Parsed shortDescMultilang:', shortDescMultilang);
-        } catch (e) {
-          console.error('Failed to parse shortDescMultilang:', e);
-          // Don't fail the request, just set to null
-          shortDescMultilang = null;
         }
       }
 
@@ -349,9 +335,6 @@ export class TourController {
         title,
         description,
         shortDescription: shortDescription || null,
-        titleMultilang,
-        descriptionMultilang,
-        shortDescMultilang,
         duration: String(finalDuration), // Convert to string for Prisma
         price: String(price),
         priceType: priceType || 'за человека',
@@ -494,7 +477,10 @@ export class TourController {
           ...tour,
           title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
           description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
-          category: null // Временно убираем до исправления include
+          category: tour.category ? {
+            ...tour.category,
+            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+          } : null
         };
       } catch (jsonError) {
         console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
@@ -502,7 +488,10 @@ export class TourController {
           ...tour,
           title: { ru: tour.title || '', en: tour.title || '' },
           description: { ru: tour.description || '', en: tour.description || '' },
-          category: null // Временно убираем до исправления include
+          category: tour.category ? {
+            ...tour.category,
+            name: { ru: tour.category.name || '', en: tour.category.name || '' }
+          } : null
         };
       }
 
@@ -552,7 +541,7 @@ export class TourController {
         });
       }
 
-      let { title, description, duration, price, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, titleMultilang, descriptionMultilang, shortDescMultilang, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
+      let { title, description, duration, price, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed (same as createTour)
       if (typeof title === 'string') {
@@ -578,37 +567,6 @@ export class TourController {
             success: false,
             error: 'Invalid description format'
           });
-        }
-      }
-
-      // Parse new multilingual fields for update
-      if (typeof titleMultilang === 'string') {
-        try {
-          titleMultilang = JSON.parse(titleMultilang);
-          console.log('Parsed titleMultilang for update:', titleMultilang);
-        } catch (e) {
-          console.error('Failed to parse titleMultilang:', e);
-          titleMultilang = null;
-        }
-      }
-
-      if (typeof descriptionMultilang === 'string') {
-        try {
-          descriptionMultilang = JSON.parse(descriptionMultilang);
-          console.log('Parsed descriptionMultilang for update:', descriptionMultilang);
-        } catch (e) {
-          console.error('Failed to parse descriptionMultilang:', e);
-          descriptionMultilang = null;
-        }
-      }
-
-      if (typeof shortDescMultilang === 'string') {
-        try {
-          shortDescMultilang = JSON.parse(shortDescMultilang);
-          console.log('Parsed shortDescMultilang for update:', shortDescMultilang);
-        } catch (e) {
-          console.error('Failed to parse shortDescMultilang:', e);
-          shortDescMultilang = null;
         }
       }
 
@@ -642,10 +600,6 @@ export class TourController {
       if (title) updateData.title = title;
       if (description) updateData.description = description;
       if (shortDescription) updateData.shortDescription = shortDescription;
-      // New multilingual fields
-      if (titleMultilang) updateData.titleMultilang = titleMultilang;
-      if (descriptionMultilang) updateData.descriptionMultilang = descriptionMultilang;
-      if (shortDescMultilang) updateData.shortDescMultilang = shortDescMultilang;
       if (duration) updateData.duration = String(duration);
       if (price) updateData.price = String(price);
       if (categoryIdNumber) updateData.categoryId = categoryIdNumber;
@@ -765,7 +719,10 @@ export class TourController {
           ...tour,
           title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
           description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
-          category: null // Временно убираем до исправления include
+          category: tour.category ? {
+            ...tour.category,
+            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+          } : null
         };
       } catch (jsonError) {
         console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
@@ -773,7 +730,10 @@ export class TourController {
           ...tour,
           title: { ru: tour.title || '', en: tour.title || '' },
           description: { ru: tour.description || '', en: tour.description || '' },
-          category: null // Временно убираем до исправления include
+          category: tour.category ? {
+            ...tour.category,
+            name: { ru: tour.category.name || '', en: tour.category.name || '' }
+          } : null
         };
       }
 
