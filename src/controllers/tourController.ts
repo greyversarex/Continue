@@ -11,6 +11,13 @@ import {
   MultilingualContent 
 } from '../types';
 import prisma from '../config/database';
+import { 
+  getMultilingualContent, 
+  formatForAPI, 
+  createMultilingualContent,
+  SupportedLanguage,
+  getContentWithFallback 
+} from '../utils/multilingual';
 
 export class TourController {
   /**
@@ -31,42 +38,28 @@ export class TourController {
       // Apply limit if specified
       const limitedTours = limit ? tours.slice(0, parseInt(limit as string)) : tours;
       
-      // Parse JSON fields for response with safe parsing
+      // Получаем язык из query параметра или заголовков
+      const language = (req.query.lang || req.headers['accept-language']?.split(',')[0]?.slice(0, 2)) as SupportedLanguage;
+      
+      // Parse JSON fields for response with multilingual support
       const parsedTours = limitedTours.map((tour: any) => {
-        try {
-          // ОПТИМИЗАЦИЯ: Удаляем большие изображения из списка туров для производительности
-          const tourWithoutImages = { ...tour };
-          delete tourWithoutImages.mainImage;
-          delete tourWithoutImages.images;
-          
-          return {
-            ...tourWithoutImages,
-            title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
-            description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
-            category: tour.category ? {
-              ...tour.category,
-              name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
-            } : null,
-            // Добавляем флаг что изображения есть, но не передаем сами изображения
-            hasImages: !!(tour.mainImage || tour.images)
-          };
-        } catch (jsonError) {
-          console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
-          const tourWithoutImages = { ...tour };
-          delete tourWithoutImages.mainImage;
-          delete tourWithoutImages.images;
-          
-          return {
-            ...tourWithoutImages,
-            title: { ru: tour.title || '', en: tour.title || '' },
-            description: { ru: tour.description || '', en: tour.description || '' },
-            category: tour.category ? {
-              ...tour.category,
-              name: { ru: tour.category.name || '', en: tour.category.name || '' }
-            } : null,
-            hasImages: !!(tour.mainImage || tour.images)
-          };
+        // ОПТИМИЗАЦИЯ: Удаляем большие изображения из списка туров для производительности
+        const tourWithoutImages = { ...tour };
+        delete tourWithoutImages.mainImage;
+        delete tourWithoutImages.images;
+        
+        // Используем новые утилиты многоязычности
+        const formattedTour = formatForAPI(tourWithoutImages, language);
+        
+        // Обрабатываем категорию отдельно
+        if (formattedTour.category) {
+          formattedTour.category = formatForAPI(formattedTour.category, language);
         }
+        
+        // Добавляем флаг что изображения есть, но не передаем сами изображения
+        formattedTour.hasImages = !!(tour.mainImage || tour.images);
+        
+        return formattedTour;
       });
 
       const response: ApiResponse = {
@@ -169,32 +162,19 @@ export class TourController {
         });
       }
 
-      // Parse JSON fields for response - ДЛЯ РЕДАКТИРОВАНИЯ возвращаем ВСЕ данные включая изображения
-      let parsedTour;
-      try {
-        parsedTour = {
-          ...tour,
-          title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
-          description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
-          category: tour.category ? {
-            ...tour.category,
-            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
-          } : null
-          // НЕ удаляем mainImage и images - они нужны для редактирования!
-        };
-      } catch (jsonError) {
-        console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
-        parsedTour = {
-          ...tour,
-          title: { ru: tour.title || '', en: tour.title || '' },
-          description: { ru: tour.description || '', en: tour.description || '' },
-          category: tour.category ? {
-            ...tour.category,
-            name: { ru: tour.category.name || '', en: tour.category.name || '' }
-          } : null
-          // НЕ удаляем mainImage и images - они нужны для редактирования!
-        };
+      // Получаем язык из query параметра или заголовков
+      const language = (req.query.lang || req.headers['accept-language']?.split(',')[0]?.slice(0, 2)) as SupportedLanguage;
+      
+      // Parse JSON fields for response using new multilingual utilities
+      // ДЛЯ РЕДАКТИРОВАНИЯ возвращаем ВСЕ данные включая изображения
+      const parsedTour = formatForAPI(tour, language);
+      
+      // Обрабатываем категорию отдельно
+      if (parsedTour.category) {
+        parsedTour.category = formatForAPI(parsedTour.category, language);
       }
+      
+      // НЕ удаляем mainImage и images - они нужны для редактирования!
 
       const response: ApiResponse = {
         success: true,
