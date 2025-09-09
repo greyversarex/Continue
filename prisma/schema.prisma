@@ -8,127 +8,135 @@ datasource db {
 }
 
 model Category {
-  id    Int    @id @default(autoincrement())
-  name  Json   // JSON: {"ru": "Категория", "en": "Category", "tj": "Категория", "fa": "دسته", "de": "Kategorie", "zh": "类别"}
-  tours Tour[]
+  id           Int    @id @default(autoincrement())
+  name         String // Старое поле (сохраняем)
+  nameMultilang Json? // Новое JSON поле: {"ru": "Категория", "en": "Category", etc.}
+  tours        Tour[]
 
   @@map("categories")
 }
 
 model TourBlock {
-  id          Int                     @id @default(autoincrement())
-  title       Json                    // JSON: {"ru": "Заголовок", "en": "Title", etc.}
-  description Json?                   // JSON: {"ru": "Описание", "en": "Description", etc.}
-  slug        String                  @unique
-  isActive    Boolean                 @default(true)
-  sortOrder   Int                     @default(0)
-  createdAt   DateTime                @default(now())
-  updatedAt   DateTime                @updatedAt
-  tours       Tour[]                  // Старая связь (временно)
-  tourBlocks  TourBlockAssignment[]   // Новая связь many-to-many
+  id                   Int                   @id @default(autoincrement())
+  title                String                // Старое поле (сохраняем)
+  description          String?               // Старое поле (сохраняем)
+  titleMultilang       Json?                 // Новое JSON поле: {"ru": "Заголовок", "en": "Title", etc.}
+  descriptionMultilang Json?                 // Новое JSON поле: {"ru": "Описание", "en": "Description", etc.}
+  slug                 String                @unique
+  isActive             Boolean               @default(true)
+  sortOrder            Int                   @default(0)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  tourBlocks           TourBlockAssignment[]
+  tours                Tour[]
 
   @@map("tour_blocks")
 }
 
 model Tour {
-  id                 Int                    @id @default(autoincrement())
-  title              Json                   // JSON: {"ru": "Название тура", "en": "Tour Title", etc.}
-  description        Json                   // JSON: {"ru": "Описание", "en": "Description", etc.}
-  shortDesc          Json?                  // JSON: {"ru": "Краткое описание", "en": "Short Description", etc.}
-  duration           String
-  price              String
-  currency           String                 @default("TJS")
-  priceType          String                 @default("за человека")
-  originalPrice      String?
-  countryId          Int?                   @map("country_id")
-  cityId             Int?                   @map("city_id")
-  country            String?                // Временно для обратной совместимости
-  city               String?                // Временно для обратной совместимости
-  format             String?
-  tourType           String?
-  durationDays       Int?
-  theme              String?
-  startDate          String?
-  endDate            String?
-  startTime          String?
-  startTimeOptions   String?
-  pickupInfo         String?
-  languages          String?
-  availableMonths    String?
-  availableDays      String?
-  images             String?
-  mainImage          String?
-  services           String?
-  highlights         String?
-  itinerary          String?
-  included           String?
-  includes           String?
-  excluded           String?
-  requirements       String?
-  difficulty         String?
-  rating             Float?
-  reviewsCount       Int?
-  maxPeople          Int?
-  minPeople          Int?
-  location           String?
-  tags               String?
-  isActive           Boolean                @default(true)
-  isFeatured         Boolean                @default(false)
-  categoryId         Int
-  tourBlockId        Int?                   @map("tour_block_id")
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
-  pricingData        String?
-  assignedGuideId    Int?                   @map("assigned_guide_id")
-  scheduledEndDate   DateTime?
-  scheduledStartDate DateTime?
-  status             String                 @default("pending")
-  uniqueCode         String?                @unique
-  bookingRequests    BookingRequest[]
-  bookings           Booking[]
-  guideReviews       GuideReview[]
-  orders             Order[]
-  reviews            Review[]
-  tourGuides         TourGuide[]
-  tourHotels         TourHotel[]
-  pricingComponents  TourPricingComponent[]
-  tourBlockAssignments TourBlockAssignment[] // Новая связь many-to-many
-  tourDrivers        TourDriver[]           // Связь с водителями
-  assignedGuide      Guide?                 @relation("AssignedGuide", fields: [assignedGuideId], references: [id])
-  category           Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  tourBlock          TourBlock?             @relation(fields: [tourBlockId], references: [id]) // Старая связь (временно)
-  tourCountry        Country?               @relation(fields: [countryId], references: [id])
-  tourCity           City?                  @relation(fields: [cityId], references: [id])
+  id                   Int                    @id @default(autoincrement())
+  title                String                 // Старое поле (сохраняем)
+  description          String                 // Старое поле (сохраняем)
+  shortDesc            String?                // Старое поле (сохраняем)
+  titleMultilang       Json?                  // Новое JSON поле: {"ru": "Название тура", "en": "Tour Title", etc.}
+  descriptionMultilang Json?                  // Новое JSON поле: {"ru": "Описание", "en": "Description", etc.}
+  shortDescMultilang   Json?                  // Новое JSON поле: {"ru": "Краткое описание", "en": "Short Description", etc.}
+  duration             String
+  price                String
+  currency             String                 @default("TJS")
+  priceType            String                 @default("за человека")
+  originalPrice        String?
+  countryId            Int?                   @map("country_id")
+  cityId               Int?                   @map("city_id")
+  country              String?
+  city                 String?
+  format               String?
+  tourType             String?
+  durationDays         Int?
+  theme                String?
+  startDate            String?
+  endDate              String?
+  startTime            String?
+  startTimeOptions     String?
+  pickupInfo           String?
+  languages            String?
+  availableMonths      String?
+  availableDays        String?
+  images               String?
+  mainImage            String?
+  services             String?
+  highlights           String?
+  itinerary            String?
+  included             String?
+  includes             String?
+  excluded             String?
+  requirements         String?
+  difficulty           String?
+  rating               Float?
+  reviewsCount         Int?
+  maxPeople            Int?
+  minPeople            Int?
+  location             String?
+  tags                 String?
+  isActive             Boolean                @default(true)
+  isFeatured           Boolean                @default(false)
+  categoryId           Int
+  tourBlockId          Int?                   @map("tour_block_id")
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  pricingData          String?
+  assignedGuideId      Int?                   @map("assigned_guide_id")
+  scheduledEndDate     DateTime?
+  scheduledStartDate   DateTime?
+  status               String                 @default("pending")
+  uniqueCode           String?                @unique
+  bookingRequests      BookingRequest[]
+  bookings             Booking[]
+  guideReviews         GuideReview[]
+  orders               Order[]
+  reviews              Review[]
+  tourBlockAssignments TourBlockAssignment[]
+  tourDrivers          TourDriver[]
+  tourGuides           TourGuide[]
+  tourHotels           TourHotel[]
+  pricingComponents    TourPricingComponent[]
+  assignedGuide        Guide?                 @relation("AssignedGuide", fields: [assignedGuideId], references: [id])
+  category             Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  tourCity             City?                  @relation(fields: [cityId], references: [id])
+  tourCountry          Country?               @relation(fields: [countryId], references: [id])
+  tourBlock            TourBlock?             @relation(fields: [tourBlockId], references: [id])
 
   @@map("tours")
 }
 
 model Hotel {
-  id          Int         @id @default(autoincrement())
-  name        Json        // JSON: {"ru": "Название отеля", "en": "Hotel Name", etc.}
-  description Json?       // JSON: {"ru": "Описание", "en": "Description", etc.}
-  images      String?
-  address     String?
-  rating      Float?
-  stars       Int?
-  amenities   String?
-  brand       String?
-  category    String?
-  countryId   Int?        @map("country_id")
-  cityId      Int?        @map("city_id")
-  country     String?     // Временно для обратной совместимости
-  city        String?     // Временно для обратной совместимости
-  pension     String?     @default("none")
-  roomTypes   String?
-  mealTypes   String?
-  isActive    Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  bookings    Booking[]
-  orders      Order[]
-  tourHotels  TourHotel[]
-  hotelCountry Country?   @relation(fields: [countryId], references: [id])
-  hotelCity    City?      @relation(fields: [cityId], references: [id])
+  id                   Int         @id @default(autoincrement())
+  name                 String      // Старое поле (сохраняем)
+  description          String?     // Старое поле (сохраняем)
+  nameMultilang        Json?       // Новое JSON поле: {"ru": "Название отеля", "en": "Hotel Name", etc.}
+  descriptionMultilang Json?       // Новое JSON поле: {"ru": "Описание", "en": "Description", etc.}
+  images       String?
+  address      String?
+  rating       Float?
+  stars        Int?
+  amenities    String?
+  brand        String?
+  category     String?
+  countryId    Int?        @map("country_id")
+  cityId       Int?        @map("city_id")
+  country      String?
+  city         String?
+  pension      String?     @default("none")
+  roomTypes    String?
+  mealTypes    String?
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  bookings     Booking[]
+  hotelCity    City?       @relation(fields: [cityId], references: [id])
+  hotelCountry Country?    @relation(fields: [countryId], references: [id])
+  orders       Order[]
+  tourHotels   TourHotel[]
 
   @@map("hotels")
 }
@@ -146,81 +154,77 @@ model TourHotel {
   @@map("tour_hotels")
 }
 
-// Новая промежуточная таблица для many-to-many связи туров и блоков
 model TourBlockAssignment {
-  id           Int       @id @default(autoincrement())
-  tourId       Int       @map("tour_id")
-  tourBlockId  Int       @map("tour_block_id")
-  isPrimary    Boolean   @default(false) @map("is_primary") // Основной блок (для обратной совместимости)
-  createdAt    DateTime  @default(now()) @map("created_at")
-  
-  tour         Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
-  tourBlock    TourBlock @relation(fields: [tourBlockId], references: [id], onDelete: Cascade)
+  id          Int       @id @default(autoincrement())
+  tourId      Int       @map("tour_id")
+  tourBlockId Int       @map("tour_block_id")
+  isPrimary   Boolean   @default(false) @map("is_primary")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  tourBlock   TourBlock @relation(fields: [tourBlockId], references: [id], onDelete: Cascade)
+  tour        Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@unique([tourId, tourBlockId])
   @@map("tour_block_assignments")
 }
 
 model Guide {
-  id          Int         @id @default(autoincrement())
-  name        Json        // JSON: {"ru": "Имя гида", "en": "Guide Name", etc.}
-  description Json?       // JSON: {"ru": "Описание", "en": "Description", etc.}
-  photo       String?
-  avatar      String?     // Новое поле для аватара
-  documents   String?     // JSON массив документов [{name: "", path: "", type: ""}]
-  languages   String
-  contact     String?
-  experience  Int?
-  rating      Float?
-  countryId   Int?        @map("country_id")
-  cityId      Int?        @map("city_id")
-  login       String?
-  password    String?
-  isActive    Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  orders       Order[]
-  tourGuides   TourGuide[]
-  assignedTours Tour[] @relation("AssignedGuide")
-  guideCountry Country? @relation(fields: [countryId], references: [id])
-  guideCity    City?    @relation(fields: [cityId], references: [id])
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String?
+  photo         String?
+  avatar        String?
+  documents     String?
+  languages     String
+  contact       String?
+  experience    Int?
+  rating        Float?
+  countryId     Int?        @map("country_id")
+  cityId        Int?        @map("city_id")
+  login         String?
+  password      String?
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  guideCity     City?       @relation(fields: [cityId], references: [id])
+  guideCountry  Country?    @relation(fields: [countryId], references: [id])
+  orders        Order[]
+  tourGuides    TourGuide[]
+  assignedTours Tour[]      @relation("AssignedGuide")
 
   @@map("guides")
 }
 
 model Driver {
-  id               Int         @id @default(autoincrement())
-  name             Json        // JSON: {"ru": "Имя водителя", "en": "Driver Name", etc.}
-  description      Json?       // JSON: {"ru": "Описание", "en": "Description", etc.}
-  photo            String?
-  avatar           String?     // Аватар водителя
-  documents        String?     // JSON массив документов [{name: "", path: "", type: ""}]
-  licenseNumber    String?     // Номер водительского удостоверения
-  licenseCategory  String?     // Категория прав (B, C, D, E и т.д.)
-  vehicleTypes     String?     // JSON массив типов транспорта ["sedan", "suv", "minibus", "bus", "truck"]
-  vehicleInfo      String?     // JSON информация о транспорте [{model: "", year: "", plate: "", capacity: ""}]
-  vehicleBrand     String?     // Марка автомобиля
-  vehicleYear      Int?        // Год выпуска автомобиля
-  vehiclePhotos    String?     // JSON массив фотографий транспорта
-  experience       Int?        // Стаж вождения в годах
-  contact          String?     // JSON контактная информация
-  login            String?     // Логин для входа в кабинет
-  password         String?     // Хешированный пароль
-  isActive         Boolean     @default(true)
-  languages        String?     // Знание языков
-  workingAreas     String?     // Рабочие зоны/города
-  countryId        Int?        @map("country_id")
-  cityId           Int?        @map("city_id")
-  pricePerDay      Float?      // Цена за день
-  pricePerHour     Float?      // Цена за час
-  currency         String?     @default("TJS")
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-  // Связи с заказами будут добавлены позже
-  // orders           Order[]
-  tourDrivers      TourDriver[]
-  driverCountry    Country?    @relation(fields: [countryId], references: [id])
-  driverCity       City?       @relation(fields: [cityId], references: [id])
+  id              Int          @id @default(autoincrement())
+  name            String
+  description     String?
+  photo           String?
+  avatar          String?
+  documents       String?
+  licenseNumber   String?
+  licenseCategory String?
+  vehicleTypes    String?
+  vehicleInfo     String?
+  vehicleBrand    String?
+  vehicleYear     Int?
+  vehiclePhotos   String?
+  experience      Int?
+  contact         String?
+  login           String?
+  password        String?
+  isActive        Boolean      @default(true)
+  languages       String?
+  workingAreas    String?
+  countryId       Int?         @map("country_id")
+  cityId          Int?         @map("city_id")
+  pricePerDay     Float?
+  pricePerHour    Float?
+  currency        String?      @default("TJS")
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  driverCity      City?        @relation(fields: [cityId], references: [id])
+  driverCountry   Country?     @relation(fields: [countryId], references: [id])
+  tourDrivers     TourDriver[]
 
   @@map("drivers")
 }
@@ -336,9 +340,9 @@ model Admin {
 
 model News {
   id              Int      @id @default(autoincrement())
-  title           Json     // JSON: {"ru": "Заголовок", "en": "Title", etc.}
-  content         Json     // JSON: {"ru": "Контент", "en": "Content", etc.}
-  excerpt         Json?    // JSON: {"ru": "Краткое изложение", "en": "Excerpt", etc.}
+  title           String
+  content         String
+  excerpt         String?
   category        String
   image           String?
   images          String?
@@ -421,39 +425,39 @@ model MenuItem {
 }
 
 model Country {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  nameRu      String   @map("name_ru")
-  nameEn      String   @map("name_en")
-  nameTj      String   @map("name_tj")
-  code        String   @unique // TJ, UZ, KG, KZ, TM
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  cities      City[]
-  tours       Tour[]   // Связь с турами
-  hotels      Hotel[]  // Связь с отелями
-  drivers     Driver[] // Связь с водителями
-  guides      Guide[]  // Связь с гидами
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  nameRu    String   @map("name_ru")
+  nameEn    String   @map("name_en")
+  nameTj    String   @map("name_tj")
+  code      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cities    City[]
+  drivers   Driver[]
+  guides    Guide[]
+  hotels    Hotel[]
+  tours     Tour[]
 
   @@map("countries")
 }
 
 model City {
-  id         Int      @id @default(autoincrement())
-  name       String
-  nameRu     String   @map("name_ru")
-  nameEn     String   @map("name_en")
-  nameTj     String   @map("name_tj")
-  countryId  Int      @map("country_id")
-  isActive   Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  country    Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
-  tours      Tour[]   // Связь с турами
-  hotels     Hotel[]  // Связь с отелями
-  drivers    Driver[] // Связь с водителями
-  guides     Guide[]  // Связь с гидами
+  id        Int      @id @default(autoincrement())
+  name      String
+  nameRu    String   @map("name_ru")
+  nameEn    String   @map("name_en")
+  nameTj    String   @map("name_tj")
+  countryId Int      @map("country_id")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  drivers   Driver[]
+  guides    Guide[]
+  hotels    Hotel[]
+  tours     Tour[]
 
   @@unique([name, countryId])
   @@map("cities")
@@ -493,8 +497,8 @@ model NewsletterSubscriber {
 
 model Slide {
   id          Int      @id @default(autoincrement())
-  title       Json     // JSON: {"ru": "Заголовок слайда", "en": "Slide Title", etc.}
-  description Json     // JSON: {"ru": "Описание слайда", "en": "Slide Description", etc.}
+  title       String
+  description String
   image       String?
   link        String?
   buttonText  String?
@@ -576,16 +580,16 @@ model TourPricingComponent {
 }
 
 model TourGuideProfile {
-  id            Int           @id @default(autoincrement())
-  name          String
-  login         String        @unique
-  password      String
-  email         String?
-  phone         String?
-  isActive      Boolean       @default(true)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  guideReviews  GuideReview[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  login        String        @unique
+  password     String
+  email        String?
+  phone        String?
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  guideReviews GuideReview[]
 
   @@map("tour_guide_profiles")
 }
@@ -603,62 +607,58 @@ model GuideReview {
   @@map("guide_reviews")
 }
 
-enum NewsCategory {
-  tours
-  events
-  announcements
-  tips
-  general
-}
-
 model DriverProfile {
-  id                Int      @id @default(autoincrement())
+  id                Int       @id @default(autoincrement())
   name              String
   phone             String
   email             String?
   dateOfBirth       DateTime?
-  experience        Int      // Опыт вождения (в годах)
-  licenseCategories String   // Категории прав (JSON массив)
-  licenseNumber     String   // Номер водительского удостоверения
-  vehicleTypes      String   // Типы транспорта (JSON массив)
-  vehicleBrand      String?  // Марка автомобиля
-  vehicleYear       Int?     // Год выпуска автомобиля
-  languages         String   // Языки (JSON массив)
-  workingAreas      String   // Зоны работы (JSON массив)
-  dailyRate         Float    // Дневная ставка (TJS)
-  hourlyRate        Float    // Почасовая ставка (TJS)
-  rating            Float?   // Рейтинг водителя
-  totalTrips        Int      @default(0) // Общее количество поездок
-  photo             String?  // Аватар водителя
-  vehiclePhotos     String?  // Фото транспорта (JSON массив)
-  documents         String?  // Документы (JSON массив)
-  isActive          Boolean  @default(true) // Активен ли водитель
-  password          String   // Пароль для авторизации
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  
-  // Связь с поездками
+  experience        Int
+  licenseCategories String
+  licenseNumber     String
+  vehicleTypes      String
+  vehicleBrand      String?
+  vehicleYear       Int?
+  languages         String
+  workingAreas      String
+  dailyRate         Float
+  hourlyRate        Float
+  rating            Float?
+  totalTrips        Int       @default(0)
+  photo             String?
+  vehiclePhotos     String?
+  documents         String?
+  isActive          Boolean   @default(true)
+  password          String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
   trips             Trip[]
 
   @@map("driver_profiles")
 }
 
 model Trip {
-  id              Int      @id @default(autoincrement())
-  direction       String   // Направление (например, "Аэропорт - Город")
-  pickupTime      String   // Время приёма
-  pickupLocation  String   // Место приёма
-  routeFrom       String   // Откуда
-  routeTo         String   // Куда
-  dropoffLocation String   // Место высадки
-  dropoffTime     String   // Время высадки
-  driverId        Int      // ID водителя
-  status          String   @default("pending") // Статус: pending, in_progress, completed, cancelled
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  // Связь с водителем
+  id              Int           @id @default(autoincrement())
+  direction       String
+  pickupTime      String
+  pickupLocation  String
+  routeFrom       String
+  routeTo         String
+  dropoffLocation String
+  dropoffTime     String
+  driverId        Int
+  status          String        @default("pending")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
   driver          DriverProfile @relation(fields: [driverId], references: [id], onDelete: Cascade)
 
   @@map("trips")
+}
+
+enum NewsCategory {
+  tours
+  events
+  announcements
+  tips
+  general
 }
