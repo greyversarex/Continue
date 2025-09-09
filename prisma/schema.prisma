@@ -9,7 +9,7 @@ datasource db {
 
 model Category {
   id    Int    @id @default(autoincrement())
-  name  String
+  name  Json   // JSON: {"ru": "Категория", "en": "Category", "tj": "Категория", "fa": "دسته", "de": "Kategorie", "zh": "类别"}
   tours Tour[]
 
   @@map("categories")
@@ -17,8 +17,8 @@ model Category {
 
 model TourBlock {
   id          Int                     @id @default(autoincrement())
-  title       String
-  description String?
+  title       Json                    // JSON: {"ru": "Заголовок", "en": "Title", etc.}
+  description Json?                   // JSON: {"ru": "Описание", "en": "Description", etc.}
   slug        String                  @unique
   isActive    Boolean                 @default(true)
   sortOrder   Int                     @default(0)
@@ -32,9 +32,9 @@ model TourBlock {
 
 model Tour {
   id                 Int                    @id @default(autoincrement())
-  title              String
-  description        String
-  shortDesc          String?
+  title              Json                   // JSON: {"ru": "Название тура", "en": "Tour Title", etc.}
+  description        Json                   // JSON: {"ru": "Описание", "en": "Description", etc.}
+  shortDesc          Json?                  // JSON: {"ru": "Краткое описание", "en": "Short Description", etc.}
   duration           String
   price              String
   currency           String                 @default("TJS")
@@ -105,8 +105,8 @@ model Tour {
 
 model Hotel {
   id          Int         @id @default(autoincrement())
-  name        String
-  description String?
+  name        Json        // JSON: {"ru": "Название отеля", "en": "Hotel Name", etc.}
+  description Json?       // JSON: {"ru": "Описание", "en": "Description", etc.}
   images      String?
   address     String?
   rating      Float?
@@ -163,8 +163,8 @@ model TourBlockAssignment {
 
 model Guide {
   id          Int         @id @default(autoincrement())
-  name        String
-  description String?
+  name        Json        // JSON: {"ru": "Имя гида", "en": "Guide Name", etc.}
+  description Json?       // JSON: {"ru": "Описание", "en": "Description", etc.}
   photo       String?
   avatar      String?     // Новое поле для аватара
   documents   String?     // JSON массив документов [{name: "", path: "", type: ""}]
@@ -190,8 +190,8 @@ model Guide {
 
 model Driver {
   id               Int         @id @default(autoincrement())
-  name             String
-  description      String?
+  name             Json        // JSON: {"ru": "Имя водителя", "en": "Driver Name", etc.}
+  description      Json?       // JSON: {"ru": "Описание", "en": "Description", etc.}
   photo            String?
   avatar           String?     // Аватар водителя
   documents        String?     // JSON массив документов [{name: "", path: "", type: ""}]
@@ -336,9 +336,9 @@ model Admin {
 
 model News {
   id              Int      @id @default(autoincrement())
-  title           String
-  content         String
-  excerpt         String?
+  title           Json     // JSON: {"ru": "Заголовок", "en": "Title", etc.}
+  content         Json     // JSON: {"ru": "Контент", "en": "Content", etc.}
+  excerpt         Json?    // JSON: {"ru": "Краткое изложение", "en": "Excerpt", etc.}
   category        String
   image           String?
   images          String?
@@ -493,8 +493,8 @@ model NewsletterSubscriber {
 
 model Slide {
   id          Int      @id @default(autoincrement())
-  title       String
-  description String
+  title       Json     // JSON: {"ru": "Заголовок слайда", "en": "Slide Title", etc.}
+  description Json     // JSON: {"ru": "Описание слайда", "en": "Slide Description", etc.}
   image       String?
   link        String?
   buttonText  String?
