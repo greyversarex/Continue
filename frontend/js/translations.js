@@ -156,6 +156,8 @@ let translationSystem;
 // Инициализация после загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
     translationSystem = new TranslationSystem();
+    // Делаем доступной глобально
+    window.translationSystem = translationSystem;
 });
 
 // Улучшенная функция selectLanguage для интеграции с существующим кодом
