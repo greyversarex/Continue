@@ -494,10 +494,7 @@ export class TourController {
           ...tour,
           title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
           description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
-          category: tour.category ? {
-            ...tour.category,
-            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
-          } : null
+          category: null // Временно убираем до исправления include
         };
       } catch (jsonError) {
         console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
@@ -505,10 +502,7 @@ export class TourController {
           ...tour,
           title: { ru: tour.title || '', en: tour.title || '' },
           description: { ru: tour.description || '', en: tour.description || '' },
-          category: tour.category ? {
-            ...tour.category,
-            name: { ru: tour.category.name || '', en: tour.category.name || '' }
-          } : null
+          category: null // Временно убираем до исправления include
         };
       }
 
@@ -771,10 +765,7 @@ export class TourController {
           ...tour,
           title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
           description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
-          category: tour.category ? {
-            ...tour.category,
-            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
-          } : null
+          category: null // Временно убираем до исправления include
         };
       } catch (jsonError) {
         console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
@@ -782,10 +773,7 @@ export class TourController {
           ...tour,
           title: { ru: tour.title || '', en: tour.title || '' },
           description: { ru: tour.description || '', en: tour.description || '' },
-          category: tour.category ? {
-            ...tour.category,
-            name: { ru: tour.category.name || '', en: tour.category.name || '' }
-          } : null
+          category: null // Временно убираем до исправления include
         };
       }
 

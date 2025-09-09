@@ -68,6 +68,10 @@ export class TourModel {
         title: JSON.stringify(data.title),
         description: JSON.stringify(data.description),
         shortDesc: data.shortDescription ? JSON.stringify(data.shortDescription) : null,
+        // New multilingual fields
+        titleMultilang: data.titleMultilang ? JSON.stringify(data.titleMultilang) : undefined,
+        descriptionMultilang: data.descriptionMultilang ? JSON.stringify(data.descriptionMultilang) : undefined,
+        shortDescMultilang: data.shortDescMultilang ? JSON.stringify(data.shortDescMultilang) : undefined,
         duration: String(data.duration), // Ensure duration is a string
         price: data.price,
         priceType: data.priceType || 'за человека',
@@ -122,6 +126,10 @@ export class TourModel {
     if (data.title) updateData.title = JSON.stringify(data.title);
     if (data.description) updateData.description = JSON.stringify(data.description);
     if (data.shortDescription) updateData.shortDesc = JSON.stringify(data.shortDescription);
+    // New multilingual fields for update
+    if (data.titleMultilang !== undefined) updateData.titleMultilang = data.titleMultilang ? JSON.stringify(data.titleMultilang) : undefined;
+    if (data.descriptionMultilang !== undefined) updateData.descriptionMultilang = data.descriptionMultilang ? JSON.stringify(data.descriptionMultilang) : undefined;
+    if (data.shortDescMultilang !== undefined) updateData.shortDescMultilang = data.shortDescMultilang ? JSON.stringify(data.shortDescMultilang) : undefined;
     if (data.duration) updateData.duration = String(data.duration);
     if (data.price) updateData.price = data.price;
     if (data.priceType !== undefined) updateData.priceType = data.priceType;
