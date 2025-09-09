@@ -57,12 +57,12 @@
     }
   },
   "tour_blocks": {
-    "popular": "Beliebte Touren",
-    "recommended": "Empfohlene Zentralasien-Touren",
-    "tajikistan": "Tadschikistan-Touren",
-    "uzbekistan": "Usbekistan-Touren",
-    "kyrgyzstan": "Kirgisistan-Touren",
-    "turkmenistan": "Turkmenistan-Touren"
+    "block1": "Beliebte Touren",
+    "block2": "Empfohlene Zentralasien-Touren",
+    "block3": "Tadschikistan-Touren",
+    "block4": "Usbekistan-Touren",
+    "block5": "Kirgisistan-Touren",
+    "block6": "Turkmenistan-Touren"
   },
   "common": {
     "book_now": "Jetzt buchen",

@@ -57,12 +57,12 @@
     }
   },
   "tour_blocks": {
-    "popular": "热门旅游",
-    "recommended": "推荐的中亚旅游",
-    "tajikistan": "塔吉克斯坦旅游",
-    "uzbekistan": "乌兹别克斯坦旅游",
-    "kyrgyzstan": "吉尔吉斯斯坦旅游",
-    "turkmenistan": "土库曼斯坦旅游"
+    "block1": "热门旅游",
+    "block2": "推荐的中亚旅游",
+    "block3": "塔吉克斯坦旅游",
+    "block4": "乌兹别克斯坦旅游",
+    "block5": "吉尔吉斯斯坦旅游",
+    "block6": "土库曼斯坦旅游"
   },
   "common": {
     "book_now": "立即预订",

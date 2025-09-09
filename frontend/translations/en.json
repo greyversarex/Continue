@@ -57,12 +57,12 @@
     }
   },
   "tour_blocks": {
-    "popular": "Popular Tours",
-    "recommended": "Recommended Central Asia Tours",
-    "tajikistan": "Tajikistan Tours",
-    "uzbekistan": "Uzbekistan Tours",
-    "kyrgyzstan": "Kyrgyzstan Tours",
-    "turkmenistan": "Turkmenistan Tours"
+    "block1": "Popular Tours",
+    "block2": "Recommended Central Asia Tours",
+    "block3": "Tajikistan Tours",
+    "block4": "Uzbekistan Tours",
+    "block5": "Kyrgyzstan Tours",
+    "block6": "Turkmenistan Tours"
   },
   "common": {
     "book_now": "Book Now",
