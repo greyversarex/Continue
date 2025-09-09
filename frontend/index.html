@@ -10,6 +10,7 @@
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Noto Sans', 'Ubuntu', 'Cantarell', 'Helvetica Neue', sans-serif; }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/translations.js"></script>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -838,11 +839,11 @@
                 
                 <!-- Навигационное меню -->
                 <nav class="hidden md:flex space-x-6">
-                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors">О нас</a>
+                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors" data-translate="footer.about_us">О нас</a>
                     
                     <!-- Услуги (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="services.title">Услуги</a>
                         <div class="dropdown-content">
                             <a href="transfer.html">Трансфер</a>
                             <div class="dropdown-submenu">
@@ -876,7 +877,7 @@
                     
                     <!-- Туристам (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туристам</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="navigation.tourists">Туристам</a>
                         <div class="dropdown-content">
                             <a href="booking-guide.html">Инструкция сайта</a>
                             <a href="#">Специальные заметки</a>
@@ -886,11 +887,11 @@
                     </div>
                     
                     <!-- Акции (БЕЗ выпадающего меню) -->
-                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors">Акции</a>
-                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors">Новости</a>
+                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors" data-translate="navigation.promotions">Акции</a>
+                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors" data-translate="navigation.news">Новости</a>
                     
                     <!-- Турагенты -->
-                    <a href="tour-agents.html" class="text-white hover:text-gray-300 transition-colors">Турагенты</a>
+                    <a href="tour-agents.html" class="text-white hover:text-gray-300 transition-colors" data-translate="navigation.tour_agents">Турагенты</a>
                 </nav>
                 
                 <!-- Языковой и валютный селекторы -->
@@ -972,9 +973,9 @@
                 <div class="gradient-overlay absolute inset-0"></div>
                 <div class="relative z-10 text-center max-w-4xl mx-auto px-6">
                     <h1 class="text-6xl font-bold mb-6">
-                        Откройте красоту Таджикистана
+                        <span data-translate="hero.title">Откройте красоту Таджикистана</span>
                     </h1>
-                    <p class="text-xl mb-8 max-w-2xl mx-auto">
+                    <p class="text-xl mb-8 max-w-2xl mx-auto" data-translate="hero.subtitle">
                         Исследуйте захватывающие горы Памира, древние города Шёлкового пути и богатую культуру этой удивительной страны
                     </p>
                 </div>
@@ -2549,25 +2550,38 @@
             arrow.classList.toggle('open');
         }
         
-        function selectLanguage(lang, flagClass, name) {
-            // Обновляем кнопку селектора
-            const selectedFlag = document.querySelector('.selected-flag');
-            selectedFlag.className = `selected-flag ${flagClass}`;
-            document.querySelector('.selected-lang').textContent = name;
+        async function selectLanguage(lang, flagClass, name) {
+            console.log(`🌐 Переключение языка на: ${lang}`);
             
-            // Убираем активный класс со всех опций
-            document.querySelectorAll('#langDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
-            
-            // Добавляем активный класс к выбранной опции
-            document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+            // Используем новую систему переводов если она доступна
+            if (window.translationSystem) {
+                await window.translationSystem.changeLanguage(lang);
+            } else {
+                // Fallback - обновляем только UI
+                const selectedFlag = document.querySelector('.selected-flag');
+                selectedFlag.className = `selected-flag ${flagClass}`;
+                document.querySelector('.selected-lang').textContent = name;
+                
+                // Убираем активный класс со всех опций
+                document.querySelectorAll('#langDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
+                
+                // Добавляем активный класс к выбранной опции
+                document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+                
+                console.log(`Переключен язык: ${lang} (только UI)`);
+            }
             
             // Закрываем выпадающий список
-            document.getElementById('langDropdown').classList.remove('show');
+            const dropdown = document.getElementById('langDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
             
-            console.log(`Переключен язык: ${lang}`);
-            
-            // Закрываем dropdown  
-            toggleLanguageDropdown();
+            // Обновляем стрелку
+            const arrow = document.querySelector('.dropdown-arrow');
+            if (arrow) {
+                arrow.classList.remove('open');
+            }
         }
 
 
