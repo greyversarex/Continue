@@ -1683,6 +1683,31 @@
                     </div>
                     
                     <div class="form-group col-span-2">
+                        <label class="form-label">Название тура (تاجیکی/Tajik)</label>
+                        <input type="text" class="form-input" id="tourTitleTj" placeholder="Номи сафар">
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Название тура (فارسی/Persian)</label>
+                        <input type="text" class="form-input" id="tourTitleFa" placeholder="نام تور" dir="rtl">
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Название тура (Deutsch)</label>
+                        <input type="text" class="form-input" id="tourTitleDe" placeholder="Tour-Name">
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Название тура (中文/Chinese)</label>
+                        <input type="text" class="form-input" id="tourTitleZh" placeholder="旅游名称">
+                    </div>
+                    
+                    <!-- Описания -->
+                    <div class="form-group col-span-2">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-700 border-b pb-2">📝 Описания туров</h3>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
                         <label class="form-label">Описание (Русский)</label>
                         <textarea class="form-input" rows="4" id="tourDescRu" required></textarea>
                     </div>
@@ -1690,6 +1715,26 @@
                     <div class="form-group col-span-2">
                         <label class="form-label">Описание (English)</label>
                         <textarea class="form-input" rows="4" id="tourDescEn" required></textarea>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Описание (تاجیکی/Tajik)</label>
+                        <textarea class="form-input" rows="4" id="tourDescTj" placeholder="Тавсифи муфассали сафар"></textarea>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Описание (فارسی/Persian)</label>
+                        <textarea class="form-input" rows="4" id="tourDescFa" placeholder="توضیحات کامل تور" dir="rtl"></textarea>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Описание (Deutsch)</label>
+                        <textarea class="form-input" rows="4" id="tourDescDe" placeholder="Detaillierte Tour-Beschreibung"></textarea>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Описание (中文/Chinese)</label>
+                        <textarea class="form-input" rows="4" id="tourDescZh" placeholder="详细的旅游描述"></textarea>
                     </div>
 
 
@@ -3925,25 +3970,52 @@
                         }
                         console.log('Tour object:', tour);
                         
-                        // Safely parse title and description (handle both string and object formats)
+                        // Safely parse title and description with new multilingual support
                         let title, description;
-                        try {
-                            title = typeof tour.title === 'string' ? JSON.parse(tour.title || '{}') : (tour.title || {});
-                        } catch (e) {
-                            console.warn('Failed to parse title:', e);
-                            title = { ru: tour.title || '', en: '' };
-                        }
                         
-                        try {
-                            description = typeof tour.description === 'string' ? JSON.parse(tour.description || '{}') : (tour.description || {});
-                        } catch (e) {
-                            console.warn('Failed to parse description:', e);
-                            description = { ru: tour.description || '', en: '' };
+                        // Попытка загрузить из новых многоязычных полей
+                        if (tour.titleMultilang || tour.descriptionMultilang) {
+                            try {
+                                title = tour.titleMultilang ? 
+                                    (typeof tour.titleMultilang === 'string' ? JSON.parse(tour.titleMultilang) : tour.titleMultilang) : 
+                                    { ru: '', en: '', tj: '', fa: '', de: '', zh: '' };
+                            } catch (e) {
+                                console.warn('Failed to parse titleMultilang:', e);
+                                title = { ru: '', en: '', tj: '', fa: '', de: '', zh: '' };
+                            }
+                            
+                            try {
+                                description = tour.descriptionMultilang ? 
+                                    (typeof tour.descriptionMultilang === 'string' ? JSON.parse(tour.descriptionMultilang) : tour.descriptionMultilang) : 
+                                    { ru: '', en: '', tj: '', fa: '', de: '', zh: '' };
+                            } catch (e) {
+                                console.warn('Failed to parse descriptionMultilang:', e);
+                                description = { ru: '', en: '', tj: '', fa: '', de: '', zh: '' };
+                            }
+                        } else {
+                            // Fallback для старых полей
+                            try {
+                                title = typeof tour.title === 'string' ? JSON.parse(tour.title || '{}') : (tour.title || {});
+                            } catch (e) {
+                                console.warn('Failed to parse title:', e);
+                                title = { ru: tour.title || '', en: '' };
+                            }
+                            
+                            try {
+                                description = typeof tour.description === 'string' ? JSON.parse(tour.description || '{}') : (tour.description || {});
+                            } catch (e) {
+                                console.warn('Failed to parse description:', e);
+                                description = { ru: tour.description || '', en: '' };
+                            }
+                            
+                            // Дополняем отсутствующие языки
+                            title = { ru: title.ru || '', en: title.en || '', tj: '', fa: '', de: '', zh: '' };
+                            description = { ru: description.ru || '', en: description.en || '', tj: '', fa: '', de: '', zh: '' };
                         }
                         
                         // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Заполняем ОБЕ формы одновременно!
                         
-                        // Заполняем поля ОСНОВНОЙ формы tourForm
+                        // Заполняем поля ОСНОВНОЙ формы tourForm со всеми языками
                         const tourTitleRu = document.getElementById('tourTitleRu');
                         if (tourTitleRu) {
                             tourTitleRu.value = title.ru || '';
@@ -3956,6 +4028,32 @@
                             console.log('✅ Loaded title EN (main form):', title.en);
                         }
                         
+                        // Новые языковые поля для названий
+                        const tourTitleTj = document.getElementById('tourTitleTj');
+                        if (tourTitleTj) {
+                            tourTitleTj.value = title.tj || '';
+                            console.log('✅ Loaded title TJ (main form):', title.tj);
+                        }
+                        
+                        const tourTitleFa = document.getElementById('tourTitleFa');
+                        if (tourTitleFa) {
+                            tourTitleFa.value = title.fa || '';
+                            console.log('✅ Loaded title FA (main form):', title.fa);
+                        }
+                        
+                        const tourTitleDe = document.getElementById('tourTitleDe');
+                        if (tourTitleDe) {
+                            tourTitleDe.value = title.de || '';
+                            console.log('✅ Loaded title DE (main form):', title.de);
+                        }
+                        
+                        const tourTitleZh = document.getElementById('tourTitleZh');
+                        if (tourTitleZh) {
+                            tourTitleZh.value = title.zh || '';
+                            console.log('✅ Loaded title ZH (main form):', title.zh);
+                        }
+                        
+                        // Описания на всех языках
                         const tourDescRu = document.getElementById('tourDescRu');
                         if (tourDescRu) {
                             tourDescRu.value = description.ru || '';
@@ -3966,6 +4064,30 @@
                         if (tourDescEn) {
                             tourDescEn.value = description.en || '';
                             console.log('✅ Loaded description EN (main form)');
+                        }
+                        
+                        const tourDescTj = document.getElementById('tourDescTj');
+                        if (tourDescTj) {
+                            tourDescTj.value = description.tj || '';
+                            console.log('✅ Loaded description TJ (main form)');
+                        }
+                        
+                        const tourDescFa = document.getElementById('tourDescFa');
+                        if (tourDescFa) {
+                            tourDescFa.value = description.fa || '';
+                            console.log('✅ Loaded description FA (main form)');
+                        }
+                        
+                        const tourDescDe = document.getElementById('tourDescDe');
+                        if (tourDescDe) {
+                            tourDescDe.value = description.de || '';
+                            console.log('✅ Loaded description DE (main form)');
+                        }
+                        
+                        const tourDescZh = document.getElementById('tourDescZh');
+                        if (tourDescZh) {
+                            tourDescZh.value = description.zh || '';
+                            console.log('✅ Loaded description ZH (main form)');
                         }
                         
                         // УДАЛЕНО: Заполнение полей Enhanced формы (форма удалена)
@@ -4447,6 +4569,10 @@
             // Валидация обязательных полей
             const titleRuValue = document.getElementById('tourTitleRu').value;
             const titleEnValue = document.getElementById('tourTitleEn').value;
+            const titleTjValue = document.getElementById('tourTitleTj').value;
+            const titleFaValue = document.getElementById('tourTitleFa').value;
+            const titleDeValue = document.getElementById('tourTitleDe').value;
+            const titleZhValue = document.getElementById('tourTitleZh').value;
             
             const categoryValue = document.getElementById('tourCategory').value;
             const priceValue = document.getElementById('tourPrice').value;
@@ -4498,6 +4624,10 @@
             // Формируем данные для отправки (с проверками на существование элементов)
             const tourDescRuEl = document.getElementById('tourDescRu');
             const tourDescEnEl = document.getElementById('tourDescEn');
+            const tourDescTjEl = document.getElementById('tourDescTj');
+            const tourDescFaEl = document.getElementById('tourDescFa');
+            const tourDescDeEl = document.getElementById('tourDescDe');
+            const tourDescZhEl = document.getElementById('tourDescZh');
             const tourPriceTypeEl = document.getElementById('tourPriceType');
             const tourBlockIdEl = document.getElementById('tourBlockId');
             const tourCountryEl = document.getElementById('tourCountry');
@@ -4509,6 +4639,24 @@
             const tourMainImageEl = document.getElementById('tourMainImage');
             
             const formData = {
+                // Многоязычные поля в новом формате JSON
+                titleMultilang: JSON.stringify({
+                    ru: titleRuValue,
+                    en: titleEnValue || '',
+                    tj: titleTjValue || '',
+                    fa: titleFaValue || '',
+                    de: titleDeValue || '',
+                    zh: titleZhValue || ''
+                }),
+                descriptionMultilang: JSON.stringify({
+                    ru: tourDescRuEl ? tourDescRuEl.value || '' : '',
+                    en: tourDescEnEl ? tourDescEnEl.value || '' : '',
+                    tj: tourDescTjEl ? tourDescTjEl.value || '' : '',
+                    fa: tourDescFaEl ? tourDescFaEl.value || '' : '',
+                    de: tourDescDeEl ? tourDescDeEl.value || '' : '',
+                    zh: tourDescZhEl ? tourDescZhEl.value || '' : ''
+                }),
+                // Старые поля для обратной совместимости
                 title: JSON.stringify({
                     ru: titleRuValue,
                     en: titleEnValue || titleRuValue

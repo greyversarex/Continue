@@ -197,7 +197,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
+      let { title, description, shortDescription, titleMultilang, descriptionMultilang, shortDescMultilang, duration, price, priceType, originalPrice, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -210,6 +210,40 @@ export class TourController {
             success: false,
             error: 'Invalid title format'
           });
+        }
+      }
+
+      // Parse new multilingual fields
+      if (typeof titleMultilang === 'string') {
+        try {
+          titleMultilang = JSON.parse(titleMultilang);
+          console.log('Parsed titleMultilang:', titleMultilang);
+        } catch (e) {
+          console.error('Failed to parse titleMultilang:', e);
+          // Don't fail the request, just set to null
+          titleMultilang = null;
+        }
+      }
+
+      if (typeof descriptionMultilang === 'string') {
+        try {
+          descriptionMultilang = JSON.parse(descriptionMultilang);
+          console.log('Parsed descriptionMultilang:', descriptionMultilang);
+        } catch (e) {
+          console.error('Failed to parse descriptionMultilang:', e);
+          // Don't fail the request, just set to null
+          descriptionMultilang = null;
+        }
+      }
+
+      if (typeof shortDescMultilang === 'string') {
+        try {
+          shortDescMultilang = JSON.parse(shortDescMultilang);
+          console.log('Parsed shortDescMultilang:', shortDescMultilang);
+        } catch (e) {
+          console.error('Failed to parse shortDescMultilang:', e);
+          // Don't fail the request, just set to null
+          shortDescMultilang = null;
         }
       }
 
@@ -315,6 +349,9 @@ export class TourController {
         title,
         description,
         shortDescription: shortDescription || null,
+        titleMultilang,
+        descriptionMultilang,
+        shortDescMultilang,
         duration: String(finalDuration), // Convert to string for Prisma
         price: String(price),
         priceType: priceType || 'за человека',
@@ -521,7 +558,7 @@ export class TourController {
         });
       }
 
-      let { title, description, duration, price, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
+      let { title, description, duration, price, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, titleMultilang, descriptionMultilang, shortDescMultilang, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed (same as createTour)
       if (typeof title === 'string') {
@@ -547,6 +584,37 @@ export class TourController {
             success: false,
             error: 'Invalid description format'
           });
+        }
+      }
+
+      // Parse new multilingual fields for update
+      if (typeof titleMultilang === 'string') {
+        try {
+          titleMultilang = JSON.parse(titleMultilang);
+          console.log('Parsed titleMultilang for update:', titleMultilang);
+        } catch (e) {
+          console.error('Failed to parse titleMultilang:', e);
+          titleMultilang = null;
+        }
+      }
+
+      if (typeof descriptionMultilang === 'string') {
+        try {
+          descriptionMultilang = JSON.parse(descriptionMultilang);
+          console.log('Parsed descriptionMultilang for update:', descriptionMultilang);
+        } catch (e) {
+          console.error('Failed to parse descriptionMultilang:', e);
+          descriptionMultilang = null;
+        }
+      }
+
+      if (typeof shortDescMultilang === 'string') {
+        try {
+          shortDescMultilang = JSON.parse(shortDescMultilang);
+          console.log('Parsed shortDescMultilang for update:', shortDescMultilang);
+        } catch (e) {
+          console.error('Failed to parse shortDescMultilang:', e);
+          shortDescMultilang = null;
         }
       }
 
@@ -580,6 +648,10 @@ export class TourController {
       if (title) updateData.title = title;
       if (description) updateData.description = description;
       if (shortDescription) updateData.shortDescription = shortDescription;
+      // New multilingual fields
+      if (titleMultilang) updateData.titleMultilang = titleMultilang;
+      if (descriptionMultilang) updateData.descriptionMultilang = descriptionMultilang;
+      if (shortDescMultilang) updateData.shortDescMultilang = shortDescMultilang;
       if (duration) updateData.duration = String(duration);
       if (price) updateData.price = String(price);
       if (categoryIdNumber) updateData.categoryId = categoryIdNumber;
