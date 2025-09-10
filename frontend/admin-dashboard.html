@@ -6718,20 +6718,8 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Наименование организации</label>
-                                        <input type="text" class="form-input" id="guideOrganization" placeholder="ООО Туристическая компания">
-                                    </div>
-                                    <div class="form-group">
                                         <label class="form-label">Адрес проживания</label>
                                         <input type="text" class="form-input" id="guideResidenceAddress" placeholder="г. Душанбе, ул. Фирдавси, д.1">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Адрес организации</label>
-                                        <input type="text" class="form-input" id="guideOrganizationAddress" placeholder="г. Душанбе, ул. Рудаки, д.10">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Сайт</label>
-                                        <input type="url" class="form-input" id="guideWebsite" placeholder="https://example.com">
                                     </div>
                                 </div>
                                 
@@ -6912,20 +6900,8 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Наименование организации</label>
-                                        <input type="text" class="form-input" id="editGuideOrganization" placeholder="ООО Туристическая компания" value="${guide.organization || ''}">
-                                    </div>
-                                    <div class="form-group">
                                         <label class="form-label">Адрес проживания</label>
                                         <input type="text" class="form-input" id="editGuideResidenceAddress" placeholder="г. Душанбе, ул. Фирдавси, д.1" value="${guide.residenceAddress || ''}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Адрес организации</label>
-                                        <input type="text" class="form-input" id="editGuideOrganizationAddress" placeholder="г. Душанбе, ул. Рудаки, д.10" value="${guide.organizationAddress || ''}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Сайт</label>
-                                        <input type="url" class="form-input" id="editGuideWebsite" placeholder="https://example.com" value="${guide.website || ''}">
                                     </div>
                                 </div>
                                 
@@ -7161,10 +7137,7 @@
             // Новые поля
             const passportSeries = document.getElementById('editGuidePassportSeries').value.trim();
             const registration = document.getElementById('editGuideRegistration').value.trim();
-            const organization = document.getElementById('editGuideOrganization').value.trim();
             const residenceAddress = document.getElementById('editGuideResidenceAddress').value.trim();
-            const organizationAddress = document.getElementById('editGuideOrganizationAddress').value.trim();
-            const website = document.getElementById('editGuideWebsite').value.trim();
 
             if (!name || !email || selectedGuideLanguages.length === 0) {
                 alert('Пожалуйста, заполните все обязательные поля');
@@ -7190,10 +7163,7 @@
                 // Добавляем новые поля
                 formData.append('passportSeries', passportSeries);
                 formData.append('registration', registration);
-                formData.append('organization', organization);
                 formData.append('residenceAddress', residenceAddress);
-                formData.append('organizationAddress', organizationAddress);
-                formData.append('website', website);
                 
                 // Добавляем файлы
                 if (editGuideAvatarFile) {
@@ -7598,10 +7568,7 @@
             // Новые поля
             const passportSeries = safeGetValue('guidePassportSeries', '').trim();
             const registration = safeGetValue('guideRegistration', '').trim();
-            const organization = safeGetValue('guideOrganization', '').trim();
             const residenceAddress = safeGetValue('guideResidenceAddress', '').trim();
-            const organizationAddress = safeGetValue('guideOrganizationAddress', '').trim();
-            const website = safeGetValue('guideWebsite', '').trim();
             
             // Проверяем обязательные поля
             if (!fullName || !experience || !phone || !email || !login || !password || selectedGuideLanguages.length === 0) {
@@ -7624,10 +7591,7 @@
             // Добавляем новые поля
             formData.append('passportSeries', passportSeries);
             formData.append('registration', registration);
-            formData.append('organization', organization);
             formData.append('residenceAddress', residenceAddress);
-            formData.append('organizationAddress', organizationAddress);
-            formData.append('website', website);
 
             // Добавляем аватар, если выбран
             if (guideAvatarFile) {
