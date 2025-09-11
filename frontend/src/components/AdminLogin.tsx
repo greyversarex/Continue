@@ -13,15 +13,35 @@ const AdminLogin: React.FC = () => {
     }
   }, [navigate]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simple password check - in production, this should be proper authentication
-    if (password === '123') {
-      localStorage.setItem('adminAuthenticated', 'true');
-      navigate('/admin/dashboard');
-    } else {
-      setError('Invalid password');
+    try {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: 'admin',
+          password: password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.data.token) {
+        // Store JWT token instead of simple boolean
+        localStorage.setItem('adminToken', data.data.token);
+        localStorage.setItem('adminAuthenticated', 'true');
+        navigate('/admin/dashboard');
+      } else {
+        setError(data.error || 'Login failed');
+        setPassword('');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Connection error');
       setPassword('');
     }
   };
