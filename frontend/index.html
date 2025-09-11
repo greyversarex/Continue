@@ -451,64 +451,101 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         
-        /* Цвета флагов */
+        /* Качественные эмодзи флаги вместо CSS градиентов */
         .flag-ru, .selected-flag.flag-ru {
-            background: linear-gradient(to bottom, 
-                #ffffff 0%, #ffffff 33.33%, 
-                #0039a6 33.33%, #0039a6 66.66%, 
-                #d52b1e 66.66%, #d52b1e 100%);
+            font-size: 18px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 16px;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
+        .flag-ru::before, .selected-flag.flag-ru::before {
+            content: '🇷🇺';
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+        }
+        
         .flag-us, .selected-flag.flag-us {
-            background: linear-gradient(to bottom, 
-                #b22234 0%, #b22234 7.7%, #ffffff 7.7%, #ffffff 15.4%, 
-                #b22234 15.4%, #b22234 23.1%, #ffffff 23.1%, #ffffff 30.8%,
-                #b22234 30.8%, #b22234 38.5%, #ffffff 38.5%, #ffffff 46.2%,
-                #b22234 46.2%, #b22234 53.8%, #ffffff 53.8%, #ffffff 61.5%,
-                #b22234 61.5%, #b22234 69.2%, #ffffff 69.2%, #ffffff 76.9%,
-                #b22234 76.9%, #b22234 84.6%, #ffffff 84.6%, #ffffff 92.3%,
-                #b22234 92.3%, #b22234 100%);
-            position: relative;
+            font-size: 18px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 16px;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
         .flag-us::before, .selected-flag.flag-us::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 35%;
-            height: 47%;
-            background: #3c3b6e;
-            border-radius: 1px;
+            content: '🇺🇸';
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
         }
+        
         .flag-tj, .selected-flag.flag-tj {
-            background: linear-gradient(to bottom, 
-                #ce1126 0%, #ce1126 33.33%, 
-                #ffffff 33.33%, #ffffff 66.66%, 
-                #00945a 66.66%, #00945a 100%);
+            font-size: 18px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 16px;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
+        .flag-tj::before, .selected-flag.flag-tj::before {
+            content: '🇹🇯';
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+        }
+        
         .flag-ir, .selected-flag.flag-ir {
-            background: linear-gradient(to bottom, 
-                #239f40 0%, #239f40 33.33%, 
-                #ffffff 33.33%, #ffffff 66.66%, 
-                #da0000 66.66%, #da0000 100%);
+            font-size: 18px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 16px;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
+        .flag-ir::before, .selected-flag.flag-ir::before {
+            content: '🇮🇷';
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+        }
+        
         .flag-de, .selected-flag.flag-de {
-            background: linear-gradient(to bottom, 
-                #000000 0%, #000000 33.33%, 
-                #dd0000 33.33%, #dd0000 66.66%, 
-                #ffce00 66.66%, #ffce00 100%);
+            font-size: 18px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 16px;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
+        .flag-de::before, .selected-flag.flag-de::before {
+            content: '🇩🇪';
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+        }
+        
         .flag-cn, .selected-flag.flag-cn {
-            background: #de2910;
-            position: relative;
+            font-size: 18px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 16px;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
         .flag-cn::before, .selected-flag.flag-cn::before {
-            content: '★';
-            position: absolute;
-            color: #ffde00;
-            font-size: 7px;
-            top: 2px;
-            left: 3px;
-            text-shadow: 0 0 1px rgba(0,0,0,0.3);
+            content: '🇨🇳';
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
         }
         
         .dropdown-arrow {
