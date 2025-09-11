@@ -432,9 +432,10 @@ model Country {
   updatedAt   DateTime @updatedAt
   cities      City[]
   tours       Tour[]   // Связь с турами
-  hotels      Hotel[]  // Связь с отелями
-  drivers     Driver[] // Связь с водителями
-  guides      Guide[]  // Связь с гидами
+  hotels      Hotel[]    // Связь с отелями
+  drivers     Driver[]   // Связь с водителями
+  guides      Guide[]    // Связь с гидами
+  tourAgents  TourAgent[] // Связь с турагентами
 
   @@map("countries")
 }
@@ -451,9 +452,10 @@ model City {
   updatedAt  DateTime @updatedAt
   country    Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
   tours      Tour[]   // Связь с турами
-  hotels     Hotel[]  // Связь с отелями
-  drivers    Driver[] // Связь с водителями
-  guides     Guide[]  // Связь с гидами
+  hotels     Hotel[]    // Связь с отелями
+  drivers    Driver[]   // Связь с водителями
+  guides     Guide[]    // Связь с гидами
+  tourAgents TourAgent[] // Связь с турагентами
 
   @@unique([name, countryId])
   @@map("cities")
@@ -641,6 +643,31 @@ model DriverProfile {
   trips             Trip[]
 
   @@map("driver_profiles")
+}
+
+model TourAgent {
+  id               Int      @id @default(autoincrement())
+  name             String   // Название/имя турагента
+  organization     String   // Название организации
+  website          String?  // Веб-сайт
+  stateRegistration String? // Государственная регистрация
+  description      String?  // Описание деятельности
+  contactName      String?  @map("contact_name") // Контактное лицо
+  contactPhone     String?  @map("contact_phone") // Телефон
+  contactEmail     String?  @map("contact_email") // Email
+  address          String?  // Адрес офиса
+  photo            String?  // Фотография/логотип
+  countryId        Int?     @map("country_id")
+  cityId           Int?     @map("city_id")
+  isActive         Boolean  @default(true) @map("is_active")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  
+  // Связи
+  country          Country? @relation(fields: [countryId], references: [id])
+  city             City?    @relation(fields: [cityId], references: [id])
+
+  @@map("tour_agents")
 }
 
 model Trip {
