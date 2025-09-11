@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Наши тургиды - Bunyod-Tour</title>
+    <title>Тургиды - Bunyod-Tour</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -427,8 +427,8 @@
                     <div class="dropdown">
                         <a href="#" class="text-white hover:text-gray-300 transition-colors">Тур-агенты</a>
                         <div class="dropdown-content">
-                            <a href="our-tour-agents.html">Наши тургиды</a>
-                            <a href="tour-agents-catalog.html">Наши турагенты</a>
+                            <a href="our-tour-agents.html">Тургиды</a>
+                            <a href="tour-agents.html">Для турагентов</a>
                         </div>
                     </div>
                 </nav>
@@ -515,7 +515,7 @@
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    Лицензированные тургиды
+                    Лицензированные гиды
                 </div>
                 <div class="flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -533,7 +533,7 @@
         </div>
     </section>
 
-    <!-- Основной контент - Наши тургиды -->
+    <!-- Основной контент - Тургиды -->
     <section class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6">
             <!-- Загрузочное состояние -->
@@ -643,7 +643,7 @@
 
     <script>
         // API функции
-        async function fetchTourGuides() {
+        async function fetchTourAgents() {
             try {
                 const response = await fetch('/api/guides');
                 
@@ -662,7 +662,7 @@
         // Функция создания карточки тургида
         function createAgentCard(agent) {
             // Используем данные напрямую из API
-            const name = agent.name || 'Тургид';
+            const name = agent.name || 'Гид';
             const description = agent.description || 'Опытный тургид с глубокими знаниями культуры и истории Центральной Азии. Создает незабываемые путешествия для клиентов со всего мира.';
             const languages = agent.languages ? agent.languages.split(',').map(lang => lang.trim()) : ['Русский', 'Английский'];
             
@@ -690,7 +690,7 @@
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                             </svg>
-                            Профессиональный тургид
+                            Профессиональный гид
                         </div>
                         
                         <!-- Языки -->
@@ -728,7 +728,7 @@
         }
 
         // Функция отображения тургидов
-        async function displayTourGuides() {
+        async function displayTourAgents() {
             console.log('🔄 Starting to load tour agents...');
             const loading = document.getElementById('loading');
             const container = document.getElementById('agentsContainer');
@@ -736,7 +736,7 @@
             
             try {
                 console.log('📡 Fetching tour agents from API...');
-                const agents = await fetchTourGuides();
+                const agents = await fetchTourAgents();
                 console.log('✅ Tour agents loaded:', agents);
                 
                 // Скрываем загрузку
@@ -835,7 +835,7 @@
 
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
-            displayTourGuides();
+            displayTourAgents();
         });
     </script>
 </body>
