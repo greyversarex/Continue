@@ -469,10 +469,9 @@
             color: inherit !important;
         }
 
-        /* СУПЕР-АГРЕССИВНЫЙ HOTFIX: Полное отключение псевдоэлементов */
-        .flag::before, .flag::after, .selected-flag::before, .selected-flag::after,
-        .lang-dropdown-content .flag::before, .lang-dropdown-content .flag::after,
-        .language-dropdown .flag::before, .language-dropdown .flag::after {
+        /* 🚨 ГЛОБАЛЬНАЯ ЗАЩИТА: Отключение ВСЕХ псевдоэлементов флагов */
+        [class^="flag-"]::before, [class*=" flag-"]::before,
+        [class^="flag-"]::after,  [class*=" flag-"]::after {
             content: none !important;
             display: none !important;
             visibility: hidden !important;
@@ -480,33 +479,12 @@
             width: 0 !important;
             height: 0 !important;
             font-size: 0 !important;
+            position: absolute !important;
+            z-index: -9999 !important;
         }
 
-        /* Отключаем конкретные флаговые псевдоэлементы с МАКСИМАЛЬНОЙ специфичностью */
-        .language-dropdown .lang-dropdown-content .lang-option .flag-ru::before,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-ru::after,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-us::before,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-us::after,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-tj::before,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-tj::after,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-ir::before,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-ir::after,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-de::before,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-de::after,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-cn::before,
-        .language-dropdown .lang-dropdown-content .lang-option .flag-cn::after {
-            content: none !important;
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            font-size: 0 !important;
-        }
-
-        /* ПРИНУДИТЕЛЬНОЕ отображение эмодзи с максимальной специфичностью */
-        .language-dropdown .lang-dropdown-content .lang-option .flag,
-        .language-dropdown .selected-flag {
+        /* 🎌 ГЛОБАЛЬНАЯ ЗАЩИТА: Принудительные эмодзи для ВСЕХ флагов */
+        [class^="flag-"], [class*=" flag-"] {
             font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols" !important;
             font-size: 16px !important;
             color: inherit !important;
@@ -517,7 +495,33 @@
             text-decoration: none !important;
             background: none !important;
             background-image: none !important;
+            text-shadow: none !important;
+        }
+
+        /* 🔧 СПЕЦИФИЧЕСКИЕ ФЛАГИ: Дополнительная защита для языкового селектора */
+        .flag, .selected-flag,
+        .flag-ru, .flag-us, .flag-tj, .flag-ir, .flag-de, .flag-cn {
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols" !important;
+            font-size: 16px !important;
+            color: inherit !important;
+            text-indent: 0 !important;
+            background: none !important;
+            background-image: none !important;
+        }
+
+        /* 💀 УБИЙЦА псевдоэлементов: Дублирующая защита для всех возможных комбинаций */
+        .flag::before, .flag::after, .selected-flag::before, .selected-flag::after,
+        .flag-ru::before, .flag-ru::after, .flag-us::before, .flag-us::after,
+        .flag-tj::before, .flag-tj::after, .flag-ir::before, .flag-ir::after,
+        .flag-de::before, .flag-de::after, .flag-cn::before, .flag-cn::after {
             content: none !important;
+            display: none !important;
+            visibility: hidden !important;
+            position: absolute !important;
+            z-index: -9999 !important;
+            font-size: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
         }
         
         .dropdown-arrow {
@@ -3148,6 +3152,21 @@
             // Повторно восстанавливаем флаги через небольшую задержку (на случай если CSS загружается позже)
             setTimeout(forceEmojiFlags, 1000);
             setTimeout(forceEmojiFlags, 3000);
+            
+            // 🔥 MUTATION OBSERVER: Последняя линия защиты против псевдоэлементов
+            const flagObserver = new MutationObserver(() => {
+                const codeToEmoji = { 'RU': '🇷🇺', 'US': '🇺🇸', 'TJ': '🇹🇯', 'IR': '🇮🇷', 'DE': '🇩🇪', 'CN': '🇨🇳' };
+                document.querySelectorAll('[class^="flag-"], [class*=" flag-"]').forEach(el => {
+                    const text = el.textContent.trim().toUpperCase();
+                    if (codeToEmoji[text]) {
+                        el.textContent = codeToEmoji[text];
+                        el.innerHTML = codeToEmoji[text];
+                        console.log('🚨 MUTATION FIX: Converted', text, '->', codeToEmoji[text]);
+                    }
+                });
+            });
+            flagObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+            console.log('🛡️ MUTATION OBSERVER: Active protection against flag code injection');
         });
 
         function formatImageUrl(imageUrl) {
