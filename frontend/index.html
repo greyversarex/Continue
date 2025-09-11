@@ -2510,21 +2510,13 @@
             arrow.classList.toggle('open');
         }
         
-        function selectLanguage(lang, flagClass, name) {
-            // Мапинг флагов для обновления содержимого
-            const flagEmojis = {
-                'flag-ru': '🇷🇺',
-                'flag-us': '🇺🇸', 
-                'flag-tj': '🇹🇯',
-                'flag-ir': '🇮🇷',
-                'flag-de': '🇩🇪',
-                'flag-cn': '🇨🇳'
-            };
+        function selectLanguageNew(lang, flagClass, flagEmoji, name) {
+            console.log('selectLanguageNew called:', { lang, flagClass, flagEmoji, name });
             
-            // Обновляем кнопку селектора
+            // Обновляем кнопку селектора - используем прямой эмодзи
             const selectedFlag = document.querySelector('.selected-flag');
             selectedFlag.className = `selected-flag ${flagClass}`;
-            selectedFlag.textContent = flagEmojis[flagClass] || '🏳️'; // Fallback flag
+            selectedFlag.textContent = flagEmoji || '🏳️'; // Используем переданный эмодзи
             document.querySelector('.selected-lang').textContent = name;
             
             // Убираем активный класс со всех опций
@@ -2536,10 +2528,20 @@
             // Закрываем выпадающий список
             document.getElementById('langDropdown').classList.remove('show');
             
-            console.log(`Переключен язык: ${lang}`);
-            
-            // Закрываем dropdown  
-            toggleLanguageDropdown();
+            console.log(`Переключен язык: ${lang}, флаг: ${flagEmoji}`);
+        }
+        
+        // Старая функция для обратной совместимости
+        function selectLanguage(lang, flagClass, name) {
+            const flagEmojis = {
+                'flag-ru': '🇷🇺',
+                'flag-us': '🇺🇸', 
+                'flag-tj': '🇹🇯',
+                'flag-ir': '🇮🇷',
+                'flag-de': '🇩🇪',
+                'flag-cn': '🇨🇳'
+            };
+            selectLanguageNew(lang, flagClass, flagEmojis[flagClass] || '🏳️', name);
         }
 
 
@@ -3281,10 +3283,11 @@
                     e.preventDefault();
                     e.stopPropagation();
                     const lang = this.getAttribute('data-lang');
-                    const flag = this.querySelector('.flag').className.split(' ')[1];
+                    const flagClass = this.querySelector('.flag').className.split(' ')[1]; // CSS класс для обратной совместимости 
+                    const flagEmoji = this.querySelector('.flag').textContent; // Берём эмодзи из span
                     const name = this.querySelector('.lang-name').textContent;
-                    console.log('Language selected:', lang);
-                    selectLanguage(lang, flag, name);
+                    console.log('Language selected:', lang, 'Flag emoji:', flagEmoji);
+                    selectLanguageNew(lang, flagClass, flagEmoji, name);
                 });
             });
             
