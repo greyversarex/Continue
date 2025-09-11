@@ -43,12 +43,12 @@ const AdminDashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     try {
       const [toursRes, hotelsRes, categoriesRes, bookingsRes, reviewsRes, newsRes] = await Promise.all([
-        axios.get('http://localhost:3001/api/tours'),
-        axios.get('http://localhost:3001/api/hotels'),
-        axios.get('http://localhost:3001/api/categories'),
-        axios.get('http://localhost:3001/api/tours/booking-requests'),
-        axios.get('http://localhost:3001/api/tours/reviews'),
-        axios.get('http://localhost:3001/api/news/admin/all')
+        axios.get('http://localhost:5000/api/tours'),
+        axios.get('http://localhost:5000/api/hotels'),
+        axios.get('http://localhost:5000/api/categories'),
+        axios.get('http://localhost:5000/api/tours/booking-requests'),
+        axios.get('http://localhost:5000/api/tours/reviews'),
+        axios.get('http://localhost:5000/api/news/admin/all')
       ]);
 
       if (toursRes.data.success) {

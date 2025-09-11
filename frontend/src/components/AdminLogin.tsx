@@ -17,7 +17,7 @@ const AdminLogin: React.FC = () => {
     e.preventDefault();
     
     // Simple password check - in production, this should be proper authentication
-    if (password === 'admin123') {
+    if (password === '123') {
       localStorage.setItem('adminAuthenticated', 'true');
       navigate('/admin/dashboard');
     } else {
@@ -74,7 +74,7 @@ const AdminLogin: React.FC = () => {
 
           <div className="text-center">
             <p className="text-sm text-gray-500">
-              Demo password: <code className="bg-gray-100 px-1 rounded">admin123</code>
+              Demo password: <code className="bg-gray-100 px-1 rounded">123</code>
             </p>
           </div>
         </form>
