@@ -11,9 +11,13 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// CORS middleware
+// CORS middleware - restrict to known origins in production
+const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ['*'];
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  }
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   
@@ -119,8 +123,9 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 // Обслуживать загруженные файлы из папки attached_assets
 app.use('/attached_assets', express.static(path.join(__dirname, 'attached_assets')));
 
-// Обслуживать загруженные файлы из папки uploads (для гидов, водителей и т.д.)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// SECURITY: Restrict uploads access - remove public serving of sensitive documents
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// TODO: Implement authenticated document access via API endpoints
 
 // Tour template page - explicit route BEFORE static middleware
 app.get('/tour-template.html', (req, res) => {
@@ -138,6 +143,15 @@ app.get('/hotels-catalog.html', (req, res) => {
 });
 
 // Обработчик корневого пути перенесен выше (строка 81-85)
+
+// 404 handler for unmatched routes
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'Route not found',
+    path: req.originalUrl
+  });
+});
 
 // Глобальная обработка ошибок
 app.use((error, req, res, next) => {
