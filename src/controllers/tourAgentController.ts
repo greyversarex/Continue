@@ -138,6 +138,47 @@ export const getTourAgentById = async (req: Request, res: Response): Promise<voi
   }
 };
 
+// Получить активного турагента по ID (публичный доступ)
+export const getActiveTourAgentById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    console.log(`🔍 Получение активного турагента с ID: ${id}`);
+
+    const tourAgent = await prisma.tourAgent.findFirst({
+      where: {
+        id: parseInt(id),
+        isActive: true // Только активные турагенты для публичного доступа
+      },
+      include: {
+        country: true,
+        city: true,
+      }
+    });
+
+    if (!tourAgent) {
+      res.status(404).json({
+        success: false,
+        message: 'Турагент не найден или неактивен'
+      });
+      return;
+    }
+
+    console.log(`✅ Активный турагент найден: ${tourAgent.name}`);
+
+    res.json({
+      success: true,
+      data: tourAgent
+    });
+  } catch (error) {
+    console.error('❌ Ошибка при получении активного турагента:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Ошибка при получении турагента',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
+
 // Создать нового турагента
 export const createTourAgent = async (req: Request, res: Response): Promise<void> => {
   try {
