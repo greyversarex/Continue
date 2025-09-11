@@ -426,10 +426,10 @@ export class HotelModel {
 
     return hotels.map((hotel: any) => ({
       ...hotel,
-      name: typeof hotel.name === 'string' ? JSON.parse(hotel.name) : hotel.name,
-      description: hotel.description && typeof hotel.description === 'string' ? JSON.parse(hotel.description) : hotel.description,
-      images: hotel.images && typeof hotel.images === 'string' ? JSON.parse(hotel.images) : (hotel.images || []),
-      amenities: hotel.amenities && typeof hotel.amenities === 'string' ? JSON.parse(hotel.amenities) : (hotel.amenities || [])
+      name: typeof hotel.name === 'string' ? (() => { try { return JSON.parse(hotel.name); } catch { return { ru: hotel.name, en: hotel.name }; } })() : hotel.name,
+      description: hotel.description && typeof hotel.description === 'string' ? (() => { try { return JSON.parse(hotel.description); } catch { return { ru: hotel.description, en: hotel.description }; } })() : hotel.description,
+      images: hotel.images && typeof hotel.images === 'string' ? (() => { try { return JSON.parse(hotel.images); } catch { return []; } })() : (hotel.images || []),
+      amenities: hotel.amenities && typeof hotel.amenities === 'string' ? (() => { try { return JSON.parse(hotel.amenities); } catch { return []; } })() : (hotel.amenities || [])
     }));
   }
 
@@ -450,10 +450,10 @@ export class HotelModel {
 
     return tourHotels.map((th: any) => ({
       ...th.hotel,
-      name: typeof th.hotel.name === 'string' ? JSON.parse(th.hotel.name) : th.hotel.name,
-      description: th.hotel.description && typeof th.hotel.description === 'string' ? JSON.parse(th.hotel.description) : th.hotel.description,
-      images: th.hotel.images && typeof th.hotel.images === 'string' ? JSON.parse(th.hotel.images) : (th.hotel.images || []),
-      amenities: th.hotel.amenities && typeof th.hotel.amenities === 'string' ? JSON.parse(th.hotel.amenities) : (th.hotel.amenities || []),
+      name: typeof th.hotel.name === 'string' ? (() => { try { return JSON.parse(th.hotel.name); } catch { return { ru: th.hotel.name, en: th.hotel.name }; } })() : th.hotel.name,
+      description: th.hotel.description && typeof th.hotel.description === 'string' ? (() => { try { return JSON.parse(th.hotel.description); } catch { return { ru: th.hotel.description, en: th.hotel.description }; } })() : th.hotel.description,
+      images: th.hotel.images && typeof th.hotel.images === 'string' ? (() => { try { return JSON.parse(th.hotel.images); } catch { return []; } })() : (th.hotel.images || []),
+      amenities: th.hotel.amenities && typeof th.hotel.amenities === 'string' ? (() => { try { return JSON.parse(th.hotel.amenities); } catch { return []; } })() : (th.hotel.amenities || []),
       pricePerNight: th.pricePerNight,
       isDefault: th.isDefault
     }));
@@ -483,10 +483,10 @@ export class HotelModel {
 
     return {
       ...hotel,
-      name: typeof hotel.name === 'string' ? JSON.parse(hotel.name) : hotel.name,
-      description: hotel.description && typeof hotel.description === 'string' ? JSON.parse(hotel.description) : hotel.description,
-      images: hotel.images && typeof hotel.images === 'string' ? JSON.parse(hotel.images) : (hotel.images || []),
-      amenities: hotel.amenities && typeof hotel.amenities === 'string' ? JSON.parse(hotel.amenities) : (hotel.amenities || []),
+      name: typeof hotel.name === 'string' ? (() => { try { return JSON.parse(hotel.name); } catch { return { ru: hotel.name, en: hotel.name }; } })() : hotel.name,
+      description: hotel.description && typeof hotel.description === 'string' ? (() => { try { return JSON.parse(hotel.description); } catch { return { ru: hotel.description, en: hotel.description }; } })() : hotel.description,
+      images: hotel.images && typeof hotel.images === 'string' ? (() => { try { return JSON.parse(hotel.images); } catch { return []; } })() : (hotel.images || []),
+      amenities: hotel.amenities && typeof hotel.amenities === 'string' ? (() => { try { return JSON.parse(hotel.amenities); } catch { return []; } })() : (hotel.amenities || []),
       tourHotels: hotel.tourHotels.map((th: any) => ({
         ...th,
         tour: {
