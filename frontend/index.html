@@ -469,21 +469,55 @@
             color: inherit !important;
         }
 
-        /* Полное отключение псевдоэлементов которые могут показывать RU, US, TJ коды */
-        .flag::before, .flag::after, .selected-flag::before, .selected-flag::after {
+        /* СУПЕР-АГРЕССИВНЫЙ HOTFIX: Полное отключение псевдоэлементов */
+        .flag::before, .flag::after, .selected-flag::before, .selected-flag::after,
+        .lang-dropdown-content .flag::before, .lang-dropdown-content .flag::after,
+        .language-dropdown .flag::before, .language-dropdown .flag::after {
             content: none !important;
             display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            font-size: 0 !important;
         }
 
-        /* Отключаем конкретные флаговые псевдоэлементы если они есть */
-        .flag-ru::before, .flag-ru::after,
-        .flag-us::before, .flag-us::after,
-        .flag-tj::before, .flag-tj::after,
-        .flag-ir::before, .flag-ir::after,
-        .flag-de::before, .flag-de::after,
-        .flag-cn::before, .flag-cn::after {
+        /* Отключаем конкретные флаговые псевдоэлементы с МАКСИМАЛЬНОЙ специфичностью */
+        .language-dropdown .lang-dropdown-content .lang-option .flag-ru::before,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-ru::after,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-us::before,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-us::after,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-tj::before,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-tj::after,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-ir::before,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-ir::after,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-de::before,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-de::after,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-cn::before,
+        .language-dropdown .lang-dropdown-content .lang-option .flag-cn::after {
             content: none !important;
             display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            font-size: 0 !important;
+        }
+
+        /* ПРИНУДИТЕЛЬНОЕ отображение эмодзи с максимальной специфичностью */
+        .language-dropdown .lang-dropdown-content .lang-option .flag,
+        .language-dropdown .selected-flag {
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols" !important;
+            font-size: 16px !important;
+            color: inherit !important;
+            text-indent: 0 !important;
+            letter-spacing: 0 !important;
+            word-spacing: 0 !important;
+            text-transform: none !important;
+            text-decoration: none !important;
+            background: none !important;
+            background-image: none !important;
+            content: none !important;
         }
         
         .dropdown-arrow {
@@ -2531,13 +2565,43 @@
         }
         
         function selectLanguageNew(lang, flagClass, flagEmoji, name) {
-            console.log('selectLanguageNew called:', { lang, flagClass, flagEmoji, name });
+            console.log('🔧 EMOJI FIX: selectLanguageNew called:', { lang, flagClass, flagEmoji, name });
             
-            // Обновляем кнопку селектора - используем прямой эмодзи
+            // ПРИНУДИТЕЛЬНАЯ КАРТА ЭМОДЗИ (на случай если параметр испорчен)
+            const emojiMap = {
+                'ru': '🇷🇺', 'flag-ru': '🇷🇺',
+                'en': '🇺🇸', 'flag-us': '🇺🇸', 'us': '🇺🇸',
+                'tj': '🇹🇯', 'flag-tj': '🇹🇯',
+                'fa': '🇮🇷', 'flag-ir': '🇮🇷', 'ir': '🇮🇷',
+                'de': '🇩🇪', 'flag-de': '🇩🇪',
+                'zh': '🇨🇳', 'flag-cn': '🇨🇳', 'cn': '🇨🇳'
+            };
+            
+            // ГАРАНТИРОВАННЫЙ эмодзи (приоритет: карта по lang -> карта по flagClass -> flagEmoji -> fallback)
+            const correctEmoji = emojiMap[lang] || emojiMap[flagClass] || flagEmoji || '🌐';
+            console.log('🔧 EMOJI FIX: Using emoji:', correctEmoji, 'for lang:', lang);
+            
+            // Обновляем кнопку селектора - ПРИНУДИТЕЛЬНО используем правильный эмодзи
             const selectedFlag = document.querySelector('.selected-flag');
             selectedFlag.className = `selected-flag ${flagClass}`;
-            selectedFlag.textContent = flagEmoji || '🏳️'; // Используем переданный эмодзи
+            selectedFlag.textContent = correctEmoji; // ПРИНУДИТЕЛЬНО правильный эмодзи
+            selectedFlag.innerHTML = correctEmoji;   // На всякий случай и innerHTML
             document.querySelector('.selected-lang').textContent = name;
+            console.log('✅ EMOJI FIX: Set main flag to:', correctEmoji);
+            
+            // ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА: Принудительно исправляем ВСЕ флаги в выпадающем меню
+            document.querySelectorAll('#langDropdown .flag').forEach(flag => {
+                for (const [key, emoji] of Object.entries(emojiMap)) {
+                    if (flag.classList.contains(key) || flag.classList.contains(`flag-${key.replace('flag-', '')}`)) {
+                        if (flag.textContent !== emoji) {
+                            flag.textContent = emoji;
+                            flag.innerHTML = emoji;
+                            console.log('🔧 EMOJI FIX: Fixed dropdown flag:', key, '->', emoji);
+                        }
+                        break;
+                    }
+                }
+            });
             
             // Убираем активный класс со всех опций
             document.querySelectorAll('#langDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
@@ -2548,7 +2612,7 @@
             // Закрываем выпадающий список
             document.getElementById('langDropdown').classList.remove('show');
             
-            console.log(`Переключен язык: ${lang}, флаг: ${flagEmoji}`);
+            console.log(`✅ EMOJI FIX: Language switched: ${lang}, emoji: ${correctEmoji}`);
         }
         
         // Старая функция для обратной совместимости
@@ -3075,8 +3139,15 @@
             loadSlides();
             initializeCurrency();
             
+            // КРИТИЧНО: Принудительно восстанавливаем эмодзи флаги
+            forceEmojiFlags();
+            
             // Инициализируем все обработчики событий
             initializeEventHandlers();
+            
+            // Повторно восстанавливаем флаги через небольшую задержку (на случай если CSS загружается позже)
+            setTimeout(forceEmojiFlags, 1000);
+            setTimeout(forceEmojiFlags, 3000);
         });
 
         function formatImageUrl(imageUrl) {
@@ -3204,6 +3275,33 @@
             } catch (error) {
                 console.error('Ошибка загрузки курсов валют:', error);
             }
+        }
+
+        // JavaScript BACKUP: Принудительное восстановление эмодзи флагов
+        function forceEmojiFlags() {
+            console.log('🔧 FORCE EMOJI FLAGS: Принудительно восстанавливаем эмодзи флаги');
+            
+            const flagMappings = {
+                'flag-ru': '🇷🇺',
+                'flag-us': '🇺🇸', 
+                'flag-tj': '🇹🇯',
+                'flag-ir': '🇮🇷',
+                'flag-de': '🇩🇪',
+                'flag-cn': '🇨🇳'
+            };
+            
+            // Восстанавливаем эмодзи в ВСЕХ флагах
+            document.querySelectorAll('.flag, .selected-flag').forEach(flag => {
+                for (const [className, emoji] of Object.entries(flagMappings)) {
+                    if (flag.classList.contains(className)) {
+                        // Принудительно заменяем содержимое на эмодзи
+                        flag.textContent = emoji;
+                        flag.innerHTML = emoji;
+                        console.log(`✅ Restored ${className} -> ${emoji}`);
+                        break;
+                    }
+                }
+            });
         }
 
         // Инициализация валютной системы
