@@ -17,8 +17,8 @@ model Category {
 
 model TourBlock {
   id          Int                     @id @default(autoincrement())
-  title       String
-  description String?
+  title       Json
+  description Json?
   slug        String                  @unique
   isActive    Boolean                 @default(true)
   sortOrder   Int                     @default(0)
