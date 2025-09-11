@@ -11,8 +11,16 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// CORS middleware - restrict to known origins in production
-const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ['*'];
+// CORS middleware - restrict to known origins in production  
+const defaultOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5000', 
+  process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : null
+].filter(Boolean);
+
+const allowedOrigins = process.env.CORS_ORIGINS ? 
+  process.env.CORS_ORIGINS.split(',').map(s => s.trim()).filter(Boolean) : 
+  defaultOrigins;
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
@@ -20,6 +28,7 @@ app.use((req, res, next) => {
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Vary', 'Origin');
   
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
