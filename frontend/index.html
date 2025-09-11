@@ -451,19 +451,39 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         
-        /* Простые стили для эмодзи флагов */
+        /* HOTFIX: Принудительное отображение эмодзи флагов (отключаем псевдоэлементы) */
         .flag, .selected-flag {
             width: 24px;
             height: 16px;
-            display: inline-block;
+            display: inline-block !important;
             text-align: center;
             line-height: 16px;
-            font-size: 16px;
+            font-size: 16px !important;
             border-radius: 2px;
             margin-right: 8px;
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols" !important;
             border: 1px solid rgba(255,255,255,0.3);
             box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            /* Критично: отключаем любые псевдоэлементы которые могут добавлять текстовые коды */
+            text-indent: 0 !important;
+            color: inherit !important;
+        }
+
+        /* Полное отключение псевдоэлементов которые могут показывать RU, US, TJ коды */
+        .flag::before, .flag::after, .selected-flag::before, .selected-flag::after {
+            content: none !important;
+            display: none !important;
+        }
+
+        /* Отключаем конкретные флаговые псевдоэлементы если они есть */
+        .flag-ru::before, .flag-ru::after,
+        .flag-us::before, .flag-us::after,
+        .flag-tj::before, .flag-tj::after,
+        .flag-ir::before, .flag-ir::after,
+        .flag-de::before, .flag-de::after,
+        .flag-cn::before, .flag-cn::after {
+            content: none !important;
+            display: none !important;
         }
         
         .dropdown-arrow {
