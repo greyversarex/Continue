@@ -30,6 +30,7 @@ import countryRoutes from './countryRoutes';
 import cityRoutes from './cityRoutes';
 // Trip system
 import tripRoutes from './tripRoutes';
+import tourAgentRoutes from './tourAgentRoutes';
 
 // Remove old SQLite database routes (now using Prisma)
 
@@ -62,6 +63,7 @@ router.use('/drivers', driverRoutes); // Driver management and authentication
 router.use('/countries', countryRoutes); // Countries management
 router.use('/cities', cityRoutes); // Cities management
 router.use('/trips', tripRoutes); // Trip management
+router.use('/tour-agents', tourAgentRoutes); // Tour agents management
 router.use('/', objectStorageRoutes);
 
 // All data access now through Prisma models
