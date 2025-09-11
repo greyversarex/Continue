@@ -3152,21 +3152,6 @@
             // Повторно восстанавливаем флаги через небольшую задержку (на случай если CSS загружается позже)
             setTimeout(forceEmojiFlags, 1000);
             setTimeout(forceEmojiFlags, 3000);
-            
-            // 🔥 MUTATION OBSERVER: Последняя линия защиты против псевдоэлементов
-            const flagObserver = new MutationObserver(() => {
-                const codeToEmoji = { 'RU': '🇷🇺', 'US': '🇺🇸', 'TJ': '🇹🇯', 'IR': '🇮🇷', 'DE': '🇩🇪', 'CN': '🇨🇳' };
-                document.querySelectorAll('[class^="flag-"], [class*=" flag-"]').forEach(el => {
-                    const text = el.textContent.trim().toUpperCase();
-                    if (codeToEmoji[text]) {
-                        el.textContent = codeToEmoji[text];
-                        el.innerHTML = codeToEmoji[text];
-                        console.log('🚨 MUTATION FIX: Converted', text, '->', codeToEmoji[text]);
-                    }
-                });
-            });
-            flagObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
-            console.log('🛡️ MUTATION OBSERVER: Active protection against flag code injection');
         });
 
         function formatImageUrl(imageUrl) {
@@ -3183,6 +3168,144 @@
                 return `${window.location.origin}/${imageUrl}`;
             }
         }
+
+        // 🔥 ГЛОБАЛЬНОЕ РАДИКАЛЬНОЕ РЕШЕНИЕ: Полная пересборка языкового селектора
+        window.radicalFlagFix = function() {
+            try {
+                console.log('🚨 RADICAL FIX: Полностью пересоздаём языковой селектор');
+                
+                // Находим языковой селектор
+                const langDropdown = document.getElementById('langDropdown');
+                if (!langDropdown) {
+                    console.warn('❌ RADICAL FIX: #langDropdown not found');
+                    return;
+                }
+                
+                // ПОЛНОСТЬЮ ЗАМЕНЯЕМ содержимое языкового выпадающего меню
+                langDropdown.innerHTML = `
+                    <a href="#" class="lang-option active" data-lang="ru" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇷🇺</span>
+                        <span>Русский</span>
+                    </a>
+                    <a href="#" class="lang-option" data-lang="en" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇺🇸</span>
+                        <span>English</span>
+                    </a>
+                    <a href="#" class="lang-option" data-lang="tj" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇹🇯</span>
+                        <span>Тоҷикӣ</span>
+                    </a>
+                    <a href="#" class="lang-option" data-lang="fa" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇮🇷</span>
+                        <span>فارسی</span>
+                    </a>
+                    <a href="#" class="lang-option" data-lang="de" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇩🇪</span>
+                        <span>Deutsch</span>
+                    </a>
+                    <a href="#" class="lang-option" data-lang="zh" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: none;">
+                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇨🇳</span>
+                        <span>中文</span>
+                    </a>
+                `;
+                
+                // ЗАМЕНЯЕМ кнопку селектора
+                const selectedFlag = document.querySelector('.selected-flag');
+                if (selectedFlag) {
+                    selectedFlag.innerHTML = '🇷🇺';
+                    selectedFlag.style.fontFamily = '"Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji"';
+                    selectedFlag.style.fontSize = '16px';
+                    console.log('✅ RADICAL FIX: Replaced main flag button');
+                }
+                
+                // Переназначаем обработчики событий для новых элементов
+                document.querySelectorAll('#langDropdown .lang-option').forEach(option => {
+                    option.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const lang = this.getAttribute('data-lang');
+                        const flag = this.querySelector('span').textContent;
+                        const name = this.querySelector('span:last-child').textContent;
+                        console.log('🚨 RADICAL FIX: Language clicked:', lang, flag, name);
+                        window.selectLanguageRadical(lang, flag, name);
+                    });
+                });
+                
+                console.log('✅ RADICAL FIX: Language selector completely rebuilt');
+            } catch (error) {
+                console.error('❌ RADICAL FIX ERROR:', error);
+            }
+        };
+        
+        // Новая функция выбора языка БЕЗ CSS классов
+        window.selectLanguageRadical = function(lang, flagEmoji, name) {
+            try {
+                console.log('🚨 RADICAL FIX: Switching to:', lang, flagEmoji, name);
+                
+                // Обновляем кнопку селектора напрямую
+                const selectedFlag = document.querySelector('.selected-flag');
+                const selectedLang = document.querySelector('.selected-lang');
+                
+                if (selectedFlag && selectedLang) {
+                    selectedFlag.innerHTML = flagEmoji;
+                    selectedFlag.style.fontFamily = '"Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji"';
+                    selectedFlag.style.fontSize = '16px';
+                    selectedLang.textContent = name;
+                    console.log('✅ RADICAL FIX: Updated main button to:', flagEmoji, name);
+                }
+                
+                // Убираем активный класс со всех опций
+                document.querySelectorAll('#langDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
+                
+                // Добавляем активный класс к выбранной опции
+                const selectedOption = document.querySelector(`#langDropdown .lang-option[data-lang="${lang}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('active');
+                }
+                
+                // Закрываем выпадающий список
+                document.getElementById('langDropdown').classList.remove('show');
+                
+                // Сохраняем в localStorage
+                localStorage.setItem('selectedLanguage', lang);
+                
+                console.log('✅ RADICAL FIX: Language switch completed:', lang, flagEmoji);
+            } catch (error) {
+                console.error('❌ RADICAL FIX SWITCH ERROR:', error);
+            }
+        };
+        
+        // МНОЖЕСТВЕННЫЕ ТРИГГЕРЫ для запуска радикального исправления
+        console.log('🚨 RADICAL FIX: Setting up triggers...');
+        
+        // Trigger 1: Immediate try
+        setTimeout(() => {
+            console.log('🚨 RADICAL FIX: Trigger 1 - Immediate');
+            window.radicalFlagFix();
+        }, 100);
+        
+        // Trigger 2: DOM Ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚨 RADICAL FIX: Trigger 2 - DOMContentLoaded');
+            setTimeout(window.radicalFlagFix, 0);
+        });
+        
+        // Trigger 3: Window Load
+        window.addEventListener('load', () => {
+            console.log('🚨 RADICAL FIX: Trigger 3 - Window Load');
+            setTimeout(window.radicalFlagFix, 0);
+        });
+        
+        // Trigger 4: Delayed retries
+        setTimeout(() => {
+            console.log('🚨 RADICAL FIX: Trigger 4 - 1 second delay');
+            window.radicalFlagFix();
+        }, 1000);
+        
+        setTimeout(() => {
+            console.log('🚨 RADICAL FIX: Trigger 5 - 3 second delay');
+            window.radicalFlagFix();
+        }, 3000);
 
         // Глобальная система валют
         let globalCurrency = 'TJS';
