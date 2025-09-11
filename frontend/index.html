@@ -451,101 +451,19 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         
-        /* Качественные эмодзи флаги вместо CSS градиентов */
-        .flag-ru, .selected-flag.flag-ru {
-            font-size: 18px;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Простые стили для эмодзи флагов */
+        .flag, .selected-flag {
             width: 24px;
             height: 16px;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-        }
-        .flag-ru::before, .selected-flag.flag-ru::before {
-            content: '🇷🇺';
+            display: inline-block;
+            text-align: center;
+            line-height: 16px;
+            font-size: 16px;
+            border-radius: 2px;
+            margin-right: 8px;
             font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
-        }
-        
-        .flag-us, .selected-flag.flag-us {
-            font-size: 18px;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 16px;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-        }
-        .flag-us::before, .selected-flag.flag-us::before {
-            content: '🇺🇸';
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
-        }
-        
-        .flag-tj, .selected-flag.flag-tj {
-            font-size: 18px;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 16px;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-        }
-        .flag-tj::before, .selected-flag.flag-tj::before {
-            content: '🇹🇯';
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
-        }
-        
-        .flag-ir, .selected-flag.flag-ir {
-            font-size: 18px;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 16px;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-        }
-        .flag-ir::before, .selected-flag.flag-ir::before {
-            content: '🇮🇷';
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
-        }
-        
-        .flag-de, .selected-flag.flag-de {
-            font-size: 18px;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 16px;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-        }
-        .flag-de::before, .selected-flag.flag-de::before {
-            content: '🇩🇪';
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
-        }
-        
-        .flag-cn, .selected-flag.flag-cn {
-            font-size: 18px;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 16px;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-        }
-        .flag-cn::before, .selected-flag.flag-cn::before {
-            content: '🇨🇳';
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         
         .dropdown-arrow {
@@ -941,7 +859,7 @@
                     <!-- Языковой селектор -->
                     <div class="language-dropdown">
                         <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
-                            <span class="selected-flag flag-ru"></span>
+                            <span class="selected-flag flag-ru">🇷🇺</span>
                             <span class="selected-lang">Русский</span>
                             <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -949,27 +867,27 @@
                         </button>
                         <div class="lang-dropdown-content" id="langDropdown">
                             <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'flag-ru', 'Русский')">
-                                <span class="flag flag-ru"></span>
+                                <span class="flag flag-ru">🇷🇺</span>
                                 <span class="lang-name">Русский</span>
                             </a>
                             <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'flag-us', 'English')">
-                                <span class="flag flag-us"></span>
+                                <span class="flag flag-us">🇺🇸</span>
                                 <span class="lang-name">English</span>
                             </a>
                             <a href="#" class="lang-option" data-lang="tj" onclick="selectLanguage('tj', 'flag-tj', 'Тоҷикӣ')">
-                                <span class="flag flag-tj"></span>
+                                <span class="flag flag-tj">🇹🇯</span>
                                 <span class="lang-name">Тоҷикӣ</span>
                             </a>
                             <a href="#" class="lang-option" data-lang="fa" onclick="selectLanguage('fa', 'flag-ir', 'فارسی')">
-                                <span class="flag flag-ir"></span>
+                                <span class="flag flag-ir">🇮🇷</span>
                                 <span class="lang-name">فارسی</span>
                             </a>
                             <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', 'flag-de', 'Deutsch')">
-                                <span class="flag flag-de"></span>
+                                <span class="flag flag-de">🇩🇪</span>
                                 <span class="lang-name">Deutsch</span>
                             </a>
                             <a href="#" class="lang-option" data-lang="zh" onclick="selectLanguage('zh', 'flag-cn', '中文')">
-                                <span class="flag flag-cn"></span>
+                                <span class="flag flag-cn">🇨🇳</span>
                                 <span class="lang-name">中文</span>
                             </a>
                         </div>
@@ -2593,9 +2511,20 @@
         }
         
         function selectLanguage(lang, flagClass, name) {
+            // Мапинг флагов для обновления содержимого
+            const flagEmojis = {
+                'flag-ru': '🇷🇺',
+                'flag-us': '🇺🇸', 
+                'flag-tj': '🇹🇯',
+                'flag-ir': '🇮🇷',
+                'flag-de': '🇩🇪',
+                'flag-cn': '🇨🇳'
+            };
+            
             // Обновляем кнопку селектора
             const selectedFlag = document.querySelector('.selected-flag');
             selectedFlag.className = `selected-flag ${flagClass}`;
+            selectedFlag.textContent = flagEmojis[flagClass] || '🏳️'; // Fallback flag
             document.querySelector('.selected-lang').textContent = name;
             
             // Убираем активный класс со всех опций
