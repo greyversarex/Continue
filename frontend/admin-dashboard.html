@@ -416,6 +416,10 @@
                     <i class="fas fa-user-tie"></i>
                     <span>Гиды</span>
                 </a>
+                <a href="#" class="nav-item" data-section="tourAgents">
+                    <i class="fas fa-building"></i>
+                    <span>Турагенты</span>
+                </a>
                 <a href="#" class="nav-item" data-section="drivers">
                     <i class="fas fa-id-card"></i>
                     <span>Водители</span>
@@ -701,6 +705,21 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="guidesList">
                         <!-- Guides will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Tour Agents Section -->
+                <section id="tourAgentsSection" style="display: none;">
+                    <div class="mb-6 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold">Управление турагентами</h2>
+                        <button class="btn btn-primary" onclick="openTourAgentModal()">
+                            <i class="fas fa-plus"></i>
+                            Добавить турагента
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tourAgentsList">
+                        <!-- Tour agents will be loaded here -->
                     </div>
                 </section>
 
@@ -2697,6 +2716,7 @@
                 bookings: 'Управление заказами',
                 hotels: 'Управление отелями',
                 guides: 'Управление гидами',
+                'tourAgents': 'Управление турагентами',
                 drivers: 'Управление водителями',
                 trips: 'Управление поездками',
                 transfers: 'Управление трансферами',
@@ -7723,6 +7743,601 @@
         }
 
         // =============================================
+        // TOUR AGENTS FUNCTIONS
+        // =============================================
+        
+        // Вспомогательная функция для multipart заголовков
+        function getAuthHeadersMultipart() {
+            const token = localStorage.getItem('adminToken');
+            return token ? { Authorization: `Bearer ${token}` } : {};
+        }
+        
+        function loadTourAgents() {
+            fetch(`${getApiUrl()}/tour-agents`, {
+                headers: getAuthHeaders()
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    const container = document.getElementById('tourAgentsList');
+                    if (!container) {
+                        console.error('tourAgentsList container not found');
+                        return;
+                    }
+                    
+                    const agents = data.data || data.agents || [];
+                    if (agents.length === 0) {
+                        container.innerHTML = '<p class="text-gray-500">Нет турагентов</p>';
+                        return;
+                    }
+                    
+                    container.innerHTML = agents.map(agent => {
+                        let name, languages;
+                        
+                        // Обработка имени турагента
+                        if (typeof agent.name === 'string') {
+                            if (!agent.name.startsWith('{')) {
+                                name = agent.name;
+                            } else {
+                                try {
+                                    const nameObj = JSON.parse(agent.name);
+                                    name = nameObj.ru || nameObj.en || nameObj.tj || agent.name;
+                                } catch {
+                                    name = agent.name;
+                                }
+                            }
+                        } else if (typeof agent.name === 'object' && agent.name) {
+                            name = agent.name.ru || agent.name.en || agent.name.tj || 'Без названия';
+                        } else {
+                            name = 'Без названия';
+                        }
+                        
+                        // Обработка языков
+                        if (typeof agent.languages === 'string') {
+                            try {
+                                const langObj = JSON.parse(agent.languages);
+                                languages = Array.isArray(langObj) ? langObj.join(', ') : agent.languages;
+                            } catch {
+                                languages = agent.languages;
+                            }
+                        } else if (Array.isArray(agent.languages)) {
+                            languages = agent.languages.join(', ');
+                        } else {
+                            languages = 'Не указаны';
+                        }
+                        
+                        return `
+                            <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                                <div class="flex items-start space-x-4">
+                                    <img src="${agent.avatar || '/uploads/avatars/default-agent.png'}" 
+                                         alt="${name}" 
+                                         class="w-16 h-16 rounded-full object-cover">
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-lg text-gray-800">${name}</h3>
+                                        <p class="text-sm text-gray-600 mb-1"><strong>Организация:</strong> ${agent.organization || 'Не указана'}</p>
+                                        <p class="text-sm text-gray-600 mb-1"><strong>Языки:</strong> ${languages}</p>
+                                        <p class="text-sm text-gray-600 mb-2"><strong>Опыт:</strong> ${agent.experience || 0} лет</p>
+                                        <div class="mb-3">
+                                            <span class="inline-block px-2 py-1 text-xs font-medium rounded-full ${agent.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                                ${agent.isActive ? 'Активен' : 'Неактивен'}
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-yellow-500">
+                                                ${'★'.repeat(Math.floor(agent.rating || 5))}${'☆'.repeat(5 - Math.floor(agent.rating || 5))}
+                                            </span>
+                                            <div class="flex items-center gap-2">
+                                                <button onclick="toggleTourAgentStatus(${agent.id}, ${agent.isActive ? 'false' : 'true'})" 
+                                                        class="px-2 py-1 rounded text-xs font-medium ${agent.isActive ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}">
+                                                    ${agent.isActive ? 'Деактивировать' : 'Активировать'}
+                                                </button>
+                                                <button onclick="editTourAgent(${agent.id})" class="text-blue-600 hover:text-blue-800">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button onclick="deleteTourAgent(${agent.id})" class="text-red-600 hover:text-red-800">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                })
+                .catch(error => {
+                    console.error('Error loading tour agents:', error);
+                    const container = document.getElementById('tourAgentsList');
+                    if (container) {
+                        container.innerHTML = '<div class="text-red-500">Ошибка загрузки турагентов</div>';
+                    }
+                });
+        }
+        
+        function openTourAgentModal() {
+            const modal = `
+                <div id="tourAgentModal" class="modal active">
+                    <div class="modal-content" style="width: 600px;">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-semibold">Добавить турагента</h2>
+                            <button onclick="closeTourAgentModal()" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <form id="tourAgentForm">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label class="form-label">Имя (RU) *</label>
+                                    <input type="text" id="agentNameRu" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Имя (EN)</label>
+                                    <input type="text" id="agentNameEn" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Имя (TJ)</label>
+                                    <input type="text" id="agentNameTj" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Организация *</label>
+                                    <input type="text" id="agentOrganization" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" id="agentEmail" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Телефон</label>
+                                    <input type="tel" id="agentPhone" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Пароль *</label>
+                                    <input type="password" id="agentPassword" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Опыт (лет)</label>
+                                    <input type="number" id="agentExperience" class="form-input" min="0">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Адрес организации</label>
+                                <textarea id="agentOrgAddress" class="form-input" rows="2"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Веб-сайт</label>
+                                <input type="url" id="agentWebsite" class="form-input">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Языки</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="Русский"> Русский
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="English"> English
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="Тоҷикӣ"> Тоҷикӣ
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="Deutsch"> Deutsch
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="Français"> Français
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Описание (RU)</label>
+                                <textarea id="agentDescRu" class="form-input" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Аватар</label>
+                                <input type="file" id="agentAvatar" class="form-input" accept="image/*">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Документы</label>
+                                <input type="file" id="agentDocuments" class="form-input" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            
+                            <div class="flex justify-end gap-4 mt-6">
+                                <button type="button" onclick="closeTourAgentModal()" class="btn btn-secondary">
+                                    Отмена
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    Сохранить
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modal);
+            
+            // Обработчик формы
+            document.getElementById('tourAgentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveTourAgent();
+            });
+        }
+        
+        function closeTourAgentModal() {
+            const modal = document.getElementById('tourAgentModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        function saveTourAgent() {
+            const formData = new FormData();
+            
+            // Собираем имена
+            const nameData = {
+                ru: document.getElementById('agentNameRu').value,
+                en: document.getElementById('agentNameEn').value,
+                tj: document.getElementById('agentNameTj').value
+            };
+            formData.append('name', JSON.stringify(nameData));
+            
+            // Основные поля
+            formData.append('organization', document.getElementById('agentOrganization').value);
+            formData.append('email', document.getElementById('agentEmail').value);
+            formData.append('phone', document.getElementById('agentPhone').value);
+            formData.append('password', document.getElementById('agentPassword').value);
+            formData.append('experience', document.getElementById('agentExperience').value || '0');
+            formData.append('organizationAddress', document.getElementById('agentOrgAddress').value);
+            formData.append('website', document.getElementById('agentWebsite').value);
+            
+            // Языки
+            const selectedLanguages = Array.from(document.querySelectorAll('#tourAgentModal .checkbox-group input:checked'))
+                .map(cb => cb.value);
+            formData.append('languages', JSON.stringify(selectedLanguages));
+            
+            // Описание
+            const descData = {
+                ru: document.getElementById('agentDescRu').value
+            };
+            formData.append('description', JSON.stringify(descData));
+            
+            // Файлы
+            const avatarFile = document.getElementById('agentAvatar').files[0];
+            if (avatarFile) {
+                formData.append('avatar', avatarFile);
+            }
+            
+            const docFiles = document.getElementById('agentDocuments').files;
+            for (let i = 0; i < docFiles.length; i++) {
+                formData.append('documents', docFiles[i]);
+            }
+            
+            fetch(`${getApiUrl()}/tour-agents/create-with-auth`, {
+                method: 'POST',
+                headers: getAuthHeadersMultipart(),
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Турагент успешно создан!');
+                    closeTourAgentModal();
+                    loadTourAgents();
+                } else {
+                    alert('Ошибка при создании турагента: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Error saving tour agent:', err);
+                alert('Ошибка при сохранении турагента');
+            });
+        }
+        
+        async function editTourAgent(id) {
+            try {
+                const response = await fetch(`${getApiUrl()}/tour-agents/${id}`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Не удалось загрузить данные турагента');
+                }
+                
+                const data = await response.json();
+                const agent = data.data;
+                
+                openEditTourAgentModal(agent);
+                
+            } catch (err) {
+                console.error('Error loading tour agent:', err);
+                alert('Ошибка при загрузке данных турагента');
+            }
+        }
+        
+        function openEditTourAgentModal(agent) {
+            // Парсим данные
+            let name = { ru: '', en: '', tj: '' };
+            if (typeof agent.name === 'string' && agent.name.startsWith('{')) {
+                try {
+                    name = JSON.parse(agent.name);
+                } catch {
+                    name.ru = agent.name;
+                }
+            } else if (typeof agent.name === 'string') {
+                name.ru = agent.name;
+            } else if (typeof agent.name === 'object') {
+                name = { ...name, ...agent.name };
+            }
+            
+            let description = { ru: '', en: '', tj: '' };
+            if (typeof agent.description === 'string' && agent.description.startsWith('{')) {
+                try {
+                    description = JSON.parse(agent.description);
+                } catch {
+                    description.ru = agent.description;
+                }
+            } else if (typeof agent.description === 'string') {
+                description.ru = agent.description;
+            } else if (typeof agent.description === 'object') {
+                description = { ...description, ...agent.description };
+            }
+            
+            let languages = [];
+            if (typeof agent.languages === 'string' && agent.languages.startsWith('[')) {
+                try {
+                    languages = JSON.parse(agent.languages);
+                } catch {
+                    languages = agent.languages ? [agent.languages] : [];
+                }
+            } else if (Array.isArray(agent.languages)) {
+                languages = agent.languages;
+            } else if (typeof agent.languages === 'string') {
+                languages = agent.languages.split(',').map(l => l.trim());
+            }
+            
+            const modal = `
+                <div id="editTourAgentModal" class="modal active">
+                    <div class="modal-content" style="width: 600px; max-height: 90vh; overflow-y: auto;">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-semibold">Редактировать турагента</h2>
+                            <button onclick="closeEditTourAgentModal()" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <form id="editTourAgentForm">
+                            <input type="hidden" id="editAgentId" value="${agent.id}">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label class="form-label">Имя (RU) *</label>
+                                    <input type="text" id="editAgentNameRu" class="form-input" value="${name.ru || ''}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Имя (EN)</label>
+                                    <input type="text" id="editAgentNameEn" class="form-input" value="${name.en || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Имя (TJ)</label>
+                                    <input type="text" id="editAgentNameTj" class="form-input" value="${name.tj || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Организация *</label>
+                                    <input type="text" id="editAgentOrganization" class="form-input" value="${agent.organization || ''}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" id="editAgentEmail" class="form-input" value="${agent.email || ''}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Телефон</label>
+                                    <input type="tel" id="editAgentPhone" class="form-input" value="${agent.phone || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Новый пароль (оставьте пустым, если не хотите менять)</label>
+                                    <input type="password" id="editAgentPassword" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Опыт (лет)</label>
+                                    <input type="number" id="editAgentExperience" class="form-input" value="${agent.experience || 0}" min="0">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Адрес организации</label>
+                                <textarea id="editAgentOrgAddress" class="form-input" rows="2">${agent.organizationAddress || ''}</textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Веб-сайт</label>
+                                <input type="url" id="editAgentWebsite" class="form-input" value="${agent.website || ''}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Языки</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="Русский" ${languages.includes('Русский') ? 'checked' : ''}> Русский
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="English" ${languages.includes('English') ? 'checked' : ''}> English
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="Тоҷикӣ" ${languages.includes('Тоҷикӣ') ? 'checked' : ''}> Тоҷикӣ
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="Deutsch" ${languages.includes('Deutsch') ? 'checked' : ''}> Deutsch
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" value="Français" ${languages.includes('Français') ? 'checked' : ''}> Français
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Описание (RU)</label>
+                                <textarea id="editAgentDescRu" class="form-input" rows="3">${description.ru || ''}</textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Новый аватар</label>
+                                <input type="file" id="editAgentAvatar" class="form-input" accept="image/*">
+                                ${agent.avatar ? `<div class="mt-2"><img src="${agent.avatar}" alt="Текущий аватар" class="w-20 h-20 object-cover rounded"></div>` : ''}
+                            </div>
+                            
+                            <div class="flex justify-end gap-4 mt-6">
+                                <button type="button" onclick="closeEditTourAgentModal()" class="btn btn-secondary">
+                                    Отмена
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    Обновить
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modal);
+            
+            document.getElementById('editTourAgentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateTourAgent();
+            });
+        }
+        
+        function closeEditTourAgentModal() {
+            const modal = document.getElementById('editTourAgentModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        async function updateTourAgent() {
+            try {
+                const agentId = document.getElementById('editAgentId').value;
+                const formData = new FormData();
+                
+                // Собираем имена
+                const nameData = {
+                    ru: document.getElementById('editAgentNameRu').value,
+                    en: document.getElementById('editAgentNameEn').value,
+                    tj: document.getElementById('editAgentNameTj').value
+                };
+                formData.append('name', JSON.stringify(nameData));
+                
+                // Основные поля
+                formData.append('organization', document.getElementById('editAgentOrganization').value);
+                formData.append('email', document.getElementById('editAgentEmail').value);
+                formData.append('phone', document.getElementById('editAgentPhone').value);
+                formData.append('experience', document.getElementById('editAgentExperience').value || '0');
+                formData.append('organizationAddress', document.getElementById('editAgentOrgAddress').value);
+                formData.append('website', document.getElementById('editAgentWebsite').value);
+                
+                // Пароль (только если указан)
+                const password = document.getElementById('editAgentPassword').value;
+                if (password) {
+                    formData.append('password', password);
+                }
+                
+                // Языки
+                const selectedLanguages = Array.from(document.querySelectorAll('#editTourAgentModal .checkbox-group input:checked'))
+                    .map(cb => cb.value);
+                formData.append('languages', JSON.stringify(selectedLanguages));
+                
+                // Описание
+                const descData = {
+                    ru: document.getElementById('editAgentDescRu').value
+                };
+                formData.append('description', JSON.stringify(descData));
+                
+                // Новый аватар (если выбран)
+                const avatarFile = document.getElementById('editAgentAvatar').files[0];
+                if (avatarFile) {
+                    formData.append('avatar', avatarFile);
+                }
+                
+                const response = await fetch(`${getApiUrl()}/tour-agents/profile/${agentId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeadersMultipart(),
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Турагент успешно обновлен!');
+                    closeEditTourAgentModal();
+                    loadTourAgents();
+                } else {
+                    throw new Error(data.message || 'Ошибка при обновлении турагента');
+                }
+                
+            } catch (err) {
+                console.error('Error updating tour agent:', err);
+                alert('Ошибка при обновлении турагента: ' + err.message);
+            }
+        }
+        
+        function deleteTourAgent(id) {
+            if (confirm('Вы уверены, что хотите удалить этого турагента?')) {
+                fetch(`${getApiUrl()}/tour-agents/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Турагент успешно удален');
+                        loadTourAgents();
+                    } else {
+                        alert('Ошибка при удалении турагента: ' + (data.message || 'Неизвестная ошибка'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error deleting tour agent:', err);
+                    alert('Ошибка при удалении турагента');
+                });
+            }
+        }
+        
+        function toggleTourAgentStatus(agentId, newStatus) {
+            const statusText = newStatus === 'true' ? 'активировать' : 'деактивировать';
+            
+            if (confirm(`Вы уверены, что хотите ${statusText} этого турагента?`)) {
+                const formData = new FormData();
+                formData.append('isActive', newStatus === 'true');
+                
+                fetch(`${getApiUrl()}/tour-agents/profile/${agentId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeadersMultipart(),
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`Турагент успешно ${newStatus === 'true' ? 'активирован' : 'деактивирован'}`);
+                        loadTourAgents();
+                    } else {
+                        alert('Ошибка при изменении статуса турагента: ' + (data.message || 'Неизвестная ошибка'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error toggling tour agent status:', err);
+                    alert('Ошибка при изменении статуса турагента');
+                });
+            }
+        }
+
+        // =============================================
         // CMS FUNCTIONS
         // =============================================
         
@@ -9849,7 +10464,7 @@
         // Show section function
         function showSection(sectionName) {
             // Hide all sections
-            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
+            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'tourAgentsSection', 'driversSection', 'tripsSection', 'transfersSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
             sections.forEach(sectionId => {
                 const element = document.getElementById(sectionId);
                 if (element) element.style.display = 'none';
@@ -9900,6 +10515,9 @@
                     break;
                 case 'guides':
                     loadGuides();
+                    break;
+                case 'tourAgents':
+                    loadTourAgents();
                     break;
 
                 case 'countries':
