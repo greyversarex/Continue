@@ -188,6 +188,37 @@ model Guide {
   @@map("guides")
 }
 
+model TourAgent {
+  id                  Int      @id @default(autoincrement())
+  name                String
+  description         String?
+  photo               String?
+  avatar              String?     // Аватар турагента
+  documents           String?     // JSON массив документов [{name: "", path: "", type: ""}]
+  languages           String
+  contact             String?     // JSON контактная информация
+  experience          Int?
+  rating              Float?
+  countryId           Int?        @map("country_id")
+  cityId              Int?        @map("city_id")
+  login               String?
+  password            String?
+  isActive            Boolean     @default(true)
+  // Дополнительные поля для турагентов
+  organization        String?     // Наименование организации
+  organizationAddress String?     // Адрес организации
+  website             String?     // Сайт
+  passportSeries      String?     // Серия паспорта
+  registration        String?     // Гос. регистрация
+  residenceAddress    String?     // Адрес проживания
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  agentCountry        Country?    @relation(fields: [countryId], references: [id])
+  agentCity           City?       @relation(fields: [cityId], references: [id])
+
+  @@map("tour_agents")
+}
+
 model Driver {
   id               Int         @id @default(autoincrement())
   name             String
@@ -431,10 +462,11 @@ model Country {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   cities      City[]
-  tours       Tour[]   // Связь с турами
-  hotels      Hotel[]  // Связь с отелями
-  drivers     Driver[] // Связь с водителями
-  guides      Guide[]  // Связь с гидами
+  tours       Tour[]      // Связь с турами
+  hotels      Hotel[]     // Связь с отелями
+  drivers     Driver[]    // Связь с водителями
+  guides      Guide[]     // Связь с гидами
+  tourAgents  TourAgent[] // Связь с турагентами
 
   @@map("countries")
 }
@@ -450,10 +482,11 @@ model City {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   country    Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
-  tours      Tour[]   // Связь с турами
-  hotels     Hotel[]  // Связь с отелями
-  drivers    Driver[] // Связь с водителями
-  guides     Guide[]  // Связь с гидами
+  tours      Tour[]      // Связь с турами
+  hotels     Hotel[]     // Связь с отелями
+  drivers    Driver[]    // Связь с водителями
+  guides     Guide[]     // Связь с гидами
+  tourAgents TourAgent[] // Связь с турагентами
 
   @@unique([name, countryId])
   @@map("cities")
