@@ -745,10 +745,30 @@
                     try {
                         // Собираем данные формы
                         const formData = new FormData(this);
+                        // Валидация контактных данных
+                        const email = formData.get('email')?.trim();
+                        const phone = formData.get('phone')?.trim();
+                        if (!email && !phone) {
+                            notificationContent.innerHTML = `
+                                <div class="flex items-center">
+                                    <svg class="w-6 h-6 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-semibold text-red-800">Ошибка валидации</h4>
+                                        <p class="text-red-600">Укажите хотя бы один способ связи: email или телефон</p>
+                                    </div>
+                                </div>
+                            `;
+                            notification.classList.remove('hidden');
+                            notification.classList.add('bg-red-50', 'border', 'border-red-200');
+                            return;
+                        }
+                        
                         const data = {
                             fullName: formData.get('fullName'),
-                            email: formData.get('email') || undefined,
-                            phone: formData.get('phone') || undefined,
+                            email: email || undefined,
+                            phone: phone || undefined,
                             pickupLocation: formData.get('pickupLocation'),
                             dropoffLocation: formData.get('dropoffLocation'),
                             pickupTime: formData.get('pickupTime'),
