@@ -3181,41 +3181,39 @@
                     return;
                 }
                 
-                // ПОЛНОСТЬЮ ЗАМЕНЯЕМ содержимое языкового выпадающего меню
+                // ПОЛНОСТЬЮ ЗАМЕНЯЕМ содержимое языкового выпадающего меню с CSS флагами
                 langDropdown.innerHTML = `
                     <a href="#" class="lang-option active" data-lang="ru" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇷🇺</span>
+                        <div style="width: 20px; height: 14px; background: linear-gradient(to bottom, white 33%, #0039A6 33%, #0039A6 66%, #D52B1E 66%); border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);"></div>
                         <span>Русский</span>
                     </a>
                     <a href="#" class="lang-option" data-lang="en" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇺🇸</span>
+                        <div style="width: 20px; height: 14px; background: linear-gradient(to bottom, #B22234 0%, #B22234 7.7%, white 7.7%, white 15.4%, #B22234 15.4%, #B22234 23.1%, white 23.1%, white 30.8%, #B22234 30.8%, #B22234 38.5%, white 38.5%, white 46.2%, #B22234 46.2%, #B22234 53.9%, white 53.9%, white 61.6%, #B22234 61.6%, #B22234 69.3%, white 69.3%, white 77%, #B22234 77%, #B22234 84.7%, white 84.7%, white 92.4%, #B22234 92.4%); position: relative; border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);"><div style="position: absolute; top: 0; left: 0; width: 40%; height: 53.8%; background: #3C3B6E;"></div></div>
                         <span>English</span>
                     </a>
                     <a href="#" class="lang-option" data-lang="tj" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇹🇯</span>
+                        <div style="width: 20px; height: 14px; background: linear-gradient(to bottom, #CC0000 0%, #CC0000 33%, white 33%, white 66%, #006600 66%); border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);"></div>
                         <span>Тоҷикӣ</span>
                     </a>
                     <a href="#" class="lang-option" data-lang="fa" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇮🇷</span>
+                        <div style="width: 20px; height: 14px; background: linear-gradient(to bottom, #239F40 33%, white 33%, white 66%, #DA0000 66%); border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);"></div>
                         <span>فارسی</span>
                     </a>
                     <a href="#" class="lang-option" data-lang="de" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇩🇪</span>
+                        <div style="width: 20px; height: 14px; background: linear-gradient(to bottom, black 33%, #DD0000 33%, #DD0000 66%, #FFCC00 66%); border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);"></div>
                         <span>Deutsch</span>
                     </a>
                     <a href="#" class="lang-option" data-lang="zh" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: none;">
-                        <span style="font-size: 1.25rem; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'NotoColorEmoji';">🇨🇳</span>
+                        <div style="width: 20px; height: 14px; background: #DE2910; border-radius: 2px; border: 1px solid rgba(255,255,255,0.3); position: relative;"><div style="position: absolute; top: 2px; left: 2px; width: 3px; height: 3px; background: #FFDE00;"></div></div>
                         <span>中文</span>
                     </a>
                 `;
                 
-                // ЗАМЕНЯЕМ кнопку селектора
+                // ЗАМЕНЯЕМ кнопку селектора на CSS флаг России
                 const selectedFlag = document.querySelector('.selected-flag');
                 if (selectedFlag) {
-                    selectedFlag.innerHTML = '🇷🇺';
-                    selectedFlag.style.fontFamily = '"Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji"';
-                    selectedFlag.style.fontSize = '16px';
-                    console.log('✅ RADICAL FIX: Replaced main flag button');
+                    selectedFlag.innerHTML = '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, white 33%, #0039A6 33%, #0039A6 66%, #D52B1E 66%); border-radius: 2px;"></div>';
+                    console.log('✅ RADICAL FIX: Replaced main flag button with CSS flag');
                 }
                 
                 // Переназначаем обработчики событий для новых элементов
@@ -3247,11 +3245,19 @@
                 const selectedLang = document.querySelector('.selected-lang');
                 
                 if (selectedFlag && selectedLang) {
-                    selectedFlag.innerHTML = flagEmoji;
-                    selectedFlag.style.fontFamily = '"Apple Color Emoji", "Segoe UI Emoji", "NotoColorEmoji"';
-                    selectedFlag.style.fontSize = '16px';
+                    // CSS флаги вместо эмодзи
+                    const cssFlags = {
+                        'ru': '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, white 33%, #0039A6 33%, #0039A6 66%, #D52B1E 66%); border-radius: 2px;"></div>',
+                        'en': '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, #B22234 0%, #B22234 7.7%, white 7.7%, white 15.4%, #B22234 15.4%); position: relative; border-radius: 2px;"><div style="position: absolute; top: 0; left: 0; width: 40%; height: 53.8%; background: #3C3B6E;"></div></div>',
+                        'tj': '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, #CC0000 0%, #CC0000 33%, white 33%, white 66%, #006600 66%); border-radius: 2px;"></div>',
+                        'fa': '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, #239F40 33%, white 33%, white 66%, #DA0000 66%); border-radius: 2px;"></div>',
+                        'de': '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, black 33%, #DD0000 33%, #DD0000 66%, #FFCC00 66%); border-radius: 2px;"></div>',
+                        'zh': '<div style="width: 100%; height: 100%; background: #DE2910; border-radius: 2px; position: relative;"><div style="position: absolute; top: 2px; left: 2px; width: 3px; height: 3px; background: #FFDE00;"></div></div>'
+                    };
+                    
+                    selectedFlag.innerHTML = cssFlags[lang] || cssFlags['ru'];
                     selectedLang.textContent = name;
-                    console.log('✅ RADICAL FIX: Updated main button to:', flagEmoji, name);
+                    console.log('✅ RADICAL FIX: Updated main button to CSS flag for:', lang, name);
                 }
                 
                 // Убираем активный класс со всех опций
