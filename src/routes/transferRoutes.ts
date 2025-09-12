@@ -1,14 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { TransferRequestModel } from '../models';
 import { CreateTransferRequestData, UpdateTransferRequestData } from '../types';
-// Import admin authentication - need to check correct import
-// import { validateAdminAuth } from '../middleware/auth';
-
-// Temporary admin auth middleware
-const validateAdminAuth = (req: any, res: any, next: any) => {
-  // TODO: Replace with proper admin auth middleware
-  next();
-};
+import { adminAuthMiddleware } from '../controllers/adminController';
 
 const router = Router();
 
@@ -16,7 +9,7 @@ const router = Router();
  * Get all transfer requests (Admin only)
  * GET /api/transfer-requests
  */
-router.get('/transfer-requests', validateAdminAuth, async (req: Request, res: Response) => {
+router.get('/transfer-requests', adminAuthMiddleware, async (req: Request, res: Response) => {
   try {
     const transferRequests = await TransferRequestModel.findAll();
     res.json({
@@ -36,7 +29,7 @@ router.get('/transfer-requests', validateAdminAuth, async (req: Request, res: Re
  * Get transfer requests by status (Admin only)
  * GET /api/transfer-requests/status/:status
  */
-router.get('/transfer-requests/status/:status', validateAdminAuth, async (req: Request, res: Response) => {
+router.get('/transfer-requests/status/:status', adminAuthMiddleware, async (req: Request, res: Response) => {
   try {
     const { status } = req.params;
     const transferRequests = await TransferRequestModel.findByStatus(status);
@@ -57,7 +50,7 @@ router.get('/transfer-requests/status/:status', validateAdminAuth, async (req: R
  * Get a single transfer request (Admin only)
  * GET /api/transfer-requests/:id
  */
-router.get('/transfer-requests/:id', validateAdminAuth, async (req: Request, res: Response) => {
+router.get('/transfer-requests/:id', adminAuthMiddleware, async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
@@ -148,7 +141,7 @@ router.post('/transfer-requests', async (req: Request, res: Response) => {
  * Update a transfer request (Admin only)
  * PUT /api/transfer-requests/:id
  */
-router.put('/transfer-requests/:id', validateAdminAuth, async (req: Request, res: Response) => {
+router.put('/transfer-requests/:id', adminAuthMiddleware, async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
@@ -212,7 +205,7 @@ router.put('/transfer-requests/:id', validateAdminAuth, async (req: Request, res
  * Approve a transfer request (Admin only)
  * POST /api/transfer-requests/:id/approve
  */
-router.post('/transfer-requests/:id/approve', validateAdminAuth, async (req: Request, res: Response) => {
+router.post('/transfer-requests/:id/approve', adminAuthMiddleware, async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
@@ -223,7 +216,7 @@ router.post('/transfer-requests/:id/approve', validateAdminAuth, async (req: Req
       return;
     }
 
-    const { adminNotes, finalPrice, assignedDriverId } = req.body;
+    const { adminNotes = 'Заявка одобрена администратором', finalPrice, assignedDriverId } = req.body || {};
 
     const transferRequest = await TransferRequestModel.approve(id, adminNotes, finalPrice, assignedDriverId);
     
@@ -252,7 +245,7 @@ router.post('/transfer-requests/:id/approve', validateAdminAuth, async (req: Req
  * Reject a transfer request (Admin only)
  * POST /api/transfer-requests/:id/reject
  */
-router.post('/transfer-requests/:id/reject', validateAdminAuth, async (req: Request, res: Response) => {
+router.post('/transfer-requests/:id/reject', adminAuthMiddleware, async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
@@ -292,7 +285,7 @@ router.post('/transfer-requests/:id/reject', validateAdminAuth, async (req: Requ
  * Delete a transfer request (Admin only)
  * DELETE /api/transfer-requests/:id
  */
-router.delete('/transfer-requests/:id', validateAdminAuth, async (req: Request, res: Response) => {
+router.delete('/transfer-requests/:id', adminAuthMiddleware, async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {

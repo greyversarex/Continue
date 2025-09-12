@@ -790,11 +790,19 @@
                 <!-- Transfers Section -->
                 <section id="transfersSection" style="display: none;">
                     <div class="mb-6 flex justify-between items-center">
-                        <h2 class="text-xl font-semibold">Управление трансферами</h2>
-                        <button class="btn btn-primary" onclick="openTransferModal()">
-                            <i class="fas fa-plus"></i>
-                            Добавить трансфер
-                        </button>
+                        <h2 class="text-xl font-semibold">Заявки на трансфер</h2>
+                        <div class="flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="loadTransferRequests()">
+                                <i class="fas fa-sync"></i>
+                                Обновить
+                            </button>
+                            <select class="form-control" id="transferStatusFilter" onchange="filterTransferRequests()">
+                                <option value="all">Все заявки</option>
+                                <option value="pending">Ожидают</option>
+                                <option value="approved">Одобренные</option>
+                                <option value="rejected">Отклоненные</option>
+                            </select>
+                        </div>
                     </div>
                     
                     <div class="bg-white rounded-xl shadow-sm">
@@ -803,20 +811,62 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Клиент</th>
+                                        <th>ФИО клиента</th>
+                                        <th>Контакты</th>
                                         <th>Маршрут</th>
-                                        <th>Водитель</th>
                                         <th>Дата и время</th>
-                                        <th>Тип транспорта</th>
+                                        <th>Пассажиры</th>
+                                        <th>Транспорт</th>
                                         <th>Статус</th>
+                                        <th>Назначен водитель</th>
                                         <th>Стоимость</th>
                                         <th>Действия</th>
                                     </tr>
                                 </thead>
-                                <tbody id="transfersTable">
-                                    <!-- Transfers will be loaded here -->
+                                <tbody id="transferRequestsTable">
+                                    <!-- Transfer requests will be loaded here -->
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <!-- Статистика -->
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="pendingTransfersCount">0</div>
+                                <div class="stat-label">Ожидают</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-green-100 text-green-600">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="approvedTransfersCount">0</div>
+                                <div class="stat-label">Одобренные</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-red-100 text-red-600">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="rejectedTransfersCount">0</div>
+                                <div class="stat-label">Отклоненные</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-blue-100 text-blue-600">
+                                <i class="fas fa-shuttle-van"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" id="totalTransfersCount">0</div>
+                                <div class="stat-label">Всего заявок</div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -11480,57 +11530,327 @@
             }
         }
 
-        // ============== УПРАВЛЕНИЕ ТРАНСФЕРАМИ ==============
+        // ============== УПРАВЛЕНИЕ ЗАЯВКАМИ НА ТРАНСФЕР ==============
         
-        async function loadTransfers() {
+        async function loadTransferRequests() {
             try {
-                // Пока используем trips API для трансферов
-                const response = await fetch(`${getApiUrl()}/trips`, {
-                    headers: getAuthHeaders()
-                });
+                const response = await fetch(`${getApiUrl()}/transfer-requests`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                const data = await response.json();
-                const transfersTable = document.getElementById('transfersTable');
+                const result = await response.json();
                 
-                // Фильтруем только трансферы (можно добавить поле type в будущем)
-                const transfers = data.filter(trip => trip.direction && trip.direction.includes('Трансфер'));
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to load transfer requests');
+                }
                 
-                if (transfers && transfers.length > 0) {
-                    transfersTable.innerHTML = transfers.map(transfer => `
+                const transferRequests = result.data || [];
+                const transferRequestsTable = document.getElementById('transferRequestsTable');
+                
+                if (transferRequests && transferRequests.length > 0) {
+                    transferRequestsTable.innerHTML = transferRequests.map(request => `
                         <tr>
-                            <td>${transfer.id}</td>
-                            <td>Клиент</td>
-                            <td>${transfer.routeFrom} → ${transfer.routeTo}</td>
-                            <td>${transfer.driverName || 'Не назначен'}</td>
-                            <td>${transfer.pickupTime}</td>
-                            <td>Трансфер</td>
+                            <td>#${request.id}</td>
                             <td>
-                                <span class="badge badge-${transfer.status === 'completed' ? 'success' : transfer.status === 'pending' ? 'warning' : 'info'}">
-                                    ${transfer.status}
-                                </span>
+                                <div class="font-medium">${request.fullName}</div>
+                                <div class="text-sm text-gray-500">${new Date(request.createdAt).toLocaleDateString('ru-RU')}</div>
                             </td>
-                            <td>-</td>
                             <td>
-                                <button onclick="editTransfer(${transfer.id})" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button onclick="deleteTransfer(${transfer.id})" class="btn btn-sm btn-outline-danger">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <div>${request.email ? `📧 ${request.email}` : ''}</div>
+                                <div>${request.phone ? `📱 ${request.phone}` : ''}</div>
+                            </td>
+                            <td>
+                                <div class="font-medium">${request.pickupLocation}</div>
+                                <div class="text-sm text-gray-500">↓</div>
+                                <div class="font-medium">${request.dropoffLocation}</div>
+                            </td>
+                            <td>
+                                <div class="font-medium">${request.pickupDate}</div>
+                                <div class="text-sm text-gray-500">${request.pickupTime}</div>
+                            </td>
+                            <td class="text-center">${request.numberOfPeople || 1}</td>
+                            <td>
+                                <span class="badge badge-info">${getVehicleTypeName(request.vehicleType)}</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-${getStatusBadgeColor(request.status)}">${getStatusName(request.status)}</span>
+                            </td>
+                            <td>
+                                ${request.assignedDriver ? 
+                                    `<div class="font-medium">${request.assignedDriver.fullName}</div><div class="text-sm text-gray-500">${request.assignedDriver.contact}</div>` : 
+                                    '<span class="text-gray-500">Не назначен</span>'
+                                }
+                            </td>
+                            <td>
+                                ${request.finalPrice ? 
+                                    `<div class="font-medium">${request.finalPrice} TJS</div>` : 
+                                    (request.estimatedPrice ? 
+                                        `<div class="text-gray-500">~${request.estimatedPrice} TJS</div>` : 
+                                        '<span class="text-gray-400">-</span>'
+                                    )
+                                }
+                            </td>
+                            <td>
+                                <div class="flex flex-col gap-1">
+                                    ${request.status === 'pending' ? `
+                                        <button onclick="approveTransferRequest(${request.id})" class="btn btn-sm btn-success" title="Одобрить">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button onclick="rejectTransferRequest(${request.id})" class="btn btn-sm btn-danger" title="Отклонить">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    ` : ''}
+                                    <button onclick="viewTransferRequestDetails(${request.id})" class="btn btn-sm btn-outline-info" title="Подробнее">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    ${request.status !== 'pending' ? `
+                                        <button onclick="deleteTransferRequest(${request.id})" class="btn btn-sm btn-outline-danger" title="Удалить">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
                             </td>
                         </tr>
                     `).join('');
                 } else {
-                    transfersTable.innerHTML = '<tr><td colspan="9" class="text-center py-8 text-gray-500">Нет трансферов</td></tr>';
+                    transferRequestsTable.innerHTML = '<tr><td colspan="11" class="text-center py-8 text-gray-500">Нет заявок на трансфер</td></tr>';
+                }
+                
+                // Обновляем статистику
+                updateTransferStats(transferRequests);
+                
+            } catch (error) {
+                console.error('Ошибка загрузки заявок на трансфер:', error);
+                document.getElementById('transferRequestsTable').innerHTML = '<tr><td colspan="11" class="text-center py-8 text-red-500">Ошибка загрузки заявок на трансфер</td></tr>';
+            }
+        }
+
+        // Approve transfer request
+        async function approveTransferRequest(requestId) {
+            if (!confirm('Одобрить эту заявку на трансфер?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/transfer-requests/${requestId}/approve`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Заявка одобрена!');
+                    loadTransferRequests();
+                } else {
+                    alert('Ошибка одобрения: ' + (result.error || 'Неизвестная ошибка'));
                 }
             } catch (error) {
-                console.error('Ошибка загрузки трансферов:', error);
-                document.getElementById('transfersTable').innerHTML = '<tr><td colspan="9" class="text-center py-8 text-red-500">Ошибка загрузки трансферов</td></tr>';
+                console.error('Ошибка одобрения заявки:', error);
+                alert('Ошибка соединения');
             }
+        }
+
+        // Reject transfer request
+        async function rejectTransferRequest(requestId) {
+            const reason = prompt('Укажите причину отклонения (необязательно):');
+            if (reason === null) return; // User cancelled
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/transfer-requests/${requestId}/reject`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        adminNotes: reason || 'Заявка отклонена администратором' 
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Заявка отклонена');
+                    loadTransferRequests();
+                } else {
+                    alert('Ошибка отклонения: ' + (result.error || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Ошибка отклонения заявки:', error);
+                alert('Ошибка соединения');
+            }
+        }
+
+        // View transfer request details
+        async function viewTransferRequestDetails(requestId) {
+            try {
+                const response = await fetch(`${getApiUrl()}/transfer-requests/${requestId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to load transfer request details');
+                }
+                
+                const request = result.data;
+                
+                const detailsHTML = `
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-gray-700">Информация о клиенте</h4>
+                                <div class="mt-2 space-y-1">
+                                    <div><strong>ФИО:</strong> ${request.fullName}</div>
+                                    ${request.email ? `<div><strong>Email:</strong> ${request.email}</div>` : ''}
+                                    ${request.phone ? `<div><strong>Телефон:</strong> ${request.phone}</div>` : ''}
+                                    <div><strong>Подана:</strong> ${new Date(request.createdAt).toLocaleString('ru-RU')}</div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-700">Детали поездки</h4>
+                                <div class="mt-2 space-y-1">
+                                    <div><strong>Откуда:</strong> ${request.pickupLocation}</div>
+                                    <div><strong>Куда:</strong> ${request.dropoffLocation}</div>
+                                    <div><strong>Дата:</strong> ${request.pickupDate}</div>
+                                    <div><strong>Время:</strong> ${request.pickupTime}</div>
+                                    <div><strong>Пассажиров:</strong> ${request.numberOfPeople || 1}</div>
+                                    ${request.vehicleType ? `<div><strong>Тип транспорта:</strong> ${getVehicleTypeName(request.vehicleType)}</div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        ${request.specialRequests ? `
+                            <div>
+                                <h4 class="font-semibold text-gray-700">Дополнительные пожелания</h4>
+                                <div class="mt-2 p-3 bg-gray-50 rounded-lg">${request.specialRequests}</div>
+                            </div>
+                        ` : ''}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-gray-700">Статус и обработка</h4>
+                                <div class="mt-2 space-y-1">
+                                    <div><strong>Статус:</strong> <span class="badge badge-${getStatusBadgeColor(request.status)}">${getStatusName(request.status)}</span></div>
+                                    ${request.adminNotes ? `<div><strong>Заметки администратора:</strong> ${request.adminNotes}</div>` : ''}
+                                    ${request.assignedDriver ? `<div><strong>Водитель:</strong> ${request.assignedDriver.fullName} (${request.assignedDriver.contact})</div>` : ''}
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-700">Стоимость</h4>
+                                <div class="mt-2 space-y-1">
+                                    ${request.estimatedPrice ? `<div><strong>Примерная цена:</strong> ${request.estimatedPrice} TJS</div>` : ''}
+                                    ${request.finalPrice ? `<div><strong>Итоговая цена:</strong> ${request.finalPrice} TJS</div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Show in a modal (assuming there's a universal modal system)
+                showModal('Детали заявки на трансфер', detailsHTML);
+                
+            } catch (error) {
+                console.error('Ошибка загрузки деталей заявки:', error);
+                alert('Ошибка загрузки деталей заявки');
+            }
+        }
+
+        // Delete transfer request
+        async function deleteTransferRequest(requestId) {
+            if (!confirm('Удалить эту заявку на трансфер? Это действие нельзя отменить.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/transfer-requests/${requestId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Заявка удалена');
+                    loadTransferRequests();
+                } else {
+                    alert('Ошибка удаления: ' + (result.error || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Ошибка удаления заявки:', error);
+                alert('Ошибка соединения');
+            }
+        }
+
+        // Update transfer request statistics
+        function updateTransferStats(transferRequests) {
+            const pending = transferRequests.filter(r => r.status === 'pending').length;
+            const approved = transferRequests.filter(r => r.status === 'approved').length;
+            const rejected = transferRequests.filter(r => r.status === 'rejected').length;
+            const total = transferRequests.length;
+            
+            document.getElementById('pendingTransfersCount').textContent = pending;
+            document.getElementById('approvedTransfersCount').textContent = approved;
+            document.getElementById('rejectedTransfersCount').textContent = rejected;
+            document.getElementById('totalTransfersCount').textContent = total;
+        }
+
+        // Filter transfer requests by status
+        function filterTransferRequests() {
+            const filter = document.getElementById('transferStatusFilter').value;
+            const table = document.getElementById('transferRequestsTable');
+            const rows = table.getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const statusBadge = row.querySelector('.badge');
+                
+                if (filter === 'all') {
+                    row.style.display = '';
+                } else {
+                    const statusText = statusBadge ? statusBadge.textContent.toLowerCase() : '';
+                    const shouldShow = (
+                        (filter === 'pending' && statusText.includes('ожидает')) ||
+                        (filter === 'approved' && statusText.includes('одобрен')) ||
+                        (filter === 'rejected' && statusText.includes('отклонен'))
+                    );
+                    
+                    row.style.display = shouldShow ? '' : 'none';
+                }
+            }
+        }
+
+        // Helper functions
+        function getVehicleTypeName(type) {
+            const types = {
+                'sedan': 'Седан',
+                'suv': 'Внедорожник', 
+                'minibus': 'Микроавтобус',
+                'bus': 'Автобус'
+            };
+            return types[type] || type || 'Не указан';
+        }
+
+        function getStatusBadgeColor(status) {
+            const colors = {
+                'pending': 'warning',
+                'approved': 'success',
+                'rejected': 'danger'
+            };
+            return colors[status] || 'secondary';
+        }
+
+        function getStatusName(status) {
+            const names = {
+                'pending': 'Ожидает',
+                'approved': 'Одобрена',
+                'rejected': 'Отклонена'
+            };
+            return names[status] || status;
         }
 
         function openTransferModal() {
