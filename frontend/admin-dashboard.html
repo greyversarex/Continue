@@ -11653,6 +11653,157 @@
             }
         }
 
+        // ============== УПРАВЛЕНИЕ ТРАНСФЕРАМИ ==============
+        
+        async function loadTransfers() {
+            try {
+                const response = await fetch(`${getApiUrl()}/transfer-requests`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const transfersTable = document.getElementById('transfersTable');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    transfersTable.innerHTML = data.data.map(transfer => `
+                        <tr>
+                            <td>${transfer.id}</td>
+                            <td>${transfer.clientName}</td>
+                            <td>${transfer.clientPhone}</td>
+                            <td>${transfer.fromLocation}</td>
+                            <td>${transfer.toLocation}</td>
+                            <td>${transfer.pickupDate}</td>
+                            <td>${transfer.pickupTime}</td>
+                            <td>$${transfer.requestedPrice}</td>
+                            <td>
+                                <span class="badge badge-${
+                                    transfer.status === 'approved' ? 'success' : 
+                                    transfer.status === 'pending' ? 'warning' : 
+                                    transfer.status === 'rejected' ? 'danger' : 'info'
+                                }">
+                                    ${transfer.status}
+                                </span>
+                            </td>
+                            <td>
+                                ${transfer.status === 'pending' ? `
+                                    <button onclick="approveTransfer(${transfer.id})" class="btn btn-sm btn-success me-1">
+                                        <i class="fas fa-check"></i> Одобрить
+                                    </button>
+                                    <button onclick="rejectTransfer(${transfer.id})" class="btn btn-sm btn-danger me-1">
+                                        <i class="fas fa-times"></i> Отклонить
+                                    </button>
+                                ` : ''}
+                                <button onclick="editTransfer(${transfer.id})" class="btn btn-sm btn-outline-primary me-1">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteTransfer(${transfer.id})" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    transfersTable.innerHTML = '<tr><td colspan="10" class="text-center py-8 text-gray-500">Нет заявок на трансферы</td></tr>';
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки трансферов:', error);
+                document.getElementById('transfersTable').innerHTML = '<tr><td colspan="10" class="text-center py-8 text-red-500">Ошибка загрузки трансферов</td></tr>';
+            }
+        }
+
+        async function approveTransfer(transferId) {
+            const finalPrice = prompt('Введите финальную цену (USD):');
+            const adminNotes = prompt('Комментарий администратора (опционально):') || 'Заявка одобрена администратором';
+            
+            if (finalPrice === null) return; // User cancelled
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/transfer-requests/${transferId}/approve`, {
+                    method: 'POST',
+                    headers: {
+                        ...getAuthHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        adminNotes,
+                        finalPrice: parseFloat(finalPrice) || null
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('Трансфер одобрен!');
+                    loadTransfers();
+                } else {
+                    alert('Ошибка: ' + (data.error || data.message));
+                }
+            } catch (error) {
+                console.error('Ошибка одобрения трансфера:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+
+        async function rejectTransfer(transferId) {
+            const adminNotes = prompt('Причина отклонения:');
+            if (!adminNotes) {
+                alert('Укажите причину отклонения');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/transfer-requests/${transferId}/reject`, {
+                    method: 'POST',
+                    headers: {
+                        ...getAuthHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ adminNotes })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('Трансфер отклонен');
+                    loadTransfers();
+                } else {
+                    alert('Ошибка: ' + (data.error || data.message));
+                }
+            } catch (error) {
+                console.error('Ошибка отклонения трансфера:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+
+        async function editTransfer(transferId) {
+            // Функция редактирования трансфера
+            alert('Функция редактирования трансфера в разработке');
+        }
+
+        async function deleteTransfer(transferId) {
+            if (!confirm('Удалить заявку на трансфер?')) return;
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/transfer-requests/${transferId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('Заявка на трансфер удалена');
+                    loadTransfers();
+                } else {
+                    alert('Ошибка удаления: ' + (data.error || data.message));
+                }
+            } catch (error) {
+                console.error('Ошибка удаления трансфера:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+
         function openTripModal() {
             document.getElementById('tripModal').classList.add('active');
             loadTripDrivers();
