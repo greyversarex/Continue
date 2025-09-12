@@ -448,6 +448,10 @@
                     <i class="fas fa-star"></i>
                     <span>Отзывы</span>
                 </a>
+                <a href="#" class="nav-item" data-section="news">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Новости</span>
+                </a>
                 <a href="#" class="nav-item" data-section="payments">
                     <i class="fas fa-credit-card"></i>
                     <span>Платежи</span>
@@ -930,6 +934,93 @@
                                 </thead>
                                 <tbody id="reviewsTable">
                                     <!-- Reviews will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- News Section -->
+                <section id="newsSection" style="display: none;">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-semibold">Управление новостями</h2>
+                            <button class="btn btn-primary" onclick="openNewsModal()">
+                                <i class="fas fa-plus mr-2"></i>
+                                Добавить новость
+                            </button>
+                        </div>
+                        <div class="flex gap-2 mb-4">
+                            <button class="tab-button active" data-filter="all">Все новости</button>
+                            <button class="tab-button" data-filter="published">Опубликованные</button>
+                            <button class="tab-button" data-filter="draft">Черновики</button>
+                            <button class="tab-button" data-filter="featured">Рекомендуемые</button>
+                        </div>
+                        <div class="flex gap-4 mb-4">
+                            <div class="stat-card flex-1">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-newspaper text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-600 text-sm">Всего новостей</p>
+                                        <p class="text-2xl font-bold" id="totalNewsCount">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stat-card flex-1">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-check-circle text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-600 text-sm">Опубликовано</p>
+                                        <p class="text-2xl font-bold" id="publishedNewsCount">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stat-card flex-1">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-edit text-yellow-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-600 text-sm">Черновики</p>
+                                        <p class="text-2xl font-bold" id="draftNewsCount">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stat-card flex-1">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-eye text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-600 text-sm">Просмотры</p>
+                                        <p class="text-2xl font-bold" id="totalNewsViews">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Заголовок</th>
+                                        <th>Категория</th>
+                                        <th>Статус</th>
+                                        <th>Автор</th>
+                                        <th>Дата публикации</th>
+                                        <th>Просмотры</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="newsTable">
+                                    <!-- News will be loaded here -->
                                 </tbody>
                             </table>
                         </div>
@@ -2197,6 +2288,97 @@
         </div>
     </div>
 
+    <!-- News Modal -->
+    <div id="newsModal" class="modal">
+        <div class="modal-content" style="width: 700px; max-height: 90vh; overflow-y: auto;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold" id="newsModalTitle">Добавить новость</h2>
+                <button onclick="closeNewsModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="newsForm" onsubmit="event.preventDefault(); saveNews();">
+                <input type="hidden" id="newsId">
+                
+                <div class="form-group mb-4">
+                    <label class="form-label">Заголовок *</label>
+                    <input type="text" id="newsTitle" class="form-input" required>
+                </div>
+                
+                <div class="form-group mb-4">
+                    <label class="form-label">Краткое описание</label>
+                    <textarea id="newsExcerpt" class="form-input" rows="2" placeholder="Краткое описание новости (optional)"></textarea>
+                </div>
+                
+                <div class="form-group mb-4">
+                    <label class="form-label">Контент *</label>
+                    <textarea id="newsContent" class="form-input" rows="8" required placeholder="Полный текст новости"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Категория *</label>
+                        <select id="newsCategory" class="form-input" required>
+                            <option value="">Выберите категорию</option>
+                            <option value="tours">Туры</option>
+                            <option value="events">События</option>
+                            <option value="announcements">Объявления</option>
+                            <option value="tips">Советы</option>
+                            <option value="general">Общие</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Автор</label>
+                        <input type="text" id="newsAuthor" class="form-input" placeholder="Bunyod-Tour">
+                    </div>
+                </div>
+                
+                <div class="form-group mb-4">
+                    <label class="form-label">URL изображения</label>
+                    <input type="url" id="newsImage" class="form-input" placeholder="https://example.com/image.jpg">
+                </div>
+                
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label flex items-center">
+                            <input type="checkbox" id="newsPublished" checked>
+                            <span class="ml-2">Опубликовать</span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label flex items-center">
+                            <input type="checkbox" id="newsFeatured">
+                            <span class="ml-2">Рекомендуемая</span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Время чтения (мин)</label>
+                        <input type="number" id="newsReadTime" class="form-input" min="1" placeholder="5">
+                    </div>
+                </div>
+                
+                <div class="form-group mb-6">
+                    <label class="form-label">SEO - Meta описание</label>
+                    <textarea id="newsMetaDesc" class="form-input" rows="2" placeholder="Описание для поисковых систем (optional)"></textarea>
+                </div>
+                
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="closeNewsModal()" class="btn btn-secondary">
+                        Отмена
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Сохранить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Trip Creation Modal -->
     <div id="tripModal" class="modal">
         <div class="modal-content" style="width: 700px;">
@@ -2831,6 +3013,9 @@
                     break;
                 case 'reviews':
                     loadReviews();
+                    break;
+                case 'news':
+                    loadNews();
                     break;
                 case 'cms':
                     loadCMSContentBlocks();
@@ -10700,7 +10885,7 @@
         // Show section function
         function showSection(sectionName) {
             // Hide all sections
-            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'tourAgentsSection', 'driversSection', 'tripsSection', 'transfersSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
+            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'tourAgentsSection', 'driversSection', 'tripsSection', 'transfersSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'newsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
             sections.forEach(sectionId => {
                 const element = document.getElementById(sectionId);
                 if (element) element.style.display = 'none';
@@ -10772,6 +10957,9 @@
                     break;
                 case 'reviews':
                     loadReviews();
+                    break;
+                case 'news':
+                    loadNews();
                     break;
                 case 'cms':
                     switchCMSTab('blocks');
@@ -11945,6 +12133,221 @@
             } catch (error) {
                 alert('Ошибка соединения');
             }
+        }
+
+        // ===================== NEWS MANAGEMENT FUNCTIONS =====================
+
+        // Load news list with statistics
+        async function loadNews() {
+            try {
+                // Load news statistics
+                const statsResponse = await fetch(`${getApiUrl()}/news/admin/stats`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (statsResponse.ok) {
+                    const statsData = await statsResponse.json();
+                    if (statsData.success) {
+                        const stats = statsData.data;
+                        document.getElementById('totalNewsCount').textContent = stats.totalNews;
+                        document.getElementById('publishedNewsCount').textContent = stats.publishedNews;
+                        document.getElementById('draftNewsCount').textContent = stats.draftNews;
+                        document.getElementById('totalNewsViews').textContent = stats.totalViews;
+                    }
+                }
+                
+                // Load news list
+                const response = await fetch(`${getApiUrl()}/news/admin/all`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        displayNewsTable(data.data.news);
+                    }
+                } else {
+                    console.error('Failed to load news:', response.status);
+                    alert('Ошибка загрузки новостей. Проверьте подключение к серверу.');
+                }
+            } catch (error) {
+                console.error('Error loading news:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+        
+        // Display news in table
+        function displayNewsTable(newsList) {
+            const tbody = document.getElementById('newsTable');
+            if (!tbody) return;
+            
+            tbody.innerHTML = newsList.map(news => `
+                <tr>
+                    <td>${news.id}</td>
+                    <td class="max-w-xs truncate">${news.title}</td>
+                    <td>${getCategoryName(news.category)}</td>
+                    <td>
+                        <span class="px-2 py-1 text-xs rounded-full ${news.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                            ${news.isPublished ? 'Опубликовано' : 'Черновик'}
+                        </span>
+                        ${news.isFeatured ? '<span class="ml-1 px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800">★ Рекомендуемая</span>' : ''}
+                    </td>
+                    <td>${news.author}</td>
+                    <td>${new Date(news.publishedAt).toLocaleDateString('ru-RU')}</td>
+                    <td>${news.views}</td>
+                    <td>
+                        <div class="flex gap-1">
+                            <button onclick="editNews(${news.id})" class="btn-icon btn-edit" title="Редактировать">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteNews(${news.id})" class="btn-icon btn-delete" title="Удалить">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Open news modal for create/edit
+        function openNewsModal(newsId = null) {
+            const modal = document.getElementById('newsModal');
+            const title = document.getElementById('newsModalTitle');
+            
+            if (newsId) {
+                title.textContent = 'Редактировать новость';
+                loadNewsForEdit(newsId);
+            } else {
+                title.textContent = 'Добавить новость';
+                document.getElementById('newsForm').reset();
+                document.getElementById('newsId').value = '';
+                document.getElementById('newsPublished').checked = true;
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        // Close news modal
+        function closeNewsModal() {
+            document.getElementById('newsModal').classList.remove('active');
+            document.getElementById('newsForm').reset();
+        }
+        
+        // Load news data for editing
+        async function loadNewsForEdit(newsId) {
+            try {
+                const response = await fetch(`${getApiUrl()}/news/${newsId}`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        const news = data.data;
+                        document.getElementById('newsId').value = news.id;
+                        document.getElementById('newsTitle').value = news.title;
+                        document.getElementById('newsExcerpt').value = news.excerpt || '';
+                        document.getElementById('newsContent').value = news.content;
+                        document.getElementById('newsCategory').value = news.category;
+                        document.getElementById('newsAuthor').value = news.author;
+                        document.getElementById('newsImage').value = news.image || '';
+                        document.getElementById('newsPublished').checked = news.isPublished;
+                        document.getElementById('newsFeatured').checked = news.isFeatured;
+                        document.getElementById('newsReadTime').value = news.readTime || '';
+                        document.getElementById('newsMetaDesc').value = news.metaDescription || '';
+                    }
+                } else {
+                    alert('Ошибка загрузки данных новости');
+                }
+            } catch (error) {
+                console.error('Error loading news for edit:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+        
+        // Save news (create/update)
+        async function saveNews() {
+            const newsId = document.getElementById('newsId').value;
+            const newsData = {
+                title: document.getElementById('newsTitle').value,
+                excerpt: document.getElementById('newsExcerpt').value || null,
+                content: document.getElementById('newsContent').value,
+                category: document.getElementById('newsCategory').value,
+                author: document.getElementById('newsAuthor').value || 'Bunyod-Tour',
+                image: document.getElementById('newsImage').value || null,
+                isPublished: document.getElementById('newsPublished').checked,
+                isFeatured: document.getElementById('newsFeatured').checked,
+                readTime: parseInt(document.getElementById('newsReadTime').value) || null,
+                metaDescription: document.getElementById('newsMetaDesc').value || null
+            };
+            
+            try {
+                const url = newsId ? `${getApiUrl()}/news/admin/${newsId}` : `${getApiUrl()}/news/admin/create`;
+                const method = newsId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...getAuthHeaders()
+                    },
+                    body: JSON.stringify(newsData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    alert(newsId ? 'Новость обновлена!' : 'Новость создана!');
+                    closeNewsModal();
+                    loadNews(); // Reload news list
+                } else {
+                    alert('Ошибка сохранения: ' + (data.error || data.message || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Error saving news:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+        
+        // Edit news
+        function editNews(newsId) {
+            openNewsModal(newsId);
+        }
+        
+        // Delete news
+        async function deleteNews(newsId) {
+            if (!confirm('Вы уверены, что хотите удалить эту новость?')) return;
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/news/admin/${newsId}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    alert('Новость удалена!');
+                    loadNews(); // Reload news list
+                } else {
+                    alert('Ошибка удаления: ' + (data.error || data.message));
+                }
+            } catch (error) {
+                console.error('Error deleting news:', error);
+                alert('Ошибка соединения с сервером');
+            }
+        }
+        
+        // Helper function to get category display name
+        function getCategoryName(category) {
+            const categories = {
+                'tours': 'Туры',
+                'events': 'События', 
+                'announcements': 'Объявления',
+                'tips': 'Советы',
+                'general': 'Общие'
+            };
+            return categories[category] || category;
         }
 
     </script>
