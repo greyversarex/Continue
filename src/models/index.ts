@@ -606,6 +606,204 @@ export class HotelModel {
   }
 }
 
+export class TransferRequestModel {
+  /**
+   * Get all transfer requests with assigned driver information
+   */
+  static async findAll() {
+    return await (prisma as any).transferRequest.findMany({
+      include: {
+        assignedDriver: {
+          select: {
+            id: true,
+            name: true,
+            vehicleTypes: true,
+            contact: true,
+            description: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
+
+  /**
+   * Get a transfer request by ID
+   */
+  static async findById(id: number) {
+    return await prisma.transferRequest.findUnique({
+      where: { id },
+      include: {
+        assignedDriver: {
+          select: {
+            id: true,
+            name: true,
+            vehicleTypes: true,
+            contact: true,
+            description: true
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Create a new transfer request
+   */
+  static async create(data: any) {
+    return await prisma.transferRequest.create({
+      data: {
+        fullName: data.fullName,
+        email: data.email || null,
+        phone: data.phone || null,
+        pickupLocation: data.pickupLocation,
+        dropoffLocation: data.dropoffLocation,
+        pickupTime: data.pickupTime,
+        pickupDate: data.pickupDate,
+        numberOfPeople: data.numberOfPeople || 1,
+        vehicleType: data.vehicleType || null,
+        specialRequests: data.specialRequests || null
+      },
+      include: {
+        assignedDriver: {
+          select: {
+            id: true,
+            name: true,
+            vehicleTypes: true,
+            contact: true,
+            description: true
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Update a transfer request
+   */
+  static async update(id: number, data: any) {
+    const updateData: any = {};
+    
+    if (data.fullName !== undefined) updateData.fullName = data.fullName;
+    if (data.email !== undefined) updateData.email = data.email;
+    if (data.phone !== undefined) updateData.phone = data.phone;
+    if (data.pickupLocation !== undefined) updateData.pickupLocation = data.pickupLocation;
+    if (data.dropoffLocation !== undefined) updateData.dropoffLocation = data.dropoffLocation;
+    if (data.pickupTime !== undefined) updateData.pickupTime = data.pickupTime;
+    if (data.pickupDate !== undefined) updateData.pickupDate = data.pickupDate;
+    if (data.numberOfPeople !== undefined) updateData.numberOfPeople = data.numberOfPeople;
+    if (data.vehicleType !== undefined) updateData.vehicleType = data.vehicleType;
+    if (data.specialRequests !== undefined) updateData.specialRequests = data.specialRequests;
+    if (data.status !== undefined) updateData.status = data.status;
+    if (data.adminNotes !== undefined) updateData.adminNotes = data.adminNotes;
+    if (data.estimatedPrice !== undefined) updateData.estimatedPrice = data.estimatedPrice;
+    if (data.finalPrice !== undefined) updateData.finalPrice = data.finalPrice;
+    if (data.assignedDriverId !== undefined) updateData.assignedDriverId = data.assignedDriverId;
+
+    return await prisma.transferRequest.update({
+      where: { id },
+      data: updateData,
+      include: {
+        assignedDriver: {
+          select: {
+            id: true,
+            name: true,
+            vehicleTypes: true,
+            contact: true,
+            description: true
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Delete a transfer request
+   */
+  static async delete(id: number) {
+    return await prisma.transferRequest.delete({
+      where: { id }
+    });
+  }
+
+  /**
+   * Get transfer requests by status
+   */
+  static async findByStatus(status: string) {
+    return await (prisma as any).transferRequest.findMany({
+      where: { status },
+      include: {
+        assignedDriver: {
+          select: {
+            id: true,
+            name: true,
+            vehicleTypes: true,
+            contact: true,
+            description: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
+
+  /**
+   * Approve transfer request
+   */
+  static async approve(id: number, adminNotes?: string, finalPrice?: number, assignedDriverId?: number) {
+    const updateData: any = {
+      status: 'approved',
+      adminNotes: adminNotes || null,
+      finalPrice: finalPrice || null,
+      assignedDriverId: assignedDriverId || null
+    };
+
+    return await prisma.transferRequest.update({
+      where: { id },
+      data: updateData,
+      include: {
+        assignedDriver: {
+          select: {
+            id: true,
+            name: true,
+            vehicleTypes: true,
+            contact: true,
+            description: true
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Reject transfer request
+   */
+  static async reject(id: number, adminNotes?: string) {
+    return await prisma.transferRequest.update({
+      where: { id },
+      data: {
+        status: 'rejected',
+        adminNotes: adminNotes || null
+      },
+      include: {
+        assignedDriver: {
+          select: {
+            id: true,
+            name: true,
+            vehicleTypes: true,
+            contact: true,
+            description: true
+          }
+        }
+      }
+    });
+  }
+}
+
 export class PriceCalculatorModel {
   /**
    * Get all pricing components

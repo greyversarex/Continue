@@ -142,6 +142,65 @@ export interface UpdateReviewData {
   isApproved?: boolean;
 }
 
+// TransferRequest types
+export interface TransferRequestData {
+  id: number;
+  fullName: string;
+  email?: string | null;
+  phone?: string | null;
+  pickupLocation: string;
+  dropoffLocation: string;
+  pickupTime: string;  // "HH:MM" format
+  pickupDate: string;  // "YYYY-MM-DD" format
+  numberOfPeople: number;
+  vehicleType?: string | null;
+  specialRequests?: string | null;
+  status: 'pending' | 'approved' | 'rejected' | 'completed';
+  adminNotes?: string | null;
+  estimatedPrice?: number | null;
+  finalPrice?: number | null;
+  assignedDriverId?: number | null;
+  assignedDriver?: {
+    id: number;
+    name: string;
+    phone?: string;
+    vehicleTypes?: string;
+  } | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateTransferRequestData {
+  fullName: string;
+  email?: string;
+  phone?: string;
+  pickupLocation: string;
+  dropoffLocation: string;
+  pickupTime: string;  // "HH:MM" format
+  pickupDate: string;  // "YYYY-MM-DD" format
+  numberOfPeople?: number;
+  vehicleType?: 'sedan' | 'suv' | 'minibus' | 'bus';
+  specialRequests?: string;
+}
+
+export interface UpdateTransferRequestData {
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  pickupLocation?: string;
+  dropoffLocation?: string;
+  pickupTime?: string;
+  pickupDate?: string;
+  numberOfPeople?: number;
+  vehicleType?: 'sedan' | 'suv' | 'minibus' | 'bus';
+  specialRequests?: string;
+  status?: 'pending' | 'approved' | 'rejected' | 'completed';
+  adminNotes?: string;
+  estimatedPrice?: number;
+  finalPrice?: number;
+  assignedDriverId?: number;
+}
+
 // Error types
 export interface ApiError extends Error {
   statusCode?: number;

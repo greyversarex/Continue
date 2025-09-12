@@ -219,6 +219,7 @@ model Driver {
   // Связи с заказами будут добавлены позже
   // orders           Order[]
   tourDrivers      TourDriver[]
+  transferRequests TransferRequest[] // Связь с трансферными заявками
   driverCountry    Country?    @relation(fields: [countryId], references: [id])
   driverCity       City?       @relation(fields: [cityId], references: [id])
 
@@ -611,6 +612,31 @@ enum NewsCategory {
   announcements
   tips
   general
+}
+
+model TransferRequest {
+  id              Int      @id @default(autoincrement())
+  fullName        String   @map("full_name")
+  email           String?
+  phone           String?
+  pickupLocation  String   @map("pickup_location")
+  dropoffLocation String   @map("dropoff_location")
+  pickupTime      String   @map("pickup_time")  // Время в формате "HH:MM"
+  pickupDate      String   @map("pickup_date")  // Дата в формате "YYYY-MM-DD"
+  numberOfPeople  Int      @default(1) @map("number_of_people")
+  vehicleType     String?  @map("vehicle_type") // sedan, suv, minibus, bus
+  specialRequests String?  @map("special_requests")
+  status          String   @default("pending") // pending, approved, rejected, completed
+  adminNotes      String?  @map("admin_notes")
+  estimatedPrice  Float?   @map("estimated_price")
+  finalPrice      Float?   @map("final_price")
+  assignedDriverId Int?    @map("assigned_driver_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  assignedDriver  Driver?  @relation(fields: [assignedDriverId], references: [id])
+
+  @@map("transfer_requests")
 }
 
 model DriverProfile {
