@@ -2,11 +2,17 @@ import { Request, Response } from 'express';
 import { PriceCalculatorModel } from '../models';
 
 /**
- * Get all pricing components
+ * Get all pricing components (with optional category filtering)
  */
 export const getAllComponents = async (req: Request, res: Response) => {
   try {
-    const components = await PriceCalculatorModel.findAll();
+    const { category } = req.query;
+    let components = await PriceCalculatorModel.findAll();
+    
+    // Filter by category if provided
+    if (category && typeof category === 'string') {
+      components = components.filter(comp => comp.category === category);
+    }
     
     res.json({
       success: true,
