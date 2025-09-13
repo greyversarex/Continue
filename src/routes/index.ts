@@ -66,7 +66,7 @@ router.use('/countries', countryRoutes); // Countries management
 router.use('/cities', cityRoutes); // Cities management
 router.use('/trips', tripRoutes); // Trip management
 router.use('/tour-agents', tourAgentRoutes); // Tour agents management
-router.use('/', transferRoutes); // Transfer requests management
+router.use('/transfers', transferRoutes); // Transfer requests management
 router.use('/', objectStorageRoutes);
 
 // All data access now through Prisma models
