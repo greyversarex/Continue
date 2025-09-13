@@ -2421,6 +2421,15 @@
                     <input type="text" name="pickupLocation" class="form-input" placeholder="Адрес посадки" required>
                 </div>
                 
+                <!-- Поле привязки к туру -->
+                <div class="form-group mb-4">
+                    <label class="form-label">Тур (опционально)</label>
+                    <select name="tourId" id="tripTourId" class="form-input">
+                        <option value="">Не связан с туром</option>
+                    </select>
+                    <small class="text-gray-500">Выберите тур, если поездка связана с определенным туром</small>
+                </div>
+                
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div class="form-group">
                         <label class="form-label">Откуда *</label>
@@ -2477,6 +2486,104 @@
                     Отменить
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Country Modal -->
+    <div id="countryModal" class="modal">
+        <div class="modal-content" style="width: 600px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold" id="countryModalTitle">Добавить страну</h2>
+                <button onclick="closeCountryModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="countryForm" onsubmit="event.preventDefault(); saveCountry();">
+                <input type="hidden" id="countryId">
+                
+                <div class="grid grid-cols-1 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Название (English) *</label>
+                        <input type="text" id="countryName" class="form-input" placeholder="Kazakhstan, Uzbekistan" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Название (Русский) *</label>
+                        <input type="text" id="countryNameRu" class="form-input" placeholder="Казахстан, Узбекистан" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Название (Тоҷикӣ) *</label>
+                        <input type="text" id="countryNameTj" class="form-input" placeholder="Қазоқистон, Ӯзбакистон" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Код страны *</label>
+                        <input type="text" id="countryCode" class="form-input" placeholder="KZ, UZ" maxlength="3" required>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-4">
+                    <button type="button" onclick="closeCountryModal()" class="btn btn-secondary">
+                        Отмена
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Сохранить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- City Modal -->
+    <div id="cityModal" class="modal">
+        <div class="modal-content" style="width: 600px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold" id="cityModalTitle">Добавить город</h2>
+                <button onclick="closeCityModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="cityForm" onsubmit="event.preventDefault(); saveCity();">
+                <input type="hidden" id="cityId">
+                
+                <div class="grid grid-cols-1 gap-4 mb-4">
+                    <div class="form-group">
+                        <label class="form-label">Страна *</label>
+                        <select id="cityCountryId" class="form-input" required>
+                            <option value="">Выберите страну</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Название (English) *</label>
+                        <input type="text" id="cityName" class="form-input" placeholder="Almaty, Tashkent" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Название (Русский) *</label>
+                        <input type="text" id="cityNameRu" class="form-input" placeholder="Алматы, Ташкент" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Название (Тоҷикӣ) *</label>
+                        <input type="text" id="cityNameTj" class="form-input" placeholder="Алматы, Тошканд" required>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-4">
+                    <button type="button" onclick="closeCityModal()" class="btn btn-secondary">
+                        Отмена
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Сохранить
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -11385,11 +11492,192 @@
             }
         }
         
-        // Временные заглушки для модальных окон
-        function openCountryModal() { alert('Создание стран будет добавлено позже'); }
-        function openCityModal() { alert('Создание городов будет добавлено позже'); }
-        function editCountry(id) { openCountryModal(); }
-        function editCity(id) { openCityModal(); }
+        // Функции модальных окон стран и городов
+        
+        // === СТРАНЫ ===
+        function openCountryModal(countryId = null) {
+            document.getElementById('countryModal').style.display = 'flex';
+            document.getElementById('countryForm').reset();
+            document.getElementById('countryId').value = '';
+            
+            if (countryId) {
+                // Режим редактирования
+                document.getElementById('countryModalTitle').textContent = 'Редактировать страну';
+                loadCountryForEdit(countryId);
+            } else {
+                // Режим создания
+                document.getElementById('countryModalTitle').textContent = 'Добавить страну';
+            }
+        }
+        
+        function closeCountryModal() {
+            document.getElementById('countryModal').style.display = 'none';
+        }
+        
+        async function saveCountry() {
+            const countryId = document.getElementById('countryId').value;
+            const isEditing = !!countryId;
+            
+            const countryData = {
+                name: document.getElementById('countryName').value,
+                nameRu: document.getElementById('countryNameRu').value,
+                nameEn: document.getElementById('countryName').value,
+                nameTj: document.getElementById('countryNameTj').value,
+                code: document.getElementById('countryCode').value.toUpperCase()
+            };
+            
+            try {
+                const url = isEditing ? `${getApiUrl()}/countries/${countryId}` : `${getApiUrl()}/countries`;
+                const method = isEditing ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        ...getAuthHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(countryData)
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert(isEditing ? 'Страна успешно обновлена!' : 'Страна успешно создана!');
+                    closeCountryModal();
+                    loadCountries();
+                } else {
+                    alert('Ошибка сохранения: ' + (data.message || data.error));
+                }
+            } catch (error) {
+                alert('Ошибка соединения: ' + error.message);
+            }
+        }
+        
+        function editCountry(id) { openCountryModal(id); }
+        
+        async function loadCountryForEdit(countryId) {
+            try {
+                const response = await fetch(`${getApiUrl()}/countries/${countryId}`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    const country = data.data;
+                    document.getElementById('countryId').value = country.id;
+                    document.getElementById('countryName').value = country.nameEn || country.name;
+                    document.getElementById('countryNameRu').value = country.nameRu;
+                    document.getElementById('countryNameTj').value = country.nameTj;
+                    document.getElementById('countryCode').value = country.code;
+                }
+            } catch (error) {
+                alert('Ошибка загрузки страны: ' + error.message);
+            }
+        }
+        
+        // === ГОРОДА ===
+        function openCityModal(cityId = null) {
+            document.getElementById('cityModal').style.display = 'flex';
+            document.getElementById('cityForm').reset();
+            document.getElementById('cityId').value = '';
+            loadCountriesForCityModal();
+            
+            if (cityId) {
+                // Режим редактирования
+                document.getElementById('cityModalTitle').textContent = 'Редактировать город';
+                loadCityForEdit(cityId);
+            } else {
+                // Режим создания
+                document.getElementById('cityModalTitle').textContent = 'Добавить город';
+            }
+        }
+        
+        function closeCityModal() {
+            document.getElementById('cityModal').style.display = 'none';
+        }
+        
+        async function saveCity() {
+            const cityId = document.getElementById('cityId').value;
+            const isEditing = !!cityId;
+            
+            const cityData = {
+                countryId: parseInt(document.getElementById('cityCountryId').value),
+                name: document.getElementById('cityName').value,
+                nameRu: document.getElementById('cityNameRu').value,
+                nameEn: document.getElementById('cityName').value,
+                nameTj: document.getElementById('cityNameTj').value
+            };
+            
+            try {
+                const url = isEditing ? `${getApiUrl()}/cities/${cityId}` : `${getApiUrl()}/cities`;
+                const method = isEditing ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        ...getAuthHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cityData)
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert(isEditing ? 'Город успешно обновлён!' : 'Город успешно создан!');
+                    closeCityModal();
+                    loadCountries();
+                    loadCities();
+                } else {
+                    alert('Ошибка сохранения: ' + (data.message || data.error));
+                }
+            } catch (error) {
+                alert('Ошибка соединения: ' + error.message);
+            }
+        }
+        
+        function editCity(id) { openCityModal(id); }
+        
+        async function loadCountriesForCityModal() {
+            try {
+                const response = await fetch(`${getApiUrl()}/countries`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    const select = document.getElementById('cityCountryId');
+                    select.innerHTML = '<option value="">Выберите страну</option>';
+                    
+                    data.data.forEach(country => {
+                        const option = document.createElement('option');
+                        option.value = country.id;
+                        option.textContent = country.nameRu || country.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки стран:', error);
+            }
+        }
+        
+        async function loadCityForEdit(cityId) {
+            try {
+                const response = await fetch(`${getApiUrl()}/cities/${cityId}`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    const city = data.data;
+                    document.getElementById('cityId').value = city.id;
+                    document.getElementById('cityCountryId').value = city.countryId;
+                    document.getElementById('cityName').value = city.nameEn || city.name;
+                    document.getElementById('cityNameRu').value = city.nameRu;
+                    document.getElementById('cityNameTj').value = city.nameTj;
+                }
+            } catch (error) {
+                alert('Ошибка загрузки города: ' + error.message);
+            }
+        }
         
         // Удаление страны
         async function deleteCountry(countryId) {
@@ -11805,19 +12093,60 @@
         }
 
         function openTripModal() {
-            document.getElementById('tripModal').classList.add('active');
+            document.getElementById('tripModal').style.display = 'flex';
             loadTripDrivers();
+            loadTripTours(); // Добавляем загрузку туров
         }
 
         function closeTripModal() {
-            document.getElementById('tripModal').classList.remove('active');
+            document.getElementById('tripModal').style.display = 'none';
             document.getElementById('tripForm').reset();
         }
 
+        // Функция для загрузки туров в Trip Modal
+        async function loadTripTours() {
+            try {
+                const response = await fetch(`${getApiUrl()}/tours`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    const select = document.getElementById('tripTourId');
+                    select.innerHTML = '<option value="">Не связан с туром</option>';
+                    
+                    data.data.forEach(tour => {
+                        const option = document.createElement('option');
+                        option.value = tour.id;
+                        // Парсим title если это JSON
+                        let title = tour.title;
+                        if (typeof title === 'string' && title.startsWith('{')) {
+                            try {
+                                const titleObj = JSON.parse(title);
+                                title = titleObj.ru || titleObj.en || title;
+                            } catch (e) {
+                                // Оставляем как есть
+                            }
+                        }
+                        option.textContent = `#${tour.id}: ${title}`;
+                        select.appendChild(option);
+                    });
+                } else {
+                    console.error('Ошибка загрузки туров:', data.error);
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки туров:', error);
+            }
+        }
+        
         async function createTrip() {
             const form = document.getElementById('tripForm');
             const formData = new FormData(form);
             const tripData = Object.fromEntries(formData.entries());
+            
+            // Преобразуем ID поля в числа
+            if (tripData.driverId) tripData.driverId = parseInt(tripData.driverId);
+            if (tripData.tourId) tripData.tourId = parseInt(tripData.tourId);
 
             try {
                 const response = await fetch(`${getApiUrl()}/trips`, {
@@ -11831,7 +12160,8 @@
 
                 const data = await response.json();
                 if (data.success) {
-                    alert('Поездка успешно создана!');
+                    const tourInfo = tripData.tourId ? ` (связана с туром #${tripData.tourId})` : '';
+                    alert('Поездка успешно создана!' + tourInfo);
                     closeTripModal();
                     loadTrips();
                 } else {
