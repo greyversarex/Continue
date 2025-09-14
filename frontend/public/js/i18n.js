@@ -108,6 +108,118 @@ window.translations = window.translations || {
     'placeholder.enter_email': { ru: 'Введите email', en: 'Enter email' },
     'placeholder.enter_phone': { ru: 'Введите телефон', en: 'Enter phone' },
     'placeholder.enter_message': { ru: 'Введите сообщение', en: 'Enter message' },
+
+    // === КАТАЛОГ ОТЕЛЕЙ - НОВЫЕ КЛЮЧИ ===
+    // Основные заголовки отелей
+    'hotel.page_title': { ru: 'Каталог отелей - Bunyod-Tour', en: 'Hotels Catalog - Bunyod-Tour' },
+    'hotel.catalog_title': { ru: 'Каталог отелей', en: 'Hotels Catalog' },
+    'hotel.catalog_description': { ru: 'Найдите идеальное размещение для вашего путешествия по Центральной Азии', en: 'Find the perfect accommodation for your Central Asia journey' },
+    
+    // Категории отелей
+    'hotel.category_luxury': { ru: 'Люкс', en: 'Luxury' },
+    'hotel.category_premium': { ru: 'Премиум', en: 'Premium' },
+    'hotel.category_budget': { ru: 'Бюджетный', en: 'Budget' },
+    
+    // Поиск и сообщения отелей
+    'hotel.search_placeholder': { ru: 'Название отеля...', en: 'Hotel name...' },
+    'hotel.no_hotels_found': { ru: 'Отели не найдены', en: 'No hotels found' },
+    'hotel.try_different_filters': { ru: 'Попробуйте изменить фильтры поиска', en: 'Try adjusting your search filters' },
+    
+    // Фильтры отелей
+    'filters.country': { ru: 'Страна', en: 'Country' },
+    'filters.all_countries': { ru: 'Все страны', en: 'All Countries' },
+    'filters.category': { ru: 'Категория', en: 'Category' },
+    'filters.all_categories': { ru: 'Все категории', en: 'All Categories' },
+    'filters.stars': { ru: 'Звезды', en: 'Stars' },
+    'filters.any_stars': { ru: 'Любое количество', en: 'Any Rating' },
+    'filters.five_stars': { ru: '5 звезд', en: '5 Stars' },
+    'filters.four_stars': { ru: '4 звезды', en: '4 Stars' },
+    'filters.three_stars': { ru: '3 звезды', en: '3 Stars' },
+    'filters.two_stars': { ru: '2 звезды', en: '2 Stars' },
+    'filters.one_star': { ru: '1 звезда', en: '1 Star' },
+    'filters.search': { ru: 'Поиск', en: 'Search' },
+    
+    // Кнопки каталога отелей
+    'btn.clear_filters': { ru: 'Очистить фильтры', en: 'Clear Filters' },
+    
+    // Страны Центральной Азии
+    'country.uzbekistan': { ru: 'Узбекистан', en: 'Uzbekistan' },
+    'country.tajikistan': { ru: 'Таджикистан', en: 'Tajikistan' },
+    'country.kyrgyzstan': { ru: 'Киргизстан', en: 'Kyrgyzstan' },
+    'country.turkmenistan': { ru: 'Туркменистан', en: 'Turkmenistan' },
+    'country.kazakhstan': { ru: 'Казахстан', en: 'Kazakhstan' },
+    
+    // Расширенная навигация и услуги
+    'nav.services': { ru: 'Услуги', en: 'Services' },
+    'nav.guides': { ru: 'Тургиды', en: 'Tour Guides' },
+    'nav.transfer': { ru: 'Трансфер', en: 'Transfer' },
+    'nav.book_tour': { ru: 'Заказ тура', en: 'Book Tour' },
+    'nav.tourists': { ru: 'Туристам', en: 'For Tourists' },
+    'nav.site_guide': { ru: 'Инструкция сайта', en: 'Site Guide' },
+    'nav.special_notes': { ru: 'Специальные заметки', en: 'Special Notes' },
+    'nav.offer_agreement': { ru: 'Договор оферта', en: 'Offer Agreement' },
+    'nav.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
+    'nav.promotions': { ru: 'Акции', en: 'Promotions' },
+    'nav.news': { ru: 'Новости', en: 'News' },
+    'nav.for_agents': { ru: 'Тур-агентам', en: 'For Tour Agents' },
+    
+    // Типы туров
+    'tour.single_day': { ru: 'Однодневные', en: 'Single Day' },
+    'tour.multi_day': { ru: 'Многодневные', en: 'Multi-Day' },
+    'tour.excursions': { ru: 'Экскурсии', en: 'Excursions' },
+    'tour.city_tours': { ru: 'Городские туры', en: 'City Tours' },
+    'tour.nature_eco': { ru: 'Природа/экологические туры', en: 'Nature/Eco Tours' },
+    'tour.cultural': { ru: 'Культурно познавательные туры', en: 'Cultural Tours' },
+    'tour.historical': { ru: 'Исторические туры', en: 'Historical Tours' },
+    'tour.trekking': { ru: 'Походы/трекинги', en: 'Trekking/Hiking' },
+    'tour.mountain_landscapes': { ru: 'Горные ландшафты', en: 'Mountain Landscapes' },
+    'tour.lake_landscapes': { ru: 'Озерные ландшафты', en: 'Lake Landscapes' },
+    'tour.adventure': { ru: 'Приключенческие туры', en: 'Adventure Tours' },
+    'tour.gastronomy': { ru: 'Гастрономические туры', en: 'Culinary Tours' },
+    'tour.auto_safari': { ru: 'Автотуры/сафари/джип-туры', en: 'Auto Tours/Safari/Jeep Tours' },
+    'tour.agro': { ru: 'Агротуры', en: 'Agro Tours' },
+    'tour.vip': { ru: 'VIP туры', en: 'VIP Tours' },
+    
+    // Расширенный футер
+    'footer.company': { ru: 'Компания:', en: 'Company:' },
+    'footer.partners': { ru: 'Партнеры', en: 'Partners' },
+    'footer.investment_projects': { ru: 'Инвестиционные Проекты', en: 'Investment Projects' },
+    'footer.how_to_book': { ru: 'Как бронировать туры?', en: 'How to Book Tours?' },
+    'footer.tours_catalog': { ru: 'Каталог туров', en: 'Tours Catalog' },
+    'footer.hotels_catalog': { ru: 'Каталог отелей', en: 'Hotels Catalog' },
+    'footer.social_pages': { ru: 'Социальные страницы:', en: 'Social Pages:' },
+    'footer.license_info': { ru: 'Лицензия на туристическую деятельность ФС№ 0000253, от 25.10.2022 г.', en: 'Tourist Activity License FS№ 0000253, dated 25.10.2022' },
+    'footer.contacts': { ru: 'Контакты:', en: 'Contacts:' },
+    'footer.public_offer': { ru: 'Публичная Оферта-Договор', en: 'Public Offer Agreement' },
+    'footer.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
+    'footer.privacy_policy': { ru: 'Политика конфиденциальности', en: 'Privacy Policy' },
+    'footer.our_location': { ru: 'Наше местоположение:', en: 'Our Location:' },
+    'footer.copyright': { ru: 'Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137', en: 'All rights reserved | Bunyod-Tour LLC (2017-2025) | TIN: 010098739; OGRN: 0110023137' },
+    
+    // Селектор языка
+    'language.russian': { ru: 'Русский', en: 'Russian' },
+    'language.english': { ru: 'English', en: 'English' },
+    
+    // НОВЫЕ PLACEHOLDER'Ы ДЛЯ АДМИН-ПАНЕЛИ
+    'placeholder.search_hotels': { ru: 'Поиск отелей...', en: 'Search hotels...' },
+    'placeholder.search_tour_agents': { ru: 'Поиск турагентов...', en: 'Search tour agents...' },
+    'placeholder.enter_text_for_translation': { ru: 'Введите текст для перевода...', en: 'Enter text for translation...' },
+    'placeholder.translated_text_will_appear': { ru: 'Переведенный текст появится здесь...', en: 'Translated text will appear here...' },
+    'placeholder.service_name_example': { ru: 'Например: Обед в ресторане', en: 'For example: Restaurant lunch' },
+    'placeholder.component_additional_info': { ru: 'Дополнительная информация о компоненте', en: 'Additional component information' },
+    'placeholder.slide_title': { ru: 'Заголовок слайда', en: 'Slide title' },
+    'placeholder.slide_description': { ru: 'Описание слайда', en: 'Slide description' },
+    'placeholder.learn_more': { ru: 'Узнать больше', en: 'Learn more' },
+    'placeholder.hotel_name_example': { ru: 'Отель Хилтон Душанбе, Серена Отель и т.д.', en: 'Hilton Dushanbe, Serena Hotel, etc.' },
+    'placeholder.hotel_description_ru': { ru: 'Краткое описание отеля, расположения и особенностей на русском языке...', en: 'Brief hotel description, location and features in Russian...' },
+    'placeholder.enter_new_brand': { ru: 'Введите название нового бренда', en: 'Enter new brand name' },
+    'placeholder.city_examples': { ru: 'Душанбе, Самарканд, Бишкек и т.д.', en: 'Dushanbe, Samarkand, Bishkek, etc.' },
+    'placeholder.enter_new_amenity': { ru: 'Введите название нового удобства', en: 'Enter new amenity name' },
+    'placeholder.meeting_with_guide': { ru: 'Встреча с гидом', en: 'Meeting with guide' },
+    'placeholder.detailed_stage_description': { ru: 'Подробное описание этапа программы', en: 'Detailed stage description' },
+    'placeholder.pickup_info_example': { ru: 'Например: Приём включён, Место сбора: отель, и т.д.', en: 'For example: Pickup included, Meeting point: hotel, etc.' },
+    'placeholder.enter_service_name': { ru: 'Введите название услуги', en: 'Enter service name' },
+    'placeholder.news_brief_description': { ru: 'Краткое описание новости (optional)', en: 'Brief news description (optional)' },
     
     // Title атрибуты (всплывающие подсказки)
     'title.language_switcher': { ru: 'Переключить язык', en: 'Switch language' },
@@ -151,6 +263,89 @@ window.translations = window.translations || {
     'admin.monthly_revenue': { ru: 'Доход за месяц', en: 'Monthly Revenue' },
     'admin.active_customers': { ru: 'Активных клиентов', en: 'Active Customers' },
     
+    // НОВЫЕ АДМИНИСТРАТИВНЫЕ РАЗДЕЛЫ
+    'admin.price_calculator': { ru: 'Калькулятор цен', en: 'Price Calculator' },
+    'admin.banner_management': { ru: 'Управление баннером', en: 'Banner Management' },
+    'admin.tour_agents': { ru: 'Турагенты', en: 'Tour Agents' },
+    'admin.trips': { ru: 'Поездки', en: 'Trips' },
+    'admin.exchange_rates': { ru: 'Курсы валют', en: 'Exchange Rates' },
+    'admin.cms_content': { ru: 'CMS - Контент', en: 'CMS - Content' },
+    'admin.sales_chart': { ru: 'График продаж', en: 'Sales Chart' },
+    'admin.popular_destinations': { ru: 'Популярные направления', en: 'Popular Destinations' },
+    'admin.manage_hotels': { ru: 'Управление отелями', en: 'Hotel Management' },
+    'admin.manage_guides': { ru: 'Управление гидами', en: 'Guide Management' },
+    'admin.manage_tour_agents': { ru: 'Управление турагентами', en: 'Tour Agent Management' },
+    'admin.manage_drivers': { ru: 'Управление водителями', en: 'Driver Management' },
+    'admin.manage_trips': { ru: 'Управление поездками', en: 'Trip Management' },
+    'admin.transfer_requests': { ru: 'Заявки на трансфер', en: 'Transfer Requests' },
+    'admin.manage_countries': { ru: 'Управление странами', en: 'Country Management' },
+    'admin.manage_cities': { ru: 'Управление городами', en: 'City Management' },
+    'admin.total_views': { ru: 'Всего просмотров', en: 'Total Views' },
+    'admin.total_news': { ru: 'Всего новостей', en: 'Total News' },
+    'admin.published': { ru: 'Опубликовано', en: 'Published' },
+    'admin.drafts': { ru: 'Черновики', en: 'Drafts' },
+    'admin.tour_blocks': { ru: 'Блоки туров', en: 'Tour Blocks' },
+    'admin.site_settings': { ru: 'Настройки сайта', en: 'Site Settings' },
+    'admin.tour_form': { ru: 'Форма тура', en: 'Tour Form' },
+    'admin.manage_tour_blocks': { ru: 'Управление блоками туров', en: 'Tour Block Management' },
+    
+    // ТАБЛИЦЫ
+    'table.order_number': { ru: 'Номер заказа', en: 'Order #' },
+    'table.client': { ru: 'Клиент', en: 'Client' },
+    'table.tour': { ru: 'Тур', en: 'Tour' },
+    'table.date': { ru: 'Дата', en: 'Date' },
+    'table.amount': { ru: 'Сумма', en: 'Amount' },
+    'table.status': { ru: 'Статус', en: 'Status' },
+    'table.actions': { ru: 'Действия', en: 'Actions' },
+    'table.name': { ru: 'Название', en: 'Name' },
+    'table.category': { ru: 'Категория', en: 'Category' },
+    'table.country': { ru: 'Страна', en: 'Country' },
+    'table.city': { ru: 'Город', en: 'City' },
+    'table.duration': { ru: 'Длительность', en: 'Duration' },
+    'table.price': { ru: 'Цена', en: 'Price' },
+    'table.title': { ru: 'Заголовок', en: 'Title' },
+    'table.author': { ru: 'Автор', en: 'Author' },
+    'table.publish_date': { ru: 'Дата публикации', en: 'Publish Date' },
+    'table.views': { ru: 'Просмотры', en: 'Views' },
+    'table.block_name_ru': { ru: 'Название блока (RU)', en: 'Block Name (RU)' },
+    'table.block_name_en': { ru: 'Название блока (EN)', en: 'Block Name (EN)' },
+    'table.slug': { ru: 'URL-адрес', en: 'Slug' },
+    'table.tour_count': { ru: 'Количество туров', en: 'Tour Count' },
+    'table.order': { ru: 'Порядок', en: 'Order' },
+    
+    // КНОПКИ
+    'btn.add_tour': { ru: 'Добавить тур', en: 'Add Tour' },
+    'btn.create_tour_block': { ru: 'Создать блок туров', en: 'Create Tour Block' },
+    'btn.add_hotel': { ru: 'Добавить отель', en: 'Add Hotel' },
+    'btn.add_guide': { ru: 'Добавить гида', en: 'Add Guide' },
+    'btn.add_tour_agent': { ru: 'Добавить турагента', en: 'Add Tour Agent' },
+    'btn.add_driver': { ru: 'Добавить водителя', en: 'Add Driver' },
+    'btn.add_trip': { ru: 'Добавить поездку', en: 'Add Trip' },
+    'btn.add_country': { ru: 'Добавить страну', en: 'Add Country' },
+    'btn.add_city': { ru: 'Добавить город', en: 'Add City' },
+    
+    // СТАТУСЫ
+    'status.pending': { ru: 'Ожидание', en: 'Pending' },
+    'status.confirmed': { ru: 'Подтвержден', en: 'Confirmed' },
+    'status.paid': { ru: 'Оплачен', en: 'Paid' },
+    'status.completed': { ru: 'Завершен', en: 'Completed' },
+    'status.cancelled': { ru: 'Отменен', en: 'Cancelled' },
+    
+    // ТАБЫ
+    'tab.all_orders': { ru: 'Все заказы', en: 'All Orders' },
+    
+    // ФОРМЫ
+    'form.pickup_info': { ru: 'Информация о встрече/трансфере', en: 'Pickup/Meeting Information' },
+    'form.tour_languages': { ru: 'Языки тура', en: 'Tour Languages' },
+    'form.min_people': { ru: 'Минимальное количество людей', en: 'Minimum Number of People' },
+    'form.max_people': { ru: 'Максимальное количество людей', en: 'Maximum Number of People' },
+    'form.available_months': { ru: 'Доступные месяцы', en: 'Available Months' },
+    'form.available_days': { ru: 'Доступные дни', en: 'Available Days' },
+    'form.tour_photos': { ru: 'Фотографии тура', en: 'Tour Photos' },
+    
+    // ЯЗЫКИ
+    'language.russian': { ru: 'Русский', en: 'Russian' },
+    
     // НОВЫЕ КЛЮЧИ ДЛЯ РАСШИРЕННОГО ПОКРЫТИЯ
     'nav.services': { ru: 'Услуги', en: 'Services' },
     'nav.guides': { ru: 'Тургиды', en: 'Tour Guides' },
@@ -178,7 +373,298 @@ window.translations = window.translations || {
     'modal.description': { ru: 'Описание тура', en: 'Tour Description' },
     'modal.program': { ru: 'Программа тура', en: 'Tour Program' },
     'modal.hotels': { ru: 'Отели', en: 'Hotels' },
-    'modal.features': { ru: 'Особенности тура:', en: 'Tour Features:' }
+    'modal.features': { ru: 'Особенности тура:', en: 'Tour Features:' },
+    
+    // === НОВЫЕ КЛЮЧИ ДЛЯ index.html ===
+    
+    // Заголовок страницы
+    'page.title': { ru: 'Bunyod-Tour - Туры по Таджикистану', en: 'Bunyod-Tour - Tours in Tajikistan' },
+
+    // Дополнительная навигация
+    'nav.site_guide': { ru: 'Инструкция сайта', en: 'Site Guide' },
+    'nav.special_notes': { ru: 'Специальные заметки', en: 'Special Notes' },
+    'nav.offer_agreement': { ru: 'Договор оферта', en: 'Offer Agreement' },
+    'nav.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
+    'nav.our_agents': { ru: 'Наши турагенты', en: 'Our Travel Agents' },
+    'nav.for_agents': { ru: 'Для турагентов', en: 'For Travel Agents' },
+
+    // Типы туров в навигации
+    'tour.single_day': { ru: 'Однодневные', en: 'Single Day' },
+    'tour.multi_day': { ru: 'Многодневные', en: 'Multi Day' },
+    'tour.excursions': { ru: 'Экскурсии', en: 'Excursions' },
+    'tour.city_tours': { ru: 'Городские туры', en: 'City Tours' },
+    'tour.nature_eco': { ru: 'Природа/экологические туры', en: 'Nature/Eco Tours' },
+    'tour.cultural': { ru: 'Культурно познавательные туры', en: 'Cultural Educational Tours' },
+    'tour.historical': { ru: 'Исторические туры', en: 'Historical Tours' },
+    'tour.trekking': { ru: 'Походы/трекинги', en: 'Hiking/Trekking' },
+    'tour.mountain_landscapes': { ru: 'Горные ландшафты', en: 'Mountain Landscapes' },
+    'tour.lake_landscapes': { ru: 'Озерные ландшафты', en: 'Lake Landscapes' },
+    'tour.adventure': { ru: 'Приключенческие туры', en: 'Adventure Tours' },
+    'tour.gastronomy': { ru: 'Гастрономические туры', en: 'Gastronomy Tours' },
+    'tour.auto_safari': { ru: 'Автотуры/сафари/джип-туры', en: 'Auto/Safari/Jeep Tours' },
+    'tour.agro': { ru: 'Агротуры', en: 'Agro Tours' },
+    'tour.vip': { ru: 'VIP туры', en: 'VIP Tours' },
+
+    // Placeholder
+    'placeholder.search_perfect_tour': { ru: 'Найдите идеальный тур: Памир, Искандеркуль, треккинг...', en: 'Find the perfect tour: Pamir, Iskanderkul, trekking...' },
+
+    // Страны
+    'country.tajikistan': { ru: 'Таджикистан', en: 'Tajikistan' },
+    'country.uzbekistan': { ru: 'Узбекистан', en: 'Uzbekistan' },
+    'country.kyrgyzstan': { ru: 'Кыргызстан', en: 'Kyrgyzstan' },
+    'country.kazakhstan': { ru: 'Казахстан', en: 'Kazakhstan' },
+    'country.turkmenistan': { ru: 'Туркменистан', en: 'Turkmenistan' },
+
+    // Типы туров
+    'tour_type.personal': { ru: 'Персональный', en: 'Personal' },
+    'tour_type.group_personal': { ru: 'Групповой персональный', en: 'Group Personal' },
+    'tour_type.group_general': { ru: 'Групповой общий', en: 'Group General' },
+    'tour_type.special': { ru: 'Специальный', en: 'Special' },
+
+    // Заголовки сервисов
+    'service.transfer_title': { ru: 'ТРАНСФЕР', en: 'TRANSFER' },
+    'service.guides_title': { ru: 'ТУР-ГИДЫ', en: 'TOUR GUIDES' },
+    'service.agency_title': { ru: 'АГЕНТСКИЙ СЕРВИС', en: 'AGENCY SERVICE' },
+    'service.custom_tour_title': { ru: 'СОБСТВЕННЫЙ ТУР', en: 'CUSTOM TOUR' },
+
+    // Города
+    'city.dushanbe': { ru: 'Душанбе', en: 'Dushanbe' },
+    'city.khorog': { ru: 'Хорог', en: 'Khorog' },
+    'city.khujand': { ru: 'Худжанд', en: 'Khujand' },
+    'city.tashkent': { ru: 'Ташкент', en: 'Tashkent' },
+    'city.samarkand': { ru: 'Самарканд', en: 'Samarkand' },
+    'city.bukhara': { ru: 'Бухара', en: 'Bukhara' },
+    'city.bishkek': { ru: 'Бишкек', en: 'Bishkek' },
+    'city.astana': { ru: 'Астана', en: 'Astana' },
+    'city.almaty': { ru: 'Алматы', en: 'Almaty' },
+    'city.ashgabat': { ru: 'Ашхабад', en: 'Ashgabat' },
+
+    // Подвал
+    'footer.company': { ru: 'Компания:', en: 'Company:' },
+    'footer.social_pages': { ru: 'Социальные страницы:', en: 'Social Pages:' },
+    'footer.our_location': { ru: 'Наше местоположение:', en: 'Our Location:' },
+
+    // Языки
+    'lang.russian': { ru: 'Русский', en: 'Russian' },
+
+    // === НОВЫЕ КЛЮЧИ ДЛЯ TOUR PAGES INTERNATIONALIZATION ===
+    
+    // Tour template page specific keys
+    'tour.page_title': { ru: 'Тур - Bunyod-Tour v4.0', en: 'Tour - Bunyod-Tour v4.0' },
+    'tour.duration_label': { ru: 'Продолжительность:', en: 'Duration:' },
+    'tour.meals_included_label': { ru: 'Приём включен:', en: 'Meals included:' },
+    'tour.meals_not_included': { ru: 'Приём не включен', en: 'Meals not included' },
+    'tour.languages_label': { ru: 'Языки:', en: 'Languages:' },
+    'tour.tab.description': { ru: 'Описание', en: 'Description' },
+    'tour.tab.program': { ru: 'Программа тура', en: 'Tour Program' },
+    'tour.included': { ru: 'Что включено:', en: 'What\'s included:' },
+    'tour.not_included': { ru: 'Не включено в тур:', en: 'Not included in tour:' },
+    'tour.reviews': { ru: 'Отзывы', en: 'Reviews' },
+    'tour.loading_reviews': { ru: 'Загрузка отзывов...', en: 'Loading reviews...' },
+    'tour.price_per_person': { ru: 'за человека', en: 'per person' },
+    
+    // Navigation submenus for tours
+    'nav.tours.one_day': { ru: 'Однодневные', en: 'One Day' },
+    'nav.tours.multi_day': { ru: 'Многодневные', en: 'Multi Day' },
+    'nav.tours.excursions': { ru: 'Экскурсии', en: 'Excursions' },
+    'nav.tours.city_tours': { ru: 'Городские туры', en: 'City Tours' },
+    'nav.tours.nature_eco': { ru: 'Природа/экологические туры', en: 'Nature/Eco Tours' },
+    'nav.tours.cultural': { ru: 'Культурно познавательные туры', en: 'Cultural Educational Tours' },
+    'nav.tours.historical': { ru: 'Исторические туры', en: 'Historical Tours' },
+    'nav.tours.hiking': { ru: 'Походы/трекинги', en: 'Hiking/Trekking' },
+    'nav.tours.mountain': { ru: 'Горные ландшафты', en: 'Mountain Landscapes' },
+    'nav.tours.lakes': { ru: 'Озерные ландшафты', en: 'Lake Landscapes' },
+    'nav.tours.adventure': { ru: 'Приключенческие туры', en: 'Adventure Tours' },
+    'nav.tours.gastronomy': { ru: 'Гастрономические туры', en: 'Gastronomy Tours' },
+    'nav.tours.safari': { ru: 'Автотуры/сафари/джип-туры', en: 'Auto/Safari/Jeep Tours' },
+    'nav.tours.agro': { ru: 'Агротуры', en: 'Agro Tours' },
+    'nav.tours.vip': { ru: 'VIP туры', en: 'VIP Tours' },
+    
+    // Tourist menu navigation
+    'nav.tourists.instructions': { ru: 'Инструкция сайта', en: 'Site Instructions' },
+    'nav.tourists.special_notes': { ru: 'Специальные заметки', en: 'Special Notes' },
+    'nav.tourists.contract': { ru: 'Договор оферта', en: 'Offer Agreement' },
+    'nav.tourists.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
+    
+    // Tour agents navigation
+    'nav.agents': { ru: 'Тур-агенты', en: 'Tour Agents' },
+    'nav.agents.our_agents': { ru: 'Наши турагенты', en: 'Our Tour Agents' },
+    'nav.agents.for_agents': { ru: 'Для турагентов', en: 'For Tour Agents' },
+    
+    // Language selector
+    'nav.lang.russian': { ru: 'Русский', en: 'Russian' },
+    
+    // Breadcrumb navigation
+    'breadcrumb.central_asia': { ru: 'Туры по Центральной Азии', en: 'Central Asia Tours' },
+    'breadcrumb.tajikistan': { ru: 'Туры по Таджикистану', en: 'Tajikistan Tours' },
+    'breadcrumb.mountain_tours': { ru: 'Горные туры', en: 'Mountain Tours' },
+    
+    // Buttons and actions
+    'btn.more_photos': { ru: 'Ещё фото', en: 'More Photos' },
+    'btn.view_all_photos': { ru: 'Посмотреть все фотографии', en: 'View All Photos' },
+    'btn.share': { ru: 'Поделиться', en: 'Share' },
+    'btn.copy_link': { ru: 'Скопировать ссылку', en: 'Copy Link' },
+    'btn.download_pdf': { ru: 'Скачать PDF', en: 'Download PDF' },
+    'btn.apply': { ru: 'Применить', en: 'Apply' },
+    
+    // Form elements
+    'form.check_dates': { ru: 'Проверить доступные даты', en: 'Check Available Dates' },
+    'form.travelers_count': { ru: 'Количество туристов', en: 'Number of Travelers' },
+    'form.one_adult': { ru: '1 взрослый', en: '1 Adult' },
+    'form.max_travelers_note': { ru: 'Вы можете выбрать до 15 туристов всего', en: 'You can select up to 15 travelers total' },
+    'form.adults_age': { ru: 'Взрослые (от 9 лет)', en: 'Adults (9+ years)' },
+    'form.adults_range': { ru: 'Минимум: 1, Максимум: 15', en: 'Minimum: 1, Maximum: 15' },
+    'form.children_age': { ru: 'Ребёнок (до 8 лет)', en: 'Child (up to 8 years)' },
+    'form.children_range': { ru: 'Минимум: 0, Максимум: 15', en: 'Minimum: 0, Maximum: 15' },
+    'form.infants_age': { ru: 'Младенцы (0-2 лет)', en: 'Infants (0-2 years)' },
+    'form.tour_start_time': { ru: 'Время начала тура', en: 'Tour Start Time' },
+    'form.no_hidden_fees': { ru: 'Никаких скрытых платежей', en: 'No Hidden Fees' },
+    'form.select_country_first': { ru: 'Сначала выберите страну', en: 'Select country first' },
+    
+    // Calendar days
+    'calendar.mon': { ru: 'Пн', en: 'Mon' },
+    'calendar.tue': { ru: 'Вт', en: 'Tue' },
+    'calendar.wed': { ru: 'Ср', en: 'Wed' },
+    'calendar.thu': { ru: 'Чт', en: 'Thu' },
+    'calendar.fri': { ru: 'Пт', en: 'Fri' },
+    'calendar.sat': { ru: 'Сб', en: 'Sat' },
+    'calendar.sun': { ru: 'Вс', en: 'Sun' },
+    
+    // Filter sections for tours.html
+    'filters.title': { ru: 'Фильтры поиска', en: 'Search Filters' },
+    'filters.destination': { ru: 'Направление', en: 'Destination' },
+    'filters.format': { ru: 'Формат тура', en: 'Tour Format' },
+    'filters.duration': { ru: 'Длительность тура', en: 'Tour Duration' },
+    'filters.theme': { ru: 'Тематика тура', en: 'Tour Theme' },
+    'filters.group': { ru: 'Групповой', en: 'Group' },
+    'filters.individual': { ru: 'Индивидуальный', en: 'Individual' },
+    'filters.one_day': { ru: 'Однодневный', en: 'One Day' },
+    'filters.multi_day': { ru: 'Многодневный (2-5 дней)', en: 'Multi Day (2-5 days)' },
+    'filters.long_term': { ru: 'Длительный (6+ дней)', en: 'Long Term (6+ days)' },
+    
+    // Filter theme options
+    'filters.theme.overview': { ru: 'Обзорная экскурсия', en: 'Overview Excursion' },
+    'filters.theme.trekking': { ru: 'Походы / трекинг', en: 'Hiking / Trekking' },
+    'filters.theme.mountain': { ru: 'Горные маршруты', en: 'Mountain Routes' },
+    'filters.theme.lake': { ru: 'Озёрные маршруты', en: 'Lake Routes' },
+    'filters.theme.historical': { ru: 'Исторический тур', en: 'Historical Tour' },
+    'filters.theme.recreational': { ru: 'Рекреационный тур', en: 'Recreational Tour' },
+    'filters.theme.agro': { ru: 'Агро-туризм', en: 'Agro Tourism' },
+    'filters.theme.health': { ru: 'Санаторно-оздоровительный тур', en: 'Health & Wellness Tour' },
+    'filters.theme.combined': { ru: 'Комбинированный тур по Центральной Азии', en: 'Combined Central Asia Tour' },
+    
+    // Date filter
+    'filters.date': { ru: 'Дата проведения', en: 'Date' },
+    
+    // === НОВЫЕ КЛЮЧИ ДЛЯ АДМИН-ПАНЕЛИ ===
+    
+    // Дополнительные административные разделы
+    'admin.price_calculator': { ru: 'Калькулятор цен', en: 'Price Calculator' },
+    'admin.banner_management': { ru: 'Управление баннерами', en: 'Banner Management' },
+    'admin.tour_agents': { ru: 'Турагенты', en: 'Tour Agents' },
+    'admin.trips': { ru: 'Поездки', en: 'Trips' },
+    'admin.exchange_rates': { ru: 'Курсы валют', en: 'Exchange Rates' },
+    'admin.cms_content': { ru: 'CMS - Контент', en: 'CMS - Content' },
+    'admin.translations': { ru: 'Переводы', en: 'Translations' },
+    'admin.monthly_revenue': { ru: 'Доход за месяц', en: 'Monthly Revenue' },
+    'admin.active_customers': { ru: 'Активные клиенты', en: 'Active Customers' },
+    'admin.sales_chart': { ru: 'График продаж', en: 'Sales Chart' },
+    'admin.popular_destinations': { ru: 'Популярные направления', en: 'Popular Destinations' },
+    'admin.manage_hotels': { ru: 'Управление отелями', en: 'Hotel Management' },
+    'admin.manage_guides': { ru: 'Управление гидами', en: 'Guide Management' },
+    'admin.manage_tour_agents': { ru: 'Управление турагентами', en: 'Tour Agent Management' },
+    'admin.manage_drivers': { ru: 'Управление водителями', en: 'Driver Management' },
+    'admin.manage_trips': { ru: 'Управление поездками', en: 'Trip Management' },
+    'admin.transfer_requests': { ru: 'Запросы трансфера', en: 'Transfer Requests' },
+    'admin.manage_countries': { ru: 'Управление странами', en: 'Country Management' },
+    'admin.manage_cities': { ru: 'Управление городами', en: 'City Management' },
+    'admin.total_views': { ru: 'Всего просмотров', en: 'Total Views' },
+    'admin.total_news': { ru: 'Всего новостей', en: 'Total News' },
+    'admin.published': { ru: 'Опубликовано', en: 'Published' },
+    'admin.drafts': { ru: 'Черновики', en: 'Drafts' },
+    'admin.tour_blocks': { ru: 'Блоки туров', en: 'Tour Blocks' },
+    'admin.site_settings': { ru: 'Настройки сайта', en: 'Site Settings' },
+    'admin.tour_form': { ru: 'Форма тура', en: 'Tour Form' },
+    'admin.manage_tour_blocks': { ru: 'Управление блоками туров', en: 'Tour Block Management' },
+
+    // Заголовки таблиц
+    'table.order_number': { ru: 'Заказ №', en: 'Order #' },
+    'table.client': { ru: 'Клиент', en: 'Client' },
+    'table.tour': { ru: 'Тур', en: 'Tour' },
+    'table.date': { ru: 'Дата', en: 'Date' },
+    'table.amount': { ru: 'Сумма', en: 'Amount' },
+    'table.status': { ru: 'Статус', en: 'Status' },
+    'table.actions': { ru: 'Действия', en: 'Actions' },
+    'table.name': { ru: 'Название', en: 'Name' },
+    'table.category': { ru: 'Категория', en: 'Category' },
+    'table.country': { ru: 'Страна', en: 'Country' },
+    'table.city': { ru: 'Город', en: 'City' },
+    'table.duration': { ru: 'Длительность', en: 'Duration' },
+    'table.price': { ru: 'Цена', en: 'Price' },
+    'table.title': { ru: 'Заголовок', en: 'Title' },
+    'table.author': { ru: 'Автор', en: 'Author' },
+    'table.publish_date': { ru: 'Дата публикации', en: 'Publish Date' },
+    'table.views': { ru: 'Просмотры', en: 'Views' },
+    'table.block_name_ru': { ru: 'Название блока (RU)', en: 'Block Name (RU)' },
+    'table.block_name_en': { ru: 'Название блока (EN)', en: 'Block Name (EN)' },
+    'table.slug': { ru: 'Слаг', en: 'Slug' },
+    'table.tour_count': { ru: 'Количество туров', en: 'Tour Count' },
+    'table.order': { ru: 'Порядок', en: 'Order' },
+
+    // Дополнительные кнопки
+    'btn.add_tour': { ru: 'Добавить тур', en: 'Add Tour' },
+    'btn.create_tour_block': { ru: 'Создать блок туров', en: 'Create Tour Block' },
+    'btn.add_hotel': { ru: 'Добавить отель', en: 'Add Hotel' },
+    'btn.add_guide': { ru: 'Добавить гида', en: 'Add Guide' },
+    'btn.add_tour_agent': { ru: 'Добавить турагента', en: 'Add Tour Agent' },
+    'btn.add_driver': { ru: 'Добавить водителя', en: 'Add Driver' },
+    'btn.add_trip': { ru: 'Добавить поездку', en: 'Add Trip' },
+    'btn.add_country': { ru: 'Добавить страну', en: 'Add Country' },
+    'btn.add_city': { ru: 'Добавить город', en: 'Add City' },
+
+    // Статусы заказов
+    'status.pending': { ru: 'В ожидании', en: 'Pending' },
+    'status.confirmed': { ru: 'Подтвержден', en: 'Confirmed' },
+    'status.paid': { ru: 'Оплачен', en: 'Paid' },
+    'status.completed': { ru: 'Завершен', en: 'Completed' },
+    'status.cancelled': { ru: 'Отменен', en: 'Cancelled' },
+
+    // Вкладки
+    'tab.all_orders': { ru: 'Все заказы', en: 'All Orders' },
+
+    // Формы и поля
+    'form.pickup_info': { ru: 'Информация о встрече/трансфере', en: 'Pickup/Meeting Information' },
+    'form.tour_languages': { ru: 'Языки тура', en: 'Tour Languages' },
+    'form.min_people': { ru: 'Минимальное количество людей', en: 'Minimum Number of People' },
+    'form.max_people': { ru: 'Максимальное количество людей', en: 'Maximum Number of People' },
+    'form.available_months': { ru: 'Доступные месяцы', en: 'Available Months' },
+    'form.available_days': { ru: 'Доступные дни', en: 'Available Days' },
+    'form.tour_photos': { ru: 'Фотографии тура', en: 'Tour Photos' },
+
+    // Дополнительные placeholder'ы
+    'placeholder.search_tours': { ru: 'Поиск туров...', en: 'Search tours...' },
+    'placeholder.search_hotels': { ru: 'Поиск отелей...', en: 'Search hotels...' },
+    'placeholder.search_tour_agents': { ru: 'Поиск турагентов...', en: 'Search tour agents...' },
+    'placeholder.enter_text_for_translation': { ru: 'Введите текст для перевода...', en: 'Enter text for translation...' },
+    'placeholder.translated_text_will_appear': { ru: 'Переведенный текст появится здесь...', en: 'Translated text will appear here...' },
+    'placeholder.service_name_example': { ru: 'Например: Обед в ресторане', en: 'For example: Restaurant lunch' },
+    'placeholder.component_additional_info': { ru: 'Дополнительная информация о компоненте', en: 'Additional component information' },
+    'placeholder.slide_title': { ru: 'Заголовок слайда', en: 'Slide title' },
+    'placeholder.slide_description': { ru: 'Описание слайда', en: 'Slide description' },
+    'placeholder.learn_more': { ru: 'Узнать больше', en: 'Learn more' },
+    'placeholder.hotel_name_example': { ru: 'Hilton Dushanbe, Serena Hotel и т.д.', en: 'Hilton Dushanbe, Serena Hotel, etc.' },
+    'placeholder.hotel_description_ru': { ru: 'Краткое описание отеля, местоположение и особенности на русском...', en: 'Brief hotel description, location and features in Russian...' },
+    'placeholder.enter_new_brand': { ru: 'Введите название нового бренда', en: 'Enter new brand name' },
+    'placeholder.city_examples': { ru: 'Душанбе, Самарканд, Бишкек и т.д.', en: 'Dushanbe, Samarkand, Bishkek, etc.' },
+    'placeholder.enter_new_amenity': { ru: 'Введите название новой услуги', en: 'Enter new amenity name' },
+    'placeholder.meeting_with_guide': { ru: 'Встреча с гидом', en: 'Meeting with guide' },
+    'placeholder.detailed_stage_description': { ru: 'Подробное описание этапа', en: 'Detailed stage description' },
+    'placeholder.pickup_info_example': { ru: 'Например: Трансфер включен, Место встречи: отель и т.д.', en: 'For example: Pickup included, Meeting point: hotel, etc.' },
+    'placeholder.enter_service_name': { ru: 'Введите название услуги', en: 'Enter service name' },
+    'placeholder.news_brief_description': { ru: 'Краткое описание новости (по желанию)', en: 'Brief news description (optional)' },
+
+    // Языки
+    'language.russian': { ru: 'Русский', en: 'Russian' }
 };
 
 // Убираем const aliases - используем прямые ссылки на window.*

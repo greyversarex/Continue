@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оплата прошла успешно - Bunyod-Tour</title>
+    <title data-translate="payment.success_page_title">Оплата прошла успешно - Bunyod-Tour</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -35,10 +35,10 @@
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-gray-900">Bunyod-Tour</h1>
+                    <h1 class="text-2xl font-bold text-gray-900" data-translate="common.company_name">Bunyod-Tour</h1>
                 </div>
                 <button onclick="goHome()" class="text-blue-600 hover:text-blue-800 font-medium">
-                    <i class="fas fa-home mr-2"></i>На главную
+                    <i class="fas fa-home mr-2"></i><span data-translate="payment.to_home">На главную</span>
                 </button>
             </div>
         </div>
@@ -57,11 +57,11 @@
                 </div>
 
                 <!-- Success Message -->
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4" data-translate="payment.success_title">
                     Оплата прошла успешно!
                 </h2>
                 
-                <p class="text-gray-600 mb-6">
+                <p class="text-gray-600 mb-6" data-translate="payment.booking_confirmed">
                     Ваше бронирование подтверждено. На указанный email отправлено подтверждение с деталями заказа.
                 </p>
 
@@ -69,19 +69,19 @@
                 <div id="orderDetails" class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
                     <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
-                            <span class="text-gray-600">Номер заказа:</span>
+                            <span class="text-gray-600" data-translate="payment.order_number">Номер заказа:</span>
                             <span id="orderNumber" class="font-medium">...</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">Тур:</span>
+                            <span class="text-gray-600" data-translate="payment.tour">Тур:</span>
                             <span id="tourName" class="font-medium">...</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">Сумма:</span>
+                            <span class="text-gray-600" data-translate="payment.amount">Сумма:</span>
                             <span id="totalAmount" class="font-medium text-green-600">...</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">Способ оплаты:</span>
+                            <span class="text-gray-600" data-translate="payment.payment_method">Способ оплаты:</span>
                             <span id="paymentMethod" class="font-medium">...</span>
                         </div>
                     </div>
@@ -90,15 +90,15 @@
                 <!-- Action Buttons -->
                 <div class="space-y-3">
                     <button onclick="downloadReceipt()" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                        <i class="fas fa-download mr-2"></i>Скачать чек
+                        <i class="fas fa-download mr-2"></i><span data-translate="payment.download_receipt">Скачать чек</span>
                     </button>
                     
                     <button onclick="goHome()" class="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors font-medium">
-                        <i class="fas fa-home mr-2"></i>Вернуться на главную
+                        <i class="fas fa-home mr-2"></i><span data-translate="payment.return_home">Вернуться на главную</span>
                     </button>
                     
                     <button onclick="viewMyOrders()" class="w-full text-blue-600 hover:text-blue-800 py-2 font-medium">
-                        <i class="fas fa-list mr-2"></i>Мои заказы
+                        <i class="fas fa-list mr-2"></i><span data-translate="payment.my_orders">Мои заказы</span>
                     </button>
                 </div>
             </div>

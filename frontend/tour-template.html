@@ -6,8 +6,10 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title id="page-title">Тур - Bunyod-Tour v4.0</title>
+    <title id="page-title" data-translate="tour.page_title">Тур - Bunyod-Tour v4.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 🌐 ПОДКЛЮЧЕНИЕ ЦЕНТРАЛЬНОЙ СИСТЕМЫ i18n -->
+    <script src="/public/js/i18n.js"></script>
     <style>
         .thumbnail-active {
             border: 2px solid #3b82f6;
@@ -175,61 +177,61 @@
                 
                 <!-- Навигационное меню -->
                 <nav class="hidden md:flex space-x-6">
-                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors">О нас</a>
+                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.about">О нас</a>
                     
                     <!-- Услуги (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.services">Услуги</a>
                         <div class="dropdown-content">
                             <div class="dropdown-submenu">
-                                <a href="#">Туры</a>
+                                <a href="#" data-translate="nav.tours">Туры</a>
                                 <div class="dropdown-subcontent" style="width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px;">
-                                    <a href="#" style="padding: 8px;">Однодневные</a>
-                                    <a href="#" style="padding: 8px;">Многодневные</a>
-                                    <a href="#" style="padding: 8px;">Экскурсии</a>
-                                    <a href="#" style="padding: 8px;">Городские туры</a>
-                                    <a href="#" style="padding: 8px;">Природа/экологические туры</a>
-                                    <a href="#" style="padding: 8px;">Культурно познавательные туры</a>
-                                    <a href="#" style="padding: 8px;">Исторические туры</a>
-                                    <a href="#" style="padding: 8px;">Походы/трекинги</a>
-                                    <a href="#" style="padding: 8px;">Горные ландшафты</a>
-                                    <a href="#" style="padding: 8px;">Озерные ландшафты</a>
-                                    <a href="#" style="padding: 8px;">Приключенческие туры</a>
-                                    <a href="#" style="padding: 8px;">Гастрономические туры</a>
-                                    <a href="#" style="padding: 8px;">Автотуры/сафари/джип-туры</a>
-                                    <a href="#" style="padding: 8px;">Агротуры</a>
-                                    <a href="#" style="padding: 8px;">VIP туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.one_day">Однодневные</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.multi_day">Многодневные</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.excursions">Экскурсии</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.city_tours">Городские туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.nature_eco">Природа/экологические туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.cultural">Культурно познавательные туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.historical">Исторические туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.hiking">Походы/трекинги</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.mountain">Горные ландшафты</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.lakes">Озерные ландшафты</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.adventure">Приключенческие туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.gastronomy">Гастрономические туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.safari">Автотуры/сафари/джип-туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.agro">Агротуры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="nav.tours.vip">VIP туры</a>
                                     <a href="#" style="padding: 8px;"></a>
                                 </div>
                             </div>
-                            <a href="#">Тургиды</a>
-                            <a href="#" >Трансфер</a>
-                            <a href="#">Заказ тура</a>
-                            <a href="visa-support.html">Визовая поддержка</a>
+                            <a href="#" data-translate="nav.guides">Тургиды</a>
+                            <a href="#" data-translate="nav.transfer">Трансфер</a>
+                            <a href="#" data-translate="nav.book_tour">Заказ тура</a>
+                            <a href="visa-support.html" data-translate="nav.visa_support">Визовая поддержка</a>
                         </div>
                     </div>
                     
                     <!-- Туристам (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туристам</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.tourists">Туристам</a>
                         <div class="dropdown-content">
-                            <a href="#">Инструкция сайта</a>
-                            <a href="#">Специальные заметки</a>
-                            <a href="#">Договор оферта</a>
-                            <a href="#">Правила оплаты и возврата средств</a>
+                            <a href="#" data-translate="nav.tourists.instructions">Инструкция сайта</a>
+                            <a href="#" data-translate="nav.tourists.special_notes">Специальные заметки</a>
+                            <a href="#" data-translate="nav.tourists.contract">Договор оферта</a>
+                            <a href="#" data-translate="nav.tourists.payment_rules">Правила оплаты и возврата средств</a>
                         </div>
                     </div>
                     
                     <!-- Акции (БЕЗ выпадающего меню) -->
-                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors">Акции</a>
-                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors">Новости</a>
+                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.promotions">Акции</a>
+                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.news">Новости</a>
                     
                     <!-- Тур-агенты (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Тур-агенты</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.agents">Тур-агенты</a>
                         <div class="dropdown-content">
-                            <a href="#">Наши турагенты</a>
-                            <a href="tour-agents.html">Для турагентов</a>
+                            <a href="#" data-translate="nav.agents.our_agents">Наши турагенты</a>
+                            <a href="tour-agents.html" data-translate="nav.agents.for_agents">Для турагентов</a>
                         </div>
                     </div>
                 </nav>
@@ -240,7 +242,7 @@
                     <div class="language-dropdown">
                         <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
                             <span class="selected-flag flag-ru"></span>
-                            <span class="selected-lang">Русский</span>
+                            <span class="selected-lang" data-translate="nav.lang.russian">Русский</span>
                             <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
@@ -248,7 +250,7 @@
                         <div class="lang-dropdown-content" id="langDropdown">
                             <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'flag-ru', 'Русский')">
                                 <span class="flag flag-ru"></span>
-                                <span class="lang-name">Русский</span>
+                                <span class="lang-name" data-translate="nav.lang.russian">Русский</span>
                             </a>
                             <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'flag-us', 'English')">
                                 <span class="flag flag-us"></span>
@@ -314,13 +316,13 @@
     <nav class="bg-white border-b px-6 py-3">
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center text-sm text-gray-600 space-x-2">
-                <a href="index.html" class="hover:text-blue-600">Главная</a>
+                <a href="index.html" class="hover:text-blue-600" data-translate="nav.home">Главная</a>
                 <span>›</span>
-                <a href="#" class="hover:text-blue-600">Туры по Центральной Азии</a>
+                <a href="#" class="hover:text-blue-600" data-translate="breadcrumb.central_asia">Туры по Центральной Азии</a>
                 <span>›</span>
-                <a href="#" class="hover:text-blue-600">Туры по Таджикистану</a>
+                <a href="#" class="hover:text-blue-600" data-translate="breadcrumb.tajikistan">Туры по Таджикистану</a>
                 <span>›</span>
-                <a href="#" class="hover:text-blue-600">Горные туры</a>
+                <a href="#" class="hover:text-blue-600" data-translate="breadcrumb.mountain_tours">Горные туры</a>
                 <span>›</span>
                 <span class="text-gray-900" id="breadcrumb-final"><!-- Название загружается из API --></span>
             </div>
@@ -359,7 +361,7 @@
                                 <!-- Thumbnails will be generated by JS -->
                             </div>
                             <button id="see-more-btn" class="w-full h-20 bg-gray-100 rounded-lg flex items-center justify-center text-sm font-medium text-gray-600 hover:bg-gray-200 transition-colors">
-                                Ещё фото
+                                <span data-translate="btn.more_photos">Ещё фото</span>
                             </button>
                         </div>
                         
@@ -393,7 +395,7 @@
                             <!-- View all photos -->
                             <div class="text-center mt-3">
                                 <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                    Посмотреть все фотографии
+                                    <span data-translate="btn.view_all_photos">Посмотреть все фотографии</span>
                                 </a>
                             </div>
                         </div>
@@ -410,7 +412,7 @@
                                 <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
-                                <span class="text-gray-900 font-medium" id="tour-duration">Длительность: 6-7 часов</span>
+                                <span class="text-gray-900 font-medium" id="tour-duration"><span data-translate="tour.duration_label">Длительность:</span> 6-7 часов</span>
                             </div>
                             
                             <!-- Приём включен/не включен -->
@@ -418,7 +420,7 @@
                                 <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
                                 </svg>
-                                <span class="text-gray-900 font-medium" id="meals-included">Приём не включен</span>
+                                <span class="text-gray-900 font-medium" id="meals-included"><span data-translate="tour.meals_not_included">Приём не включен</span></span>
                             </div>
                             
                             <!-- Языки тура -->
@@ -426,7 +428,7 @@
                                 <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
                                 </svg>
-                                <span class="text-gray-900 font-medium" id="tour-languages">Языки: Русский, Английский, Таджикский</span>
+                                <span class="text-gray-900 font-medium" id="tour-languages"><span data-translate="tour.languages_label">Языки:</span> Русский, Английский, Таджикский</span>
                             </div>
                             
                             <!-- Share function moved to same row -->
@@ -436,7 +438,7 @@
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
                                         </svg>
-                                        <span>Поделиться</span>
+                                        <span data-translate="btn.share">Поделиться</span>
                                     </button>
                                     
                                     <!-- Share menu -->
@@ -446,13 +448,13 @@
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                                                 </svg>
-                                                <span>Скопировать ссылку</span>
+                                                <span data-translate="btn.copy_link">Скопировать ссылку</span>
                                             </button>
                                             <button onclick="downloadPDF()" class="w-full flex items-center space-x-2 px-3 py-2 text-left hover:bg-gray-100 rounded">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                                 </svg>
-                                                <span>Скачать PDF</span>
+                                                <span data-translate="btn.download_pdf">Скачать PDF</span>
                                             </button>
                                         </div>
                                     </div>
@@ -469,10 +471,10 @@
                     <div class="border-b border-gray-200">
                         <nav class="flex space-x-8 px-6 pt-4" aria-label="Tabs">
                             <button id="tab-description" class="whitespace-nowrap py-2 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600" onclick="switchTab('description')">
-                                Описание тура
+                                <span data-translate="tour.tab.description">Описание</span> тура
                             </button>
                             <button id="tab-program" class="whitespace-nowrap py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" onclick="switchTab('program')">
-                                Программа тура
+                                <span data-translate="tour.tab.program">Программа тура</span>
                             </button>
 
                         </nav>
@@ -488,13 +490,13 @@
                                 <p>Этот тур предлагает уникальную возможность испытать дух приключений и насладиться одними из самых впечатляющих пейзажей в мире.</p>
                             </div>
 
-                            <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-4">Что включено:</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-4" data-translate="tour.included">Что включено:</h3>
                             <ul class="space-y-2" id="tour-includes">
                                 <!-- Данные загружаются динамически из админ панели -->
                             </ul>
                             
                             <div id="tour-excludes-section" style="display: none;">
-                                <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-4">Не включено в тур:</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-4" data-translate="tour.not_included">Не включено в тур:</h3>
                                 <ul class="space-y-2" id="tour-excludes">
                                     <!-- Данные загружаются динамически из админ панели -->
                                 </ul>
@@ -560,7 +562,7 @@
 
                 <!-- Reviews -->
                 <div class="bg-white border border-gray-200 rounded-lg p-6 mt-6" id="tour-reviews-section">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Отзывы <span id="reviews-count" class="text-gray-500 text-base font-normal">(0)</span></h2>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6"><span data-translate="tour.reviews">Отзывы</span> <span id="reviews-count" class="text-gray-500 text-base font-normal">(0)</span></h2>
                     
                     <div class="space-y-6" id="reviews-container">
                         <!-- Reviews will be loaded by JS -->
@@ -572,7 +574,7 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            Загрузка отзывов...
+                            <span data-translate="tour.loading_reviews">Загрузка отзывов...</span>
                         </div>
                     </div>
 
@@ -587,18 +589,18 @@
                         <div class="mb-2">
                             <span class="text-2xl font-bold text-gray-900" id="tour-price">От 3 500₽</span>
                         </div>
-                        <span class="text-sm text-gray-600" id="price-type-text">за человека</span>
+                        <span class="text-sm text-gray-600" id="price-type-text" data-translate="tour.price_per_person">за человека</span>
                     </div>
                     
                     <!-- Date Selector -->
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Проверить доступные даты</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="form.check_dates">Проверить доступные даты</label>
                         <div class="relative">
                             <input 
                                 type="text" 
                                 id="tour-date-display" 
                                 class="w-full border border-gray-300 rounded-lg p-3 text-gray-900 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
-                                placeholder="Проверить доступные даты"
+                                placeholder="Проверить доступные даты" data-translate-placeholder="form.check_dates"
                                 readonly
                                 onclick="toggleCalendar()">
                             <input type="hidden" id="tour-date" value="">
@@ -619,13 +621,13 @@
                                     </button>
                                 </div>
                                 <div class="grid grid-cols-7 gap-1 mb-2">
-                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Пн</div>
-                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Вт</div>
-                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Ср</div>
-                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Чт</div>
-                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Пт</div>
-                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Сб</div>
-                                    <div class="text-center text-xs font-medium text-gray-500 py-2">Вс</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2" data-translate="calendar.mon">Пн</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2" data-translate="calendar.tue">Вт</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2" data-translate="calendar.wed">Ср</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2" data-translate="calendar.thu">Чт</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2" data-translate="calendar.fri">Пт</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2" data-translate="calendar.sat">Сб</div>
+                                    <div class="text-center text-xs font-medium text-gray-500 py-2" data-translate="calendar.sun">Вс</div>
                                 </div>
                                 <div id="calendar-days" class="grid grid-cols-7 gap-1">
                                     <!-- Days will be populated here -->
@@ -636,14 +638,14 @@
                     
                     <!-- Travelers Selector -->
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Количество туристов</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="form.travelers_count">Количество туристов</label>
                         <div class="border border-gray-300 rounded-lg p-3 cursor-pointer" onclick="toggleTravelersDropdown()">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-2">
                                     <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 12a5 5 0 100-10 5 5 0 000 10zm0-2a3 3 0 100-6 3 3 0 000 6zm6 10a1 1 0 01-1 1H5a1 1 0 01-1-1v-1a6 6 0 1112 0v1z"/>
                                     </svg>
-                                    <span id="traveler-summary">1 взрослый</span>
+                                    <span id="traveler-summary" data-translate="form.one_adult">1 взрослый</span>
                                 </div>
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -653,12 +655,12 @@
                         
                         <!-- Travelers Dropdown -->
                         <div id="travelers-dropdown" class="hidden mt-2 border border-gray-300 rounded-lg p-4 bg-white shadow-lg">
-                            <div class="text-xs text-gray-500 mb-3">Вы можете выбрать до 15 туристов всего</div>
+                            <div class="text-xs text-gray-500 mb-3" data-translate="form.max_travelers_note">Вы можете выбрать до 15 туристов всего</div>
                             
                             <!-- Adults -->
                             <div class="flex items-center justify-between mb-4">
                                 <div>
-                                    <div class="font-medium text-sm">Взрослые (от 9 лет)</div>
+                                    <div class="font-medium text-sm" data-translate="form.adults_age">Взрослые (от 9 лет)</div>
                                     <div class="text-xs text-gray-500">Минимум: 1, Максимум: 15</div>
                                 </div>
                                 <div class="flex items-center space-x-3">
@@ -675,7 +677,7 @@
                             <!-- Children -->
                             <div class="flex items-center justify-between mb-4">
                                 <div>
-                                    <div class="font-medium text-sm">Ребёнок (до 8 лет)</div>
+                                    <div class="font-medium text-sm" data-translate="form.children_age">Ребёнок (до 8 лет)</div>
                                     <div class="text-xs text-gray-500">Минимум: 0, Максимум: 15</div>
                                 </div>
                                 <div class="flex items-center space-x-3">
@@ -692,7 +694,7 @@
                             <!-- Infants -->
                             <div class="flex items-center justify-between mb-4">
                                 <div>
-                                    <div class="font-medium text-sm">Младенцы (0-2 лет)</div>
+                                    <div class="font-medium text-sm" data-translate="form.infants_age">Младенцы (0-2 лет)</div>
                                     <div class="text-xs text-gray-500">Минимум: 0, Максимум: 15</div>
                                 </div>
                                 <div class="flex items-center space-x-3">
@@ -706,7 +708,7 @@
                                 </div>
                             </div>
                             
-                            <button onclick="applyTravelerSelection()" class="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                            <button onclick="applyTravelerSelection()" class="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 px-4 rounded-lg font-medium transition-colors" data-translate="btn.apply">
                                 Применить
                             </button>
                         </div>

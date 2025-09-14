@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог отелей - Bunyod-Tour</title>
+    <title data-translate="hotel.page_title">Каталог отелей - Bunyod-Tour</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- 🌐 ПОДКЛЮЧЕНИЕ ЦЕНТРАЛЬНОЙ СИСТЕМЫ i18n -->
@@ -322,62 +322,62 @@
                 
                 <!-- Навигационное меню -->
                 <nav class="hidden md:flex space-x-6">
-                    <a href="/" class="text-white hover:text-gray-300 transition-colors">Главная</a>
-                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors">О нас</a>
+                    <a href="/" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.home">Главная</a>
+                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.about">О нас</a>
                     
                     <!-- Услуги (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.services">Услуги</a>
                         <div class="dropdown-content">
                             <div class="dropdown-submenu">
-                                <a href="#">Туры</a>
+                                <a href="#" data-translate="nav.tours">Туры</a>
                                 <div class="dropdown-subcontent" style="width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px;">
-                                    <a href="#" style="padding: 8px;">Однодневные</a>
-                                    <a href="#" style="padding: 8px;">Многодневные</a>
-                                    <a href="#" style="padding: 8px;">Экскурсии</a>
-                                    <a href="#" style="padding: 8px;">Городские туры</a>
-                                    <a href="#" style="padding: 8px;">Природа/экологические туры</a>
-                                    <a href="#" style="padding: 8px;">Культурно познавательные туры</a>
-                                    <a href="#" style="padding: 8px;">Исторические туры</a>
-                                    <a href="#" style="padding: 8px;">Походы/трекинги</a>
-                                    <a href="#" style="padding: 8px;">Горные ландшафты</a>
-                                    <a href="#" style="padding: 8px;">Озерные ландшафты</a>
-                                    <a href="#" style="padding: 8px;">Приключенческие туры</a>
-                                    <a href="#" style="padding: 8px;">Гастрономические туры</a>
-                                    <a href="#" style="padding: 8px;">Автотуры/сафари/джип-туры</a>
-                                    <a href="#" style="padding: 8px;">Агротуры</a>
-                                    <a href="#" style="padding: 8px;">VIP туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.single_day">Однодневные</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.multi_day">Многодневные</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.excursions">Экскурсии</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.city_tours">Городские туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.nature_eco">Природа/экологические туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.cultural">Культурно познавательные туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.historical">Исторические туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.trekking">Походы/трекинги</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.mountain_landscapes">Горные ландшафты</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.lake_landscapes">Озерные ландшафты</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.adventure">Приключенческие туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.gastronomy">Гастрономические туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.auto_safari">Автотуры/сафари/джип-туры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.agro">Агротуры</a>
+                                    <a href="#" style="padding: 8px;" data-translate="tour.vip">VIP туры</a>
                                 </div>
                             </div>
-                            <a href="/hotels-catalog.html">Отели</a>
-                            <a href="#">Тургиды</a>
-                            <a href="#" >Трансфер</a>
-                            <a href="#">Заказ тура</a>
-                            <a href="visa-support.html">Визовая поддержка</a>
+                            <a href="/hotels-catalog.html" data-translate="nav.hotels">Отели</a>
+                            <a href="#" data-translate="nav.guides">Тургиды</a>
+                            <a href="#" data-translate="nav.transfer">Трансфер</a>
+                            <a href="#" data-translate="nav.book_tour">Заказ тура</a>
+                            <a href="visa-support.html" data-translate="nav.visa_support">Визовая поддержка</a>
                         </div>
                     </div>
                     
                     <!-- Туристам (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туристам</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.tourists">Туристам</a>
                         <div class="dropdown-content">
-                            <a href="booking-guide.html">Инструкция сайта</a>
-                            <a href="#">Специальные заметки</a>
-                            <a href="#">Договор оферта</a>
-                            <a href="#">Правила оплаты и возврата средств</a>
+                            <a href="booking-guide.html" data-translate="nav.site_guide">Инструкция сайта</a>
+                            <a href="#" data-translate="nav.special_notes">Специальные заметки</a>
+                            <a href="#" data-translate="nav.offer_agreement">Договор оферта</a>
+                            <a href="#" data-translate="nav.payment_rules">Правила оплаты и возврата средств</a>
                         </div>
                     </div>
                     
                     <!-- Акции (БЕЗ выпадающего меню) -->
-                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors">Акции</a>
-                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors">Новости</a>
+                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.promotions">Акции</a>
+                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.news">Новости</a>
                     
                     <!-- Тур-агенты (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Тур-агенты</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.tour_agents">Тур-агенты</a>
                         <div class="dropdown-content">
-                            <a href="#">Наши турагенты</a>
-                            <a href="tour-agents.html">Для турагентов</a>
+                            <a href="#" data-translate="nav.our_agents">Наши турагенты</a>
+                            <a href="tour-agents.html" data-translate="nav.for_agents">Для турагентов</a>
                         </div>
                     </div>
                 </nav>
@@ -388,7 +388,7 @@
                     <div class="language-dropdown">
                         <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
                             <span class="selected-flag flag-ru"></span>
-                            <span class="selected-lang">Русский</span>
+                            <span class="selected-lang" data-translate="lang.russian">Русский</span>
                             <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
@@ -396,7 +396,7 @@
                         <div class="lang-dropdown-content" id="langDropdown">
                             <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'flag-ru', 'Русский')">
                                 <span class="flag flag-ru"></span>
-                                <span class="lang-name">Русский</span>
+                                <span class="lang-name" data-translate="lang.russian">Русский</span>
                             </a>
                             <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'flag-us', 'English')">
                                 <span class="flag flag-us"></span>
@@ -453,8 +453,8 @@
     <!-- Page Header -->
     <div class="bg-gray-100 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl font-bold mb-4 text-gray-800">Каталог отелей</h1>
-            <p class="text-xl text-gray-600">Выберите идеальное место для вашего отдыха</p>
+            <h1 class="text-4xl font-bold mb-4 text-gray-800" data-translate="hotel.catalog_title">Каталог отелей</h1>
+            <p class="text-xl text-gray-600" data-translate="hotel.catalog_subtitle">Выберите идеальное место для вашего отдыха</p>
         </div>
     </div>
 
@@ -462,59 +462,59 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Filters -->
         <div class="filter-gradient rounded-xl shadow-lg p-8 mb-8">
-            <h2 class="text-xl font-bold mb-6 text-white">🔍 Фильтры поиска</h2>
+            <h2 class="text-xl font-bold mb-6 text-white" data-translate="filters.search_filters">🔍 Фильтры поиска</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <!-- Country filter -->
                 <div>
-                    <label class="block text-sm font-semibold text-white mb-3">🌍 Страна</label>
+                    <label class="block text-sm font-semibold text-white mb-3" data-translate="filters.country">🌍 Страна</label>
                     <select id="countryFilter" class="modern-select w-full px-4 py-3 rounded-xl text-gray-800 font-medium">
-                        <option value="">Все страны</option>
-                        <option value="Таджикистан">Таджикистан</option>
-                        <option value="Узбекистан">Узбекистан</option>
-                        <option value="Киргизстан">Киргизстан</option>
-                        <option value="Туркменистан">Туркменистан</option>
-                        <option value="Казахстан">Казахстан</option>
+                        <option value="" data-translate="filters.all_countries">Все страны</option>
+                        <option value="Таджикистан" data-translate="country.tajikistan">Таджикистан</option>
+                        <option value="Узбекистан" data-translate="country.uzbekistan">Узбекистан</option>
+                        <option value="Киргизстан" data-translate="country.kyrgyzstan">Киргизстан</option>
+                        <option value="Туркменистан" data-translate="country.turkmenistan">Туркменистан</option>
+                        <option value="Казахстан" data-translate="country.kazakhstan">Казахстан</option>
                     </select>
                 </div>
                 
                 <!-- Category filter -->
                 <div>
-                    <label class="block text-sm font-semibold text-white mb-3">🏷️ Категория</label>
+                    <label class="block text-sm font-semibold text-white mb-3" data-translate="filters.category">🏷️ Категория</label>
                     <select id="categoryFilter" class="modern-select w-full px-4 py-3 rounded-xl text-gray-800 font-medium">
-                        <option value="">Все категории</option>
-                        <option value="Luxury">Люкс</option>
-                        <option value="Premium">Премиум</option>
-                        <option value="Budget">Бюджетный</option>
+                        <option value="" data-translate="filters.all_categories">Все категории</option>
+                        <option value="Luxury" data-translate="hotel.category_luxury">Люкс</option>
+                        <option value="Premium" data-translate="hotel.category_premium">Премиум</option>
+                        <option value="Budget" data-translate="hotel.category_budget">Бюджетный</option>
                     </select>
                 </div>
                 
                 <!-- Stars filter -->
                 <div>
-                    <label class="block text-sm font-semibold text-white mb-3">⭐ Звезды</label>
+                    <label class="block text-sm font-semibold text-white mb-3" data-translate="filters.stars">⭐ Звезды</label>
                     <select id="starsFilter" class="modern-select w-full px-4 py-3 rounded-xl text-gray-800 font-medium">
-                        <option value="">Любое количество</option>
-                        <option value="5">5 звезд</option>
-                        <option value="4">4 звезды</option>
-                        <option value="3">3 звезды</option>
-                        <option value="2">2 звезды</option>
-                        <option value="1">1 звезда</option>
+                        <option value="" data-translate="filters.any_stars">Любое количество</option>
+                        <option value="5" data-translate="filters.five_stars">5 звезд</option>
+                        <option value="4" data-translate="filters.four_stars">4 звезды</option>
+                        <option value="3" data-translate="filters.three_stars">3 звезды</option>
+                        <option value="2" data-translate="filters.two_stars">2 звезды</option>
+                        <option value="1" data-translate="filters.one_star">1 звезда</option>
                     </select>
                 </div>
                 
                 <!-- Search -->
                 <div>
-                    <label class="block text-sm font-semibold text-white mb-3">🔎 Поиск</label>
-                    <input type="text" id="searchInput" placeholder="Название отеля..." 
+                    <label class="block text-sm font-semibold text-white mb-3" data-translate="filters.search">🔎 Поиск</label>
+                    <input type="text" id="searchInput" placeholder="Название отеля..." data-translate-placeholder="hotel.search_placeholder" 
                            class="modern-select w-full px-4 py-3 rounded-xl text-gray-800 font-medium placeholder-gray-500">
                 </div>
             </div>
             
             <div class="mt-6 flex justify-between items-center">
                 <button onclick="clearFilters()" class="text-white hover:text-gray-200 font-semibold flex items-center transition-colors">
-                    <i class="fas fa-times mr-2"></i> Очистить фильтры
+                    <i class="fas fa-times mr-2"></i> <span data-translate="btn.clear_filters">Очистить фильтры</span>
                 </button>
-                <span id="resultsCount" class="text-white font-medium">Загружается...</span>
+                <span id="resultsCount" class="text-white font-medium" data-translate="common.loading">Загружается...</span>
             </div>
         </div>
 
@@ -532,8 +532,8 @@
         <!-- No results message -->
         <div id="noResults" class="hidden text-center py-12">
             <i class="fas fa-bed text-gray-400 text-6xl mb-4"></i>
-            <h3 class="text-xl font-semibold text-gray-600 mb-2">Отели не найдены</h3>
-            <p class="text-gray-500">Попробуйте изменить фильтры поиска</p>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2" data-translate="hotel.no_hotels_found">Отели не найдены</h3>
+            <p class="text-gray-500" data-translate="hotel.try_different_filters">Попробуйте изменить фильтры поиска</p>
         </div>
     </div>
 
@@ -543,21 +543,21 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Компания -->
                 <div>
-                    <h4 class="font-semibold mb-4">Компания:</h4>
+                    <h4 class="font-semibold mb-4" data-translate="footer.company">Компания:</h4>
                     <ul class="space-y-2 text-sm text-gray-300">
                         <li><a href="about-us.html" class="hover:text-white">О нас</a></li>
                         <li><a href="tour-agents.html" class="hover:text-white">Тур-агентам</a></li>
-                        <li><a href="#" class="hover:text-white">Партнеры</a></li>
-                        <li><a href="investment-projects.html" class="hover:text-white">Инвестиционные Проекты</a></li>
-                        <li><a href="booking-guide.html" class="hover:text-white">Как бронировать туры?</a></li>
-                        <li><a href="tours-search.html" class="hover:text-white">Каталог туров</a></li>
-                        <li><a href="/hotels-catalog.html" class="hover:text-white">Каталог отелей</a></li>
+                        <li><a href="#" class="hover:text-white" data-translate="footer.partners">Партнеры</a></li>
+                        <li><a href="investment-projects.html" class="hover:text-white" data-translate="footer.investment_projects">Инвестиционные Проекты</a></li>
+                        <li><a href="booking-guide.html" class="hover:text-white" data-translate="footer.how_to_book">Как бронировать туры?</a></li>
+                        <li><a href="tours-search.html" class="hover:text-white" data-translate="footer.tours_catalog">Каталог туров</a></li>
+                        <li><a href="/hotels-catalog.html" class="hover:text-white" data-translate="footer.hotels_catalog">Каталог отелей</a></li>
                     </ul>
                 </div>
                 
                 <!-- Социальные страницы -->
                 <div>
-                    <h4 class="font-semibold mb-4">Социальные страницы:</h4>
+                    <h4 class="font-semibold mb-4" data-translate="footer.social_pages">Социальные страницы:</h4>
                     <div class="flex space-x-4 mb-4">
                         <!-- Facebook -->
                         <a href="https://www.facebook.com/Tajikistanservice" target="_blank" class="text-gray-300 hover:text-white">
@@ -591,26 +591,26 @@
                         </a>
                     </div>
                     <p class="text-sm text-gray-300">
-                        Лицензия на туристическую деятельность ФС№ 0000253, от 25.10.2022 г.
+                        <span data-translate="footer.license_info">Лицензия на туристическую деятельность ФС№ 0000253, от 25.10.2022 г.</span>
                     </p>
                 </div>
                 
                 <!-- Контакты -->
                 <div>
-                    <h4 class="font-semibold mb-4">Контакты:</h4>
+                    <h4 class="font-semibold mb-4" data-translate="footer.contacts">Контакты:</h4>
                     <div class="space-y-2 text-sm text-gray-300">
                         <p>+992 44 625 7575; +992 93-126-1134</p>
                         <p>+992 00-110-0087; +992 88-235-3434</p>
                         <p>info@bunyodtour.tj</p>
-                        <p><a href="oferta-ru.pdf" target="_blank" class="hover:text-white text-blue-300">Публичная Оферта-Договор</a></p>
-                        <p><a href="payment-rules-ru.pdf" target="_blank" class="hover:text-white text-blue-300">Правила оплаты и возврата средств</a></p>
-                        <p><a href="privacy-policy-ru.pdf" target="_blank" class="hover:text-white text-blue-300">Политика конфиденциальности</a></p>
+                        <p><a href="oferta-ru.pdf" target="_blank" class="hover:text-white text-blue-300" data-translate="footer.public_offer">Публичная Оферта-Договор</a></p>
+                        <p><a href="payment-rules-ru.pdf" target="_blank" class="hover:text-white text-blue-300" data-translate="footer.payment_rules">Правила оплаты и возврата средств</a></p>
+                        <p><a href="privacy-policy-ru.pdf" target="_blank" class="hover:text-white text-blue-300" data-translate="footer.privacy_policy">Политика конфиденциальности</a></p>
                     </div>
                 </div>
             </div>
             
             <div class="border-t border-gray-600 mt-8 pt-8 text-center text-sm text-gray-300">
-                <p>Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137</p>
+                <p data-translate="footer.copyright">Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137</p>
             </div>
         </div>
     </footer>
@@ -1012,20 +1012,20 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Компания -->
                 <div>
-                    <h4 class="font-semibold mb-4">Компания:</h4>
+                    <h4 class="font-semibold mb-4" data-translate="footer.company">Компания:</h4>
                     <ul class="space-y-2 text-sm text-gray-300">
                         <li><a href="about-us.html" class="hover:text-white">О нас</a></li>
                         <li><a href="tour-agents.html" class="hover:text-white">Тур-агентам</a></li>
-                        <li><a href="#" class="hover:text-white">Партнеры</a></li>
-                        <li><a href="investment-projects.html" class="hover:text-white">Инвестиционные Проекты</a></li>
-                        <li><a href="booking-guide.html" class="hover:text-white">Как бронировать туры?</a></li>
-                        <li><a href="tours-search.html" class="hover:text-white">Каталог туров</a></li>
+                        <li><a href="#" class="hover:text-white" data-translate="footer.partners">Партнеры</a></li>
+                        <li><a href="investment-projects.html" class="hover:text-white" data-translate="footer.investment_projects">Инвестиционные Проекты</a></li>
+                        <li><a href="booking-guide.html" class="hover:text-white" data-translate="footer.how_to_book">Как бронировать туры?</a></li>
+                        <li><a href="tours-search.html" class="hover:text-white" data-translate="footer.tours_catalog">Каталог туров</a></li>
                     </ul>
                 </div>
                 
                 <!-- Социальные страницы -->
                 <div>
-                    <h4 class="font-semibold mb-4">Социальные страницы:</h4>
+                    <h4 class="font-semibold mb-4" data-translate="footer.social_pages">Социальные страницы:</h4>
                     <div class="flex space-x-4 mb-4">
                         <!-- Facebook -->
                         <a href="https://www.facebook.com/Tajikistanservice" target="_blank" class="text-gray-300 hover:text-white">
@@ -1059,34 +1059,34 @@
                         </a>
                     </div>
                     <p class="text-sm text-gray-300">
-                        Лицензия на туристическую деятельность ФС№ 0000253, от 25.10.2022 г.
+                        <span data-translate="footer.license_info">Лицензия на туристическую деятельность ФС№ 0000253, от 25.10.2022 г.</span>
                     </p>
                 </div>
                 
                 <!-- Контакты -->
                 <div>
-                    <h4 class="font-semibold mb-4">Контакты:</h4>
+                    <h4 class="font-semibold mb-4" data-translate="footer.contacts">Контакты:</h4>
                     <div class="space-y-2 text-sm text-gray-300">
                         <p>+992 44 625 7575; +992 93-126-1134</p>
                         <p>+992 00-110-0087; +992 88-235-3434</p>
                         <p>info@bunyodtour.tj</p>
-                        <p><a href="oferta-ru.pdf" target="_blank" class="hover:text-white text-blue-300">Публичная Оферта-Договор</a></p>
-                        <p><a href="payment-rules-ru.pdf" target="_blank" class="hover:text-white text-blue-300">Правила оплаты и возврата средств</a></p>
-                        <p><a href="privacy-policy-ru.pdf" target="_blank" class="hover:text-white text-blue-300">Политика конфиденциальности</a></p>
+                        <p><a href="oferta-ru.pdf" target="_blank" class="hover:text-white text-blue-300" data-translate="footer.public_offer">Публичная Оферта-Договор</a></p>
+                        <p><a href="payment-rules-ru.pdf" target="_blank" class="hover:text-white text-blue-300" data-translate="footer.payment_rules">Правила оплаты и возврата средств</a></p>
+                        <p><a href="privacy-policy-ru.pdf" target="_blank" class="hover:text-white text-blue-300" data-translate="footer.privacy_policy">Политика конфиденциальности</a></p>
                     </div>
                 </div>
             </div>
             
             <!-- Google Map Section -->
             <div class="border-t border-gray-600 mt-8 pt-8">
-                <h4 class="font-semibold mb-4 text-white text-center">Наше местоположение:</h4>
+                <h4 class="font-semibold mb-4 text-white text-center" data-translate="footer.our_location">Наше местоположение:</h4>
                 <div class="w-full h-64 rounded-lg overflow-hidden shadow-lg">
                     <div id="map" class="w-full h-full"></div>
                 </div>
             </div>
             
             <div class="border-t border-gray-600 mt-8 pt-8 text-center text-sm text-gray-300">
-                <p>Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137</p>
+                <p data-translate="footer.copyright">Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137</p>
             </div>
         </div>
     </footer>

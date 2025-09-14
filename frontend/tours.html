@@ -278,7 +278,7 @@
                     <div class="language-dropdown">
                         <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
                             <span class="selected-flag flag-ru"></span>
-                            <span class="selected-lang">Русский</span>
+                            <span class="selected-lang" data-translate="nav.lang.russian">Русский</span>
                             <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
@@ -286,7 +286,7 @@
                         <div class="lang-dropdown-content" id="langDropdown">
                             <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'flag-ru', 'Русский')">
                                 <span class="flag flag-ru"></span>
-                                <span class="lang-name">Русский</span>
+                                <span class="lang-name" data-translate="nav.lang.russian">Русский</span>
                             </a>
                             <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'flag-us', 'English')">
                                 <span class="flag flag-us"></span>
@@ -345,41 +345,41 @@
             <!-- Левая панель - Фильтры -->
             <div class="lg:col-span-1">
                 <div class="sticky top-8">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Фильтры поиска</h2>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6" data-translate="filters.title">Фильтры поиска</h2>
                     
                     <!-- Направление -->
                     <div class="filter-section">
-                        <div class="filter-title">Направление</div>
+                        <div class="filter-title" data-translate="filters.destination">Направление</div>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Страна</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="form.country">Страна</label>
                             <select id="countrySelect" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">Выберите страну</option>
-                                <option value="Таджикистан">Таджикистан</option>
-                                <option value="Узбекистан">Узбекистан</option>
-                                <option value="Киргизстан">Киргизстан</option>
-                                <option value="Туркменистан">Туркменистан</option>
-                                <option value="Казахстан">Казахстан</option>
+                                <option value="" data-translate="form.select_country">Выберите страну</option>
+                                <option value="Таджикистан" data-translate="country.tajikistan">Таджикистан</option>
+                                <option value="Узбекистан" data-translate="country.uzbekistan">Узбекистан</option>
+                                <option value="Киргизстан" data-translate="country.kyrgyzstan">Киргизстан</option>
+                                <option value="Туркменистан" data-translate="country.turkmenistan">Туркменистан</option>
+                                <option value="Казахстан" data-translate="country.kazakhstan">Казахстан</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Город</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="form.city">Город</label>
                             <select id="citySelect" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
-                                <option value="">Сначала выберите страну</option>
+                                <option value="" data-translate="form.select_country_first">Сначала выберите страну</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Формат тура -->
                     <div class="filter-section">
-                        <div class="filter-title">Формат тура</div>
+                        <div class="filter-title" data-translate="filters.format">Формат тура</div>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
                                 <input type="checkbox" id="format-group" name="format" value="Групповой">
-                                <label for="format-group">Групповой</label>
+                                <label for="format-group" data-translate="filters.group">Групповой</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="format-individual" name="format" value="Индивидуальный">
-                                <label for="format-individual">Индивидуальный</label>
+                                <label for="format-individual" data-translate="filters.individual">Индивидуальный</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="format-vip" name="format" value="VIP">

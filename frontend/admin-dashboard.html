@@ -400,11 +400,11 @@
                 </a>
                 <a href="#" class="nav-item" data-section="price-calculator">
                     <i class="fas fa-calculator"></i>
-                    <span>Калькулятор цен</span>
+                    <span data-translate="admin.price_calculator">Калькулятор цен</span>
                 </a>
                 <a href="#" class="nav-item" data-section="banner-management">
                     <i class="fas fa-images"></i>
-                    <span>Управление баннером</span>
+                    <span data-translate="admin.banner_management">Управление баннером</span>
                 </a>
                 <a href="#" class="nav-item" data-section="bookings">
                     <i class="fas fa-calendar-check"></i>
@@ -420,7 +420,7 @@
                 </a>
                 <a href="#" class="nav-item" data-section="tour-agents">
                     <i class="fas fa-handshake"></i>
-                    <span>Турагенты</span>
+                    <span data-translate="admin.tour_agents">Турагенты</span>
                 </a>
                 <a href="#" class="nav-item" data-section="drivers">
                     <i class="fas fa-id-card"></i>
@@ -428,7 +428,7 @@
                 </a>
                 <a href="#" class="nav-item" data-section="trips">
                     <i class="fas fa-route"></i>
-                    <span>Поездки</span>
+                    <span data-translate="admin.trips">Поездки</span>
                 </a>
                 <a href="#" class="nav-item" data-section="transfers">
                     <i class="fas fa-shuttle-van"></i>
@@ -460,15 +460,15 @@
                 </a>
                 <a href="#" class="nav-item" data-section="exchange-rates">
                     <i class="fas fa-exchange-alt"></i>
-                    <span>Курсы валют</span>
+                    <span data-translate="admin.exchange_rates">Курсы валют</span>
                 </a>
                 <a href="#" class="nav-item" data-section="cms">
                     <i class="fas fa-edit"></i>
-                    <span>CMS - Контент</span>
+                    <span data-translate="admin.cms_content">CMS - Контент</span>
                 </a>
                 <a href="#" class="nav-item" data-section="translations">
                     <i class="fas fa-language"></i>
-                    <span>Переводы</span>
+                    <span data-translate="admin.translations">Переводы</span>
                 </a>
                 <a href="#" class="nav-item" data-section="settings">
                     <i class="fas fa-cog"></i>
@@ -557,7 +557,7 @@
                                 <span class="text-green-500 text-sm font-medium">+18%</span>
                             </div>
                             <h3 class="text-2xl font-bold text-gray-800">$45,678</h3>
-                            <p class="text-gray-600 text-sm mt-1">Доход за месяц</p>
+                            <p class="text-gray-600 text-sm mt-1" data-translate="admin.monthly_revenue">Доход за месяц</p>
                         </div>
                         
                         <div class="stat-card">
@@ -568,7 +568,7 @@
                                 <span class="text-green-500 text-sm font-medium">+8%</span>
                             </div>
                             <h3 class="text-2xl font-bold text-gray-800">1,234</h3>
-                            <p class="text-gray-600 text-sm mt-1">Активных клиентов</p>
+                            <p class="text-gray-600 text-sm mt-1" data-translate="admin.active_customers">Активных клиентов</p>
                         </div>
                     </div>
 
@@ -579,13 +579,13 @@
                             <table class="data-table w-full">
                                 <thead>
                                     <tr>
-                                        <th>№ Заказа</th>
-                                        <th>Клиент</th>
-                                        <th>Тур</th>
-                                        <th>Дата</th>
-                                        <th>Сумма</th>
-                                        <th>Статус</th>
-                                        <th>Действия</th>
+                                        <th data-translate="table.order_number">№ Заказа</th>
+                                        <th data-translate="table.client">Клиент</th>
+                                        <th data-translate="table.tour">Тур</th>
+                                        <th data-translate="table.date">Дата</th>
+                                        <th data-translate="table.amount">Сумма</th>
+                                        <th data-translate="table.status">Статус</th>
+                                        <th data-translate="table.actions">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="recentOrdersTable">
@@ -598,13 +598,13 @@
                     <!-- Charts -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-white rounded-xl shadow-sm p-6">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-4">График продаж</h3>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="admin.sales_chart">График продаж</h3>
                             <div style="height: 300px; position: relative;">
                                 <canvas id="salesChart"></canvas>
                             </div>
                         </div>
                         <div class="bg-white rounded-xl shadow-sm p-6">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Популярные направления</h3>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4" data-translate="admin.popular_destinations">Популярные направления</h3>
                             <div style="height: 300px; position: relative;">
                                 <canvas id="destinationsChart"></canvas>
                             </div>
@@ -616,12 +616,12 @@
                 <section id="toursSection" style="display: none;">
                     <div class="mb-6 flex justify-between items-center">
                         <div class="search-bar">
-                            <input type="text" placeholder="Поиск туров..." id="tourSearch">
+                            <input type="text" data-translate-placeholder="placeholder.search_tours" placeholder="Поиск туров..." id="tourSearch">
                             <i class="fas fa-search"></i>
                         </div>
                         <button class="btn btn-primary" onclick="openTourModal()">
                             <i class="fas fa-plus"></i>
-                            Добавить тур
+                            <span data-translate="btn.add_tour">Добавить тур</span>
                         </button>
                     </div>
                     
@@ -631,14 +631,14 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Название</th>
-                                        <th>Категория</th>
-                                        <th>Страна</th>
-                                        <th>Город</th>
-                                        <th>Длительность</th>
-                                        <th>Цена</th>
-                                        <th>Статус</th>
-                                        <th>Действия</th>
+                                        <th data-translate="table.name">Название</th>
+                                        <th data-translate="table.category">Категория</th>
+                                        <th data-translate="table.country">Страна</th>
+                                        <th data-translate="table.city">Город</th>
+                                        <th data-translate="table.duration">Длительность</th>
+                                        <th data-translate="table.price">Цена</th>
+                                        <th data-translate="table.status">Статус</th>
+                                        <th data-translate="table.actions">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="toursTable">
@@ -653,12 +653,12 @@
                 <section id="bookingsSection" style="display: none;">
                     <div class="mb-6">
                         <div class="flex gap-2 mb-4">
-                            <button class="tab-button active" data-status="all">Все заказы</button>
-                            <button class="tab-button" data-status="pending">Ожидающие</button>
-                            <button class="tab-button" data-status="confirmed">Подтвержденные</button>
-                            <button class="tab-button" data-status="paid">Оплаченные</button>
-                            <button class="tab-button" data-status="completed">Завершенные</button>
-                            <button class="tab-button" data-status="cancelled">Отмененные</button>
+                            <button class="tab-button active" data-status="all" data-translate="tab.all_orders">Все заказы</button>
+                            <button class="tab-button" data-status="pending" data-translate="status.pending">Ожидающие</button>
+                            <button class="tab-button" data-status="confirmed" data-translate="status.confirmed">Подтвержденные</button>
+                            <button class="tab-button" data-status="paid" data-translate="status.paid">Оплаченные</button>
+                            <button class="tab-button" data-status="completed" data-translate="status.completed">Завершенные</button>
+                            <button class="tab-button" data-status="cancelled" data-translate="status.cancelled">Отмененные</button>
                         </div>
                     </div>
                     
@@ -667,16 +667,16 @@
                             <table class="data-table w-full">
                                 <thead>
                                     <tr>
-                                        <th>№ Заказа</th>
+                                        <th data-translate="table.order_number">№ Заказа</th>
                                         <th>Дата заказа</th>
-                                        <th>Клиент</th>
-                                        <th>Тур</th>
+                                        <th data-translate="table.client">Клиент</th>
+                                        <th data-translate="table.tour">Тур</th>
                                         <th>Дата тура</th>
                                         <th>Кол-во человек</th>
-                                        <th>Сумма</th>
+                                        <th data-translate="table.amount">Сумма</th>
                                         <th>Оплата</th>
-                                        <th>Статус</th>
-                                        <th>Действия</th>
+                                        <th data-translate="table.status">Статус</th>
+                                        <th data-translate="table.actions">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="bookingsTable">
@@ -691,7 +691,7 @@
                 <section id="hotelsSection" style="display: none;">
                     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
                         <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-xl font-semibold">Управление отелями</h2>
+                            <h2 class="text-xl font-semibold" data-translate="admin.manage_hotels">Управление отелями</h2>
                             <button class="btn btn-primary" onclick="openHotelModal()">
                                 <i class="fas fa-plus"></i>
                                 Добавить отель
@@ -701,7 +701,7 @@
                         <!-- Search and Filter -->
                         <div class="flex justify-between items-center mb-4">
                             <div class="search-bar">
-                                <input type="text" id="hotelSearch" placeholder="Поиск отелей..." onkeyup="searchHotels()">
+                                <input type="text" id="hotelSearch" data-translate-placeholder="placeholder.search_hotels" placeholder="Поиск отелей..." onkeyup="searchHotels()">
                                 <i class="fas fa-search"></i>
                             </div>
                             <select id="hotelFilter" onchange="filterHotels()" class="form-input" style="max-width: 200px;">
@@ -720,7 +720,7 @@
                 <!-- Guides Section -->
                 <section id="guidesSection" style="display: none;">
                     <div class="mb-6 flex justify-between items-center">
-                        <h2 class="text-xl font-semibold">Управление гидами</h2>
+                        <h2 class="text-xl font-semibold" data-translate="admin.manage_guides">Управление гидами</h2>
                         <button class="btn btn-primary" onclick="openGuideModal()">
                             <i class="fas fa-plus"></i>
                             Добавить гида
@@ -736,7 +736,7 @@
                 <section id="tourAgentsSection" style="display: none;">
                     <div class="mb-6">
                         <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-xl font-semibold">Управление турагентами</h2>
+                            <h2 class="text-xl font-semibold" data-translate="admin.manage_tour_agents">Управление турагентами</h2>
                             <button class="btn btn-primary" onclick="openTourAgentModal()">
                                 <i class="fas fa-plus"></i>
                                 Добавить турагента
@@ -746,7 +746,7 @@
                         <!-- Search and Filter -->
                         <div class="flex justify-between items-center mb-4">
                             <div class="search-bar">
-                                <input type="text" id="tourAgentSearch" placeholder="Поиск турагентов..." onkeyup="searchTourAgents()">
+                                <input type="text" id="tourAgentSearch" data-translate-placeholder="placeholder.search_tour_agents" placeholder="Поиск турагентов..." onkeyup="searchTourAgents()">
                                 <i class="fas fa-search"></i>
                             </div>
                             <select id="tourAgentFilter" onchange="filterTourAgents()" class="form-input" style="max-width: 200px;">
@@ -765,7 +765,7 @@
                 <!-- Drivers Section -->
                 <section id="driversSection" style="display: none;">
                     <div class="mb-6 flex justify-between items-center">
-                        <h2 class="text-xl font-semibold">Управление водителями</h2>
+                        <h2 class="text-xl font-semibold" data-translate="admin.manage_drivers">Управление водителями</h2>
                         <button class="btn btn-primary" onclick="openDriverModal()">
                             <i class="fas fa-plus"></i>
                             Добавить водителя
@@ -780,7 +780,7 @@
                 <!-- Trips Section -->
                 <section id="tripsSection" style="display: none;">
                     <div class="mb-6 flex justify-between items-center">
-                        <h2 class="text-xl font-semibold">Управление поездками</h2>
+                        <h2 class="text-xl font-semibold" data-translate="admin.manage_trips">Управление поездками</h2>
                         <button class="btn btn-primary" onclick="openTripModal()">
                             <i class="fas fa-plus"></i>
                             Добавить поездку
@@ -799,8 +799,8 @@
                                         <th>Водитель</th>
                                         <th>Время отправления</th>
                                         <th>Время прибытия</th>
-                                        <th>Статус</th>
-                                        <th>Действия</th>
+                                        <th data-translate="table.status">Статус</th>
+                                        <th data-translate="table.actions">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tripsTable">
@@ -814,7 +814,7 @@
                 <!-- Transfers Section -->
                 <section id="transfersSection" style="display: none;">
                     <div class="mb-6 flex justify-between items-center">
-                        <h2 class="text-xl font-semibold">Заявки на трансфер</h2>
+                        <h2 class="text-xl font-semibold" data-translate="admin.transfer_requests">Заявки на трансфер</h2>
                         <div class="flex gap-2">
                             <button class="btn btn-outline-primary" onclick="loadTransferRequests()">
                                 <i class="fas fa-sync"></i>
@@ -841,10 +841,10 @@
                                         <th>Дата и время</th>
                                         <th>Пассажиры</th>
                                         <th>Транспорт</th>
-                                        <th>Статус</th>
+                                        <th data-translate="table.status">Статус</th>
                                         <th>Назначен водитель</th>
                                         <th>Стоимость</th>
-                                        <th>Действия</th>
+                                        <th data-translate="table.actions">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="transferRequestsTable">
@@ -898,7 +898,7 @@
                 <!-- Countries Section -->
                 <section id="countriesSection" style="display: none;">
                     <div class="mb-6 flex justify-between items-center">
-                        <h2 class="text-xl font-semibold">Управление странами</h2>
+                        <h2 class="text-xl font-semibold" data-translate="admin.manage_countries">Управление странами</h2>
                         <button class="btn btn-primary" onclick="openCountryModal()">
                             <i class="fas fa-plus mr-2"></i>
                             Добавить страну
@@ -913,7 +913,7 @@
                 <!-- Cities Section -->
                 <section id="citiesSection" style="display: none;">
                     <div class="mb-6 flex justify-between items-center">
-                        <h2 class="text-xl font-semibold">Управление городами</h2>
+                        <h2 class="text-xl font-semibold" data-translate="admin.manage_cities">Управление городами</h2>
                         <button class="btn btn-primary" onclick="openCityModal()">
                             <i class="fas fa-plus mr-2"></i>
                             Добавить город
@@ -942,14 +942,14 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Дата</th>
+                                        <th data-translate="table.date">Дата</th>
                                         <th>Имя туриста</th>
-                                        <th>Тур</th>
+                                        <th data-translate="table.tour">Тур</th>
                                         <th>Рейтинг</th>
                                         <th>Отзыв</th>
                                         <th>Фотографии</th>
-                                        <th>Статус</th>
-                                        <th>Действия</th>
+                                        <th data-translate="table.status">Статус</th>
+                                        <th data-translate="table.actions">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="reviewsTable">
@@ -983,7 +983,7 @@
                                         <i class="fas fa-newspaper text-blue-600"></i>
                                     </div>
                                     <div>
-                                        <p class="text-gray-600 text-sm">Всего новостей</p>
+                                        <p class="text-gray-600 text-sm" data-translate="admin.total_news">Всего новостей</p>
                                         <p class="text-2xl font-bold" id="totalNewsCount">0</p>
                                     </div>
                                 </div>
@@ -994,7 +994,7 @@
                                         <i class="fas fa-check-circle text-green-600"></i>
                                     </div>
                                     <div>
-                                        <p class="text-gray-600 text-sm">Опубликовано</p>
+                                        <p class="text-gray-600 text-sm" data-translate="admin.published">Опубликовано</p>
                                         <p class="text-2xl font-bold" id="publishedNewsCount">0</p>
                                     </div>
                                 </div>
@@ -1005,7 +1005,7 @@
                                         <i class="fas fa-edit text-yellow-600"></i>
                                     </div>
                                     <div>
-                                        <p class="text-gray-600 text-sm">Черновики</p>
+                                        <p class="text-gray-600 text-sm" data-translate="admin.drafts">Черновики</p>
                                         <p class="text-2xl font-bold" id="draftNewsCount">0</p>
                                     </div>
                                 </div>
@@ -1016,7 +1016,7 @@
                                         <i class="fas fa-eye text-purple-600"></i>
                                     </div>
                                     <div>
-                                        <p class="text-gray-600 text-sm">Просмотры</p>
+                                        <p class="text-gray-600 text-sm" data-translate="admin.total_views">Просмотры</p>
                                         <p class="text-2xl font-bold" id="totalNewsViews">0</p>
                                     </div>
                                 </div>
@@ -1030,13 +1030,13 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Заголовок</th>
-                                        <th>Категория</th>
-                                        <th>Статус</th>
-                                        <th>Автор</th>
-                                        <th>Дата публикации</th>
-                                        <th>Просмотры</th>
-                                        <th>Действия</th>
+                                        <th data-translate="table.title">Заголовок</th>
+                                        <th data-translate="table.category">Категория</th>
+                                        <th data-translate="table.status">Статус</th>
+                                        <th data-translate="table.author">Автор</th>
+                                        <th data-translate="table.publish_date">Дата публикации</th>
+                                        <th data-translate="table.views">Просмотры</th>
+                                        <th data-translate="table.actions">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="newsTable">
@@ -1051,19 +1051,19 @@
                 <section id="cmsSection" style="display: none;">
                     <div class="mb-6">
                         <div class="flex gap-2 mb-4">
-                            <button class="tab-button active" onclick="switchCMSTab('blocks')">Блоки туров</button>
-                            <button class="tab-button" onclick="switchCMSTab('settings')">Настройки сайта</button>
-                            <button class="tab-button" onclick="switchCMSTab('tours')">Форма туров</button>
+                            <button class="tab-button active" onclick="switchCMSTab('blocks')" data-translate="admin.tour_blocks">Блоки туров</button>
+                            <button class="tab-button" onclick="switchCMSTab('settings')" data-translate="admin.site_settings">Настройки сайта</button>
+                            <button class="tab-button" onclick="switchCMSTab('tours')" data-translate="admin.tour_form">Форма туров</button>
                         </div>
                     </div>
 
                     <!-- Tour Blocks Tab -->
                     <div id="cmsBlocksTab">
                         <div class="mb-6 flex justify-between items-center">
-                            <h2 class="text-xl font-semibold">Управление блоками туров</h2>
+                            <h2 class="text-xl font-semibold" data-translate="admin.manage_tour_blocks">Управление блоками туров</h2>
                             <button class="btn btn-primary" onclick="openTourBlockModal()">
                                 <i class="fas fa-plus"></i>
-                                Создать блок туров
+                                <span data-translate="btn.create_tour_block">Создать блок туров</span>
                             </button>
                         </div>
                         
@@ -1073,13 +1073,13 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Название блока (RU)</th>
-                                            <th>Название блока (EN)</th>
-                                            <th>Слаг</th>
-                                            <th>Количество туров</th>
-                                            <th>Статус</th>
-                                            <th>Порядок</th>
-                                            <th>Действия</th>
+                                            <th data-translate="table.block_name_ru">Название блока (RU)</th>
+                                            <th data-translate="table.block_name_en">Название блока (EN)</th>
+                                            <th data-translate="table.slug">Слаг</th>
+                                            <th data-translate="table.tour_count">Количество туров</th>
+                                            <th data-translate="table.status">Статус</th>
+                                            <th data-translate="table.order">Порядок</th>
+                                            <th data-translate="table.actions">Действия</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tourBlocksTable">
@@ -1248,7 +1248,7 @@
                                 
                                 <div class="form-group">
                                     <label class="form-label">Исходный текст</label>
-                                    <textarea class="form-input" id="sourceText" rows="8" placeholder="Введите текст для перевода..." required></textarea>
+                                    <textarea class="form-input" id="sourceText" rows="8" data-translate-placeholder="placeholder.enter_text_for_translation" placeholder="Введите текст для перевода..." required></textarea>
                                 </div>
                             </div>
                             
@@ -1267,7 +1267,7 @@
                                 
                                 <div class="form-group">
                                     <label class="form-label">Переведенный текст</label>
-                                    <textarea class="form-input" id="translatedText" rows="8" placeholder="Переведенный текст появится здесь..." readonly></textarea>
+                                    <textarea class="form-input" id="translatedText" rows="8" data-translate-placeholder="placeholder.translated_text_will_appear" placeholder="Переведенный текст появится здесь..." readonly></textarea>
                                 </div>
                             </div>
                             
@@ -1317,7 +1317,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Название услуги</label>
-                                    <input type="text" id="newComponentName" class="form-input" placeholder="Например: Обед в ресторане">
+                                    <input type="text" id="newComponentName" class="form-input" data-translate-placeholder="placeholder.service_name_example" placeholder="Например: Обед в ресторане">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Цена (TJS)</label>
@@ -1336,7 +1336,7 @@
                             </div>
                             <div class="mt-3">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Описание (необязательно)</label>
-                                <input type="text" id="newComponentDescription" class="form-input" placeholder="Дополнительная информация о компоненте">
+                                <input type="text" id="newComponentDescription" class="form-input" data-translate-placeholder="placeholder.component_additional_info" placeholder="Дополнительная информация о компоненте">
                             </div>
                         </div>
                         
@@ -1386,13 +1386,13 @@
                                 <form id="bannerForm" class="space-y-4">
                                     <div class="form-group">
                                         <label class="form-label">Заголовок (Русский)</label>
-                                        <input type="text" class="form-input" id="bannerTitleRu" placeholder="Заголовок слайда">
+                                        <input type="text" class="form-input" id="bannerTitleRu" data-translate-placeholder="placeholder.slide_title" placeholder="Заголовок слайда">
                                     </div>
                                     
                                     
                                     <div class="form-group">
                                         <label class="form-label">Описание (Русский)</label>
-                                        <textarea class="form-input" rows="3" id="bannerDescRu" placeholder="Описание слайда"></textarea>
+                                        <textarea class="form-input" rows="3" id="bannerDescRu" data-translate-placeholder="placeholder.slide_description" placeholder="Описание слайда"></textarea>
                                     </div>
                                     
                                     
@@ -1404,7 +1404,7 @@
 
                                     <div class="form-group">
                                         <label class="form-label">Текст кнопки (Русский)</label>
-                                        <input type="text" class="form-input" id="bannerButtonTextRu" placeholder="Узнать больше">
+                                        <input type="text" class="form-input" id="bannerButtonTextRu" data-translate-placeholder="placeholder.learn_more" placeholder="Узнать больше">
                                     </div>
                                     
                                     
@@ -1521,11 +1521,11 @@
                                 <thead>
                                     <tr>
                                         <th>Валюта</th>
-                                        <th>Название</th>
+                                        <th data-translate="table.name">Название</th>
                                         <th>Символ</th>
                                         <th>Курс к TJS</th>
                                         <th>Последнее обновление</th>
-                                        <th>Действия</th>
+                                        <th data-translate="table.actions">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="exchangeRatesTableBody">
@@ -1639,7 +1639,7 @@
                         <div class="grid grid-cols-1 gap-3">
                             <div class="form-group">
                                 <label class="form-label">Название отеля (Русский) *</label>
-                                <input type="text" class="form-input" id="hotelNameRu" placeholder="Отель Хилтон Душанбе, Серена Отель и т.д." required>
+                                <input type="text" class="form-input" id="hotelNameRu" data-translate-placeholder="placeholder.hotel_name_example" placeholder="Отель Хилтон Душанбе, Серена Отель и т.д." required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Название отеля (English) *</label>
@@ -1653,7 +1653,7 @@
                         <div class="grid grid-cols-1 gap-3">
                             <div class="form-group">
                                 <label class="form-label">Описание отеля (Русский) *</label>
-                                <textarea class="form-input" rows="4" id="hotelDescRu" placeholder="Краткое описание отеля, расположения и особенностей на русском языке..." required></textarea>
+                                <textarea class="form-input" rows="4" id="hotelDescRu" data-translate-placeholder="placeholder.hotel_description_ru" placeholder="Краткое описание отеля, расположения и особенностей на русском языке..." required></textarea>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Описание отеля (English) *</label>
@@ -1708,7 +1708,7 @@
                                 <option value="custom">+ Добавить новый бренд</option>
                             </select>
                         </div>
-                        <input type="text" class="form-input mt-2" id="hotelBrandCustom" placeholder="Введите название нового бренда" style="display: none;">
+                        <input type="text" class="form-input mt-2" id="hotelBrandCustom" data-translate-placeholder="placeholder.enter_new_brand" placeholder="Введите название нового бренда" style="display: none;">
                     </div>
                     
                     <div class="form-group">
@@ -1785,7 +1785,7 @@
                     
                     <div class="form-group">
                         <label class="form-label">Город</label>
-                        <input type="text" class="form-input" id="hotelCity" placeholder="Душанбе, Самарканд, Бишкек и т.д.">
+                        <input type="text" class="form-input" id="hotelCity" data-translate-placeholder="placeholder.city_examples" placeholder="Душанбе, Самарканд, Бишкек и т.д.">
                     </div>
                     
                     
@@ -1834,7 +1834,7 @@
                             </label>
                         </div>
                         <div class="mt-3 flex gap-2">
-                            <input type="text" class="form-input flex-1" id="newAmenity" placeholder="Введите название нового удобства">
+                            <input type="text" class="form-input flex-1" id="newAmenity" data-translate-placeholder="placeholder.enter_new_amenity" placeholder="Введите название нового удобства">
                             <button type="button" onclick="addNewAmenity()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md">
                                 <i class="fas fa-plus"></i> Добавить
                             </button>
@@ -1916,12 +1916,12 @@
                         <div class="bg-gray-50 p-4 rounded border">
                             <div class="grid grid-cols-4 gap-3 mb-3">
                                 <input type="time" class="form-input" id="newItineraryTime" placeholder="08:00">
-                                <input type="text" class="form-input col-span-2" id="newItineraryTitle" placeholder="Встреча с гидом">
+                                <input type="text" class="form-input col-span-2" id="newItineraryTitle" data-translate-placeholder="placeholder.meeting_with_guide" placeholder="Встреча с гидом">
                                 <button type="button" onclick="addItinerary()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
                                     Добавить
                                 </button>
                             </div>
-                            <textarea class="form-input" rows="2" id="newItineraryDesc" placeholder="Подробное описание этапа программы"></textarea>
+                            <textarea class="form-input" rows="2" id="newItineraryDesc" data-translate-placeholder="placeholder.detailed_stage_description" placeholder="Подробное описание этапа программы"></textarea>
                         </div>
                         <small class="text-gray-500">Создайте расписание тура по времени</small>
                     </div>
@@ -2046,13 +2046,13 @@
                     
                     
                     <div class="form-group">
-                        <label class="form-label">Информация о приёме/сборе</label>
-                        <input type="text" class="form-input" id="tourPickupInfo" placeholder="Например: Приём включён, Место сбора: отель, и т.д." required>
+                        <label class="form-label" data-translate="form.pickup_info">Информация о приёме/сборе</label>
+                        <input type="text" class="form-input" id="tourPickupInfo" data-translate-placeholder="placeholder.pickup_info_example" placeholder="Например: Приём включён, Место сбора: отель, и т.д." required>
                         <small class="text-gray-500">Укажите информацию о приёме/месте сбора для туристов</small>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Языки тура</label>
+                        <label class="form-label" data-translate="form.tour_languages">Языки тура</label>
                         <div class="flex gap-2 mb-2">
                             <select class="form-input flex-1" id="availableLanguages">
                                 <option value="">Выберите язык для добавления</option>
@@ -2088,20 +2088,20 @@
                     <!-- Поле сложности тура удалено по требованию пользователя -->
                     
                     <div class="form-group">
-                        <label class="form-label">Минимальное количество людей</label>
+                        <label class="form-label" data-translate="form.min_people">Минимальное количество людей</label>
                         <input type="number" class="form-input" id="tourMinPeople" min="1" placeholder="2">
                         <small class="text-gray-500">Минимальное количество участников</small>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Максимальное количество людей</label>
+                        <label class="form-label" data-translate="form.max_people">Максимальное количество людей</label>
                         <input type="number" class="form-input" id="tourMaxPeople" min="1" placeholder="12">
                         <small class="text-gray-500">Максимальное количество участников</small>
                     </div>
                     
                     <!-- Доступность тура -->
                     <div class="form-group col-span-2">
-                        <label class="form-label">Доступные месяцы</label>
+                        <label class="form-label" data-translate="form.available_months">Доступные месяцы</label>
                         <div class="grid grid-cols-4 gap-2 mt-2">
                             <label class="checkbox-item">
                                 <input type="checkbox" value="1" id="month-1"> Январь
@@ -2143,7 +2143,7 @@
                     </div>
                     
                     <div class="form-group col-span-2">
-                        <label class="form-label">Доступные дни недели</label>
+                        <label class="form-label" data-translate="form.available_days">Доступные дни недели</label>
                         <div class="grid grid-cols-4 gap-2 mt-2">
                             <label class="checkbox-item">
                                 <input type="checkbox" value="1" id="day-1"> Понедельник
@@ -2173,7 +2173,7 @@
                     <div class="form-group col-span-2">
                         <label class="form-label">
                             <i class="fas fa-images text-blue-600 mr-2"></i>
-                            Фотографии тура
+                            <span data-translate="form.tour_photos">Фотографии тура</span>
                         </label>
                         
                         <div id="tour-uploader-container"></div>
@@ -2208,7 +2208,7 @@
                             ❌ Услуги и расходы, которые туристы оплачивают самостоятельно
                         </div>
                         <div class="flex gap-2 mb-3">
-                            <input type="text" id="newExcludedService" class="form-input flex-1" placeholder="Введите название услуги">
+                            <input type="text" id="newExcludedService" class="form-input flex-1" data-translate-placeholder="placeholder.enter_service_name" placeholder="Введите название услуги">
                             <button type="button" onclick="addNewExcludedService()" class="btn btn-primary">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -2347,7 +2347,7 @@
                 
                 <div class="form-group mb-4">
                     <label class="form-label">Краткое описание</label>
-                    <textarea id="newsExcerpt" class="form-input" rows="2" placeholder="Краткое описание новости (optional)"></textarea>
+                    <textarea id="newsExcerpt" class="form-input" rows="2" data-translate-placeholder="placeholder.news_brief_description" placeholder="Краткое описание новости (optional)"></textarea>
                 </div>
                 
                 <div class="form-group mb-4">
