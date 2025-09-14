@@ -106,7 +106,41 @@ const translations = {
     'title.search_button': { ru: 'Начать поиск', en: 'Start search' },
     'title.filter_button': { ru: 'Применить фильтры', en: 'Apply filters' },
     'title.book_tour': { ru: 'Забронировать тур', en: 'Book tour' },
-    'title.view_details': { ru: 'Посмотреть детали', en: 'View details' }
+    'title.view_details': { ru: 'Посмотреть детали', en: 'View details' },
+    
+    // 🌐 АДМИН-ПАНЕЛЬ
+    'admin.dashboard': { ru: 'Главная', en: 'Dashboard' },
+    'admin.administrator': { ru: 'Администратор', en: 'Administrator' },
+    'admin.logout': { ru: 'Выйти', en: 'Logout' },
+    'admin.tours': { ru: 'Туры', en: 'Tours' },
+    'admin.hotels': { ru: 'Отели', en: 'Hotels' },
+    'admin.guides': { ru: 'Гиды', en: 'Guides' },
+    'admin.bookings': { ru: 'Заказы', en: 'Bookings' },
+    'admin.orders': { ru: 'Заказы', en: 'Orders' },
+    'admin.settings': { ru: 'Настройки', en: 'Settings' },
+    'admin.translations': { ru: 'Переводы', en: 'Translations' },
+    'admin.cms': { ru: 'CMS - Контент', en: 'CMS - Content' },
+    'admin.news': { ru: 'Новости', en: 'News' },
+    'admin.drivers': { ru: 'Водители', en: 'Drivers' },
+    'admin.transfers': { ru: 'Трансферы', en: 'Transfers' },
+    'admin.transfer': { ru: 'Трансфер', en: 'Transfer' },
+    'admin.countries': { ru: 'Страны', en: 'Countries' },
+    'admin.cities': { ru: 'Города', en: 'Cities' },
+    'admin.customers': { ru: 'Клиенты', en: 'Customers' },
+    'admin.reviews': { ru: 'Отзывы', en: 'Reviews' },
+    'admin.payments': { ru: 'Платежи', en: 'Payments' },
+    'admin.control_panel': { ru: 'Панель управления', en: 'Control Panel' },
+    'admin.admin_panel': { ru: 'Админ-панель', en: 'Admin Panel' },
+    'admin.login_message': { ru: 'Войдите в систему управления', en: 'Sign in to the management system' },
+    'admin.username': { ru: 'Имя пользователя', en: 'Username' },
+    'admin.password': { ru: 'Пароль', en: 'Password' },
+    'admin.login_button': { ru: 'Войти в систему', en: 'Sign In' },
+    'admin.test_credentials': { ru: 'Тестовые данные: admin / admin123', en: 'Test credentials: admin / admin123' },
+    'admin.recent_orders': { ru: 'Последние заказы', en: 'Recent Orders' },
+    'admin.active_tours': { ru: 'Активных туров', en: 'Active Tours' },
+    'admin.orders_this_month': { ru: 'Заказов за месяц', en: 'Orders This Month' },
+    'admin.monthly_revenue': { ru: 'Доход за месяц', en: 'Monthly Revenue' },
+    'admin.active_customers': { ru: 'Активных клиентов', en: 'Active Customers' }
 };
 
 // === ФУНКЦИЯ ПОЛУЧЕНИЯ ПЕРЕВОДА ===
@@ -167,14 +201,14 @@ function switchSiteLanguage(lang) {
 // === ОБНОВЛЕНИЕ ПЕРЕКЛЮЧАТЕЛЯ ЯЗЫКОВ ===
 function updateLanguageSelector(lang) {
     const languages = {
-        'ru': { name: 'Русский', flag: '🇷🇺', flagClass: 'flag-ru' },
-        'en': { name: 'English', flag: '🇺🇸', flagClass: 'flag-us' }
+        'ru': { name: 'Русский', flag: '🇷🇺', flagClass: 'flag-ru', code: 'RU' },
+        'en': { name: 'English', flag: '🇺🇸', flagClass: 'flag-us', code: 'EN' }
     };
     
     const selectedLang = languages[lang];
     if (!selectedLang) return;
     
-    // Обновляем основную кнопку
+    // Обновляем основную кнопку (обычные страницы)
     const selectedFlag = document.querySelector('.selected-flag');
     const selectedLangText = document.querySelector('.selected-lang');
     
@@ -187,10 +221,25 @@ function updateLanguageSelector(lang) {
         selectedLangText.textContent = selectedLang.name;
     }
     
-    // Обновляем активную опцию в dropdown
+    // 🌐 ОБНОВЛЯЕМ ПЕРЕКЛЮЧАТЕЛЬ В АДМИН-ПАНЕЛИ
+    const currentLanguageAdmin = document.getElementById('currentLanguageAdmin');
+    if (currentLanguageAdmin) {
+        currentLanguageAdmin.textContent = selectedLang.code;
+        console.log(`🔄 Обновлен переключатель админ-панели: ${selectedLang.code}`);
+    }
+    
+    // Обновляем активную опцию в dropdown (обычные страницы)
     document.querySelectorAll('.lang-option').forEach(option => {
         option.classList.remove('active');
         if (option.dataset.lang === lang) {
+            option.classList.add('active');
+        }
+    });
+    
+    // Обновляем активную опцию в dropdown админ-панели
+    document.querySelectorAll('#languageDropdownAdmin .lang-option, #languageDropdownAdmin a[onclick*="switchAdminLanguage"]').forEach(option => {
+        option.classList.remove('active');
+        if (option.getAttribute('onclick') && option.getAttribute('onclick').includes(`'${lang}'`)) {
             option.classList.add('active');
         }
     });
