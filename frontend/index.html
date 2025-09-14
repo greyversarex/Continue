@@ -15,6 +15,10 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="replit-cache-buster" content="DARK-FILTER-1754862000">
+    
+    <!-- 🌐 ЦЕНТРАЛЬНАЯ СИСТЕМА ИНТЕРНАЦИОНАЛИЗАЦИИ -->
+    <script src="/public/js/i18n.js"></script>
+    
     <script>
         // Очистка кеша для Replit Preview
         if ('serviceWorker' in navigator) {
@@ -851,7 +855,7 @@
                 
                 <!-- Навигационное меню -->
                 <nav class="hidden md:flex space-x-6">
-                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors">О нас</a>
+                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.about">О нас</a>
                     
                     <!-- Услуги (с выпадающим меню) -->
                     <div class="dropdown">
@@ -880,10 +884,10 @@
                                 </div>
                             </div>
                             <a href="our-tour-agents.html">Тургиды</a>
-                            <a href="/hotels-catalog.html">Отели</a>
+                            <a href="/hotels-catalog.html" data-translate="nav.hotels">Отели</a>
                             <a href="#" >Трансфер</a>
                             <a href="#">Заказ тура</a>
-                            <a href="visa-support.html">Визовая поддержка</a>
+                            <a href="visa-support.html" data-translate="nav.visa_support">Визовая поддержка</a>
                         </div>
                     </div>
                     
@@ -924,29 +928,13 @@
                             </svg>
                         </button>
                         <div class="lang-dropdown-content" id="langDropdown">
-                            <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'flag-ru', 'Русский')">
+                            <a href="#" class="lang-option active" data-lang="ru" onclick="switchSiteLanguage('ru')">
                                 <span class="flag flag-ru">🇷🇺</span>
                                 <span class="lang-name">Русский</span>
                             </a>
-                            <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'flag-us', 'English')">
+                            <a href="#" class="lang-option" data-lang="en" onclick="switchSiteLanguage('en')">
                                 <span class="flag flag-us">🇺🇸</span>
                                 <span class="lang-name">English</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="tj" onclick="selectLanguage('tj', 'flag-tj', 'Тоҷикӣ')">
-                                <span class="flag flag-tj">🇹🇯</span>
-                                <span class="lang-name">Тоҷикӣ</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="fa" onclick="selectLanguage('fa', 'flag-ir', 'فارسی')">
-                                <span class="flag flag-ir">🇮🇷</span>
-                                <span class="lang-name">فارسی</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', 'flag-de', 'Deutsch')">
-                                <span class="flag flag-de">🇩🇪</span>
-                                <span class="lang-name">Deutsch</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="zh" onclick="selectLanguage('zh', 'flag-cn', '中文')">
-                                <span class="flag flag-cn">🇨🇳</span>
-                                <span class="lang-name">中文</span>
                             </a>
                         </div>
                     </div>
@@ -1024,7 +1012,7 @@
     <!-- Система фильтров туров -->
     <section class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900" data-translate="title.find_perfect_tour">
                 Найдите идеальный тур
             </h2>
             
@@ -1176,8 +1164,8 @@
             <!-- Результаты поиска -->
             <div id="searchResults" class="hidden">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-bold text-gray-900">Результаты поиска</h3>
-                    <button onclick="clearSearch()" class="text-gray-600 hover:text-gray-900 font-medium">Показать все туры</button>
+                    <h3 class="text-2xl font-bold text-gray-900" data-translate="title.search_results">Результаты поиска</h3>
+                    <button onclick="clearSearch()" class="text-gray-600 hover:text-gray-900 font-medium" data-translate="common.show_all_tours">Показать все туры</button>
                 </div>
                 <div id="toursGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
             </div>
@@ -1190,7 +1178,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Бесплатная отмена -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
-                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center">Бесплатная отмена</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center" data-translate="title.free_cancellation">Бесплатная отмена</h3>
                     <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Отмена бронирования до 30 дней до начала тура, возврат 100%</p>
                     <div class="flex justify-end mt-auto">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('cancel-details', this)">
@@ -1220,7 +1208,7 @@
 
                 <!-- Бронируй сейчас - плати потом -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
-                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center">Бронируй сейчас - плати потом</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center" data-translate="title.book_now_pay_later">Бронируй сейчас - плати потом</h3>
                     <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Записывайтесь на групповые туры всего за 10% от стоимости тура</p>
                     <div class="flex justify-end mt-auto">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('book-details', this)">
@@ -1250,7 +1238,7 @@
 
                 <!-- Горящие туры -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
-                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center">Горящие туры</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center" data-translate="title.hot_tours">Горящие туры</h3>
                     <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Успейте забронировать туры и экскурсии за доступные цены!</p>
                     <div class="flex justify-end mt-auto">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('hot-details', this)">
@@ -1280,7 +1268,7 @@
 
                 <!-- Акции -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
-                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center">Акции</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center" data-translate="title.promotions">Акции</h3>
                     <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Бронируйте любой тур за 12 месяцев и экономьте 12%, это и другие привилегии у нас!</p>
                     <div class="flex justify-end mt-auto">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('promo-details', this)">
@@ -1595,7 +1583,7 @@
     <!-- Направления -->
     <section class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900" data-translate="title.tours_by_cities">
                 Туры по городам
             </h2>
             
@@ -1780,7 +1768,7 @@
                 <div>
                     <h4 class="font-semibold mb-4">Компания:</h4>
                     <ul class="space-y-2 text-sm text-gray-300">
-                        <li><a href="about-us.html" class="hover:text-white">О нас</a></li>
+                        <li><a href="about-us.html" class="hover:text-white" data-translate="nav.about">О нас</a></li>
                         <li><a href="tour-agents.html" class="hover:text-white">Тур-агентам</a></li>
                         <li><a href="#" class="hover:text-white">Партнеры</a></li>
                         <li><a href="investment-projects.html" class="hover:text-white">Инвестиционные Проекты</a></li>
@@ -1831,7 +1819,7 @@
                 
                 <!-- Контакты -->
                 <div>
-                    <h4 class="font-semibold mb-4">Контакты:</h4>
+                    <h4 class="font-semibold mb-4" data-translate="footer.contact_info">Контакты:</h4>
                     <div class="space-y-2 text-sm text-gray-300">
                         <p>+992 44 625 7575; +992 93-126-1134</p>
                         <p>+992 00-110-0087; +992 88-235-3434</p>
@@ -2560,12 +2548,246 @@
             }
         }
 
+        // === СИСТЕМА ПЕРЕКЛЮЧЕНИЯ ЯЗЫКОВ ===
+        
+        // Глобальная переменная для текущего языка
+        let currentLanguage = 'ru'; // По умолчанию русский
+        
         // Функции для языкового селектора
         function toggleLanguageDropdown() {
-            const dropdown = document.getElementById('langDropdown');
-            const arrow = document.querySelector('.dropdown-arrow');
-            dropdown.classList.toggle('show');
-            arrow.classList.toggle('open');
+            if (window.i18n) {
+                window.i18n.toggleLanguageDropdown();
+            }
+        }
+        
+        // 🌐 ИСПОЛЬЗУЕМ ЦЕНТРАЛЬНУЮ ФУНКЦИЮ ИЗ i18n.js
+        function switchSiteLanguage(lang) {
+            if (window.i18n) {
+                window.i18n.switchSiteLanguage(lang);
+                // Дополнительно переводим динамический контент (специфично для этой страницы)
+                translateDynamicContent(lang);
+            } else {
+                console.error('❌ i18n.js не найден!');
+            }
+        }
+        
+        // 🌐 ИСПОЛЬЗУЕМ ЦЕНТРАЛЬНУЮ ФУНКЦИЮ updateLanguageSelector ИЗ i18n.js
+        function updateLanguageSelector(lang) {
+            if (window.i18n) {
+                window.i18n.updateLanguageSelector(lang);
+            }
+        }
+        
+        // 🌐 НЕ НУЖНА - ИСПОЛЬЗУЕТСЯ АВТОМАТИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ИЗ i18n.js
+        
+        // === ЧАСТЬ 2: СЛОВАРЬ ПЕРЕВОДОВ СТАТИЧЕСКОГО ИНТЕРФЕЙСА ===
+        
+        const translations = {
+            // Главное меню
+            'nav.home': { ru: 'Главная', en: 'Home' },
+            'nav.tours': { ru: 'Туры', en: 'Tours' },
+            'nav.hotels': { ru: 'Отели', en: 'Hotels' },
+            'nav.visa_support': { ru: 'Визовая поддержка', en: 'Visa Support' },
+            'nav.tour_agents': { ru: 'Турагентам', en: 'For Tour Agents' },
+            'nav.about': { ru: 'О нас', en: 'About Us' },
+            'nav.reviews': { ru: 'Отзывы', en: 'Reviews' },
+            'nav.blog': { ru: 'Блог', en: 'Blog' },
+            'nav.contacts': { ru: 'Контакты', en: 'Contacts' },
+            
+            // Кнопки и действия
+            'btn.book_now': { ru: 'Забронировать', en: 'Book Now' },
+            'btn.more_details': { ru: 'Подробнее', en: 'More Details' },
+            'btn.view_all': { ru: 'Смотреть все', en: 'View All' },
+            'btn.send': { ru: 'Отправить', en: 'Send' },
+            'btn.search': { ru: 'Поиск', en: 'Search' },
+            'btn.filter': { ru: 'Фильтр', en: 'Filter' },
+            'btn.contact_us': { ru: 'Связаться с нами', en: 'Contact Us' },
+            
+            // Заголовки и подзаголовки
+            'title.popular_tours': { ru: 'Популярные туры', en: 'Popular Tours' },
+            'title.recommended_tours': { ru: 'Рекомендованные туры по Центральной Азии', en: 'Recommended Central Asia Tours' },
+            'title.tajikistan_tours': { ru: 'Туры по Таджикистану', en: 'Tajikistan Tours' },
+            'title.uzbekistan_tours': { ru: 'Туры по Узбекистану', en: 'Uzbekistan Tours' },
+            'title.kyrgyzstan_tours': { ru: 'Туры по Киргизстану', en: 'Kyrgyzstan Tours' },
+            'title.turkmenistan_tours': { ru: 'Туры по Туркменистану', en: 'Turkmenistan Tours' },
+            'title.tours_by_cities': { ru: 'Туры по городам', en: 'Tours by Cities' },
+            'title.find_perfect_tour': { ru: 'Найдите идеальный тур', en: 'Find the Perfect Tour' },
+            'title.free_cancellation': { ru: 'Бесплатная отмена', en: 'Free Cancellation' },
+            'title.book_now_pay_later': { ru: 'Бронируй сейчас - плати потом', en: 'Book Now - Pay Later' },
+            'title.hot_tours': { ru: 'Горящие туры', en: 'Hot Tours' },
+            'title.promotions': { ru: 'Акции', en: 'Promotions' },
+            'title.search_results': { ru: 'Результаты поиска', en: 'Search Results' },
+            'title.our_services': { ru: 'Наши услуги', en: 'Our Services' },
+            'title.why_choose_us': { ru: 'Почему выбирают нас', en: 'Why Choose Us' },
+            
+            // Ценовые обозначения
+            'price.from': { ru: 'Цена от:', en: 'Price from:' },
+            'price.per_person': { ru: 'за человека', en: 'per person' },
+            'price.per_group': { ru: 'за группу', en: 'per group' },
+            'price.days': { ru: 'дней', en: 'days' },
+            'price.day': { ru: 'день', en: 'day' },
+            
+            // Формы и поля
+            'form.name': { ru: 'Имя', en: 'Name' },
+            'form.email': { ru: 'Email', en: 'Email' },
+            'form.phone': { ru: 'Телефон', en: 'Phone' },
+            'form.message': { ru: 'Сообщение', en: 'Message' },
+            'form.check_in': { ru: 'Заезд', en: 'Check-in' },
+            'form.check_out': { ru: 'Выезд', en: 'Check-out' },
+            'form.guests': { ru: 'Гостей', en: 'Guests' },
+            'form.select_country': { ru: 'Выберите страну', en: 'Select Country' },
+            'form.select_city': { ru: 'Выберите город', en: 'Select City' },
+            'form.select_type': { ru: 'Выберите тип', en: 'Select Type' },
+            
+            // Услуги
+            'service.tours': { ru: 'Туры и экскурсии', en: 'Tours & Excursions' },
+            'service.transfer': { ru: 'Трансфер', en: 'Transfer Service' },
+            'service.guide': { ru: 'Гид-сопровождение', en: 'Guide Service' },
+            'service.agency': { ru: 'Турагентство', en: 'Travel Agency' },
+            
+            // Подвал сайта
+            'footer.contact_info': { ru: 'Контактная информация', en: 'Contact Information' },
+            'footer.quick_links': { ru: 'Быстрые ссылки', en: 'Quick Links' },
+            'footer.social_media': { ru: 'Социальные сети', en: 'Social Media' },
+            'footer.copyright': { ru: '© 2024 Bunyod-Tour. Все права защищены.', en: '© 2024 Bunyod-Tour. All rights reserved.' },
+            
+            // Фильтры
+            'filter.country': { ru: 'Страна', en: 'Country' },
+            'filter.city': { ru: 'Город', en: 'City' },
+            'filter.tour_type': { ru: 'Тип тура', en: 'Tour Type' },
+            'filter.category': { ru: 'Категория', en: 'Category' },
+            'filter.date': { ru: 'Дата', en: 'Date' },
+            
+            // Общие элементы
+            'common.loading': { ru: 'Загрузка...', en: 'Loading...' },
+            'common.no_results': { ru: 'Результаты не найдены', en: 'No results found' },
+            'common.error': { ru: 'Произошла ошибка', en: 'An error occurred' },
+            'common.success': { ru: 'Успешно!', en: 'Success!' },
+            'common.show_all_tours': { ru: 'Показать все туры', en: 'Show All Tours' },
+            'common.clear_search': { ru: 'Очистить поиск', en: 'Clear Search' },
+            
+            // Placeholders для форм и поиска
+            'placeholder.search_tours': { ru: 'Поиск туров...', en: 'Search tours...' },
+            'placeholder.select_date': { ru: 'Выберите дату', en: 'Select date' },
+            'placeholder.enter_name': { ru: 'Введите ваше имя', en: 'Enter your name' },
+            'placeholder.enter_email': { ru: 'Введите email', en: 'Enter email' },
+            'placeholder.enter_phone': { ru: 'Введите телефон', en: 'Enter phone' },
+            'placeholder.enter_message': { ru: 'Введите сообщение', en: 'Enter message' },
+            
+            // Title атрибуты (всплывающие подсказки)
+            'title.language_switcher': { ru: 'Переключить язык', en: 'Switch language' },
+            'title.currency_switcher': { ru: 'Переключить валюту', en: 'Switch currency' },
+            'title.search_button': { ru: 'Начать поиск', en: 'Start search' },
+            'title.filter_button': { ru: 'Применить фильтры', en: 'Apply filters' },
+            'title.book_tour': { ru: 'Забронировать тур', en: 'Book tour' },
+            'title.view_details': { ru: 'Посмотреть детали', en: 'View details' }
+        };
+        
+        // Функция получения перевода
+        function getTranslation(key, lang = currentLanguage) {
+            if (translations[key] && translations[key][lang]) {
+                return translations[key][lang];
+            }
+            // Возвращаем русский как fallback
+            if (translations[key] && translations[key]['ru']) {
+                return translations[key]['ru'];
+            }
+            // Если перевода вообще нет, возвращаем ключ
+            return key;
+        }
+        
+        // === 🚀 УСИЛЕННАЯ ФУНКЦИЯ ПЕРЕВОДА СТАТИЧЕСКОГО ИНТЕРФЕЙСА ===
+        
+        function translateStaticInterface(lang) {
+            console.log(`📝 Переключение статического интерфейса на: ${lang}`);
+            
+            let translatedCount = 0;
+            
+            // 📝 ПЕРЕВОДИМ ОСНОВНОЙ ТЕКСТ (data-translate)
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                const translation = getTranslation(key, lang);
+                
+                if (translation && translation !== key) {
+                    // Безопасное обновление текста
+                    if (element.children.length === 0) {
+                        element.textContent = translation;
+                    } else {
+                        updateTextNodes(element, translation);
+                    }
+                    translatedCount++;
+                } else {
+                    console.warn(`⚠️ Перевод не найден для ключа: ${key}`);
+                }
+            });
+            
+            // 🔤 ПЕРЕВОДИМ PLACEHOLDERS (data-translate-placeholder)
+            document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-translate-placeholder');
+                const translation = getTranslation(key, lang);
+                
+                if (translation && translation !== key) {
+                    element.placeholder = translation;
+                    translatedCount++;
+                } else {
+                    console.warn(`⚠️ Placeholder перевод не найден для ключа: ${key}`);
+                }
+            });
+            
+            // 🖼️ ПЕРЕВОДИМ ALT АТРИБУТЫ (data-translate-alt)
+            document.querySelectorAll('[data-translate-alt]').forEach(element => {
+                const key = element.getAttribute('data-translate-alt');
+                const translation = getTranslation(key, lang);
+                
+                if (translation && translation !== key) {
+                    element.alt = translation;
+                    translatedCount++;
+                }
+            });
+            
+            // 💡 ПЕРЕВОДИМ TITLE АТРИБУТЫ (data-translate-title)
+            document.querySelectorAll('[data-translate-title]').forEach(element => {
+                const key = element.getAttribute('data-translate-title');
+                const translation = getTranslation(key, lang);
+                
+                if (translation && translation !== key) {
+                    element.title = translation;
+                    translatedCount++;
+                }
+            });
+            
+            // 📊 ПЕРЕВОДИМ VALUE АТРИБУТЫ (data-translate-value)
+            document.querySelectorAll('[data-translate-value]').forEach(element => {
+                const key = element.getAttribute('data-translate-value');
+                const translation = getTranslation(key, lang);
+                
+                if (translation && translation !== key) {
+                    element.value = translation;
+                    translatedCount++;
+                }
+            });
+            
+            console.log(`✅ Статический интерфейс переведен на ${lang}. Переведено элементов: ${translatedCount}`);
+        }
+        
+        // Вспомогательная функция для обновления текстовых узлов
+        function updateTextNodes(element, newText) {
+            for (let node of element.childNodes) {
+                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                    node.textContent = newText;
+                    return; // Обновляем только первый найденный текстовый узел
+                }
+            }
+            // Если текстовых узлов не найдено, создаем новый
+            if (element.children.length === 0) {
+                element.textContent = newText;
+            }
+        }
+        
+        // Перевод динамического контента
+        function translateDynamicContent(lang) {
+            // Эта функция будет реализована в Части 3
+            console.log(`🔄 Переключение динамического контента на: ${lang}`);
         }
         
         function selectLanguageNew(lang, flagClass, flagEmoji, name) {
@@ -3135,6 +3357,13 @@
         // Загружаем туры и слайды при загрузке страницы
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM loaded, initializing...');
+            
+            // 🌐 ИНИЦИАЛИЗИРУЕМ ЯЗЫКОВУЮ СИСТЕМУ (ЦЕНТРАЛЬНАЯ i18n.js)
+            if (window.i18n) {
+                window.i18n.initializeLanguage();
+            } else {
+                console.warn('⚠️ i18n.js не загружен, используем fallback инициализацию');
+            }
             
             // Сначала загружаем страны и города для фильтров
             await loadCountriesAndCities();
