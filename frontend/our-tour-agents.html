@@ -737,7 +737,6 @@
             try {
                 console.log('📡 Fetching tour agents from API...');
                 const agents = await fetchTourAgents();
-                console.log('✅ Tour agents loaded:', agents);
                 
                 // Скрываем загрузку
                 loading.classList.add('hidden');

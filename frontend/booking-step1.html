@@ -232,7 +232,6 @@
                 console.log('Response data:', data);
                 
                 if (data.success && data.data) {
-                    console.log('✅ Booking started successfully');
                     bookingState.bookingId = data.data.bookingId;
                     bookingState.tour = data.data.tour;
                     // Сохраняем totalPrice из ответа сервера (если есть)
@@ -400,10 +399,8 @@
                 console.log('📡 Response status:', response.status);
                 
                 const data = await response.json();
-                console.log('📦 Response data:', data);
                 
                 if (data.success) {
-                    console.log('✅ Hotels loaded successfully:', data.data.length);
                     displayHotels(data.data);
                 } else {
                     console.error('❌ API returned error:', data.message);
@@ -1040,7 +1037,6 @@
         async function updateTotalPriceWithServerCalculation() {
             // Нужен только bookingId для работы
             if (!bookingState.bookingId || !bookingState.availableHotels) {
-                console.log('⚠️ Cannot calculate price - missing bookingId or hotels');
                 return;
             }
 
@@ -1084,7 +1080,6 @@
 
             // 🎯 ИСПРАВЛЕНИЕ: Если нет выбранных номеров - возвращаем к базовой цене тура
             if (!hasAnySelectedRooms) {
-                console.log('💰 No rooms selected - reverting to base tour price');
                 
                 // Рассчитываем базовую цену тура
                 const tour = bookingState.tour;
@@ -1097,13 +1092,11 @@
                 }
                 
                 bookingState.totalPrice = baseTourPrice;
-                console.log(`💰 Reverted to base tour price: ${baseTourPrice} TJS`);
                 updateTotalPrice();
                 return;
             }
 
             try {
-                console.log(`💰 Calculating price for hotel ${targetHotelId} with rooms:`, roomSelectionForAPI);
                 
                 const response = await fetch(`/api/booking/${bookingState.bookingId}/calculate-price`, {
                     method: 'POST',
@@ -1121,7 +1114,6 @@
                     const data = await response.json();
                     if (data.success && data.data && data.data.totalPrice) {
                         bookingState.totalPrice = data.data.totalPrice;
-                        console.log(`💰 Updated price from server: ${data.data.totalPrice} TJS`);
                         updateTotalPrice();
                     }
                 } else {
@@ -1171,12 +1163,10 @@
                 const responseData = await updateResponse.json();
                 
                 if (responseData.success) {
-                    console.log('✅ Booking draft saved successfully');
                     
                     // 🎯 КРИТИЧНО: Сохраняем правильную цену из ответа сервера!
                     if (responseData.data && responseData.data.totalPrice) {
                         bookingState.totalPrice = responseData.data.totalPrice;
-                        console.log(`💰 Server calculated price: ${responseData.data.totalPrice} TJS`);
                         
                         // Обновляем отображение цены
                         updateTotalPrice();
@@ -1265,7 +1255,6 @@
                 const continueBtn = document.getElementById('continue-btn');
                 if (continueBtn) {
                     continueBtn.addEventListener('click', saveBookingDraft);
-                    console.log('✅ Continue button handler attached');
                 } else {
                     console.warn('⚠️ Continue button not found');
                 }

@@ -608,7 +608,6 @@
                 }
 
                 const orderNumber = orderData.data.orderNumber;
-                console.log('✅ Заказ создан:', orderNumber);
 
                 // ШАГАН 2: Теперь инициировать оплату с orderNumber
                 let paymentResponse;
@@ -654,7 +653,6 @@
                 const paymentData = await paymentResponse.json();
                 
                 if (paymentData.success) {
-                    console.log('✅ Payment initiated successfully');
                     
                     // Store order info for success page
                     localStorage.setItem('completedOrder', JSON.stringify({

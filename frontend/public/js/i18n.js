@@ -4,7 +4,6 @@
 // === ЗАЩИТА ОТ ДВОЙНОЙ ЗАГРУЗКИ ===
 (function() {
 if (window.bunyodTourI18nLoaded) {
-    console.log('🔒 i18n.js уже загружен, пропускаем повторную инициализацию');
     return; // Просто выходим из IIFE без ошибки
 }
 
@@ -118,7 +117,7 @@ window.translations = window.translations || {
     'title.book_tour': { ru: 'Забронировать тур', en: 'Book tour' },
     'title.view_details': { ru: 'Посмотреть детали', en: 'View details' },
     
-    // 🌐 АДМИН-ПАНЕЛЬ
+    // АДМИН-ПАНЕЛЬ
     'admin.dashboard': { ru: 'Главная', en: 'Dashboard' },
     'admin.administrator': { ru: 'Администратор', en: 'Administrator' },
     'admin.logout': { ru: 'Выйти', en: 'Logout' },
@@ -152,7 +151,7 @@ window.translations = window.translations || {
     'admin.monthly_revenue': { ru: 'Доход за месяц', en: 'Monthly Revenue' },
     'admin.active_customers': { ru: 'Активных клиентов', en: 'Active Customers' },
     
-    // 🌐 НОВЫЕ КЛЮЧИ ДЛЯ РАСШИРЕННОГО ПОКРЫТИЯ
+    // НОВЫЕ КЛЮЧИ ДЛЯ РАСШИРЕННОГО ПОКРЫТИЯ
     'nav.services': { ru: 'Услуги', en: 'Services' },
     'nav.guides': { ru: 'Тургиды', en: 'Tour Guides' },
     'nav.transfer': { ru: 'Трансфер', en: 'Transfer' },
@@ -199,44 +198,40 @@ function getTranslation(key, lang = window.currentLanguage) {
 
 // === ГЛАВНАЯ ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА ===
 function switchSiteLanguage(lang) {
-    // 🔒 ВАЛИДАЦИЯ ВХОДНЫХ ДАННЫХ
+    // ВАЛИДАЦИЯ ВХОДНЫХ ДАННЫХ
     if (!lang || typeof lang !== 'string') {
-        console.warn('⚠️ Недопустимый язык, используем русский по умолчанию');
+        console.warn('Недопустимый язык, используем русский по умолчанию');
         lang = 'ru';
     }
     
     if (!window.supportedLanguages.includes(lang)) {
-        console.warn(`⚠️ Неподдерживаемый язык "${lang}", используем русский`);
+        console.warn(`Неподдерживаемый язык "${lang}", используем русский`);
         lang = 'ru';
     }
     
-    console.log(`🌐 Переключение языка на: ${lang}`);
-    
-    // 💾 БЕЗОПАСНОЕ СОХРАНЕНИЕ В LOCALSTORAGE
+    // БЕЗОПАСНОЕ СОХРАНЕНИЕ В LOCALSTORAGE
     try {
         localStorage.setItem('selectedLanguage', lang);
-        console.log(`💾 Язык сохранён в localStorage: ${lang}`);
     } catch (error) {
-        console.error('❌ Ошибка сохранения в localStorage:', error);
+        console.error('Ошибка сохранения в localStorage:', error);
     }
     
     window.currentLanguage = lang;
     
-    // 🔄 ОБНОВЛЯЕМ ВСЕ ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
+    // ОБНОВЛЯЕМ ВСЕ ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
     updateLanguageSelector(lang);
     translateStaticInterface(lang);
     
-    // 🎯 ОБНОВЛЯЕМ HTML LANG АТРИБУТ
+    // ОБНОВЛЯЕМ HTML LANG АТРИБУТ
     document.documentElement.lang = lang;
     
-    // 📱 ЗАКРЫВАЕМ DROPDOWN БЕЗОПАСНО
+    // ЗАКРЫВАЕМ DROPDOWN БЕЗОПАСНО
     const dropdown = document.getElementById('langDropdown');
     const arrow = document.querySelector('.dropdown-arrow');
     
     if (dropdown) dropdown.classList.remove('show');
     if (arrow) arrow.classList.remove('open');
     
-    console.log(`✅ Язык успешно переключён на: ${lang}`);
 }
 
 // === ОБНОВЛЕНИЕ ПЕРЕКЛЮЧАТЕЛЯ ЯЗЫКОВ ===
@@ -262,11 +257,10 @@ function updateLanguageSelector(lang) {
         selectedLangText.textContent = selectedLang.name;
     }
     
-    // 🌐 ОБНОВЛЯЕМ ПЕРЕКЛЮЧАТЕЛЬ В АДМИН-ПАНЕЛИ
+    // ОБНОВЛЯЕМ ПЕРЕКЛЮЧАТЕЛЬ В АДМИН-ПАНЕЛИ
     const currentLanguageAdmin = document.getElementById('currentLanguageAdmin');
     if (currentLanguageAdmin) {
         currentLanguageAdmin.textContent = selectedLang.code;
-        console.log(`🔄 Обновлен переключатель админ-панели: ${selectedLang.code}`);
     }
     
     // Обновляем активную опцию в dropdown (обычные страницы)
@@ -286,51 +280,42 @@ function updateLanguageSelector(lang) {
     });
 }
 
-// === УСИЛЕННАЯ ИНИЦИАЛИЗАЦИЯ ЯЗЫКА ===
+// === ИНИЦИАЛИЗАЦИЯ ЯЗЫКА ===
 function initializeLanguage() {
-    console.log('🔄 Инициализация языковой системы...');
-    
     let savedLanguage = 'ru'; // Безопасное значение по умолчанию
     
-    // 🔒 БЕЗОПАСНОЕ ЧТЕНИЕ ИЗ LOCALSTORAGE
+    // БЕЗОПАСНОЕ ЧТЕНИЕ ИЗ LOCALSTORAGE
     try {
         const stored = localStorage.getItem('selectedLanguage');
-        console.log(`💾 Найден сохранённый язык: ${stored}`);
         
         // Валидируем сохранённое значение
         if (stored && window.supportedLanguages.includes(stored)) {
             savedLanguage = stored;
-            console.log(`✅ Использую сохранённый язык: ${savedLanguage}`);
         } else {
-            console.warn(`⚠️ Недопустимое значение "${stored}", используем русский по умолчанию`);
+            console.warn(`Недопустимое значение "${stored}", используем русский по умолчанию`);
             // Исправляем в localStorage
             localStorage.setItem('selectedLanguage', 'ru');
         }
     } catch (error) {
-        console.error('❌ Ошибка чтения localStorage:', error);
-        console.log('🔧 Используем русский язык по умолчанию');
+        console.error('Ошибка чтения localStorage:', error);
     }
     
-    // 🎯 УСТАНАВЛИВАЕМ ЯЗЫК
+    // УСТАНАВЛИВАЕМ ЯЗЫК
     window.currentLanguage = savedLanguage;
     
-    // 🌐 ОБНОВЛЯЕМ HTML LANG АТРИБУТ
+    // ОБНОВЛЯЕМ HTML LANG АТРИБУТ
     document.documentElement.lang = savedLanguage;
     
-    // 🔄 ПРИМЕНЯЕМ ПЕРЕВОДЫ И ОБНОВЛЯЕМ ИНТЕРФЕЙС
+    // ПРИМЕНЯЕМ ПЕРЕВОДЫ И ОБНОВЛЯЕМ ИНТЕРФЕЙС
     updateLanguageSelector(savedLanguage);
     translateStaticInterface(savedLanguage);
-    
-    console.log(`🎉 Языковая система инициализирована: ${savedLanguage}`);
 }
 
-// === УСИЛЕННАЯ ФУНКЦИЯ ПЕРЕВОДА СТАТИЧЕСКОГО ИНТЕРФЕЙСА ===
+// === ФУНКЦИЯ ПЕРЕВОДА СТАТИЧЕСКОГО ИНТЕРФЕЙСА ===
 function translateStaticInterface(lang) {
-    console.log(`📝 Переключение статического интерфейса на: ${lang}`);
-    
     let translatedCount = 0;
     
-    // 📝 ПЕРЕВОДИМ ОСНОВНОЙ ТЕКСТ (data-translate)
+    // ПЕРЕВОДИМ ОСНОВНОЙ ТЕКСТ (data-translate)
     document.querySelectorAll('[data-translate]').forEach(element => {
         const key = element.getAttribute('data-translate');
         const translation = getTranslation(key, lang);
@@ -344,11 +329,11 @@ function translateStaticInterface(lang) {
             }
             translatedCount++;
         } else {
-            console.warn(`⚠️ Перевод не найден для ключа: ${key}`);
+            console.warn(`Перевод не найден для ключа: ${key}`);
         }
     });
     
-    // 🔤 ПЕРЕВОДИМ PLACEHOLDERS (data-translate-placeholder)
+    // ПЕРЕВОДИМ PLACEHOLDERS (data-translate-placeholder)
     document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
         const key = element.getAttribute('data-translate-placeholder');
         const translation = getTranslation(key, lang);
@@ -357,11 +342,11 @@ function translateStaticInterface(lang) {
             element.placeholder = translation;
             translatedCount++;
         } else {
-            console.warn(`⚠️ Placeholder перевод не найден для ключа: ${key}`);
+            console.warn(`Placeholder перевод не найден для ключа: ${key}`);
         }
     });
     
-    // 🖼️ ПЕРЕВОДИМ ALT АТРИБУТЫ (data-translate-alt)
+    // ПЕРЕВОДИМ ALT АТРИБУТЫ (data-translate-alt)
     document.querySelectorAll('[data-translate-alt]').forEach(element => {
         const key = element.getAttribute('data-translate-alt');
         const translation = getTranslation(key, lang);
@@ -372,7 +357,7 @@ function translateStaticInterface(lang) {
         }
     });
     
-    // 💡 ПЕРЕВОДИМ TITLE АТРИБУТЫ (data-translate-title)
+    // ПЕРЕВОДИМ TITLE АТРИБУТЫ (data-translate-title)
     document.querySelectorAll('[data-translate-title]').forEach(element => {
         const key = element.getAttribute('data-translate-title');
         const translation = getTranslation(key, lang);
@@ -383,7 +368,7 @@ function translateStaticInterface(lang) {
         }
     });
     
-    // 📊 ПЕРЕВОДИМ VALUE АТРИБУТЫ (data-translate-value)
+    // ПЕРЕВОДИМ VALUE АТРИБУТЫ (data-translate-value)
     document.querySelectorAll('[data-translate-value]').forEach(element => {
         const key = element.getAttribute('data-translate-value');
         const translation = getTranslation(key, lang);
@@ -394,7 +379,6 @@ function translateStaticInterface(lang) {
         }
     });
     
-    console.log(`✅ Статический интерфейс переведен на ${lang}. Переведено элементов: ${translatedCount}`);
 }
 
 // === ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ОБНОВЛЕНИЯ ТЕКСТОВЫХ УЗЛОВ ===
@@ -447,7 +431,6 @@ function escapeDataAttribute(unsafe) {
 
 // === АВТОМАТИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ===
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 i18n.js: Автоматическая инициализация языковой системы');
     initializeLanguage();
 });
 
@@ -529,6 +512,5 @@ window.getCategoryNameByLanguageRaw = function(categoryObject, lang) {
     }
 };
 
-console.log('📦 i18n.js загружен и готов к работе');
 
 })(); // Закрываем IIFE

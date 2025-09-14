@@ -1871,7 +1871,6 @@
                     const countriesResult = await countriesResponse.json();
                     if (countriesResult.success) {
                         countriesData = countriesResult.data;
-                        console.log('✅ Countries loaded:', countriesData.length);
                     }
                 }
                 
@@ -1881,7 +1880,6 @@
                     const citiesResult = await citiesResponse.json();
                     if (citiesResult.success) {
                         citiesData = citiesResult.data;
-                        console.log('✅ Cities loaded:', citiesData.length);
                         
                         // Группируем города по странам
                         citiesByCountry = {};
@@ -1893,7 +1891,6 @@
                             citiesByCountry[countryName] = countryCities;
                         });
                         
-                        console.log('✅ Cities organized by country:', citiesByCountry);
                     }
                 }
             } catch (error) {
@@ -2246,7 +2243,6 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    console.log('✅ Tours found:', result.data.length);
                     displaySearchResults(result.data);
                 } else {
                     console.error('❌ Search error:', result.error);
@@ -2493,7 +2489,6 @@
             console.log(`🎬 Starting slideshow for tour ${tourId}: found ${images.length} images`);
             
             if (images.length <= 1) {
-                console.log(`⚠️ Not enough images for slideshow (${images.length})`);
                 return; // Если одно изображение или меньше - не запускаем слайдшоу
             }
             
@@ -2565,7 +2560,6 @@
                 window.i18n.switchSiteLanguage(lang);
                 // 🔄 ОБЯЗАТЕЛЬНО ПЕРЕВОДИМ ДИНАМИЧЕСКИЙ КОНТЕНТ
                 translateDynamicContent(lang);
-                console.log('✅ Полное переключение языка завершено (статический + динамический)');
             } else {
                 console.error('❌ i18n.js не найден!');
             }
@@ -2699,7 +2693,6 @@
         // === 🚀 УСИЛЕННАЯ ФУНКЦИЯ ПЕРЕВОДА СТАТИЧЕСКОГО ИНТЕРФЕЙСА ===
         
         function translateStaticInterface(lang) {
-            console.log(`📝 Переключение статического интерфейса на: ${lang}`);
             
             let translatedCount = 0;
             
@@ -2767,7 +2760,6 @@
                 }
             });
             
-            console.log(`✅ Статический интерфейс переведен на ${lang}. Переведено элементов: ${translatedCount}`);
         }
         
         // Вспомогательная функция для обновления текстовых узлов
@@ -2791,7 +2783,6 @@
             
             // 🎯 ПОЛУЧАЕМ ТЕКУЩИЙ ЯЗЫК ИЗ ЦЕНТРАЛЬНОЙ СИСТЕМЫ
             const currentLang = window.i18n ? window.i18n.currentLanguage() : lang;
-            console.log(`📝 Используем язык для динамического контента: ${currentLang}`);
             
             let updatedCount = 0;
             
@@ -2832,7 +2823,6 @@
                 renderTours();
             }
             
-            console.log(`✅ Динамический контент переведен на ${currentLang}. Обновлено элементов: ${updatedCount}`);
         }
         
         // 🎯 ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ПОЛУЧЕНИЯ КОНТЕНТА ПО ЯЗЫКУ
@@ -2866,7 +2856,6 @@
         }
         
         function selectLanguageNew(lang, flagClass, flagEmoji, name) {
-            console.log('🔧 EMOJI FIX: selectLanguageNew called:', { lang, flagClass, flagEmoji, name });
             
             // ПРИНУДИТЕЛЬНАЯ КАРТА ЭМОДЗИ (на случай если параметр испорчен)
             const emojiMap = {
@@ -2880,7 +2869,6 @@
             
             // ГАРАНТИРОВАННЫЙ эмодзи (приоритет: карта по lang -> карта по flagClass -> flagEmoji -> fallback)
             const correctEmoji = emojiMap[lang] || emojiMap[flagClass] || flagEmoji || '🌐';
-            console.log('🔧 EMOJI FIX: Using emoji:', correctEmoji, 'for lang:', lang);
             
             // Обновляем кнопку селектора - ПРИНУДИТЕЛЬНО используем правильный эмодзи
             const selectedFlag = document.querySelector('.selected-flag');
@@ -2888,7 +2876,6 @@
             selectedFlag.textContent = correctEmoji; // ПРИНУДИТЕЛЬНО правильный эмодзи
             selectedFlag.innerHTML = correctEmoji;   // На всякий случай и innerHTML
             document.querySelector('.selected-lang').textContent = name;
-            console.log('✅ EMOJI FIX: Set main flag to:', correctEmoji);
             
             // ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА: Принудительно исправляем ВСЕ флаги в выпадающем меню
             document.querySelectorAll('#langDropdown .flag').forEach(flag => {
@@ -2897,7 +2884,6 @@
                         if (flag.textContent !== emoji) {
                             flag.textContent = emoji;
                             flag.innerHTML = emoji;
-                            console.log('🔧 EMOJI FIX: Fixed dropdown flag:', key, '->', emoji);
                         }
                         break;
                     }
@@ -2913,7 +2899,6 @@
             // Закрываем выпадающий список
             document.getElementById('langDropdown').classList.remove('show');
             
-            console.log(`✅ EMOJI FIX: Language switched: ${lang}, emoji: ${correctEmoji}`);
         }
         
         // Старая функция для обратной совместимости
@@ -3157,7 +3142,6 @@
                     const imageArray = typeof tour.images === 'string' ? JSON.parse(tour.images) : tour.images;
                     if (Array.isArray(imageArray) && imageArray.length > 0) {
                         tourImages.push(...imageArray);
-                        console.log(`🖼️ Tour ${tour.id} images:`, imageArray);
                     }
                 } catch (e) {
                     console.warn('Failed to parse tour images:', e);
@@ -3479,149 +3463,6 @@
             }
         }
 
-        // 🔥 ГЛОБАЛЬНОЕ РАДИКАЛЬНОЕ РЕШЕНИЕ: Полная пересборка языкового селектора
-        window.radicalFlagFix = function() {
-            try {
-                console.log('🚨 RADICAL FIX: Полностью пересоздаём языковой селектор');
-                
-                // Находим языковой селектор
-                const langDropdown = document.getElementById('langDropdown');
-                if (!langDropdown) {
-                    console.warn('❌ RADICAL FIX: #langDropdown not found');
-                    return;
-                }
-                
-                // ПОЛНОСТЬЮ ЗАМЕНЯЕМ содержимое языкового выпадающего меню с CSS флагами
-                langDropdown.innerHTML = `
-                    <a href="#" class="lang-option active" data-lang="ru" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div style="width: 20px; height: 14px; background: linear-gradient(to bottom, white 33%, #0039A6 33%, #0039A6 66%, #D52B1E 66%); border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);"></div>
-                        <span>Русский</span>
-                    </a>
-                    <a href="#" class="lang-option" data-lang="en" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div style="width: 20px; height: 14px; background: linear-gradient(to bottom, #B22234 0%, #B22234 7.7%, white 7.7%, white 15.4%, #B22234 15.4%, #B22234 23.1%, white 23.1%, white 30.8%, #B22234 30.8%, #B22234 38.5%, white 38.5%, white 46.2%, #B22234 46.2%, #B22234 53.9%, white 53.9%, white 61.6%, #B22234 61.6%, #B22234 69.3%, white 69.3%, white 77%, #B22234 77%, #B22234 84.7%, white 84.7%, white 92.4%, #B22234 92.4%); position: relative; border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);"><div style="position: absolute; top: 0; left: 0; width: 40%; height: 53.8%; background: #3C3B6E;"></div></div>
-                        <span>English</span>
-                    </a>
-                    <a href="#" class="lang-option" data-lang="tj" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div style="width: 20px; height: 14px; background: linear-gradient(to bottom, #CC0000 0%, #CC0000 33%, white 33%, white 66%, #006600 66%); border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);"></div>
-                        <span>Тоҷикӣ</span>
-                    </a>
-                    <a href="#" class="lang-option" data-lang="fa" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div style="width: 20px; height: 14px; background: linear-gradient(to bottom, #239F40 33%, white 33%, white 66%, #DA0000 66%); border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);"></div>
-                        <span>فارسی</span>
-                    </a>
-                    <a href="#" class="lang-option" data-lang="de" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div style="width: 20px; height: 14px; background: linear-gradient(to bottom, black 33%, #DD0000 33%, #DD0000 66%, #FFCC00 66%); border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);"></div>
-                        <span>Deutsch</span>
-                    </a>
-                    <a href="#" class="lang-option" data-lang="zh" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: white; text-decoration: none; border-bottom: none;">
-                        <div style="width: 20px; height: 14px; background: #DE2910; border-radius: 2px; border: 1px solid rgba(255,255,255,0.3); position: relative;"><div style="position: absolute; top: 2px; left: 2px; width: 3px; height: 3px; background: #FFDE00;"></div></div>
-                        <span>中文</span>
-                    </a>
-                `;
-                
-                // ЗАМЕНЯЕМ кнопку селектора на CSS флаг России
-                const selectedFlag = document.querySelector('.selected-flag');
-                if (selectedFlag) {
-                    selectedFlag.innerHTML = '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, white 33%, #0039A6 33%, #0039A6 66%, #D52B1E 66%); border-radius: 2px;"></div>';
-                    console.log('✅ RADICAL FIX: Replaced main flag button with CSS flag');
-                }
-                
-                // Переназначаем обработчики событий для новых элементов
-                document.querySelectorAll('#langDropdown .lang-option').forEach(option => {
-                    option.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const lang = this.getAttribute('data-lang');
-                        const flag = this.querySelector('span').textContent;
-                        const name = this.querySelector('span:last-child').textContent;
-                        console.log('🚨 RADICAL FIX: Language clicked:', lang, flag, name);
-                        window.selectLanguageRadical(lang, flag, name);
-                    });
-                });
-                
-                console.log('✅ RADICAL FIX: Language selector completely rebuilt');
-            } catch (error) {
-                console.error('❌ RADICAL FIX ERROR:', error);
-            }
-        };
-        
-        // Новая функция выбора языка БЕЗ CSS классов
-        window.selectLanguageRadical = function(lang, flagEmoji, name) {
-            try {
-                console.log('🚨 RADICAL FIX: Switching to:', lang, flagEmoji, name);
-                
-                // Обновляем кнопку селектора напрямую
-                const selectedFlag = document.querySelector('.selected-flag');
-                const selectedLang = document.querySelector('.selected-lang');
-                
-                if (selectedFlag && selectedLang) {
-                    // CSS флаги вместо эмодзи
-                    const cssFlags = {
-                        'ru': '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, white 33%, #0039A6 33%, #0039A6 66%, #D52B1E 66%); border-radius: 2px;"></div>',
-                        'en': '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, #B22234 0%, #B22234 7.7%, white 7.7%, white 15.4%, #B22234 15.4%); position: relative; border-radius: 2px;"><div style="position: absolute; top: 0; left: 0; width: 40%; height: 53.8%; background: #3C3B6E;"></div></div>',
-                        'tj': '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, #CC0000 0%, #CC0000 33%, white 33%, white 66%, #006600 66%); border-radius: 2px;"></div>',
-                        'fa': '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, #239F40 33%, white 33%, white 66%, #DA0000 66%); border-radius: 2px;"></div>',
-                        'de': '<div style="width: 100%; height: 100%; background: linear-gradient(to bottom, black 33%, #DD0000 33%, #DD0000 66%, #FFCC00 66%); border-radius: 2px;"></div>',
-                        'zh': '<div style="width: 100%; height: 100%; background: #DE2910; border-radius: 2px; position: relative;"><div style="position: absolute; top: 2px; left: 2px; width: 3px; height: 3px; background: #FFDE00;"></div></div>'
-                    };
-                    
-                    selectedFlag.innerHTML = cssFlags[lang] || cssFlags['ru'];
-                    selectedLang.textContent = name;
-                    console.log('✅ RADICAL FIX: Updated main button to CSS flag for:', lang, name);
-                }
-                
-                // Убираем активный класс со всех опций
-                document.querySelectorAll('#langDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
-                
-                // Добавляем активный класс к выбранной опции
-                const selectedOption = document.querySelector(`#langDropdown .lang-option[data-lang="${lang}"]`);
-                if (selectedOption) {
-                    selectedOption.classList.add('active');
-                }
-                
-                // Закрываем выпадающий список
-                document.getElementById('langDropdown').classList.remove('show');
-                
-                // Сохраняем в localStorage
-                localStorage.setItem('selectedLanguage', lang);
-                
-                console.log('✅ RADICAL FIX: Language switch completed:', lang, flagEmoji);
-            } catch (error) {
-                console.error('❌ RADICAL FIX SWITCH ERROR:', error);
-            }
-        };
-        
-        // МНОЖЕСТВЕННЫЕ ТРИГГЕРЫ для запуска радикального исправления
-        console.log('🚨 RADICAL FIX: Setting up triggers...');
-        
-        // Trigger 1: Immediate try
-        setTimeout(() => {
-            console.log('🚨 RADICAL FIX: Trigger 1 - Immediate');
-            window.radicalFlagFix();
-        }, 100);
-        
-        // Trigger 2: DOM Ready
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚨 RADICAL FIX: Trigger 2 - DOMContentLoaded');
-            setTimeout(window.radicalFlagFix, 0);
-        });
-        
-        // Trigger 3: Window Load
-        window.addEventListener('load', () => {
-            console.log('🚨 RADICAL FIX: Trigger 3 - Window Load');
-            setTimeout(window.radicalFlagFix, 0);
-        });
-        
-        // Trigger 4: Delayed retries
-        setTimeout(() => {
-            console.log('🚨 RADICAL FIX: Trigger 4 - 1 second delay');
-            window.radicalFlagFix();
-        }, 1000);
-        
-        setTimeout(() => {
-            console.log('🚨 RADICAL FIX: Trigger 5 - 3 second delay');
-            window.radicalFlagFix();
-        }, 3000);
 
         // Глобальная система валют
         let globalCurrency = 'TJS';
@@ -3737,8 +3578,6 @@
 
         // JavaScript BACKUP: Принудительное восстановление эмодзи флагов
         function forceEmojiFlags() {
-            console.log('🔧 FORCE EMOJI FLAGS: Принудительно восстанавливаем эмодзи флаги');
-            
             const flagMappings = {
                 'flag-ru': '🇷🇺',
                 'flag-us': '🇺🇸', 
@@ -3755,7 +3594,6 @@
                         // Принудительно заменяем содержимое на эмодзи
                         flag.textContent = emoji;
                         flag.innerHTML = emoji;
-                        console.log(`✅ Restored ${className} -> ${emoji}`);
                         break;
                     }
                 }
