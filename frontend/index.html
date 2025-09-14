@@ -2327,7 +2327,7 @@
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-gray-900">${tour.title.ru}</h3>
+                            <h3 class="text-xl font-bold text-gray-900" data-tour-title data-title-ru="${escapeDataAttribute(getTitleByLanguageRaw(tour.title, 'ru'))}" data-title-en="${escapeDataAttribute(getTitleByLanguageRaw(tour.title, 'en'))}">${getTitleByLanguage(tour.title, window.i18n ? window.i18n.currentLanguage() : 'ru')}</h3>
                             <div class="flex flex-col gap-1">
                                 <!-- Тип тура (format/tourType) -->
                                 <div class="flex items-center bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
@@ -2336,12 +2336,12 @@
                                 <!-- Категория тура -->
                                 ${tour.category ? `
                                 <div class="flex items-center px-2 py-1 rounded-full text-xs font-medium" style="background-color: #3E3E3E; color: white;">
-                                    ${tour.category.name ? (tour.category.name.ru || tour.category.name.en || 'Категория') : 'Категория'}
+                                    <span data-tour-category data-cat-ru="${escapeDataAttribute(getCategoryNameByLanguageRaw(tour.category.name, 'ru'))}" data-cat-en="${escapeDataAttribute(getCategoryNameByLanguageRaw(tour.category.name, 'en'))}">${getCategoryNameByLanguage(tour.category.name, window.i18n ? window.i18n.currentLanguage() : 'ru')}</span>
                                 </div>` : ''}
                             </div>
                         </div>
-                        <p class="text-gray-600 mb-4 flex-grow">
-                            ${tour.description.ru}
+                        <p class="text-gray-600 mb-4 flex-grow" data-tour-description data-desc-ru="${escapeDataAttribute(getDescriptionByLanguageRaw(tour.description, 'ru'))}" data-desc-en="${escapeDataAttribute(getDescriptionByLanguageRaw(tour.description, 'en'))}">
+                            ${getDescriptionByLanguage(tour.description, window.i18n ? window.i18n.currentLanguage() : 'ru')}
                         </p>
                         <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
                             <span>📍 ${tour.city}</span>
@@ -2549,9 +2549,8 @@
         }
 
         // === СИСТЕМА ПЕРЕКЛЮЧЕНИЯ ЯЗЫКОВ ===
-        
-        // Глобальная переменная для текущего языка
-        let currentLanguage = 'ru'; // По умолчанию русский
+        // 
+        // 🌐 currentLanguage теперь управляется центральной системой i18n.js
         
         // Функции для языкового селектора
         function toggleLanguageDropdown() {
@@ -2560,12 +2559,13 @@
             }
         }
         
-        // 🌐 ИСПОЛЬЗУЕМ ЦЕНТРАЛЬНУЮ ФУНКЦИЮ ИЗ i18n.js
+        // 🌐 ИСПОЛЬЗУЕМ ЦЕНТРАЛЬНУЮ ФУНКЦИЮ ИЗ i18n.js + ДОБАВЛЯЕМ ДИНАМИЧЕСКИЙ КОНТЕНТ
         function switchSiteLanguage(lang) {
             if (window.i18n) {
                 window.i18n.switchSiteLanguage(lang);
-                // Дополнительно переводим динамический контент (специфично для этой страницы)
+                // 🔄 ОБЯЗАТЕЛЬНО ПЕРЕВОДИМ ДИНАМИЧЕСКИЙ КОНТЕНТ
                 translateDynamicContent(lang);
+                console.log('✅ Полное переключение языка завершено (статический + динамический)');
             } else {
                 console.error('❌ i18n.js не найден!');
             }
@@ -2784,10 +2784,85 @@
             }
         }
         
-        // Перевод динамического контента
+        // === ЧАСТЬ 3: ПЕРЕВОД ДИНАМИЧЕСКОГО КОНТЕНТА ИЗ JSON ПОЛЕЙ ===
+        
         function translateDynamicContent(lang) {
-            // Эта функция будет реализована в Части 3
             console.log(`🔄 Переключение динамического контента на: ${lang}`);
+            
+            // 🎯 ПОЛУЧАЕМ ТЕКУЩИЙ ЯЗЫК ИЗ ЦЕНТРАЛЬНОЙ СИСТЕМЫ
+            const currentLang = window.i18n ? window.i18n.currentLanguage() : lang;
+            console.log(`📝 Используем язык для динамического контента: ${currentLang}`);
+            
+            let updatedCount = 0;
+            
+            // 🏷️ ОБНОВЛЯЕМ ЗАГОЛОВКИ ТУРОВ (БЕЗОПАСНЫЙ ПОДХОД)
+            const tourTitles = document.querySelectorAll('[data-tour-title]');
+            tourTitles.forEach(element => {
+                const titleRu = element.dataset.titleRu || '';
+                const titleEn = element.dataset.titleEn || '';
+                const title = currentLang === 'en' ? (titleEn || titleRu || 'Название не указано') : (titleRu || titleEn || 'Название не указано');
+                element.textContent = title;
+                updatedCount++;
+            });
+            
+            // 📝 ОБНОВЛЯЕМ ОПИСАНИЯ ТУРОВ (БЕЗОПАСНЫЙ ПОДХОД)
+            const tourDescriptions = document.querySelectorAll('[data-tour-description]');
+            tourDescriptions.forEach(element => {
+                const descRu = element.dataset.descRu || '';
+                const descEn = element.dataset.descEn || '';
+                const description = currentLang === 'en' ? (descEn || descRu || 'Описание не указано') : (descRu || descEn || 'Описание не указано');
+                element.textContent = description;
+                updatedCount++;
+            });
+            
+            // 🏷️ ОБНОВЛЯЕМ КАТЕГОРИИ ТУРОВ (БЕЗОПАСНЫЙ ПОДХОД)
+            const tourCategories = document.querySelectorAll('[data-tour-category]');
+            tourCategories.forEach(element => {
+                const catRu = element.dataset.catRu || '';
+                const catEn = element.dataset.catEn || '';
+                const categoryName = currentLang === 'en' ? (catEn || catRu || 'Категория') : (catRu || catEn || 'Категория');
+                element.textContent = categoryName;
+                updatedCount++;
+            });
+            
+            // 🔄 ПЕРЕРЕНДЕРИМ ТУРЫ С НОВЫМ ЯЗЫКОМ (если нужно)
+            if (typeof renderTours === 'function') {
+                // Если у нас есть функция renderTours, используем её
+                console.log('🔄 Перерендериваем туры с новым языком...');
+                renderTours();
+            }
+            
+            console.log(`✅ Динамический контент переведен на ${currentLang}. Обновлено элементов: ${updatedCount}`);
+        }
+        
+        // 🎯 ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ПОЛУЧЕНИЯ КОНТЕНТА ПО ЯЗЫКУ
+        
+        function getTitleByLanguage(titleObject, lang) {
+            // Поддерживаем как JSON строки, так и объекты
+            try {
+                const title = typeof titleObject === 'string' ? JSON.parse(titleObject) : titleObject;
+                return title[lang] || title.ru || title.en || 'Название не указано';
+            } catch (e) {
+                return titleObject || 'Название не указано';
+            }
+        }
+        
+        function getDescriptionByLanguage(descriptionObject, lang) {
+            try {
+                const description = typeof descriptionObject === 'string' ? JSON.parse(descriptionObject) : descriptionObject;
+                return description[lang] || description.ru || description.en || 'Описание не указано';
+            } catch (e) {
+                return descriptionObject || 'Описание не указано';
+            }
+        }
+        
+        function getCategoryNameByLanguage(categoryObject, lang) {
+            try {
+                const category = typeof categoryObject === 'string' ? JSON.parse(categoryObject) : categoryObject;
+                return category[lang] || category.ru || category.en || 'Категория';
+            } catch (e) {
+                return categoryObject || 'Категория';
+            }
         }
         
         function selectLanguageNew(lang, flagClass, flagEmoji, name) {
@@ -3361,6 +3436,12 @@
             // 🌐 ИНИЦИАЛИЗИРУЕМ ЯЗЫКОВУЮ СИСТЕМУ (ЦЕНТРАЛЬНАЯ i18n.js)
             if (window.i18n) {
                 window.i18n.initializeLanguage();
+                // 🔄 ПОСЛЕ ЗАГРУЗКИ ТУРОВ ПРИМЕНЯЕМ ДИНАМИЧЕСКИЕ ПЕРЕВОДЫ
+                setTimeout(() => {
+                    const currentLang = window.i18n.currentLanguage();
+                    translateDynamicContent(currentLang);
+                    console.log(`🔄 Динамический контент инициализирован для языка: ${currentLang}`);
+                }, 100); // Небольшая задержка для загрузки туров
             } else {
                 console.warn('⚠️ i18n.js не загружен, используем fallback инициализацию');
             }

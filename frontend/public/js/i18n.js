@@ -330,6 +330,31 @@ function toggleLanguageDropdown() {
     if (arrow) arrow.classList.toggle('open');
 }
 
+// === БЕЗОПАСНАЯ ФУНКЦИЯ ЭКРАНИРОВАНИЯ HTML ===
+function escapeHTML(unsafe) {
+    if (typeof unsafe !== 'string') {
+        unsafe = String(unsafe || '');
+    }
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// === БЕЗОПАСНАЯ ФУНКЦИЯ ЭКРАНИРОВАНИЯ ДЛЯ DATA-АТРИБУТОВ ===
+function escapeDataAttribute(unsafe) {
+    if (typeof unsafe !== 'string') {
+        unsafe = String(unsafe || '');
+    }
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
 // === АВТОМАТИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ===
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 i18n.js: Автоматическая инициализация языковой системы');
@@ -345,7 +370,73 @@ window.i18n = {
     translateStaticInterface,
     getTranslation,
     toggleLanguageDropdown,
-    updateLanguageSelector
+    updateLanguageSelector,
+    // Безопасные функции экранирования
+    escapeHTML,
+    escapeDataAttribute
+};
+
+// === ЭКСПОРТ ФУНКЦИЙ ЭКРАНИРОВАНИЯ ===
+window.escapeHTML = escapeHTML;
+window.escapeDataAttribute = escapeDataAttribute;
+
+// === ГЛОБАЛЬНЫЕ HELPER ФУНКЦИИ ДЛЯ ДИНАМИЧЕСКОГО КОНТЕНТА (БЕЗОПАСНЫЕ) ===
+window.getTitleByLanguage = function(titleObject, lang) {
+    try {
+        const title = typeof titleObject === 'string' ? JSON.parse(titleObject) : titleObject;
+        const result = title[lang] || title.ru || title.en || 'Название не указано';
+        return escapeHTML(result);
+    } catch (e) {
+        return escapeHTML(titleObject || 'Название не указано');
+    }
+};
+
+window.getDescriptionByLanguage = function(descriptionObject, lang) {
+    try {
+        const description = typeof descriptionObject === 'string' ? JSON.parse(descriptionObject) : descriptionObject;
+        const result = description[lang] || description.ru || description.en || 'Описание не указано';
+        return escapeHTML(result);
+    } catch (e) {
+        return escapeHTML(descriptionObject || 'Описание не указано');
+    }
+};
+
+window.getCategoryNameByLanguage = function(categoryObject, lang) {
+    try {
+        const category = typeof categoryObject === 'string' ? JSON.parse(categoryObject) : categoryObject;
+        const result = category[lang] || category.ru || category.en || 'Категория';
+        return escapeHTML(result);
+    } catch (e) {
+        return escapeHTML(categoryObject || 'Категория');
+    }
+};
+
+// === НЕБЕЗОПАСНЫЕ ВЕРСИИ ДЛЯ ОСОБЫХ СЛУЧАЕВ (ИСПОЛЬЗОВАТЬ ОСТОРОЖНО) ===
+window.getTitleByLanguageRaw = function(titleObject, lang) {
+    try {
+        const title = typeof titleObject === 'string' ? JSON.parse(titleObject) : titleObject;
+        return title[lang] || title.ru || title.en || 'Название не указано';
+    } catch (e) {
+        return titleObject || 'Название не указано';
+    }
+};
+
+window.getDescriptionByLanguageRaw = function(descriptionObject, lang) {
+    try {
+        const description = typeof descriptionObject === 'string' ? JSON.parse(descriptionObject) : descriptionObject;
+        return description[lang] || description.ru || description.en || 'Описание не указано';
+    } catch (e) {
+        return descriptionObject || 'Описание не указано';
+    }
+};
+
+window.getCategoryNameByLanguageRaw = function(categoryObject, lang) {
+    try {
+        const category = typeof categoryObject === 'string' ? JSON.parse(categoryObject) : categoryObject;
+        return category[lang] || category.ru || category.en || 'Категория';
+    } catch (e) {
+        return categoryObject || 'Категория';
+    }
 };
 
 console.log('📦 i18n.js загружен и готов к работе');
