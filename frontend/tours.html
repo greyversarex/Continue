@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Поиск туров - Bunyod-Tour</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 🌐 ПОДКЛЮЧЕНИЕ ЦЕНТРАЛЬНОЙ СИСТЕМЫ i18n -->
+    <script src="/public/js/i18n.js"></script>
     <style>
         /* Dropdown styles from main page */
         .dropdown {
@@ -212,14 +214,14 @@
                 
                 <!-- Навигационное меню -->
                 <nav class="hidden md:flex space-x-6">
-                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors">О нас</a>
+                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.about">О нас</a>
                     
                     <!-- Услуги (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Услуги</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.services">Услуги</a>
                         <div class="dropdown-content">
                             <div class="dropdown-submenu">
-                                <a href="#">Туры</a>
+                                <a href="#" data-translate="nav.tours">Туры</a>
                                 <div class="dropdown-subcontent" style="width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px;">
                                     <a href="#" style="padding: 8px;">Однодневные</a>
                                     <a href="#" style="padding: 8px;">Многодневные</a>
@@ -238,16 +240,16 @@
                                     <a href="#" style="padding: 8px;">VIP туры</a>
                                 </div>
                             </div>
-                            <a href="#">Тургиды</a>
-                            <a href="#" >Трансфер</a>
-                            <a href="#">Заказ тура</a>
-                            <a href="visa-support.html">Визовая поддержка</a>
+                            <a href="#" data-translate="nav.guides">Тургиды</a>
+                            <a href="#" data-translate="nav.transfer">Трансфер</a>
+                            <a href="#" data-translate="nav.book_tour">Заказ тура</a>
+                            <a href="visa-support.html" data-translate="nav.visa_support">Визовая поддержка</a>
                         </div>
                     </div>
                     
                     <!-- Туристам (с выпадающим меню) -->
                     <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors">Туристам</a>
+                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.tourists">Туристам</a>
                         <div class="dropdown-content">
                             <a href="#">Инструкция сайта</a>
                             <a href="#">Специальные заметки</a>
@@ -257,8 +259,8 @@
                     </div>
                     
                     <!-- Акции (БЕЗ выпадающего меню) -->
-                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors">Акции</a>
-                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors">Новости</a>
+                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.promotions">Акции</a>
+                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.news">Новости</a>
                     
                     <!-- Тур-агенты (с выпадающим меню) -->
                     <div class="dropdown">
@@ -463,7 +465,7 @@
 
                     <!-- Кнопки -->
                     <div class="space-y-3">
-                        <button onclick="applyFilters()" class="filter-button w-full">Применить фильтры</button>
+                        <button onclick="applyFilters()" class="filter-button w-full" data-translate="btn.apply_filters">Применить фильтры</button>
                         <button onclick="resetFilters()" class="reset-button w-full">Сбросить все фильтры</button>
                     </div>
                 </div>
@@ -472,7 +474,7 @@
             <!-- Правая панель - Результаты -->
             <div class="lg:col-span-3">
                 <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900">Результаты поиска</h3>
+                    <h3 class="text-lg font-semibold text-gray-900" data-translate="title.search_results">Результаты поиска</h3>
                     <p id="resultsCount" class="text-gray-600">Показано туров: <span id="tourCount">0</span></p>
                 </div>
 
@@ -482,8 +484,8 @@
 
                 <div id="noResults" class="text-center py-12 hidden">
                     <div class="text-gray-400 text-6xl mb-4">🔍</div>
-                    <h3 class="text-xl font-medium text-gray-900 mb-2">Туры не найдены</h3>
-                    <p class="text-gray-600">Попробуйте изменить параметры поиска</p>
+                    <h3 class="text-xl font-medium text-gray-900 mb-2" data-translate="common.no_tours_found">Туры не найдены</h3>
+                    <p class="text-gray-600" data-translate="common.try_different_search">Попробуйте изменить параметры поиска</p>
                 </div>
             </div>
         </div>

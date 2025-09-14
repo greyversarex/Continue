@@ -1,14 +1,24 @@
 // === ЦЕНТРАЛЬНАЯ СИСТЕМА ИНТЕРНАЦИОНАЛИЗАЦИИ ===
 // Используется на всех страницах сайта для двуязычной поддержки (RU/EN)
 
+// === ЗАЩИТА ОТ ДВОЙНОЙ ЗАГРУЗКИ ===
+(function() {
+if (window.bunyodTourI18nLoaded) {
+    console.log('🔒 i18n.js уже загружен, пропускаем повторную инициализацию');
+    return; // Просто выходим из IIFE без ошибки
+}
+
+// Помечаем что система загружена в самом начале
+window.bunyodTourI18nLoaded = true;
+
 // Глобальная переменная для текущего языка
-let currentLanguage = 'ru'; // По умолчанию русский
+window.currentLanguage = window.currentLanguage || 'ru'; // По умолчанию русский
 
 // Поддерживаемые языки
-const supportedLanguages = ['ru', 'en'];
+window.supportedLanguages = window.supportedLanguages || ['ru', 'en'];
 
 // === СЛОВАРЬ ПЕРЕВОДОВ ===
-const translations = {
+window.translations = window.translations || {
     // Главное меню
     'nav.home': { ru: 'Главная', en: 'Home' },
     'nav.tours': { ru: 'Туры', en: 'Tours' },
@@ -140,17 +150,48 @@ const translations = {
     'admin.active_tours': { ru: 'Активных туров', en: 'Active Tours' },
     'admin.orders_this_month': { ru: 'Заказов за месяц', en: 'Orders This Month' },
     'admin.monthly_revenue': { ru: 'Доход за месяц', en: 'Monthly Revenue' },
-    'admin.active_customers': { ru: 'Активных клиентов', en: 'Active Customers' }
+    'admin.active_customers': { ru: 'Активных клиентов', en: 'Active Customers' },
+    
+    // 🌐 НОВЫЕ КЛЮЧИ ДЛЯ РАСШИРЕННОГО ПОКРЫТИЯ
+    'nav.services': { ru: 'Услуги', en: 'Services' },
+    'nav.guides': { ru: 'Тургиды', en: 'Tour Guides' },
+    'nav.transfer': { ru: 'Трансфер', en: 'Transfer' },
+    'nav.book_tour': { ru: 'Заказ тура', en: 'Book Tour' },
+    'nav.tourists': { ru: 'Туристам', en: 'For Tourists' },
+    'nav.promotions': { ru: 'Акции', en: 'Promotions' },
+    'nav.news': { ru: 'Новости', en: 'News' },
+    
+    // Фильтры и кнопки
+    'btn.apply_filters': { ru: 'Применить фильтры', en: 'Apply Filters' },
+    'btn.reset_filters': { ru: 'Сбросить все фильтры', en: 'Reset All Filters' },
+    
+    // Сообщения о поиске
+    'common.no_tours_found': { ru: 'Туры не найдены', en: 'No tours found' },
+    'common.try_different_search': { ru: 'Попробуйте изменить параметры поиска', en: 'Try changing search parameters' },
+    'common.tours_shown': { ru: 'Показано туров:', en: 'Tours shown:' },
+    
+    // Формы и поля
+    'form.date_from': { ru: 'От', en: 'From' },
+    'form.date_to': { ru: 'До', en: 'To' },
+    
+    // Модальные окна
+    'modal.tour_details': { ru: 'Детали тура', en: 'Tour Details' },
+    'modal.description': { ru: 'Описание тура', en: 'Tour Description' },
+    'modal.program': { ru: 'Программа тура', en: 'Tour Program' },
+    'modal.hotels': { ru: 'Отели', en: 'Hotels' },
+    'modal.features': { ru: 'Особенности тура:', en: 'Tour Features:' }
 };
 
+// Убираем const aliases - используем прямые ссылки на window.*
+
 // === ФУНКЦИЯ ПОЛУЧЕНИЯ ПЕРЕВОДА ===
-function getTranslation(key, lang = currentLanguage) {
-    if (translations[key] && translations[key][lang]) {
-        return translations[key][lang];
+function getTranslation(key, lang = window.currentLanguage) {
+    if (window.translations[key] && window.translations[key][lang]) {
+        return window.translations[key][lang];
     }
     // Возвращаем русский как fallback
-    if (translations[key] && translations[key]['ru']) {
-        return translations[key]['ru'];
+    if (window.translations[key] && window.translations[key]['ru']) {
+        return window.translations[key]['ru'];
     }
     // Если перевода вообще нет, возвращаем ключ
     return key;
@@ -164,7 +205,7 @@ function switchSiteLanguage(lang) {
         lang = 'ru';
     }
     
-    if (!supportedLanguages.includes(lang)) {
+    if (!window.supportedLanguages.includes(lang)) {
         console.warn(`⚠️ Неподдерживаемый язык "${lang}", используем русский`);
         lang = 'ru';
     }
@@ -179,7 +220,7 @@ function switchSiteLanguage(lang) {
         console.error('❌ Ошибка сохранения в localStorage:', error);
     }
     
-    currentLanguage = lang;
+    window.currentLanguage = lang;
     
     // 🔄 ОБНОВЛЯЕМ ВСЕ ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
     updateLanguageSelector(lang);
@@ -257,7 +298,7 @@ function initializeLanguage() {
         console.log(`💾 Найден сохранённый язык: ${stored}`);
         
         // Валидируем сохранённое значение
-        if (stored && supportedLanguages.includes(stored)) {
+        if (stored && window.supportedLanguages.includes(stored)) {
             savedLanguage = stored;
             console.log(`✅ Использую сохранённый язык: ${savedLanguage}`);
         } else {
@@ -271,7 +312,7 @@ function initializeLanguage() {
     }
     
     // 🎯 УСТАНАВЛИВАЕМ ЯЗЫК
-    currentLanguage = savedLanguage;
+    window.currentLanguage = savedLanguage;
     
     // 🌐 ОБНОВЛЯЕМ HTML LANG АТРИБУТ
     document.documentElement.lang = savedLanguage;
@@ -412,8 +453,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // === ЭКСПОРТ ДЛЯ ГЛОБАЛЬНОГО ИСПОЛЬЗОВАНИЯ ===
 window.i18n = {
-    supportedLanguages,
-    currentLanguage: () => currentLanguage,
+    supportedLanguages: window.supportedLanguages,
+    currentLanguage: () => window.currentLanguage,
     initializeLanguage,
     switchSiteLanguage,
     translateStaticInterface,
@@ -489,3 +530,5 @@ window.getCategoryNameByLanguageRaw = function(categoryObject, lang) {
 };
 
 console.log('📦 i18n.js загружен и готов к работе');
+
+})(); // Закрываем IIFE
