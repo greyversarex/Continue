@@ -71,3 +71,4 @@ externalPort = 5173
 [deployment]
 deploymentTarget = "autoscale"
 run = ["node", "index.js"]
+build = ["npm", "run", "db:generate"]
