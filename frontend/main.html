@@ -32,6 +32,8 @@
             transition: all 0.3s ease;
         }
     </style>
+    <!-- Layout loader for dynamic header/footer -->
+    <script src="/public/js/layout-loader.js"></script>
 </head>
 <body>
     <!-- ЗАГОЛОВОК С ПОДТВЕРЖДЕНИЕМ ЗАГРУЗКИ -->
@@ -39,24 +41,8 @@
         🎉 НОВАЯ ВЕРСИЯ ЗАГРУЖЕНА - ТЁМНО-СЕРЫЙ ФИЛЬТР АКТИВЕН!
     </div>
 
-    <!-- Хедер -->
-    <header class="shadow-md sticky top-0 z-50" style="background-color: #3E3E3E;">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex items-center justify-between h-16 px-6">
-                <div class="flex items-center">
-                    <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour Logo" class="w-12 h-12 mr-3 rounded-full">
-                    <span class="text-xl font-bold text-white">Bunyod-Tour</span>
-                </div>
-                
-                <nav class="hidden md:flex space-x-6">
-                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Турагентам</a>
-                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Горящие туры</a>
-                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors">Новости</a>
-                    <a href="#" class="text-white hover:text-gray-300 transition-colors">Пользователям</a>
-                </nav>
-            </div>
-        </div>
-    </header>
+    <!-- Dynamic header will be loaded here -->
+    <div id="header-container"></div>
 
     <!-- Главный баннер -->
     <section class="hero-bg banner-height relative flex items-center justify-center text-white">
@@ -97,5 +83,8 @@
             alert('🎉 REPLIT PREVIEW ОБНОВЛЕН!\n\nФильтр теперь тёмно-серый!');
         }, 1000);
     </script>
+    
+    <!-- Dynamic footer will be loaded here -->
+    <div id="footer-container"></div>
 </body>
 </html>
