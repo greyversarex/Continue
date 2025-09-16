@@ -31,10 +31,15 @@ class LayoutLoader {
             
             const headerHTML = await response.text();
             
-            // Вставляем хедер в начало body
-            const headerContainer = document.createElement('div');
-            headerContainer.innerHTML = headerHTML;
-            document.body.insertBefore(headerContainer.firstElementChild, document.body.firstChild);
+            // 🎯 УМНАЯ ВСТАВКА: используем контейнер если есть, иначе начало body
+            const headerContainer = document.getElementById('header-container');
+            if (headerContainer) {
+                headerContainer.innerHTML = headerHTML;
+            } else {
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = headerHTML;
+                document.body.insertBefore(tempContainer.firstElementChild, document.body.firstChild);
+            }
             
             this.headerLoaded = true;
             console.log('✅ Header loaded successfully');
@@ -50,10 +55,15 @@ class LayoutLoader {
             
             const footerHTML = await response.text();
             
-            // Вставляем футер в конец body
-            const footerContainer = document.createElement('div');
-            footerContainer.innerHTML = footerHTML;
-            document.body.appendChild(footerContainer.firstElementChild);
+            // 🎯 УМНАЯ ВСТАВКА: используем контейнер если есть, иначе конец body
+            const footerContainer = document.getElementById('footer-container');
+            if (footerContainer) {
+                footerContainer.innerHTML = footerHTML;
+            } else {
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = footerHTML;
+                document.body.appendChild(tempContainer.firstElementChild);
+            }
             
             this.footerLoaded = true;
             console.log('✅ Footer loaded successfully');
@@ -177,9 +187,11 @@ class LayoutLoader {
     }
 
     setDefaultLanguage() {
-        // 🚨 ПРИНУДИТЕЛЬНАЯ УСТАНОВКА АНГЛИЙСКОГО ЯЗЫКА ПО УМОЛЧАНИЮ
-        localStorage.setItem('selectedLanguage', 'en'); // Принудительно сбрасываем на английский
-        const savedLanguage = 'en'; // ВСЕГДА английский
+        // 🎯 УМНАЯ УСТАНОВКА: английский только если нет предыдущего выбора
+        const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+        if (!localStorage.getItem('selectedLanguage')) {
+            localStorage.setItem('selectedLanguage', 'en'); // Только при первом запуске
+        }
         
         // Устанавливаем глобальную переменную
         window.currentLanguage = savedLanguage;
