@@ -88,11 +88,23 @@ window.translations = window.translations || {
     'footer.copyright': { ru: '© 2024 Bunyod-Tour. Все права защищены.', en: '© 2024 Bunyod-Tour. All rights reserved.', tj: '© 2024 Bunyod-Tour. Ҳамаи ҳуқуқ ҳифз шудаанд.' },
     
     // Фильтры
+    'filters.title': { ru: 'Фильтры поиска', en: 'Search Filters', tj: 'Филтрҳои ҷустуҷӯ' },
+    'filters.destination': { ru: 'Направление', en: 'Destination', tj: 'Ҷиҳат' },
     'filter.country': { ru: 'Страна', en: 'Country', tj: 'Кишвар' },
     'filter.city': { ru: 'Город', en: 'City', tj: 'Шаҳр' },
     'filter.tour_type': { ru: 'Тип тура', en: 'Tour Type', tj: 'Нави сайёҳат' },
     'filter.category': { ru: 'Категория', en: 'Category', tj: 'Категория' },
     'filter.date': { ru: 'Дата', en: 'Date', tj: 'Сана' },
+    
+    // Формы
+    'form.country': { ru: 'Страна', en: 'Country', tj: 'Кишвар' },
+    'form.select_country': { ru: 'Выберите страну', en: 'Select Country', tj: 'Кишварро интихоб кунед' },
+    
+    // Страны  
+    'country.tajikistan': { ru: 'Таджикистан', en: 'Tajikistan', tj: 'Тоҷикистон' },
+    'country.uzbekistan': { ru: 'Узбекистан', en: 'Uzbekistan', tj: 'Ӯзбакистон' },
+    'country.kyrgyzstan': { ru: 'Киргизстан', en: 'Kyrgyzstan', tj: 'Қирғизистон' },
+    'country.turkmenistan': { ru: 'Туркменистан', en: 'Turkmenistan', tj: 'Туркманистон' },
     
     // Общие элементы
     'common.loading': { ru: 'Загрузка...', en: 'Loading...', tj: 'Боргирӣ мешавад...' },
@@ -118,7 +130,9 @@ window.translations = window.translations || {
 
     // === КАТАЛОГ ОТЕЛЕЙ - НОВЫЕ КЛЮЧИ ===
     // Основные заголовки отелей
-    'hotel.page_title': { ru: 'Каталог отелей - Bunyod-Tour', en: 'Hotels Catalog - Bunyod-Tour' },
+    'hotel.page_title': { ru: 'Каталог отелей - Bunyod-Tour', en: 'Hotels Catalog - Bunyod-Tour', tj: 'Каталоги меҳмонхонаҳо - Bunyod-Tour' },
+    'tours.page_title': { ru: 'Поиск туров - Bunyod-Tour', en: 'Search Tours - Bunyod-Tour', tj: 'Ҷустуҷӯи сайёҳатҳо - Bunyod-Tour' },
+    'tour.page_title': { ru: 'Тур - Bunyod-Tour', en: 'Tour - Bunyod-Tour', tj: 'Сайёҳат - Bunyod-Tour' },
     'hotel.catalog_title': { ru: 'Каталог отелей', en: 'Hotels Catalog' },
     'hotel.catalog_description': { ru: 'Найдите идеальное размещение для вашего путешествия по Центральной Азии', en: 'Find the perfect accommodation for your Central Asia journey' },
     
@@ -1007,5 +1021,23 @@ window.getCategoryNameByLanguageRaw = function(categoryObject, lang) {
     }
 };
 
+
+// === ГЛОБАЛЬНАЯ УТИЛИТА ДЛЯ МНОГОЯЗЫЧНЫХ ДАННЫХ ===
+window.getMultilingualValue = function(obj, baseKey, fallback = '') {
+    if (!obj) return fallback || '';
+    const lang = (window.currentLanguage || 'en').toLowerCase();
+    const suffix = lang === 'en' ? 'En' : lang === 'ru' ? 'Ru' : 'Tj';
+    const tryKeys = [baseKey + suffix, baseKey + 'En', baseKey + 'Ru', baseKey + 'Tj', baseKey, 'name', 'title'];
+    for (const k of tryKeys) {
+        const v = obj[k];
+        if (v) {
+            if (typeof v === 'object') {
+                return v[lang] || v.en || v.ru || v.tj || fallback || '';
+            }
+            return String(v);
+        }
+    }
+    return fallback || '';
+};
 
 })(); // Закрываем IIFE

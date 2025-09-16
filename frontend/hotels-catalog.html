@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- 🌐 ПОДКЛЮЧЕНИЕ ЦЕНТРАЛЬНОЙ СИСТЕМЫ i18n -->
     <script src="/public/js/i18n.js"></script>
+    <script src="/public/js/layout-loader.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Noto Sans', 'Ubuntu', 'Cantarell', 'Helvetica Neue', sans-serif; }
@@ -310,145 +311,8 @@
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Хедер -->
-    <header class="shadow-md sticky top-0 z-50" style="background-color: #3E3E3E;">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex items-center justify-between h-16 px-6">
-                <!-- Логотип -->
-                <div class="flex items-center">
-                    <img src="Logo-Ru_1754635713718.png" alt="Bunyod-Tour Logo" class="w-12 h-12 mr-3 rounded-full">
-                    <span class="text-xl font-bold text-white">Bunyod-Tour</span>
-                </div>
-                
-                <!-- Навигационное меню -->
-                <nav class="hidden md:flex space-x-6">
-                    <a href="/" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.home">Главная</a>
-                    <a href="about-us.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.about">О нас</a>
-                    
-                    <!-- Услуги (с выпадающим меню) -->
-                    <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.services">Услуги</a>
-                        <div class="dropdown-content">
-                            <div class="dropdown-submenu">
-                                <a href="#" data-translate="nav.tours">Туры</a>
-                                <div class="dropdown-subcontent" style="width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px;">
-                                    <a href="#" style="padding: 8px;" data-translate="tour.single_day">Однодневные</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.multi_day">Многодневные</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.excursions">Экскурсии</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.city_tours">Городские туры</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.nature_eco">Природа/экологические туры</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.cultural">Культурно познавательные туры</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.historical">Исторические туры</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.trekking">Походы/трекинги</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.mountain_landscapes">Горные ландшафты</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.lake_landscapes">Озерные ландшафты</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.adventure">Приключенческие туры</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.gastronomy">Гастрономические туры</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.auto_safari">Автотуры/сафари/джип-туры</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.agro">Агротуры</a>
-                                    <a href="#" style="padding: 8px;" data-translate="tour.vip">VIP туры</a>
-                                </div>
-                            </div>
-                            <a href="/hotels-catalog.html" data-translate="nav.hotels">Отели</a>
-                            <a href="#" data-translate="nav.guides">Тургиды</a>
-                            <a href="#" data-translate="nav.transfer">Трансфер</a>
-                            <a href="#" data-translate="nav.book_tour">Заказ тура</a>
-                            <a href="visa-support.html" data-translate="nav.visa_support">Визовая поддержка</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Туристам (с выпадающим меню) -->
-                    <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.tourists">Туристам</a>
-                        <div class="dropdown-content">
-                            <a href="booking-guide.html" data-translate="nav.site_guide">Инструкция сайта</a>
-                            <a href="privacy-policy-ru.pdf" target="_blank" data-translate="nav.special_notes">Специальные заметки</a>
-                            <a href="oferta-ru.pdf" target="_blank" data-translate="nav.offer_agreement">Договор оферта</a>
-                            <a href="payment-rules-ru.pdf" target="_blank" data-translate="nav.payment_rules">Правила оплаты и возврата средств</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Акции (БЕЗ выпадающего меню) -->
-                    <a href="aktsii.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.promotions">Акции</a>
-                    <a href="news.html" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.news">Новости</a>
-                    
-                    <!-- Тур-агенты (с выпадающим меню) -->
-                    <div class="dropdown">
-                        <a href="#" class="text-white hover:text-gray-300 transition-colors" data-translate="nav.tour_agents">Тур-агенты</a>
-                        <div class="dropdown-content">
-                            <a href="#" data-translate="nav.our_agents">Наши турагенты</a>
-                            <a href="tour-agents.html" data-translate="nav.for_agents">Для турагентов</a>
-                        </div>
-                    </div>
-                </nav>
-                
-                <!-- Языковой и валютный селекторы -->
-                <div class="flex items-center space-x-4">
-                    <!-- Языковой селектор -->
-                    <div class="language-dropdown">
-                        <button class="lang-selector-btn" onclick="toggleLanguageDropdown()">
-                            <span class="selected-flag flag-ru"></span>
-                            <span class="selected-lang" data-translate="lang.russian">Русский</span>
-                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div class="lang-dropdown-content" id="langDropdown">
-                            <a href="#" class="lang-option active" data-lang="ru" onclick="selectLanguage('ru', 'flag-ru', 'Русский')">
-                                <span class="flag flag-ru"></span>
-                                <span class="lang-name" data-translate="lang.russian">Русский</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="en" onclick="selectLanguage('en', 'flag-us', 'English')">
-                                <span class="flag flag-us"></span>
-                                <span class="lang-name">English</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="tj" onclick="selectLanguage('tj', 'flag-tj', 'Тоҷикӣ')">
-                                <span class="flag flag-tj"></span>
-                                <span class="lang-name">Тоҷикӣ</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="fa" onclick="selectLanguage('fa', 'flag-ir', 'فارسی')">
-                                <span class="flag flag-ir"></span>
-                                <span class="lang-name">فارسی</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="de" onclick="selectLanguage('de', 'flag-de', 'Deutsch')">
-                                <span class="flag flag-de"></span>
-                                <span class="lang-name">Deutsch</span>
-                            </a>
-                            <a href="#" class="lang-option" data-lang="zh" onclick="selectLanguage('zh', 'flag-cn', '中文')">
-                                <span class="flag flag-cn"></span>
-                                <span class="lang-name">中文</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Валютный селектор -->
-                    <div class="language-dropdown">
-                        <button class="lang-selector-btn" onclick="toggleCurrencyDropdown()">
-                            <span class="selected-currency">USD</span>
-                            <span class="currency-symbol">$</span>
-                            <svg class="dropdown-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div class="lang-dropdown-content" id="currencyDropdown">
-                            <a href="#" class="lang-option active" data-currency="usd" onclick="selectCurrency('USD', '$')">
-                                <span class="currency-name">USD</span>
-                                <span class="currency-symbol">$</span>
-                            </a>
-                            <a href="#" class="lang-option" data-currency="tjs" onclick="selectCurrency('TJS', 'с.')">
-                                <span class="currency-name">TJS</span>
-                                <span class="currency-symbol">с.</span>
-                            </a>
-                            <a href="#" class="lang-option" data-currency="eur" onclick="selectCurrency('EUR', '€')">
-                                <span class="currency-name">EUR</span>
-                                <span class="currency-symbol">€</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
+    <!-- 🌐 ДИНАМИЧЕСКИЙ ХЕДЕР -->
+    <div id="header-container"></div>
 
     <!-- Page Header -->
     <div class="bg-gray-100 py-16">
@@ -1093,5 +957,7 @@
 
     <!-- Google Maps API -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+    <!-- 🌐 ДИНАМИЧЕСКИЙ ФУТЕР -->
+    <div id="footer-container"></div>
 </body>
 </html>

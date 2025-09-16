@@ -42,10 +42,10 @@ async function loadCountriesAndCities() {
                 // Группируем города по странам
                 citiesByCountry = {};
                 countriesData.forEach(country => {
-                    const countryName = country.nameRu;
+                    const countryName = getMultilingualValue(country, 'name');
                     const countryCities = citiesData.filter(city => 
                         city.countryId === country.id
-                    ).map(city => city.nameRu);
+                    ).map(city => getMultilingualValue(city, 'name'));
                     citiesByCountry[countryName] = countryCities;
                 });
                 
