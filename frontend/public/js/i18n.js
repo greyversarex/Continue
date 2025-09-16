@@ -171,18 +171,18 @@ window.translations = window.translations || {
     'country.kazakhstan': { ru: 'Казахстан', en: 'Kazakhstan' },
     
     // Расширенная навигация и услуги
-    'nav.services': { ru: 'Услуги', en: 'Services' },
-    'nav.guides': { ru: 'Тургиды', en: 'Tour Guides' },
-    'nav.transfer': { ru: 'Трансфер', en: 'Transfer' },
-    'nav.book_tour': { ru: 'Заказ тура', en: 'Book Tour' },
-    'nav.tourists': { ru: 'Туристам', en: 'For Tourists' },
-    'nav.site_guide': { ru: 'Инструкция сайта', en: 'Site Guide' },
-    'nav.special_notes': { ru: 'Специальные заметки', en: 'Special Notes' },
-    'nav.offer_agreement': { ru: 'Договор оферта', en: 'Offer Agreement' },
-    'nav.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
-    'nav.promotions': { ru: 'Акции', en: 'Promotions' },
-    'nav.news': { ru: 'Новости', en: 'News' },
-    'nav.for_agents': { ru: 'Тур-агентам', en: 'For Tour Agents' },
+    'nav.services': { ru: 'Услуги', en: 'Services', tj: 'Хидматҳо' },
+    'nav.guides': { ru: 'Тургиды', en: 'Tour Guides', tj: 'Роҳнамои сайёҳӣ' },
+    'nav.transfer': { ru: 'Трансфер', en: 'Transfer', tj: 'Интиқол' },
+    'nav.book_tour': { ru: 'Заказ тура', en: 'Book Tour', tj: 'Фармоиши сайёҳат' },
+    'nav.tourists': { ru: 'Туристам', en: 'For Tourists', tj: 'Барои туристҳо' },
+    'nav.site_guide': { ru: 'Инструкция сайта', en: 'Site Guide', tj: 'Дастурамали сомона' },
+    'nav.special_notes': { ru: 'Специальные заметки', en: 'Special Notes', tj: 'Қайдҳои махсус' },
+    'nav.offer_agreement': { ru: 'Договор оферта', en: 'Offer Agreement', tj: 'Шартнома-оферта' },
+    'nav.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules', tj: 'Қоидаҳои пардохт ва баргардонидани маблағ' },
+    'nav.promotions': { ru: 'Акции', en: 'Promotions', tj: 'Аксияҳо' },
+    'nav.news': { ru: 'Новости', en: 'News', tj: 'Ахборот' },
+    'nav.for_agents': { ru: 'Тур-агентам', en: 'For Tour Agents', tj: 'Барои агентҳои сайёҳӣ' },
     
     // Типы туров
     'tour.single_day': { ru: 'Однодневные', en: 'Single Day' },
@@ -747,7 +747,8 @@ function switchSiteLanguage(lang) {
 function updateLanguageSelector(lang) {
     const languages = {
         'ru': { name: 'Русский', flag: '🇷🇺', flagClass: 'flag-ru', code: 'RU' },
-        'en': { name: 'English', flag: '🇺🇸', flagClass: 'flag-us', code: 'EN' }
+        'en': { name: 'English', flag: '🇺🇸', flagClass: 'flag-us', code: 'EN' },
+        'tj': { name: 'Тоҷикӣ', flag: '🇹🇯', flagClass: 'flag-tj', code: 'TJ' }
     };
     
     const selectedLang = languages[lang];
