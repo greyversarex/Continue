@@ -1645,6 +1645,10 @@
                                 <label class="form-label">Название отеля (English) *</label>
                                 <input type="text" class="form-input" id="hotelNameEn" placeholder="Hilton Dushanbe, Serena Hotel, etc." required>
                             </div>
+                            <div class="form-group">
+                                <label class="form-label">Название отеля (Тоҷикӣ) *</label>
+                                <input type="text" class="form-input" id="hotelNameTj" placeholder="Ҳилтон Душанбе, Мекони Серена ва ғайра..." required>
+                            </div>
                         </div>
                     </div>
                     
@@ -1658,6 +1662,10 @@
                             <div class="form-group">
                                 <label class="form-label">Описание отеля (English) *</label>
                                 <textarea class="form-input" rows="4" id="hotelDescEn" placeholder="Brief description of the hotel, location and features in English..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Описание отеля (Тоҷикӣ) *</label>
+                                <textarea class="form-input" rows="4" id="hotelDescTj" placeholder="Тавсифи мухтасари меҳмонхона, ҷойгиршавӣ ва хусусиятҳо дар забони тоҷикӣ..." required></textarea>
                             </div>
                         </div>
                     </div>
@@ -1897,6 +1905,11 @@
                     </div>
                     
                     <div class="form-group col-span-2">
+                        <label class="form-label">Название тура (Тоҷикӣ)</label>
+                        <input type="text" class="form-input" id="tourTitleTj" placeholder="Номи саёҳат дар тоҷикӣ" required>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
                         <label class="form-label">Описание (Русский)</label>
                         <textarea class="form-input" rows="4" id="tourDescRu" required></textarea>
                     </div>
@@ -1904,6 +1917,11 @@
                     <div class="form-group col-span-2">
                         <label class="form-label">Описание (English)</label>
                         <textarea class="form-input" rows="4" id="tourDescEn" required></textarea>
+                    </div>
+                    
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Описание (Тоҷикӣ)</label>
+                        <textarea class="form-input" rows="4" id="tourDescTj" placeholder="Тавсифи саёҳат дар тоҷикӣ" required></textarea>
                     </div>
 
 
@@ -2340,19 +2358,59 @@
             <form id="newsForm" onsubmit="event.preventDefault(); saveNews();">
                 <input type="hidden" id="newsId">
                 
-                <div class="form-group mb-4">
-                    <label class="form-label">Заголовок *</label>
-                    <input type="text" id="newsTitle" class="form-input" required>
+                <!-- 🌐 МНОГОЯЗЫЧНЫЕ ПОЛЯ НОВОСТЕЙ -->
+                <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400 mb-4">
+                    <h4 class="font-medium text-blue-800 mb-3">🌐 Заголовок новости (многоязычный)</h4>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="form-group">
+                            <label class="form-label">Заголовок (Русский) *</label>
+                            <input type="text" id="newsTitleRu" class="form-input" placeholder="Заголовок новости на русском языке" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Заголовок (English) *</label>
+                            <input type="text" id="newsTitleEn" class="form-input" placeholder="News title in English" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Заголовок (Тоҷикӣ) *</label>
+                            <input type="text" id="newsTitleTj" class="form-input" placeholder="Сарлавҳаи хабар дар тоҷикӣ" required>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group mb-4">
-                    <label class="form-label">Краткое описание</label>
-                    <textarea id="newsExcerpt" class="form-input" rows="2" data-translate-placeholder="placeholder.news_brief_description" placeholder="Краткое описание новости (optional)"></textarea>
+                <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-400 mb-4">
+                    <h4 class="font-medium text-green-800 mb-3">📝 Краткое описание (многоязычное)</h4>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="form-group">
+                            <label class="form-label">Краткое описание (Русский)</label>
+                            <textarea id="newsExcerptRu" class="form-input" rows="2" placeholder="Краткое описание новости на русском языке"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Краткое описание (English)</label>
+                            <textarea id="newsExcerptEn" class="form-input" rows="2" placeholder="Brief news description in English"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Краткое описание (Тоҷикӣ)</label>
+                            <textarea id="newsExcerptTj" class="form-input" rows="2" placeholder="Тавсифи мухтасари хабар дар тоҷикӣ"></textarea>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group mb-4">
-                    <label class="form-label">Контент *</label>
-                    <textarea id="newsContent" class="form-input" rows="8" required placeholder="Полный текст новости"></textarea>
+                <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400 mb-4">
+                    <h4 class="font-medium text-yellow-800 mb-3">📄 Полный контент (многоязычный)</h4>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="form-group">
+                            <label class="form-label">Контент (Русский) *</label>
+                            <textarea id="newsContentRu" class="form-input" rows="8" placeholder="Полный текст новости на русском языке" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Контент (English) *</label>
+                            <textarea id="newsContentEn" class="form-input" rows="8" placeholder="Full news content in English" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Контент (Тоҷикӣ) *</label>
+                            <textarea id="newsContentTj" class="form-input" rows="8" placeholder="Матни пурраи хабар дар тоҷикӣ" required></textarea>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4 mb-4">
@@ -3797,11 +3855,13 @@
             const tourData = {
                 title: {
                     ru: safeGetValue('tourTitleRu', ''),
-                    en: safeGetValue('tourTitleEn', '')
+                    en: safeGetValue('tourTitleEn', ''),
+                    tj: safeGetValue('tourTitleTj', '')
                 },
                 description: {
                     ru: safeGetValue('tourDescRu', ''),
-                    en: safeGetValue('tourDescEn', '')
+                    en: safeGetValue('tourDescEn', ''),
+                    tj: safeGetValue('tourDescTj', '')
                 },
                 duration: '',  // Поле удалено из формы
                 durationDays: safeGetValue('tourDurationDays', 1, 'int'),
@@ -3878,8 +3938,10 @@
             // Безопасное получение значений с проверкой на null  
             const titleRuElement = document.getElementById('tourTitleRu');
             const titleEnElement = document.getElementById('tourTitleEn');
+            const titleTjElement = document.getElementById('tourTitleTj');
             const descRuElement = document.getElementById('tourDescRu');
             const descEnElement = document.getElementById('tourDescEn');
+            const descTjElement = document.getElementById('tourDescTj');
             const priceElement = document.getElementById('tourPrice');
             const durationElement = document.getElementById('tourDurationDays');
             
@@ -6025,30 +6087,36 @@
         document.getElementById('hotelForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Build name object (русский приоритетный) - используем безопасные методы
-            const nameValue = safeGetValue('hotelName', '');
-            if (!nameValue.trim()) {
-                alert('Пожалуйста, введите название отеля');
+            // Build name object from trilingual fields
+            const nameRuValue = safeGetValue('hotelNameRu', '');
+            const nameEnValue = safeGetValue('hotelNameEn', '');
+            const nameTjValue = safeGetValue('hotelNameTj', '');
+            
+            if (!nameRuValue.trim() || !nameEnValue.trim() || !nameTjValue.trim()) {
+                alert('Пожалуйста, введите название отеля на всех трех языках');
                 return;
             }
             
             const name = {
-                ru: nameValue,
-                en: nameValue,
-                tj: nameValue
+                ru: nameRuValue,
+                en: nameEnValue,
+                tj: nameTjValue
             };
             
-            // Build description object (русский приоритетный) - используем безопасные методы
-            const descValue = safeGetValue('hotelDescription', '');
-            if (!descValue.trim()) {
-                alert('Пожалуйста, введите описание отеля');
+            // Build description object from trilingual fields
+            const descRuValue = safeGetValue('hotelDescRu', '');
+            const descEnValue = safeGetValue('hotelDescEn', '');
+            const descTjValue = safeGetValue('hotelDescTj', '');
+            
+            if (!descRuValue.trim() || !descEnValue.trim() || !descTjValue.trim()) {
+                alert('Пожалуйста, введите описание отеля на всех трех языках');
                 return;
             }
             
             const description = {
-                ru: descValue,
-                en: descValue,
-                tj: descValue
+                ru: descRuValue,
+                en: descEnValue,
+                tj: descTjValue
             };
             
             // НОВОЕ: Обработка категорий номеров с ценами
@@ -9463,6 +9531,10 @@
                                             <label class="form-label">Название блока (EN)</label>
                                             <input type="text" class="form-input" id="blockTitleEn" required>
                                         </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Название блока (TJ)</label>
+                                            <input type="text" class="form-input" id="blockTitleTj" placeholder="Номи блоки саёҳат дар тоҷикӣ" required>
+                                        </div>
                                         <div class="form-group lg:col-span-2">
                                             <label class="form-label">Описание блока (RU)</label>
                                             <textarea class="form-input" id="blockDescRu" rows="3"></textarea>
@@ -9470,6 +9542,10 @@
                                         <div class="form-group lg:col-span-2">
                                             <label class="form-label">Описание блока (EN)</label>
                                             <textarea class="form-input" id="blockDescEn" rows="3"></textarea>
+                                        </div>
+                                        <div class="form-group lg:col-span-2">
+                                            <label class="form-label">Описание блока (TJ)</label>
+                                            <textarea class="form-input" id="blockDescTj" placeholder="Тавсифи блоки саёҳат дар тоҷикӣ" rows="3"></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Слаг (URL)</label>
@@ -9541,8 +9617,10 @@
                     
                     document.getElementById('blockTitleRu').value = title.ru || '';
                     document.getElementById('blockTitleEn').value = title.en || '';
+                    document.getElementById('blockTitleTj').value = title.tj || '';
                     document.getElementById('blockDescRu').value = description.ru || '';
                     document.getElementById('blockDescEn').value = description.en || '';
+                    document.getElementById('blockDescTj').value = description.tj || '';
                     document.getElementById('blockSlug').value = block.slug || '';
                     document.getElementById('blockSortOrder').value = block.sortOrder || 0;
                     document.getElementById('blockIsActive').checked = block.isActive;
@@ -9573,11 +9651,13 @@
             const formData = {
                 title: JSON.stringify({
                     ru: safeGetValue('blockTitleRu', ''),
-                    en: safeGetValue('blockTitleEn', '')
+                    en: safeGetValue('blockTitleEn', ''),
+                    tj: safeGetValue('blockTitleTj', '')
                 }),
                 description: JSON.stringify({
                     ru: safeGetValue('blockDescRu', ''),
-                    en: safeGetValue('blockDescEn', '')
+                    en: safeGetValue('blockDescEn', ''),
+                    tj: safeGetValue('blockDescTj', '')
                 }),
                 slug: safeGetValue('blockSlug', ''),
                 sortOrder: safeGetValue('blockSortOrder', 0, 'int'),
@@ -12892,10 +12972,32 @@
         // Save news (create/update)
         async function saveNews() {
             const newsId = document.getElementById('newsId').value;
+            
+            // Build trilingual title object
+            const titleData = {
+                ru: document.getElementById('newsTitleRu').value || '',
+                en: document.getElementById('newsTitleEn').value || '',
+                tj: document.getElementById('newsTitleTj').value || ''
+            };
+            
+            // Build trilingual excerpt object
+            const excerptData = {
+                ru: document.getElementById('newsExcerptRu').value || '',
+                en: document.getElementById('newsExcerptEn').value || '',
+                tj: document.getElementById('newsExcerptTj').value || ''
+            };
+            
+            // Build trilingual content object
+            const contentData = {
+                ru: document.getElementById('newsContentRu').value || '',
+                en: document.getElementById('newsContentEn').value || '',
+                tj: document.getElementById('newsContentTj').value || ''
+            };
+            
             const newsData = {
-                title: document.getElementById('newsTitle').value,
-                excerpt: document.getElementById('newsExcerpt').value || null,
-                content: document.getElementById('newsContent').value,
+                title: JSON.stringify(titleData),
+                excerpt: JSON.stringify(excerptData),
+                content: JSON.stringify(contentData),
                 category: document.getElementById('newsCategory').value,
                 author: document.getElementById('newsAuthor').value || 'Bunyod-Tour',
                 image: document.getElementById('newsImage').value || null,

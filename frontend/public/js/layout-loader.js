@@ -187,29 +187,33 @@ class LayoutLoader {
     }
 
     setDefaultLanguage() {
-        // 🚨 ПРИНУДИТЕЛЬНАЯ УСТАНОВКА АНГЛИЙСКОГО (требование пользователя)
-        localStorage.setItem('selectedLanguage', 'en'); // ВСЕГДА английский!
-        localStorage.setItem('langResetV2', '1'); // Флаг миграции
-        const savedLanguage = 'en'; // ПРИНУДИТЕЛЬНО английский
-        document.documentElement.lang = 'en'; // HTML язык
+        // 🎯 УМНАЯ ЛОГИКА: EN по умолчанию, но сохраняем выбор пользователя
+        let savedLanguage = localStorage.getItem('selectedLanguage');
         
-        // Устанавливаем глобальную переменную
+        // Если язык не сохранен, устанавливаем английский как дефолтный
+        if (!savedLanguage || !['en', 'ru', 'tj'].includes(savedLanguage)) {
+            savedLanguage = 'en';
+            localStorage.setItem('selectedLanguage', 'en');
+        }
+        
+        // Применяем выбранный/дефолтный язык
+        document.documentElement.lang = savedLanguage;
         window.currentLanguage = savedLanguage;
         
-        // Обновляем селектор языка сразу
+        // Обновляем селектор языка
         this.updateLanguageSelector(savedLanguage);
         
-        // ПРИНУДИТЕЛЬНО переключаем на английский
+        // Применяем язык через системы переводов
         if (typeof window.switchLanguage === 'function') {
-            window.switchLanguage('en');
+            window.switchLanguage(savedLanguage);
         } else if (typeof window.switchSiteLanguage === 'function') {
-            window.switchSiteLanguage('en');
+            window.switchSiteLanguage(savedLanguage);
         }
         if (typeof window.initializeI18n === 'function') {
-            window.initializeI18n('en');
+            window.initializeI18n(savedLanguage);
         }
         
-        console.info(`🌍 Default language set to: ${savedLanguage}`);
+        console.info(`🌍 Language set to: ${savedLanguage}`);
     }
 
     initializeMap() {
