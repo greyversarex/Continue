@@ -230,15 +230,35 @@ function displaySuggestions(suggestions) {
         return;
     }
     
-    container.innerHTML = suggestions.map(suggestion => `
-        <div class="suggestion-item" onclick="selectSuggestion('${suggestion.text}', '${suggestion.type}')">
-            <svg class="suggestion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                ${getSuggestionIcon(suggestion.type)}
-            </svg>
-            <span class="suggestion-text">${suggestion.text}</span>
-            <span class="suggestion-type">${suggestion.type}</span>
-        </div>
-    `).join('');
+    // Безопасное создание DOM элементов (защита от XSS)
+    container.innerHTML = '';
+    
+    suggestions.forEach(suggestion => {
+        const suggestionDiv = document.createElement('div');
+        suggestionDiv.className = 'suggestion-item';
+        suggestionDiv.onclick = () => selectSuggestion(suggestion.text, suggestion.type);
+        
+        const iconSvg = document.createElement('svg');
+        iconSvg.className = 'suggestion-icon';
+        iconSvg.setAttribute('fill', 'none');
+        iconSvg.setAttribute('stroke', 'currentColor');
+        iconSvg.setAttribute('viewBox', '0 0 24 24');
+        iconSvg.innerHTML = getSuggestionIcon(suggestion.type);
+        
+        const textSpan = document.createElement('span');
+        textSpan.className = 'suggestion-text';
+        textSpan.textContent = suggestion.text; // Безопасная вставка текста
+        
+        const typeSpan = document.createElement('span');
+        typeSpan.className = 'suggestion-type';
+        typeSpan.textContent = suggestion.type; // Безопасная вставка текста
+        
+        suggestionDiv.appendChild(iconSvg);
+        suggestionDiv.appendChild(textSpan);
+        suggestionDiv.appendChild(typeSpan);
+        
+        container.appendChild(suggestionDiv);
+    });
     
     container.classList.remove('hidden');
 }
@@ -312,12 +332,12 @@ function performSearch() {
     // Собираем параметры фильтров
     const filters = {
         query: searchQuery,
-        country: document.getElementById('countryFilter').value,
-        city: document.getElementById('cityFilter').value,
-        format: document.getElementById('formatFilter').value,
-        category: document.getElementById('categoryFilter').value,
-        hotel: document.getElementById('hotelFilter').value,
-        date: document.getElementById('dateFilter').value
+        country: document.getElementById('countryFilter')?.value || '',
+        city: document.getElementById('cityFilter')?.value || '',
+        format: document.getElementById('formatFilter')?.value || '',
+        category: document.getElementById('categoryFilter')?.value || '',
+        hotel: document.getElementById('hotelFilter')?.value || '',
+        date: document.getElementById('dateFilter')?.value || ''
     };
     
     // Убираем пустые значения
@@ -356,14 +376,14 @@ async function searchToursByText(query) {
 async function searchTours() {
     try {
         const filters = {
-            country: document.getElementById('countryFilter').value,
-            city: document.getElementById('cityFilter').value,
-            format: document.getElementById('formatFilter').value,
-            category: document.getElementById('categoryFilter').value,
-            hotel: document.getElementById('hotelFilter').value,
+            country: document.getElementById('countryFilter')?.value || '',
+            city: document.getElementById('cityFilter')?.value || '',
+            format: document.getElementById('formatFilter')?.value || '',
+            category: document.getElementById('categoryFilter')?.value || '',
+            hotel: document.getElementById('hotelFilter')?.value || '',
             hotelBrand: document.getElementById('hotelBrandFilter')?.value || '',
             hotelStars: document.getElementById('hotelStarsFilter')?.value || '',
-            date: document.getElementById('dateFilter').value
+            date: document.getElementById('dateFilter')?.value || ''
         };
 
         console.log('🔍 Searching tours with filters:', filters);
@@ -522,12 +542,19 @@ function clearSearch() {
     document.getElementById('searchInput').value = '';
     
     // Сброс всех фильтров
-    document.getElementById('countryFilter').value = '';
-    document.getElementById('cityFilter').value = '';
-    document.getElementById('formatFilter').value = '';
-    document.getElementById('categoryFilter').value = '';
-    document.getElementById('hotelFilter').value = '';
-    document.getElementById('dateFilter').value = '';
+    const countryFilter = document.getElementById('countryFilter');
+    const cityFilter = document.getElementById('cityFilter');
+    const formatFilter = document.getElementById('formatFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const hotelFilter = document.getElementById('hotelFilter');
+    const dateFilter = document.getElementById('dateFilter');
+    
+    if (countryFilter) countryFilter.value = '';
+    if (cityFilter) cityFilter.value = '';
+    if (formatFilter) formatFilter.value = '';
+    if (categoryFilter) categoryFilter.value = '';
+    if (hotelFilter) hotelFilter.value = '';
+    if (dateFilter) dateFilter.value = '';
     
     // Скрыть панель фильтров
     document.getElementById('filterPanel').classList.add('hidden');
@@ -539,14 +566,17 @@ function clearSearch() {
 
 // Функция для фильтрации по стране из карточек
 function filterByCountry(country) {
+    const themeFilter = document.getElementById('themeFilter');
+    const countryFilter = document.getElementById('countryFilter');
+    
     // Устанавливаем фильтр страны
     if (country === 'комбинированный') {
         // Для комбинированного тура ищем туры с несколькими странами или специальной тематикой
-        document.getElementById('themeFilter').value = 'Комбинированный тур по Центральной Азии';
-        document.getElementById('countryFilter').value = '';
+        if (themeFilter) themeFilter.value = 'Комбинированный тур по Центральной Азии';
+        if (countryFilter) countryFilter.value = '';
     } else {
-        document.getElementById('countryFilter').value = country;
-        document.getElementById('themeFilter').value = '';
+        if (countryFilter) countryFilter.value = country;
+        if (themeFilter) themeFilter.value = '';
     }
     
     // Обновляем города и отели для выбранной страны

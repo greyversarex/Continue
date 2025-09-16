@@ -973,22 +973,47 @@ export class TourController {
       
       // Add tour suggestions
       tours.forEach((tour: any) => {
-        const title = JSON.parse(tour.title) as MultilingualContent;
-        
-        // Check Russian title
-        if (title.ru && title.ru.toLowerCase().includes(searchQuery)) {
-          suggestions.push({
-            text: title.ru,
-            type: 'тур'
-          });
-        }
-        
-        // Check English title
-        if (title.en && title.en.toLowerCase().includes(searchQuery)) {
-          suggestions.push({
-            text: title.en,
-            type: 'тур'
-          });
+        try {
+          let title: any;
+          
+          // Безопасная обработка поля title (может быть строкой или JSON)
+          if (typeof tour.title === 'string') {
+            try {
+              title = JSON.parse(tour.title) as MultilingualContent;
+            } catch (e) {
+              // Если это обычная строка, используем её как русский заголовок
+              title = { ru: tour.title, en: tour.title, tj: tour.title };
+            }
+          } else {
+            title = tour.title;
+          }
+          
+          // Check Russian title
+          if (title.ru && title.ru.toLowerCase().includes(searchQuery)) {
+            suggestions.push({
+              text: title.ru,
+              type: 'тур'
+            });
+          }
+          
+          // Check English title
+          if (title.en && title.en.toLowerCase().includes(searchQuery)) {
+            suggestions.push({
+              text: title.en,
+              type: 'тур'
+            });
+          }
+          
+          // Check Tajik title
+          if (title.tj && title.tj.toLowerCase().includes(searchQuery)) {
+            suggestions.push({
+              text: title.tj,
+              type: 'тур'
+            });
+          }
+        } catch (error) {
+          console.error('Error processing tour title:', tour.id, error);
+          // Если что-то пошло не так, пропускаем этот тур
         }
       });
 
