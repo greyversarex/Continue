@@ -207,6 +207,11 @@ window.translations = window.translations || {
     'language.english': { ru: 'English', en: 'English', tj: 'Англисӣ' },
     'language.tajik': { ru: 'Таджикский', en: 'Tajik', tj: 'Тоҷикӣ' },
     
+    // Дополнительные языки (для совместимости)
+    'lang.russian': { ru: 'Русский', en: 'Russian', tj: 'Русӣ' },
+    'lang.english': { ru: 'English', en: 'English', tj: 'Англисӣ' },
+    'lang.tajik': { ru: 'Таджикский', en: 'Tajik', tj: 'Тоҷикӣ' },
+    
     // НОВЫЕ PLACEHOLDER'Ы ДЛЯ АДМИН-ПАНЕЛИ
     'placeholder.search_hotels': { ru: 'Поиск отелей...', en: 'Search hotels...' },
     'placeholder.search_tour_agents': { ru: 'Поиск турагентов...', en: 'Search tour agents...' },

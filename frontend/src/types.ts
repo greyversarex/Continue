@@ -1,7 +1,7 @@
 export interface Tour {
   id: number;
-  title: { ru: string; en: string } | string;
-  description: { ru: string; en: string } | string;
+  title: { ru: string; en: string; tj: string } | string;
+  description: { ru: string; en: string; tj: string } | string;
   duration: string;
   price: string;
   country: string;
@@ -23,7 +23,7 @@ export interface Tour {
 
 export interface Category {
   id: number;
-  name: { ru: string; en: string } | string;
+  name: { ru: string; en: string; tj: string } | string;
   _count?: {
     tours: number;
   };
@@ -31,8 +31,8 @@ export interface Category {
 
 export interface Hotel {
   id: number;
-  name: { ru: string; en: string } | string;
-  description?: { ru: string; en: string } | string | null;
+  name: { ru: string; en: string; tj: string } | string;
+  description?: { ru: string; en: string; tj: string } | string | null;
   images: string[];
   address: string;
   rating: number;
@@ -45,8 +45,8 @@ export interface Hotel {
 
 export interface Guide {
   id: number;
-  name: { ru: string; en: string } | string;
-  description?: { ru: string; en: string } | string | null;
+  name: { ru: string; en: string; tj: string } | string;
+  description?: { ru: string; en: string; tj: string } | string | null;
   photo?: string | null;
   languages: string[];
   contact?: { phone: string; email: string } | null;

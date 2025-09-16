@@ -16,8 +16,10 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
     title_en: '',
     title_ru: '',
+    title_tj: '',
     description_en: '',
     description_ru: '',
+    description_tj: '',
     duration: '',
     price: '',
     categoryId: 0,
@@ -34,10 +36,12 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
     // Pre-fill form if editing
     if (tour) {
       setFormData({
-        title_en: tour.title.en || '',
-        title_ru: tour.title.ru || '',
-        description_en: tour.description.en || '',
-        description_ru: tour.description.ru || '',
+        title_en: (typeof tour.title === 'object' ? tour.title.en : tour.title) || '',
+        title_ru: (typeof tour.title === 'object' ? tour.title.ru : tour.title) || '',
+        title_tj: (typeof tour.title === 'object' ? tour.title.tj : '') || '',
+        description_en: (typeof tour.description === 'object' ? tour.description.en : tour.description) || '',
+        description_ru: (typeof tour.description === 'object' ? tour.description.ru : tour.description) || '',
+        description_tj: (typeof tour.description === 'object' ? tour.description.tj : '') || '',
         duration: tour.duration || '',
         price: tour.price || '',
         categoryId: tour.categoryId || 0,
@@ -93,11 +97,13 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
     const tourData = {
       title: {
         en: formData.title_en,
-        ru: formData.title_ru
+        ru: formData.title_ru,
+        tj: formData.title_tj
       },
       description: {
         en: formData.description_en,
-        ru: formData.description_ru
+        ru: formData.description_ru,
+        tj: formData.description_tj
       },
       duration: formData.duration,
       price: formData.price,
@@ -131,8 +137,10 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
           setFormData({
             title_en: '',
             title_ru: '',
+            title_tj: '',
             description_en: '',
             description_ru: '',
+            description_tj: '',
             duration: '',
             price: '',
             categoryId: 0,
@@ -259,6 +267,48 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
           </div>
         </div>
 
+        {/* Tajik Fields */}
+        <div className="border border-gray-200 rounded-lg p-4">
+          <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <span className="mr-2">🇹🇯</span>
+            Tajik Content
+          </h4>
+          
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="title_tj" className="block text-sm font-medium text-gray-700 mb-1">
+                Title (Tajik) *
+              </label>
+              <input
+                type="text"
+                id="title_tj"
+                name="title_tj"
+                value={formData.title_tj}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Номи сайёҳатро бо забони тоҷикӣ ворид кунед"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="description_tj" className="block text-sm font-medium text-gray-700 mb-1">
+                Description (Tajik) *
+              </label>
+              <textarea
+                id="description_tj"
+                name="description_tj"
+                value={formData.description_tj}
+                onChange={handleChange}
+                required
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Тавсифи муфассали сайёҳатро бо забони тоҷикӣ ворид кунед"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Other Fields */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
@@ -309,7 +359,7 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
             <option value={0}>Select a category</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
-                {category.name.en}
+                {typeof category.name === 'object' ? category.name.en : category.name}
               </option>
             ))}
           </select>
