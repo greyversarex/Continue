@@ -28,6 +28,18 @@ window.translations = window.translations || {
     'nav.reviews': { ru: 'Отзывы', en: 'Reviews', tj: 'Мулоҷзаҳо' },
     'nav.blog': { ru: 'Блог', en: 'Blog', tj: 'Блог' },
     'nav.contacts': { ru: 'Контакты', en: 'Contacts', tj: 'Тамосҳо' },
+    'nav.transfer': { ru: 'Трансфер', en: 'Transfer', tj: 'Интиқол' },
+    'nav.guides': { ru: 'Тургиды', en: 'Tour Guides', tj: 'Роҳбарони сайёҳӣ' },
+    'nav.book_tour': { ru: 'Заказ тура', en: 'Book Tour', tj: 'Фармоиши сафар' },
+    'nav.tourists': { ru: 'Туристам', en: 'For Tourists', tj: 'Барои сайёҳон' },
+    'nav.site_guide': { ru: 'Инструкция сайта', en: 'Site Guide', tj: 'Дастури сайт' },
+    'nav.special_notes': { ru: 'Специальные заметки', en: 'Special Notes', tj: 'Эзоҳҳои махсус' },
+    'nav.offer_agreement': { ru: 'Договор оферта', en: 'Offer Agreement', tj: 'Шартномаи пешниҳод' },
+    'nav.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules', tj: 'Қоидаҳои пардохт ва баргардонидани маблағ' },
+    'nav.promotions': { ru: 'Акции', en: 'Promotions', tj: 'Акцияҳо' },
+    'nav.news': { ru: 'Новости', en: 'News', tj: 'Хабарҳо' },
+    'nav.for_agents': { ru: 'Для турагентов', en: 'For Tour Agents', tj: 'Барои турагентҳо' },
+    'nav.our_agents': { ru: 'Наши турагенты', en: 'Our Tour Agents', tj: 'Турагентҳои мо' },
     
     // Кнопки и действия
     'btn.book_now': { ru: 'Забронировать', en: 'Book Now', tj: 'Захира кардан' },
@@ -102,7 +114,6 @@ window.translations = window.translations || {
     
     // Формы
     'form.country': { ru: 'Страна', en: 'Country', tj: 'Кишвар' },
-    'form.select_country': { ru: 'Выберите страну', en: 'Select Country', tj: 'Кишварро интихоб кунед' },
     
     // Страны  
     'country.tajikistan': { ru: 'Таджикистан', en: 'Tajikistan', tj: 'Тоҷикистон' },
@@ -166,7 +177,7 @@ window.translations = window.translations || {
     'filters.search': { ru: 'Поиск', en: 'Search' },
     
     // Кнопки каталога отелей
-    'btn.clear_filters': { ru: 'Очистить фильтры', en: 'Clear Filters' },
+    'btn.clear_filters': { ru: 'Очистить фильтры', en: 'Clear Filters', tj: 'Филтрҳоро тоза кунед' },
     
     // Страны Центральной Азии
     'country.uzbekistan': { ru: 'Узбекистан', en: 'Uzbekistan', tj: 'Ӯзбакистон' },
