@@ -209,7 +209,7 @@ class LayoutLoader {
             window.initializeI18n('en');
         }
         
-        console.log(`🌍 Default language set to: ${savedLanguage}`);
+        console.info(`🌍 Default language set to: ${savedLanguage}`);
     }
 
     initializeMap() {
