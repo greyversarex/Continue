@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кабинет тургида - Bunyod-Tour</title>
+    <!-- 🌐 ЦЕНТРАЛЬНАЯ СИСТЕМА ИНТЕРНАЦИОНАЛИЗАЦИИ -->
+    <script src="/public/js/i18n.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
@@ -27,6 +29,9 @@
     </style>
 </head>
 <body class="min-h-screen">
+    <!-- Header Container for dynamic header -->
+    <div id="header-container"></div>
+    
     <!-- Header -->
     <header class="bg-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -446,5 +451,11 @@
             loadTours();
         }
     </script>
+    
+    <!-- Footer Container for dynamic footer -->
+    <div id="footer-container"></div>
+    
+    <!-- Layout Loader for dynamic header/footer -->
+    <script src="/public/js/layout-loader.js"></script>
 </body>
 </html>

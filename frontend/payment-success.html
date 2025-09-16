@@ -32,6 +32,9 @@
     </style>
 </head>
 <body class="bg-gray-50">
+    <!-- Header Container for dynamic header -->
+    <div id="header-container"></div>
+    
     <!-- Header -->
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4">
@@ -233,5 +236,11 @@
             localStorage.removeItem('completedOrder');
         }, 5 * 60 * 1000);
     </script>
+    
+    <!-- Footer Container for dynamic footer -->
+    <div id="footer-container"></div>
+    
+    <!-- Layout Loader for dynamic header/footer -->
+    <script src="/public/js/layout-loader.js"></script>
 </body>
 </html>
