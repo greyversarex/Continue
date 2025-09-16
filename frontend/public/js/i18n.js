@@ -11,7 +11,7 @@ if (window.bunyodTourI18nLoaded) {
 window.bunyodTourI18nLoaded = true;
 
 // Глобальная переменная для текущего языка
-window.currentLanguage = window.currentLanguage || 'ru'; // По умолчанию русский
+window.currentLanguage = window.currentLanguage || 'en'; // По умолчанию английский
 
 // Поддерживаемые языки
 window.supportedLanguages = window.supportedLanguages || ['ru', 'en'];
@@ -100,6 +100,12 @@ window.translations = window.translations || {
     'common.success': { ru: 'Успешно!', en: 'Success!' },
     'common.show_all_tours': { ru: 'Показать все туры', en: 'Show All Tours' },
     'common.clear_search': { ru: 'Очистить поиск', en: 'Clear Search' },
+    'common.save': { ru: 'Сохранить', en: 'Save' },
+    'common.cancel': { ru: 'Отмена', en: 'Cancel' },
+    'common.edit': { ru: 'Редактировать', en: 'Edit' },
+    'common.delete': { ru: 'Удалить', en: 'Delete' },
+    'common.add': { ru: 'Добавить', en: 'Add' },
+    'common.create': { ru: 'Создать', en: 'Create' },
     
     // Placeholders для форм и поиска
     'placeholder.search_tours': { ru: 'Поиск туров...', en: 'Search tours...' },

@@ -13,12 +13,41 @@ export const getTourBlocks = async (req: Request, res: Response): Promise<Respon
 
     console.log('Found tour blocks:', tourBlocks.length);
     
-    // Parse JSON fields
-    const parsedBlocks = tourBlocks.map((block: any) => ({
-      ...block,
-      title: typeof block.title === 'string' ? JSON.parse(block.title) : block.title,
-      description: block.description && typeof block.description === 'string' ? JSON.parse(block.description) : block.description
-    }));
+    // Parse JSON fields safely
+    const parsedBlocks = tourBlocks.map((block: any) => {
+      let title = block.title;
+      let description = block.description;
+      
+      // Safely parse title if it's a JSON string
+      if (typeof block.title === 'string') {
+        try {
+          // Check if it looks like JSON (starts with { or [)
+          if (block.title.trim().startsWith('{') || block.title.trim().startsWith('[')) {
+            title = JSON.parse(block.title);
+          }
+        } catch (e) {
+          // Keep original string if parsing fails
+          title = block.title;
+        }
+      }
+      
+      // Safely parse description if it's a JSON string
+      if (block.description && typeof block.description === 'string') {
+        try {
+          if (block.description.trim().startsWith('{') || block.description.trim().startsWith('[')) {
+            description = JSON.parse(block.description);
+          }
+        } catch (e) {
+          description = block.description;
+        }
+      }
+      
+      return {
+        ...block,
+        title,
+        description
+      };
+    });
 
     return res.json({
       success: true,
