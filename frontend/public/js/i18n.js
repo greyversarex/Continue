@@ -1,5 +1,5 @@
 // === ЦЕНТРАЛЬНАЯ СИСТЕМА ИНТЕРНАЦИОНАЛИЗАЦИИ ===
-// Используется на всех страницах сайта для двуязычной поддержки (RU/EN)
+// Используется на всех страницах сайта для трехъязычной поддержки (EN/RU/TJ)
 
 // === ЗАЩИТА ОТ ДВОЙНОЙ ЗАГРУЗКИ ===
 (function() {
@@ -14,106 +14,107 @@ window.bunyodTourI18nLoaded = true;
 window.currentLanguage = window.currentLanguage || 'en'; // По умолчанию английский
 
 // Поддерживаемые языки
-window.supportedLanguages = window.supportedLanguages || ['ru', 'en'];
+window.supportedLanguages = window.supportedLanguages || ['en', 'ru', 'tj'];
 
 // === СЛОВАРЬ ПЕРЕВОДОВ ===
 window.translations = window.translations || {
     // Главное меню
-    'nav.home': { ru: 'Главная', en: 'Home' },
-    'nav.tours': { ru: 'Туры', en: 'Tours' },
-    'nav.hotels': { ru: 'Отели', en: 'Hotels' },
-    'nav.visa_support': { ru: 'Визовая поддержка', en: 'Visa Support' },
-    'nav.tour_agents': { ru: 'Турагентам', en: 'For Tour Agents' },
-    'nav.about': { ru: 'О нас', en: 'About Us' },
-    'nav.reviews': { ru: 'Отзывы', en: 'Reviews' },
-    'nav.blog': { ru: 'Блог', en: 'Blog' },
-    'nav.contacts': { ru: 'Контакты', en: 'Contacts' },
+    'nav.home': { ru: 'Главная', en: 'Home', tj: 'Асосӣ' },
+    'nav.tours': { ru: 'Туры', en: 'Tours', tj: 'Сайёҳатҳо' },
+    'nav.hotels': { ru: 'Отели', en: 'Hotels', tj: 'Меҳмонхонаҳо' },
+    'nav.visa_support': { ru: 'Визовая поддержка', en: 'Visa Support', tj: 'Дастгирии виза' },
+    'nav.tour_agents': { ru: 'Турагентам', en: 'For Tour Agents', tj: 'Барои туроператорҳо' },
+    'nav.about': { ru: 'О нас', en: 'About Us', tj: 'Дар бораи мо' },
+    'nav.reviews': { ru: 'Отзывы', en: 'Reviews', tj: 'Мулоҷзаҳо' },
+    'nav.blog': { ru: 'Блог', en: 'Blog', tj: 'Блог' },
+    'nav.contacts': { ru: 'Контакты', en: 'Contacts', tj: 'Тамосҳо' },
     
     // Кнопки и действия
-    'btn.book_now': { ru: 'Забронировать', en: 'Book Now' },
-    'btn.more_details': { ru: 'Подробнее', en: 'More Details' },
-    'btn.view_all': { ru: 'Смотреть все', en: 'View All' },
-    'btn.send': { ru: 'Отправить', en: 'Send' },
-    'btn.search': { ru: 'Поиск', en: 'Search' },
-    'btn.filter': { ru: 'Фильтр', en: 'Filter' },
-    'btn.contact_us': { ru: 'Связаться с нами', en: 'Contact Us' },
+    'btn.book_now': { ru: 'Забронировать', en: 'Book Now', tj: 'Захира кардан' },
+    'btn.more_details': { ru: 'Подробнее', en: 'More Details', tj: 'Муфассал' },
+    'btn.view_all': { ru: 'Смотреть все', en: 'View All', tj: 'Ҳамаро дидан' },
+    'btn.send': { ru: 'Отправить', en: 'Send', tj: 'Фиристодан' },
+    'btn.search': { ru: 'Поиск', en: 'Search', tj: 'Ҷустуҷӯ' },
+    'btn.filter': { ru: 'Фильтр', en: 'Filter', tj: 'Филтр' },
+    'btn.contact_us': { ru: 'Связаться с нами', en: 'Contact Us', tj: 'Бо мо тамос гиред' },
     
     // Заголовки и подзаголовки
-    'title.popular_tours': { ru: 'Популярные туры', en: 'Popular Tours' },
-    'title.recommended_tours': { ru: 'Рекомендованные туры по Центральной Азии', en: 'Recommended Central Asia Tours' },
-    'title.tajikistan_tours': { ru: 'Туры по Таджикистану', en: 'Tajikistan Tours' },
-    'title.uzbekistan_tours': { ru: 'Туры по Узбекистану', en: 'Uzbekistan Tours' },
-    'title.kyrgyzstan_tours': { ru: 'Туры по Киргизстану', en: 'Kyrgyzstan Tours' },
-    'title.turkmenistan_tours': { ru: 'Туры по Туркменистану', en: 'Turkmenistan Tours' },
-    'title.tours_by_cities': { ru: 'Туры по городам', en: 'Tours by Cities' },
-    'title.find_perfect_tour': { ru: 'Найдите идеальный тур', en: 'Find the Perfect Tour' },
-    'title.free_cancellation': { ru: 'Бесплатная отмена', en: 'Free Cancellation' },
-    'title.book_now_pay_later': { ru: 'Бронируй сейчас - плати потом', en: 'Book Now - Pay Later' },
-    'title.hot_tours': { ru: 'Горящие туры', en: 'Hot Tours' },
-    'title.promotions': { ru: 'Акции', en: 'Promotions' },
-    'title.search_results': { ru: 'Результаты поиска', en: 'Search Results' },
-    'title.our_services': { ru: 'Наши услуги', en: 'Our Services' },
-    'title.why_choose_us': { ru: 'Почему выбирают нас', en: 'Why Choose Us' },
+    'title.popular_tours': { ru: 'Популярные туры', en: 'Popular Tours', tj: 'Сайёҳатҳои машҳур' },
+    'title.recommended_tours': { ru: 'Рекомендованные туры по Центральной Азии', en: 'Recommended Central Asia Tours', tj: 'Сайёҳатҳои тавсияшуда дар Осиёи Марказӣ' },
+    'title.tajikistan_tours': { ru: 'Туры по Таджикистану', en: 'Tajikistan Tours', tj: 'Сайёҳатҳо дар Тоҷикистон' },
+    'title.uzbekistan_tours': { ru: 'Туры по Узбекистану', en: 'Uzbekistan Tours', tj: 'Сайёҳатҳо дар Ӯзбакистон' },
+    'title.kyrgyzstan_tours': { ru: 'Туры по Киргизстану', en: 'Kyrgyzstan Tours', tj: 'Сайёҳатҳо дар Қирғизистон' },
+    'title.turkmenistan_tours': { ru: 'Туры по Туркменистану', en: 'Turkmenistan Tours', tj: 'Сайёҳатҳо дар Туркманистон' },
+    'title.tours_by_cities': { ru: 'Туры по городам', en: 'Tours by Cities', tj: 'Сайёҳатҳо дар шаҳрҳо' },
+    'title.find_perfect_tour': { ru: 'Найдите идеальный тур', en: 'Find the Perfect Tour', tj: 'Сайёҳати мукаммалро ёбед' },
+    'title.free_cancellation': { ru: 'Бесплатная отмена', en: 'Free Cancellation', tj: 'Лағви ройгон' },
+    'title.book_now_pay_later': { ru: 'Бронируй сейчас - плати потом', en: 'Book Now - Pay Later', tj: 'Акнун захира - баъдан пардохт' },
+    'title.hot_tours': { ru: 'Горящие туры', en: 'Hot Tours', tj: 'Сайёҳатҳои доғ' },
+    'title.promotions': { ru: 'Акции', en: 'Promotions', tj: 'Аксияҳо' },
+    'title.search_results': { ru: 'Результаты поиска', en: 'Search Results', tj: 'Натиҷаҳои ҷустуҷӯ' },
+    'title.our_services': { ru: 'Наши услуги', en: 'Our Services', tj: 'Хидматҳои мо' },
+    'title.why_choose_us': { ru: 'Почему выбирают нас', en: 'Why Choose Us', tj: 'Чаро моро интихоб мекунанд' },
     
     // Ценовые обозначения
-    'price.from': { ru: 'Цена от:', en: 'Price from:' },
-    'price.per_person': { ru: 'за человека', en: 'per person' },
-    'price.per_group': { ru: 'за группу', en: 'per group' },
-    'price.days': { ru: 'дней', en: 'days' },
-    'price.day': { ru: 'день', en: 'day' },
+    'price.from': { ru: 'Цена от:', en: 'Price from:', tj: 'Нарх аз:' },
+    'price.per_person': { ru: 'за человека', en: 'per person', tj: 'барои шахс' },
+    'price.per_group': { ru: 'за группу', en: 'per group', tj: 'барои гурӯҳ' },
+    'price.days': { ru: 'дней', en: 'days', tj: 'рӯзҳо' },
+    'price.day': { ru: 'день', en: 'day', tj: 'рӯз' },
     
     // Формы и поля
-    'form.name': { ru: 'Имя', en: 'Name' },
-    'form.email': { ru: 'Email', en: 'Email' },
-    'form.phone': { ru: 'Телефон', en: 'Phone' },
-    'form.message': { ru: 'Сообщение', en: 'Message' },
-    'form.check_in': { ru: 'Заезд', en: 'Check-in' },
-    'form.check_out': { ru: 'Выезд', en: 'Check-out' },
-    'form.guests': { ru: 'Гостей', en: 'Guests' },
-    'form.select_country': { ru: 'Выберите страну', en: 'Select Country' },
-    'form.select_city': { ru: 'Выберите город', en: 'Select City' },
-    'form.select_type': { ru: 'Выберите тип', en: 'Select Type' },
+    'form.name': { ru: 'Имя', en: 'Name', tj: 'Ном' },
+    'form.email': { ru: 'Email', en: 'Email', tj: 'Почтаи электронӣ' },
+    'form.phone': { ru: 'Телефон', en: 'Phone', tj: 'Телефон' },
+    'form.message': { ru: 'Сообщение', en: 'Message', tj: 'Паём' },
+    'form.check_in': { ru: 'Заезд', en: 'Check-in', tj: 'Даромадан' },
+    'form.check_out': { ru: 'Выезд', en: 'Check-out', tj: 'Баромадан' },
+    'form.guests': { ru: 'Гостей', en: 'Guests', tj: 'Меҳмонҳо' },
+    'form.select_country': { ru: 'Выберите страну', en: 'Select Country', tj: 'Кишварро интихоб кунед' },
+    'form.select_city': { ru: 'Выберите город', en: 'Select City', tj: 'Шаҳрро интихоб кунед' },
+    'form.select_type': { ru: 'Выберите тип', en: 'Select Type', tj: 'Навро интихоб кунед' },
     
     // Услуги
-    'service.tours': { ru: 'Туры и экскурсии', en: 'Tours & Excursions' },
-    'service.transfer': { ru: 'Трансфер', en: 'Transfer Service' },
-    'service.guide': { ru: 'Гид-сопровождение', en: 'Guide Service' },
-    'service.agency': { ru: 'Турагентство', en: 'Travel Agency' },
+    'service.tours': { ru: 'Туры и экскурсии', en: 'Tours & Excursions', tj: 'Сайёҳатҳо ва экскурсияҳо' },
+    'service.transfer': { ru: 'Трансфер', en: 'Transfer Service', tj: 'Хидмати интиқол' },
+    'service.guide': { ru: 'Гид-сопровождение', en: 'Guide Service', tj: 'Роҳнамоии сайёҳӣ' },
+    'service.agency': { ru: 'Турагентство', en: 'Travel Agency', tj: 'Ажонсии сайёҳӣ' },
     
     // Подвал сайта
-    'footer.contact_info': { ru: 'Контактная информация', en: 'Contact Information' },
-    'footer.quick_links': { ru: 'Быстрые ссылки', en: 'Quick Links' },
-    'footer.social_media': { ru: 'Социальные сети', en: 'Social Media' },
-    'footer.copyright': { ru: '© 2024 Bunyod-Tour. Все права защищены.', en: '© 2024 Bunyod-Tour. All rights reserved.' },
+    'footer.contact_info': { ru: 'Контактная информация', en: 'Contact Information', tj: 'Маълумоти тамос' },
+    'footer.quick_links': { ru: 'Быстрые ссылки', en: 'Quick Links', tj: 'Пайвандҳои тез' },
+    'footer.social_media': { ru: 'Социальные сети', en: 'Social Media', tj: 'Шабакаҳои иҷтимоӣ' },
+    'footer.our_location': { ru: 'Наше местоположение:', en: 'Our Location:', tj: 'Макони мо:' },
+    'footer.copyright': { ru: '© 2024 Bunyod-Tour. Все права защищены.', en: '© 2024 Bunyod-Tour. All rights reserved.', tj: '© 2024 Bunyod-Tour. Ҳамаи ҳуқуқ ҳифз шудаанд.' },
     
     // Фильтры
-    'filter.country': { ru: 'Страна', en: 'Country' },
-    'filter.city': { ru: 'Город', en: 'City' },
-    'filter.tour_type': { ru: 'Тип тура', en: 'Tour Type' },
-    'filter.category': { ru: 'Категория', en: 'Category' },
-    'filter.date': { ru: 'Дата', en: 'Date' },
+    'filter.country': { ru: 'Страна', en: 'Country', tj: 'Кишвар' },
+    'filter.city': { ru: 'Город', en: 'City', tj: 'Шаҳр' },
+    'filter.tour_type': { ru: 'Тип тура', en: 'Tour Type', tj: 'Нави сайёҳат' },
+    'filter.category': { ru: 'Категория', en: 'Category', tj: 'Категория' },
+    'filter.date': { ru: 'Дата', en: 'Date', tj: 'Сана' },
     
     // Общие элементы
-    'common.loading': { ru: 'Загрузка...', en: 'Loading...' },
-    'common.no_results': { ru: 'Результаты не найдены', en: 'No results found' },
-    'common.error': { ru: 'Произошла ошибка', en: 'An error occurred' },
-    'common.success': { ru: 'Успешно!', en: 'Success!' },
-    'common.show_all_tours': { ru: 'Показать все туры', en: 'Show All Tours' },
-    'common.clear_search': { ru: 'Очистить поиск', en: 'Clear Search' },
-    'common.save': { ru: 'Сохранить', en: 'Save' },
-    'common.cancel': { ru: 'Отмена', en: 'Cancel' },
-    'common.edit': { ru: 'Редактировать', en: 'Edit' },
-    'common.delete': { ru: 'Удалить', en: 'Delete' },
-    'common.add': { ru: 'Добавить', en: 'Add' },
-    'common.create': { ru: 'Создать', en: 'Create' },
+    'common.loading': { ru: 'Загрузка...', en: 'Loading...', tj: 'Боргирӣ мешавад...' },
+    'common.no_results': { ru: 'Результаты не найдены', en: 'No results found', tj: 'Натиҷаҳо ёфт нашуданд' },
+    'common.error': { ru: 'Произошла ошибка', en: 'An error occurred', tj: 'Хато рӯх дод' },
+    'common.success': { ru: 'Успешно!', en: 'Success!', tj: 'Муваффақият!' },
+    'common.show_all_tours': { ru: 'Показать все туры', en: 'Show All Tours', tj: 'Ҳамаи сайёҳатҳоро нишон додан' },
+    'common.clear_search': { ru: 'Очистить поиск', en: 'Clear Search', tj: 'Ҷустуҷӯро пок кардан' },
+    'common.save': { ru: 'Сохранить', en: 'Save', tj: 'Захира кардан' },
+    'common.cancel': { ru: 'Отмена', en: 'Cancel', tj: 'Лағв кардан' },
+    'common.edit': { ru: 'Редактировать', en: 'Edit', tj: 'Ислоҳ кардан' },
+    'common.delete': { ru: 'Удалить', en: 'Delete', tj: 'Ҳазф кардан' },
+    'common.add': { ru: 'Добавить', en: 'Add', tj: 'Илова кардан' },
+    'common.create': { ru: 'Создать', en: 'Create', tj: 'Эҷод кардан' },
     
     // Placeholders для форм и поиска
-    'placeholder.search_tours': { ru: 'Поиск туров...', en: 'Search tours...' },
-    'placeholder.select_date': { ru: 'Выберите дату', en: 'Select date' },
-    'placeholder.enter_name': { ru: 'Введите ваше имя', en: 'Enter your name' },
-    'placeholder.enter_email': { ru: 'Введите email', en: 'Enter email' },
-    'placeholder.enter_phone': { ru: 'Введите телефон', en: 'Enter phone' },
-    'placeholder.enter_message': { ru: 'Введите сообщение', en: 'Enter message' },
+    'placeholder.search_tours': { ru: 'Поиск туров...', en: 'Search tours...', tj: 'Ҷустуҷӯи сайёҳатҳо...' },
+    'placeholder.select_date': { ru: 'Выберите дату', en: 'Select date', tj: 'Санаро интихоб кунед' },
+    'placeholder.enter_name': { ru: 'Введите ваше имя', en: 'Enter your name', tj: 'Номи худро ворид кунед' },
+    'placeholder.enter_email': { ru: 'Введите email', en: 'Enter email', tj: 'Почтаи электронӣ ворид кунед' },
+    'placeholder.enter_phone': { ru: 'Введите телефон', en: 'Enter phone', tj: 'Рақами телефон ворид кунед' },
+    'placeholder.enter_message': { ru: 'Введите сообщение', en: 'Enter message', tj: 'Паёми худро ворид кунед' },
 
     // === КАТАЛОГ ОТЕЛЕЙ - НОВЫЕ КЛЮЧИ ===
     // Основные заголовки отелей
@@ -199,12 +200,12 @@ window.translations = window.translations || {
     'footer.public_offer': { ru: 'Публичная Оферта-Договор', en: 'Public Offer Agreement' },
     'footer.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
     'footer.privacy_policy': { ru: 'Политика конфиденциальности', en: 'Privacy Policy' },
-    'footer.our_location': { ru: 'Наше местоположение:', en: 'Our Location:' },
-    'footer.copyright': { ru: 'Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137', en: 'All rights reserved | Bunyod-Tour LLC (2017-2025) | TIN: 010098739; OGRN: 0110023137' },
+    'footer.company_info': { ru: 'Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137', en: 'All rights reserved | Bunyod-Tour LLC (2017-2025) | TIN: 010098739; OGRN: 0110023137', tj: 'Ҳамаи ҳуқуқ ҳифз шудаанд | ҶМА "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137' },
     
     // Селектор языка
-    'language.russian': { ru: 'Русский', en: 'Russian' },
-    'language.english': { ru: 'English', en: 'English' },
+    'language.russian': { ru: 'Русский', en: 'Russian', tj: 'Русӣ' },
+    'language.english': { ru: 'English', en: 'English', tj: 'Англисӣ' },
+    'language.tajik': { ru: 'Таджикский', en: 'Tajik', tj: 'Тоҷикӣ' },
     
     // НОВЫЕ PLACEHOLDER'Ы ДЛЯ АДМИН-ПАНЕЛИ
     'placeholder.search_hotels': { ru: 'Поиск отелей...', en: 'Search hotels...' },
@@ -445,10 +446,7 @@ window.translations = window.translations || {
     'city.almaty': { ru: 'Алматы', en: 'Almaty' },
     'city.ashgabat': { ru: 'Ашхабад', en: 'Ashgabat' },
 
-    // Подвал
-    'footer.company': { ru: 'Компания:', en: 'Company:' },
-    'footer.social_pages': { ru: 'Социальные страницы:', en: 'Social Pages:' },
-    'footer.our_location': { ru: 'Наше местоположение:', en: 'Our Location:' },
+    // Подвал (без дублирования)
 
     // Языки
     'lang.russian': { ru: 'Русский', en: 'Russian' },
