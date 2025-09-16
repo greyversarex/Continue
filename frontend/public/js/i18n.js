@@ -74,11 +74,15 @@ window.translations = window.translations || {
     'form.select_city': { ru: 'Выберите город', en: 'Select City', tj: 'Шаҳрро интихоб кунед' },
     'form.select_type': { ru: 'Выберите тип', en: 'Select Type', tj: 'Навро интихоб кунед' },
     
-    // Услуги
+    // Услуги и заголовки секций
     'service.tours': { ru: 'Туры и экскурсии', en: 'Tours & Excursions', tj: 'Сайёҳатҳо ва экскурсияҳо' },
     'service.transfer': { ru: 'Трансфер', en: 'Transfer Service', tj: 'Хидмати интиқол' },
     'service.guide': { ru: 'Гид-сопровождение', en: 'Guide Service', tj: 'Роҳнамоии сайёҳӣ' },
     'service.agency': { ru: 'Турагентство', en: 'Travel Agency', tj: 'Ажонсии сайёҳӣ' },
+    'service.transfer_title': { ru: 'ТРАНСФЕР', en: 'TRANSFER', tj: 'ИНТИҚОЛ' },
+    'service.guides_title': { ru: 'ТУР-ГИДЫ', en: 'TOUR GUIDES', tj: 'РОҲНАМОЁНИ САЙЁҲӢ' },
+    'service.agency_title': { ru: 'АГЕНТСКИЙ СЕРВИС', en: 'AGENCY SERVICE', tj: 'ХИДМАТҲОИ АГЕНТӢ' },
+    'service.custom_tour_title': { ru: 'СОБСТВЕННЫЙ ТУР', en: 'CUSTOM TOUR', tj: 'САЙЁҲАТИ МАХСУС' },
     
     // Подвал сайта
     'footer.contact_info': { ru: 'Контактная информация', en: 'Contact Information', tj: 'Маълумоти тамос' },
@@ -122,14 +126,15 @@ window.translations = window.translations || {
     
     // Placeholders для форм и поиска
     'placeholder.search_tours': { ru: 'Поиск туров...', en: 'Search tours...', tj: 'Ҷустуҷӯи сайёҳатҳо...' },
+    'placeholder.search_perfect_tour': { ru: 'Найдите идеальный тур: Памир, Искандеркуль, треккинг...', en: 'Find the perfect tour: Pamir, Iskanderkul, trekking...', tj: 'Сайёҳати мукаммалро ёбед: Помир, Искандаркӯл, кӯҳнавардӣ...' },
     'placeholder.select_date': { ru: 'Выберите дату', en: 'Select date', tj: 'Санаро интихоб кунед' },
     'placeholder.enter_name': { ru: 'Введите ваше имя', en: 'Enter your name', tj: 'Номи худро ворид кунед' },
     'placeholder.enter_email': { ru: 'Введите email', en: 'Enter email', tj: 'Почтаи электронӣ ворид кунед' },
     'placeholder.enter_phone': { ru: 'Введите телефон', en: 'Enter phone', tj: 'Рақами телефон ворид кунед' },
     'placeholder.enter_message': { ru: 'Введите сообщение', en: 'Enter message', tj: 'Паёми худро ворид кунед' },
 
-    // === КАТАЛОГ ОТЕЛЕЙ - НОВЫЕ КЛЮЧИ ===
-    // Основные заголовки отелей
+    // === ЗАГОЛОВКИ СТРАНИЦ ===
+    'page.title': { ru: 'Bunyod-Tour - Туры по Таджикистану', en: 'Bunyod-Tour - Tours in Tajikistan', tj: 'Bunyod-Tour - Сайёҳатҳо дар Тоҷикистон' },
     'hotel.page_title': { ru: 'Каталог отелей - Bunyod-Tour', en: 'Hotels Catalog - Bunyod-Tour', tj: 'Каталоги меҳмонхонаҳо - Bunyod-Tour' },
     'tours.page_title': { ru: 'Поиск туров - Bunyod-Tour', en: 'Search Tours - Bunyod-Tour', tj: 'Ҷустуҷӯи сайёҳатҳо - Bunyod-Tour' },
     'tour.page_title': { ru: 'Тур - Bunyod-Tour', en: 'Tour - Bunyod-Tour', tj: 'Сайёҳат - Bunyod-Tour' },
@@ -164,11 +169,23 @@ window.translations = window.translations || {
     'btn.clear_filters': { ru: 'Очистить фильтры', en: 'Clear Filters' },
     
     // Страны Центральной Азии
-    'country.uzbekistan': { ru: 'Узбекистан', en: 'Uzbekistan' },
-    'country.tajikistan': { ru: 'Таджикистан', en: 'Tajikistan' },
-    'country.kyrgyzstan': { ru: 'Киргизстан', en: 'Kyrgyzstan' },
-    'country.turkmenistan': { ru: 'Туркменистан', en: 'Turkmenistan' },
-    'country.kazakhstan': { ru: 'Казахстан', en: 'Kazakhstan' },
+    'country.uzbekistan': { ru: 'Узбекистан', en: 'Uzbekistan', tj: 'Ӯзбакистон' },
+    'country.tajikistan': { ru: 'Таджикистан', en: 'Tajikistan', tj: 'Тоҷикистон' },
+    'country.kyrgyzstan': { ru: 'Киргизстан', en: 'Kyrgyzstan', tj: 'Қирғизистон' },
+    'country.turkmenistan': { ru: 'Туркменистан', en: 'Turkmenistan', tj: 'Туркманистон' },
+    'country.kazakhstan': { ru: 'Казахстан', en: 'Kazakhstan', tj: 'Қазоқистон' },
+
+    // Города Центральной Азии
+    'city.dushanbe': { ru: 'Душанбе', en: 'Dushanbe', tj: 'Душанбе' },
+    'city.khorog': { ru: 'Хорог', en: 'Khorog', tj: 'Хоруғ' },
+    'city.khujand': { ru: 'Худжанд', en: 'Khujand', tj: 'Хуҷанд' },
+    'city.tashkent': { ru: 'Ташкент', en: 'Tashkent', tj: 'Тошканд' },
+    'city.samarkand': { ru: 'Самарканд', en: 'Samarkand', tj: 'Самарқанд' },
+    'city.bukhara': { ru: 'Бухара', en: 'Bukhara', tj: 'Бухоро' },
+    'city.bishkek': { ru: 'Бишкек', en: 'Bishkek', tj: 'Бишкак' },
+    'city.astana': { ru: 'Астана', en: 'Astana', tj: 'Астана' },
+    'city.almaty': { ru: 'Алматы', en: 'Almaty', tj: 'Алматӣ' },
+    'city.ashgabat': { ru: 'Ашхабад', en: 'Ashgabat', tj: 'Ошхобод' },
     
     // Расширенная навигация и услуги
     'nav.services': { ru: 'Услуги', en: 'Services', tj: 'Хидматҳо' },
@@ -184,22 +201,28 @@ window.translations = window.translations || {
     'nav.news': { ru: 'Новости', en: 'News', tj: 'Ахборот' },
     'nav.for_agents': { ru: 'Тур-агентам', en: 'For Tour Agents', tj: 'Барои агентҳои сайёҳӣ' },
     
-    // Типы туров
-    'tour.single_day': { ru: 'Однодневные', en: 'Single Day' },
-    'tour.multi_day': { ru: 'Многодневные', en: 'Multi-Day' },
-    'tour.excursions': { ru: 'Экскурсии', en: 'Excursions' },
-    'tour.city_tours': { ru: 'Городские туры', en: 'City Tours' },
-    'tour.nature_eco': { ru: 'Природа/экологические туры', en: 'Nature/Eco Tours' },
-    'tour.cultural': { ru: 'Культурно познавательные туры', en: 'Cultural Tours' },
-    'tour.historical': { ru: 'Исторические туры', en: 'Historical Tours' },
-    'tour.trekking': { ru: 'Походы/трекинги', en: 'Trekking/Hiking' },
-    'tour.mountain_landscapes': { ru: 'Горные ландшафты', en: 'Mountain Landscapes' },
-    'tour.lake_landscapes': { ru: 'Озерные ландшафты', en: 'Lake Landscapes' },
-    'tour.adventure': { ru: 'Приключенческие туры', en: 'Adventure Tours' },
-    'tour.gastronomy': { ru: 'Гастрономические туры', en: 'Culinary Tours' },
-    'tour.auto_safari': { ru: 'Автотуры/сафари/джип-туры', en: 'Auto Tours/Safari/Jeep Tours' },
-    'tour.agro': { ru: 'Агротуры', en: 'Agro Tours' },
-    'tour.vip': { ru: 'VIP туры', en: 'VIP Tours' },
+    // Типы туров по категориям
+    'tour.single_day': { ru: 'Однодневные', en: 'Single Day', tj: 'Якрӯза' },
+    'tour.multi_day': { ru: 'Многодневные', en: 'Multi-Day', tj: 'Чандрӯза' },
+    'tour.excursions': { ru: 'Экскурсии', en: 'Excursions', tj: 'Экскурсияҳо' },
+    'tour.city_tours': { ru: 'Городские туры', en: 'City Tours', tj: 'Сайёҳатҳои шаҳрӣ' },
+    'tour.nature_eco': { ru: 'Природа/экологические туры', en: 'Nature/Eco Tours', tj: 'Табиат/эколого сайёҳатҳо' },
+    'tour.cultural': { ru: 'Культурно познавательные туры', en: 'Cultural Tours', tj: 'Сайёҳатҳои фарҳангӣ-маърифатӣ' },
+    'tour.historical': { ru: 'Исторические туры', en: 'Historical Tours', tj: 'Сайёҳатҳои таърихӣ' },
+    'tour.trekking': { ru: 'Походы/трекинги', en: 'Trekking/Hiking', tj: 'Кӯҳнавардӣ/пиёдаравӣ' },
+    'tour.mountain_landscapes': { ru: 'Горные ландшафты', en: 'Mountain Landscapes', tj: 'Манзараҳои кӯҳӣ' },
+    'tour.lake_landscapes': { ru: 'Озерные ландшафты', en: 'Lake Landscapes', tj: 'Манзараҳои кӯлӣ' },
+    'tour.adventure': { ru: 'Приключенческие туры', en: 'Adventure Tours', tj: 'Сайёҳатҳои сарназар' },
+    'tour.gastronomy': { ru: 'Гастрономические туры', en: 'Culinary Tours', tj: 'Сайёҳатҳои ошпазӣ' },
+    'tour.auto_safari': { ru: 'Автотуры/сафари/джип-туры', en: 'Auto Tours/Safari/Jeep Tours', tj: 'Авто сайёҳатҳо/сафарӣ/ҷип-сайёҳатҳо' },
+    'tour.agro': { ru: 'Агротуры', en: 'Agro Tours', tj: 'Агросайёҳатҳо' },
+    'tour.vip': { ru: 'VIP туры', en: 'VIP Tours', tj: 'VIP сайёҳатҳо' },
+
+    // Типы туров по формату
+    'tour_type.personal': { ru: 'Персональный', en: 'Personal', tj: 'Шахсӣ' },
+    'tour_type.group_personal': { ru: 'Групповой персональный', en: 'Group Personal', tj: 'Гурӯҳии шахсӣ' },
+    'tour_type.group_general': { ru: 'Групповой общий', en: 'Group General', tj: 'Гурӯҳии умумӣ' },
+    'tour_type.special': { ru: 'Специальный', en: 'Special', tj: 'Махсус' },
     
     // Расширенный футер
     'footer.company': { ru: 'Компания:', en: 'Company:' },
@@ -1040,5 +1063,20 @@ window.getMultilingualValue = function(obj, baseKey, fallback = '') {
     }
     return fallback || '';
 };
+
+// === ЭКСПОРТ КЛЮЧЕВЫХ ФУНКЦИЙ ДЛЯ ВНЕШНЕГО ИСПОЛЬЗОВАНИЯ ===
+// Функция переключения языка (используется layout-loader.js)
+window.switchLanguage = switchSiteLanguage;
+
+// Функция применения переводов (для прямого вызова)
+window.applyTranslations = translateStaticInterface;
+
+// Функция инициализации языка
+window.initializeLanguage = initializeLanguage;
+
+// Функция обновления селектора языка
+window.updateLanguageSelector = updateLanguageSelector;
+
+console.log('🌍 i18n система инициализирована с экспортированными функциями');
 
 })(); // Закрываем IIFE
