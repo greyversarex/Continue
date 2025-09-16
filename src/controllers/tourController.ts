@@ -447,7 +447,7 @@ export class TourController {
         }
       }
 
-      // Create tour block associations if provided
+      // Create tour block associations if provided, or auto-assign to "Популярные туры"
       if (tourBlockIds && Array.isArray(tourBlockIds) && tourBlockIds.length > 0) {
         console.log('📦 Creating tour block associations:', tourBlockIds);
         try {
@@ -466,6 +466,23 @@ export class TourController {
           console.log('✅ Tour block associations created successfully');
         } catch (blockError) {
           console.error('❌ Error creating tour block associations:', blockError);
+          throw blockError;
+        }
+      } else {
+        // 🎯 АВТОМАТИЧЕСКИ НАЗНАЧАЕМ В "Популярные туры" (ID = 1) если не указан блок
+        console.log('📦 Auto-assigning tour to "Популярные туры" (ID: 1)');
+        try {
+          await prisma.tourBlockAssignment.create({
+            data: {
+              tourId: tour.id,
+              tourBlockId: 1, // Популярные туры
+              isPrimary: true
+            }
+          });
+          
+          console.log('✅ Tour auto-assigned to "Популярные туры" successfully');
+        } catch (blockError) {
+          console.error('❌ Error auto-assigning tour to block:', blockError);
           throw blockError;
         }
       }
