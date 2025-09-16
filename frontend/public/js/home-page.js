@@ -1239,7 +1239,18 @@ async function loadToursForBlock(block) {
 }
 
 function renderTourBlock(block, tours) {
-    const blockTitle = block.title;
+    // Безопасная обработка названия блока
+    let blockTitle;
+    try {
+        if (typeof block.title === 'string') {
+            blockTitle = JSON.parse(block.title);
+        } else {
+            blockTitle = block.title || {};
+        }
+    } catch (e) {
+        blockTitle = { ru: block.title || 'Блок туров', en: block.title || 'Tour Block' };
+    }
+    
     const blockId = `tour-block-${block.id}`;
     const carouselId = `carousel-${block.id}`;
     

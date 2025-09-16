@@ -1980,24 +1980,7 @@
                     <div class="form-group">
                         <label class="form-label">Блоки туров (можно выбрать несколько)</label>
                         <div class="checkbox-group" id="tourBlocksCheckboxes">
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="1" name="tourBlocks"> Популярные туры
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="2" name="tourBlocks"> Рекомендованные туры по Центральной Азии
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="3" name="tourBlocks"> Туры по Таджикистану
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="4" name="tourBlocks"> Туры по Узбекистану
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="5" name="tourBlocks"> Туры по Киргизстану
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" value="6" name="tourBlocks"> Туры по Туркменистану
-                            </label>
+                            <!-- Блоки туров загружаются динамически из БД -->
                         </div>
                     </div>
                     
@@ -4520,6 +4503,8 @@
         function openTourModal(tourId = null) {
             // Загружаем страны при открытии формы
             loadCountriesForSelect('tourCountry');
+            // 🎯 ДОБАВЛЕНО: Загружаем блоки туров для формы
+            loadTourBlocksForForm();
             console.log('🔵 Opening tour modal with tourId:', tourId);
             currentTourId = tourId;
             console.log('🔵 Set currentTourId to:', currentTourId);
@@ -9501,6 +9486,40 @@
                 console.error('Error loading tour blocks:', err);
                 const tbody = document.getElementById('tourBlocksTable');
                 tbody.innerHTML = '<tr><td colspan="8" class="text-center text-red-500">Ошибка загрузки данных</td></tr>';
+            });
+        }
+
+        // 🎯 НОВАЯ ФУНКЦИЯ: Загрузка блоков туров для формы тура
+        function loadTourBlocksForForm() {
+            console.log('🔄 Загружаем блоки туров для формы...');
+            fetch(`${getApiUrl()}/tour-blocks`, {
+                headers: getAuthHeaders()
+            })
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('tourBlocksCheckboxes');
+                
+                if (!data.success || !data.data || data.data.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500">Нет доступных блоков туров</p>';
+                    return;
+                }
+                
+                container.innerHTML = data.data.map(block => {
+                    const title = typeof block.title === 'string' ? JSON.parse(block.title || '{}') : block.title || {};
+                    const blockName = title.ru || title.en || `Блок ${block.id}`;
+                    return `
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="${block.id}" name="tourBlocks"> ${blockName}
+                        </label>
+                    `;
+                }).join('');
+                
+                console.log('✅ Блоки туров загружены для формы');
+            })
+            .catch(err => {
+                console.error('❌ Ошибка загрузки блоков туров для формы:', err);
+                const container = document.getElementById('tourBlocksCheckboxes');
+                container.innerHTML = '<p class="text-red-500">Ошибка загрузки блоков</p>';
             });
         }
 
