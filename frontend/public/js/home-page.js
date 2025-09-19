@@ -1049,7 +1049,6 @@ function selectLanguageNew(lang, flagClass, flagEmoji, name) {
     const emojiMap = {
         'ru': '🇷🇺', 'flag-ru': '🇷🇺',
         'en': '🇺🇸', 'flag-us': '🇺🇸', 'us': '🇺🇸',
-        'tj': '🇹🇯', 'flag-tj': '🇹🇯',
         'fa': '🇮🇷', 'flag-ir': '🇮🇷', 'ir': '🇮🇷',
         'de': '🇩🇪', 'flag-de': '🇩🇪',
         'zh': '🇨🇳', 'flag-cn': '🇨🇳', 'cn': '🇨🇳'
