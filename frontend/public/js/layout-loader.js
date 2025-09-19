@@ -241,37 +241,10 @@ class LayoutLoader {
     }
 
     initializeMapIfPresent() {
-        // Feature detection: Only initialize map if container exists
-        const mapElement = document.getElementById('map');
-        if (!mapElement) {
-            console.log('📍 Map container not found, skipping map initialization');
-            return;
-        }
-
-        // Check for Leaflet library
-        if (typeof L === 'undefined') {
-            console.warn('⚠️ Leaflet library not found, map initialization skipped');
-            return;
-        }
-
-        setTimeout(() => {
-            try {
-                const map = L.map('map').setView([38.5598, 68.7870], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
-                
-                L.marker([38.5598, 68.7870])
-                    .addTo(map)
-                    .bindPopup('Bunyod-Tour Office')
-                    .openPopup();
-                    
-                console.log('🗺️ Map initialized successfully');
-            } catch (error) {
-                console.warn('⚠️ Map initialization failed:', error);
-            }
-        }, 1000);
+        // ✅ КАРТА ТЕПЕРЬ ИНИЦИАЛИЗИРУЕТСЯ В FOOTER - НЕ ДУБЛИРУЕМ!
+        console.log('📍 Map initialization handled by footer component');
+        // Карта теперь полностью управляется footer'ом через OpenStreetMap iframe
+        return;
     }
 }
 
