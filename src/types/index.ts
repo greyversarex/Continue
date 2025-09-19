@@ -2,7 +2,6 @@
 export interface MultilingualContent {
   en: string;
   ru: string;
-  tj?: string;
 }
 
 // Category types
