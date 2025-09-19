@@ -1131,72 +1131,7 @@ function performHotelSearch() {
     alert(`Поиск отелей:\nЗаезд: ${checkIn}\nВыезд: ${checkOut}\nГостей: ${guests}\n\nФункция будет доступна в ближайшее время.`);
 }
 
-// Leaflet Maps initialization  
-function initMap() {
-    // Координаты офиса Бунёд-Тур: ул. Садриддина Айни, 104, Душанбе, Таджикистан
-    const bunyodTourLocation = [38.559772, 68.787038];
-    
-    // Создание карты
-    const map = L.map('map').setView(bunyodTourLocation, 15);
-    
-    // Добавление карты OSM
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-    
-    // Создание кастомной иконки маркера
-    const customIcon = L.divIcon({
-        html: `<div style="
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            background-color: #3E3E3E; 
-            border: 3px solid #fff; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            font-weight: bold; 
-            font-size: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            transform: translate(-50%, -100%);
-        ">BT</div>`,
-        className: 'custom-div-icon',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40]
-    });
-    
-    // Создание маркера
-    const marker = L.marker(bunyodTourLocation, {
-        icon: customIcon,
-        title: "Бунёд-Тур - Туристическое агентство"
-    }).addTo(map);
-    
-    // Создание popup окна
-    const popupContent = `
-        <div style="font-family: Arial, sans-serif; min-width: 200px;">
-            <h3 style="margin: 0 0 8px 0; color: #3E3E3E; font-size: 16px;">🏢 Бунёд-Тур</h3>
-            <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
-                <strong>📍 Адрес:</strong> ул. Садриддина Айни, 104, Душанбе
-            </p>
-            <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
-                <strong>📞 Телефон:</strong> +992 44 625 7575
-            </p>
-            <p style="margin: 0; color: #666; font-size: 14px;">
-                <strong>✉️ Email:</strong> info@bunyodtour.tj
-            </p>
-        </div>
-    `;
-    
-    marker.bindPopup(popupContent).openPopup();
-}
-
-// Initialize map when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Wait for page to fully load, then initialize map
-    setTimeout(initMap, 500);
-});
+// ✅ АРХИТЕКТУРНАЯ ЧИСТОТА: Карта инициализируется footer'ом, не home-page.js!
 
 // API Configuration
 const API_BASE_URL = window.location.origin + '/api';

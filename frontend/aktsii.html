@@ -81,9 +81,7 @@
         }
     </style>
     
-    <!-- Leaflet.js для карты -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- ✅ АРХИТЕКТУРНАЯ ЧИСТОТА: Leaflet подключается только в footer! -->
 </head>
 <body class="min-h-screen bg-gray-50">
     <!-- 🌐 ДИНАМИЧЕСКИЙ ХЕДЕР -->
@@ -399,37 +397,7 @@
             }
         }
 
-        // Leaflet Map initialization
-        function initMap() {
-            // Координаты офиса компании в Душанбе
-            const officeLocation = [38.5598, 68.7870];
-            
-            // Создание карты
-            const map = L.map('map').setView(officeLocation, 15);
-            
-            // Добавление тайлов OpenStreetMap
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors',
-                maxZoom: 19
-            }).addTo(map);
-            
-            // Маркер офиса
-            const marker = L.marker(officeLocation).addTo(map);
-            
-            // Информационное окно (popup)
-            marker.bindPopup(`
-                <div style="padding: 5px;">
-                    <h3 style="margin: 0 0 10px 0; color: #333; font-size: 16px;">Bunyod-Tour</h3>
-                    <p style="margin: 0; color: #666; font-size: 14px;">Офис туристической компании</p>
-                    <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">г. Душанбе, Таджикистан</p>
-                </div>
-            `);
-        }
-        
-        // Инициализация карты после загрузки страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            initMap();
-        });
+        // ✅ АРХИТЕКТУРНАЯ ЧИСТОТА: Карта инициализируется footer'ом, не страницей!
     </script>
 
 </body>

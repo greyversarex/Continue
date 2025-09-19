@@ -699,55 +699,7 @@
             }
         });
         
-        // Google Map initialization
-        function initMap() {
-            // Координаты офиса компании в Душанбе
-            const office = { lat: 38.5598, lng: 68.7870 };
-            
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 15,
-                center: office,
-                styles: [
-                    {
-                        "featureType": "all",
-                        "elementType": "geometry.fill",
-                        "stylers": [{"weight": "2.00"}]
-                    },
-                    {
-                        "featureType": "all",
-                        "elementType": "geometry.stroke",
-                        "stylers": [{"color": "#9c9c9c"}]
-                    },
-                    {
-                        "featureType": "all",
-                        "elementType": "labels.text",
-                        "stylers": [{"visibility": "on"}]
-                    }
-                ]
-            });
-            
-            // Маркер офиса
-            const marker = new google.maps.Marker({
-                position: office,
-                map: map,
-                title: "Bunyod-Tour Office"
-            });
-            
-            // Информационное окно
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-                    <div style="padding: 10px;">
-                        <h3 style="margin: 0 0 10px 0; color: #333;">Bunyod-Tour</h3>
-                        <p style="margin: 0; color: #666;">Офис туристической компании</p>
-                        <p style="margin: 5px 0 0 0; color: #666;">г. Душанбе, Таджикистан</p>
-                    </div>
-                `
-            });
-            
-            marker.addListener("click", () => {
-                infoWindow.open(map, marker);
-            });
-        }
+        // ✅ АРХИТЕКТУРНАЯ ЧИСТОТА: Google Maps удалён - footer карта автономна!
     </script>
 
     <!-- Футер -->
@@ -833,10 +785,6 @@
                 <p data-translate="footer.copyright">Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137</p>
             </div>
         </div>
-    </footer>
-
-    <!-- Google Maps API -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
     <!-- 🌐 ДИНАМИЧЕСКИЙ ФУТЕР -->
     <div id="footer-container"></div>
 </body>
