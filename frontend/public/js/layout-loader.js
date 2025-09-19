@@ -241,10 +241,65 @@ class LayoutLoader {
     }
 
     initializeMapIfPresent() {
-        // ✅ КАРТА ТЕПЕРЬ ИНИЦИАЛИЗИРУЕТСЯ В FOOTER - НЕ ДУБЛИРУЕМ!
-        console.log('📍 Map initialization handled by footer component');
-        // Карта теперь полностью управляется footer'ом через OpenStreetMap iframe
-        return;
+        console.log('🔄 Initializing footer map after component injection...');
+        
+        // Ожидаем немного, чтобы footer был полностью вставлен в DOM
+        setTimeout(() => {
+            this.initFooterMap();
+        }, 100);
+    }
+
+    // Перенесенная функция инициализации карты из footer HTML
+    initFooterMap() {
+        console.log('🔄 initFooterMap() called, looking for #map element...');
+        
+        const mapElement = document.getElementById('map');
+        console.log('🔍 Map element found:', !!mapElement);
+        if (mapElement) {
+            console.log('📏 Map element dimensions:', mapElement.clientWidth + 'x' + mapElement.clientHeight);
+        }
+        
+        if (!mapElement) {
+            console.error('❌ Map container #map not found in DOM!');
+            // Поищем все элементы с id, чтобы понять что есть в DOM
+            const allIds = Array.from(document.querySelectorAll('[id]')).map(el => el.id);
+            console.log('🔍 Available element IDs:', allIds);
+            return;
+        }
+        
+        try {
+            console.log('🗺️ Creating map iframe...');
+            
+            // Координаты офиса Бунёд-Тур (точные GPS координаты)
+            const lat = 38.553337938993764;
+            const lng = 68.84494199525761;
+            
+            // Создаем встроенную карту через OpenStreetMap iframe
+            const mapURL = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.01},${lat-0.01},${lng+0.01},${lat+0.01}&layer=mapnik&marker=${lat},${lng}`;
+            console.log('🔗 Map URL:', mapURL);
+            
+            const mapHTML = `
+                <iframe 
+                    width="100%" 
+                    height="100%" 
+                    frameborder="0" 
+                    scrolling="no" 
+                    marginheight="0" 
+                    marginwidth="0" 
+                    src="${mapURL}" 
+                    style="border: none; border-radius: 8px; background-color: #f0f0f0;"
+                    onload="console.log('📍 Map iframe loaded successfully!');"
+                    onerror="console.error('❌ Map iframe failed to load!');">
+                </iframe>
+            `;
+            
+            mapElement.innerHTML = mapHTML;
+            console.log('✅ Footer map HTML injected successfully!');
+            console.log('🎯 Map coordinates: lat=' + lat + ', lng=' + lng);
+            
+        } catch (error) {
+            console.error('❌ Footer map initialization failed:', error);
+        }
     }
 }
 
