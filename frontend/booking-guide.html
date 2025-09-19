@@ -36,53 +36,7 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         
-        /* Стили для выпадающих меню навигации */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #2F2F2F;
-            min-width: 200px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
-            z-index: 1000;
-            border-radius: 8px;
-            top: 100%;
-            left: 0;
-            padding: 8px 0;
-        }
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-        .dropdown-content a {
-            color: white;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            transition: background-color 0.3s;
-        }
-        .dropdown-content a:hover {
-            background-color: #4A4A4A;
-        }
-        .dropdown-content .dropdown-submenu {
-            position: relative;
-        }
-        .dropdown-content .dropdown-submenu .dropdown-subcontent {
-            display: none !important;
-            position: absolute;
-            left: 100%;
-            top: 0;
-            background-color: #2F2F2F;
-            min-width: 180px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.3);
-            border-radius: 8px;
-            padding: 8px 0;
-        }
-        .dropdown-content .dropdown-submenu:hover > .dropdown-subcontent {
-            display: block !important;
-        }
+        /* ✅ ALL DROPDOWN STYLES MOVED TO /public/css/layout.css - DUPLICATES REMOVED! */
         
         /* ===== PAGE-SPECIFIC STYLES FOR BOOKING-GUIDE.HTML =====
         /* Language and dropdown styles moved to /public/css/layout.css */
