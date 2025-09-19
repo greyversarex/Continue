@@ -49,6 +49,18 @@ The backend uses **Express.js and TypeScript** with a **modular architecture** f
 -   **Frontend-Aligned Tour Block System**: 6 tour blocks matching frontend structure (e.g., Popular Tours, Recommended Tours).
 -   **Static Price Type System**: Database-driven "per person" or "per group" pricing, controlled via admin panel.
 
+## Project Documentation
+
+### Comprehensive Documentation (September 19, 2025)
+Created **ИСЧЕРПЫВАЮЩАЯ_ПРОЕКТНАЯ_ДОКУМЕНТАЦИЯ.md** - a maximally detailed documentation covering:
+
+1. **Global Design Document**: Complete color palette with HEX codes, typography (Inter font family), and component structures
+2. **Frontend Page Architecture**: Detailed analysis of all 31 HTML files with block structures and interactions
+3. **Admin Panel Analysis**: Exhaustive breakdown of every admin section with full field specifications
+4. **Business Logic Overview**: Complete workflows from tour creation to booking completion, pricing algorithms, and multilingual implementation
+
+This documentation enables complete project recreation from scratch by any developer.
+
 ## External Dependencies
 
 ### Core Framework Dependencies
