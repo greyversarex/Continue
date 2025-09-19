@@ -12,14 +12,14 @@ System integration preference: User requires simplified and unified pricing syst
 ## System Architecture
 
 ### Backend Framework
-The backend uses **Express.js and TypeScript** with a **modular architecture** following an **MVC pattern**. It supports full CRUD operations, multilingual content (Russian, English, Tajik), and robust authentication.
+The backend uses **Express.js and TypeScript** with a **modular architecture** following an **MVC pattern**. It supports full CRUD operations, multilingual content (Russian, English), and robust authentication.
 
 ### Database Layer
 **PostgreSQL with Prisma ORM** is used for data management. The schema includes **Tours**, **Categories**, **TourBlocks**, **TourGuideProfile**, **GuideReview**, **DriverProfile**, **Countries**, and **Cities**, maintaining foreign key relationships.
 
 ### Key Features and Systems
 -   **Full CRUD Operations**: Implemented for all major entities (tours, hotels, guides, categories, tour-blocks, drivers, countries, cities).
--   **Multilingual Support**: JSON-based content for Russian, English, and Tajik.
+-   **Multilingual Support**: JSON-based content for Russian and English.
 -   **Authentication**: Admin, Tour Guide, and Driver login systems are operational.
 -   **Component-based Tour Pricing**: Dynamic pricing with inline editing and a unified pricing system with automatic category detection.
 -   **Booking & Order System**: Seamless flow from draft bookings to payment-ready orders.
@@ -33,7 +33,7 @@ The backend uses **Express.js and TypeScript** with a **modular architecture** f
 -   **Middleware**: CORS, Express JSON processing, centralized error handling, and request logging.
 -   **Type System**: Strong typing enforced via TypeScript and Prisma-generated types.
 -   **Email Notification System**: Nodemailer for automated confirmations and notifications.
--   **Internationalization (i18n)**: Supports English, Russian, and Tajik with a language switcher.
+-   **Internationalization (i18n)**: Supports English and Russian with a language switcher.
 -   **Deployment**: Configured for Replit with PostgreSQL, unified server (port 5000), CORS for Replit proxy, and autoscale production environment.
 
 ### UI/UX Decisions
@@ -60,6 +60,15 @@ Created **ИСЧЕРПЫВАЮЩАЯ_ПРОЕКТНАЯ_ДОКУМЕНТАЦИЯ
 4. **Business Logic Overview**: Complete workflows from tour creation to booking completion, pricing algorithms, and multilingual implementation
 
 This documentation enables complete project recreation from scratch by any developer.
+
+### Language System Migration (September 19, 2025)
+Successfully completed migration from trilingual (EN/RU/TJ) to bilingual (EN/RU) system:
+
+- **Admin Forms**: Removed all Tajik language fields from tour, hotel, news, country, city, and content management forms
+- **Backend Controllers**: Updated all controllers to remove `nameTj` field processing
+- **Database Schema**: Removed `nameTj` fields from Prisma models (Country, City) and synchronized with database
+- **Type System**: Updated MultilingualContent interface to support only EN/RU languages
+- **Result**: System fully operational in bilingual mode with successful backend compilation and zero LSP errors
 
 ## External Dependencies
 
