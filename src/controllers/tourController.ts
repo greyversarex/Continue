@@ -982,7 +982,7 @@ export class TourController {
               title = JSON.parse(tour.title) as MultilingualContent;
             } catch (e) {
               // Если это обычная строка, используем её как русский заголовок
-              title = { ru: tour.title, en: tour.title, tj: tour.title };
+              title = { ru: tour.title, en: tour.title };
             }
           } else {
             title = tour.title;
@@ -1004,13 +1004,6 @@ export class TourController {
             });
           }
           
-          // Check Tajik title
-          if (title.tj && title.tj.toLowerCase().includes(searchQuery)) {
-            suggestions.push({
-              text: title.tj,
-              type: 'тур'
-            });
-          }
         } catch (error) {
           console.error('Error processing tour title:', tour.id, error);
           // Если что-то пошло не так, пропускаем этот тур
@@ -1165,8 +1158,7 @@ export class CategoryController {
       // Ensure both languages are present
       const finalName = {
         en: categoryName.en || categoryName.ru || '',
-        ru: categoryName.ru || categoryName.en || '',
-        tj: categoryName.tj || ''
+        ru: categoryName.ru || categoryName.en || ''
       };
 
       const category = await CategoryModel.create({ name: finalName });

@@ -445,7 +445,6 @@ model City {
   name       String
   nameRu     String   @map("name_ru")
   nameEn     String   @map("name_en")
-  nameTj     String   @map("name_tj")
   countryId  Int      @map("country_id")
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
