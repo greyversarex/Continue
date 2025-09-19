@@ -139,7 +139,7 @@ const NewsForm: React.FC<NewsFormProps> = ({ news, onSuccess }) => {
     }));
   };
 
-  const updateMultilingualField = (field: 'title' | 'content' | 'excerpt' | 'metaTitle' | 'metaDescription', lang: 'ru' | 'en' | , value: string) => {
+  const updateMultilingualField = (field: 'title' | 'content' | 'excerpt' | 'metaTitle' | 'metaDescription', lang: 'ru' | 'en', value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: {
@@ -169,7 +169,7 @@ const NewsForm: React.FC<NewsFormProps> = ({ news, onSuccess }) => {
             <button
               key={lang.key}
               type="button"
-              onClick={() => setActiveLanguage(lang.key as 'ru' | 'en' | )}
+              onClick={() => setActiveLanguage(lang.key as 'ru' | 'en')}
               className={`px-3 py-1 rounded-md text-sm font-medium ${
                 activeLanguage === lang.key
                   ? 'bg-blue-100 text-blue-700'

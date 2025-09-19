@@ -253,12 +253,10 @@ window.translations = window.translations || {
     // Селектор языка
     'language.russian': { ru: 'Русский', en: 'Russian' },
     'language.english': { ru: 'English', en: 'English' },
-    'language.tajik': { ru: 'Таджикский', en: 'Tajik' },
     
     // Дополнительные языки (для совместимости)
     'lang.russian': { ru: 'Русский', en: 'Russian' },
     'lang.english': { ru: 'English', en: 'English' },
-    'lang.tajik': { ru: 'Таджикский', en: 'Tajik' },
     
     // НОВЫЕ PLACEHOLDER'Ы ДЛЯ АДМИН-ПАНЕЛИ
     'placeholder.search_hotels': { ru: 'Поиск отелей...', en: 'Search hotels...' },
