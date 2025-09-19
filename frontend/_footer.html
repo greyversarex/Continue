@@ -12,11 +12,11 @@ function initFooterMap() {
     }
     
     try {
-        // Координаты офиса Бунёд-Тур: ул. Садриддина Айни, 104, Душанбе, Таджикистан
-        const bunyodTourLocation = [38.559772, 68.787038];
+        // Координаты офиса Бунёд-Тур (точные GPS координаты)
+        const bunyodTourLocation = [38.553337938993764, 68.84494199525761];
         
         // Создание карты
-        const map = L.map('map').setView(bunyodTourLocation, 15);
+        const map = L.map('map').setView(bunyodTourLocation, 16);
         
         // Добавление карты OSM
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -75,11 +75,16 @@ function initFooterMap() {
     }
 }
 
-// Инициализация карты после загрузки footer'а
-document.addEventListener('DOMContentLoaded', function() {
-    // Небольшая задержка чтобы убедиться что Leaflet загружен
-    setTimeout(initFooterMap, 100);
-});
+// Инициализация карты после полной загрузки
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        // Увеличенная задержка для надёжной загрузки Leaflet
+        setTimeout(initFooterMap, 500);
+    });
+} else {
+    // Если DOM уже загружен, инициализируем сразу
+    setTimeout(initFooterMap, 500);
+}
 </script>
 
 <!-- Футер -->
@@ -153,10 +158,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
         
-        <!-- Google Map Section -->
-        <div class="border-t border-gray-600 mt-8 pt-8">
-            <h4 class="font-semibold mb-4 text-white text-center" data-translate="footer.our_location">Наше местоположение:</h4>
-            <div class="w-full h-64 rounded-lg overflow-hidden shadow-lg">
+        <!-- Карта компании -->
+        <div class="border-t border-gray-600 mt-8 pt-6">
+            <div class="w-full h-44 rounded-lg overflow-hidden shadow-lg">
                 <div id="map" class="w-full h-full"></div>
             </div>
         </div>
