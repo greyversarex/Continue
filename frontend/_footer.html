@@ -1,6 +1,6 @@
-<!-- ✅ FOOTER АВТОНОМНОСТЬ: Leaflet только для footer карты (альтернативный CDN) -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin=""/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin="" onload="console.log('✅ Leaflet loaded from cloudflare CDN'); window.leafletLoaded = true;" onerror="console.error('❌ Failed to load Leaflet from CDN');"></script>
+<!-- ✅ FOOTER АВТОНОМНОСТЬ: Leaflet локальные файлы (100% портативность) -->
+<link rel="stylesheet" href="/public/css/leaflet.css">
+<script src="/public/js/leaflet.js" onload="console.log('✅ Leaflet loaded locally'); window.leafletLoaded = true;" onerror="console.error('❌ Failed to load local Leaflet');"></script>
 
 <script>
 // Флаг загрузки Leaflet
@@ -14,10 +14,10 @@ function initFooterMap() {
         return;
     }
     
-    // Проверяем наличие Leaflet и его полную загрузку
+    // Проверяем наличие локального Leaflet
     if (!window.L || !window.leafletLoaded) {
-        console.log('⏳ Waiting for Leaflet library to load...');
-        setTimeout(initFooterMap, 300); // Ждём дольше - 300мс
+        console.log('⏳ Waiting for local Leaflet to load...');
+        setTimeout(initFooterMap, 200); // Локальные файлы загружаются быстрее
         return;
     }
     
