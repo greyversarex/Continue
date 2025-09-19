@@ -1,13 +1,23 @@
-<!-- ✅ FOOTER АВТОНОМНОСТЬ: Leaflet только для footer карты -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- ✅ FOOTER АВТОНОМНОСТЬ: Leaflet только для footer карты (альтернативный CDN) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin=""/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin="" onload="console.log('✅ Leaflet loaded from cloudflare CDN'); window.leafletLoaded = true;" onerror="console.error('❌ Failed to load Leaflet from CDN');"></script>
 
 <script>
+// Флаг загрузки Leaflet
+window.leafletLoaded = false;
+
 // 🗺️ FOOTER АВТОНОМНАЯ КАРТА - Footer сам инициализирует свою карту!
 function initFooterMap() {
     const mapElement = document.getElementById('map');
-    if (!mapElement || !window.L) {
-        console.log('⚠️ Leaflet library not found, map initialization skipped');
+    if (!mapElement) {
+        console.log('❌ Map container #map not found');
+        return;
+    }
+    
+    // Проверяем наличие Leaflet и его полную загрузку
+    if (!window.L || !window.leafletLoaded) {
+        console.log('⏳ Waiting for Leaflet library to load...');
+        setTimeout(initFooterMap, 300); // Ждём дольше - 300мс
         return;
     }
     
@@ -75,15 +85,17 @@ function initFooterMap() {
     }
 }
 
-// Инициализация карты после полной загрузки
+// Ожидание полной загрузки и инициализация карты
+function startMapInit() {
+    // Запускаем попытки инициализации карты
+    setTimeout(initFooterMap, 100);
+}
+
+// Запускаем после загрузки DOM
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        // Увеличенная задержка для надёжной загрузки Leaflet
-        setTimeout(initFooterMap, 500);
-    });
+    document.addEventListener('DOMContentLoaded', startMapInit);
 } else {
-    // Если DOM уже загружен, инициализируем сразу
-    setTimeout(initFooterMap, 500);
+    startMapInit();
 }
 </script>
 
