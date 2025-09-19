@@ -1,12 +1,6 @@
-<!-- ✅ FOOTER АВТОНОМНОСТЬ: Leaflet локальные файлы (100% портативность) -->
-<link rel="stylesheet" href="/public/css/leaflet.css">
-<script src="/public/js/leaflet.js" onload="console.log('✅ Leaflet loaded locally'); window.leafletLoaded = true;" onerror="console.error('❌ Failed to load local Leaflet');"></script>
-
+<!-- ✅ FOOTER АВТОНОМНОСТЬ: Встроенная карта OpenStreetMap (100% портативность) -->
 <script>
-// Флаг загрузки Leaflet
-window.leafletLoaded = false;
-
-// 🗺️ FOOTER АВТОНОМНАЯ КАРТА - Footer сам инициализирует свою карту!
+// 🗺️ FOOTER АВТОНОМНАЯ КАРТА - Простое и надёжное решение без внешних зависимостей
 function initFooterMap() {
     const mapElement = document.getElementById('map');
     if (!mapElement) {
@@ -14,88 +8,40 @@ function initFooterMap() {
         return;
     }
     
-    // Проверяем наличие локального Leaflet
-    if (!window.L || !window.leafletLoaded) {
-        console.log('⏳ Waiting for local Leaflet to load...');
-        setTimeout(initFooterMap, 200); // Локальные файлы загружаются быстрее
-        return;
-    }
-    
     try {
         // Координаты офиса Бунёд-Тур (точные GPS координаты)
-        const bunyodTourLocation = [38.553337938993764, 68.84494199525761];
+        const lat = 38.553337938993764;
+        const lng = 68.84494199525761;
+        const zoom = 16;
         
-        // Создание карты
-        const map = L.map('map').setView(bunyodTourLocation, 16);
-        
-        // Добавление карты OSM
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-        
-        // Создание кастомной иконки маркера
-        const customIcon = L.divIcon({
-            html: `<div style="
-                width: 40px; 
-                height: 40px; 
-                border-radius: 50%; 
-                background-color: #3E3E3E; 
-                border: 3px solid #fff; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                color: white; 
-                font-weight: bold; 
-                font-size: 12px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            ">BT</div>`,
-            className: 'custom-div-icon',
-            iconSize: [40, 40],
-            iconAnchor: [20, 40]
-        });
-        
-        // Создание маркера
-        const marker = L.marker(bunyodTourLocation, {
-            icon: customIcon,
-            title: "Бунёд-Тур - Туристическое агентство"
-        }).addTo(map);
-        
-        // Создание popup окна
-        const popupContent = `
-            <div style="font-family: Arial, sans-serif; min-width: 200px;">
-                <h3 style="margin: 0 0 8px 0; color: #3E3E3E; font-size: 16px;">🏢 Бунёд-Тур</h3>
-                <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
-                    <strong>📍 Адрес:</strong> ул. Садриддина Айни, 104, Душанбе
-                </p>
-                <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
-                    <strong>📞 Телефон:</strong> +992 44 625 7575
-                </p>
-                <p style="margin: 0; color: #666; font-size: 14px;">
-                    <strong>✉️ Email:</strong> info@bunyodtour.tj
-                </p>
-            </div>
+        // Создаем встроенную карту через OpenStreetMap iframe
+        const mapHTML = `
+            <iframe 
+                width="100%" 
+                height="100%" 
+                frameborder="0" 
+                scrolling="no" 
+                marginheight="0" 
+                marginwidth="0" 
+                src="https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.01},${lat-0.01},${lng+0.01},${lat+0.01}&layer=mapnik&marker=${lat},${lng}" 
+                style="border: none; border-radius: 8px;">
+            </iframe>
         `;
         
-        marker.bindPopup(popupContent);
-        
-        console.log('✅ Footer map initialized successfully');
+        mapElement.innerHTML = mapHTML;
+        console.log('✅ Footer map loaded successfully with embedded OpenStreetMap');
     } catch (error) {
         console.error('❌ Footer map initialization failed:', error);
     }
 }
 
-// Ожидание полной загрузки и инициализация карты
-function startMapInit() {
-    // Запускаем попытки инициализации карты
-    setTimeout(initFooterMap, 100);
-}
-
-// Запускаем после загрузки DOM
+// Инициализация карты после загрузки DOM
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startMapInit);
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(initFooterMap, 100);
+    });
 } else {
-    startMapInit();
+    setTimeout(initFooterMap, 100);
 }
 </script>
 
