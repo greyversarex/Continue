@@ -105,6 +105,7 @@ window.translations = window.translations || {
     
     // Фильтры
     'filters.title': { ru: 'Фильтры поиска', en: 'Search Filters' },
+    'filters.search_filters': { ru: '🔍 Фильтры поиска', en: '🔍 Search Filters' },
     'filters.destination': { ru: 'Направление', en: 'Destination' },
     'filter.country': { ru: 'Страна', en: 'Country' },
     'filter.city': { ru: 'Город', en: 'City' },
@@ -147,9 +148,10 @@ window.translations = window.translations || {
     // === ЗАГОЛОВКИ СТРАНИЦ ===
     'page.title': { ru: 'Bunyod-Tour - Туры по Таджикистану', en: 'Bunyod-Tour - Tours in Tajikistan' },
     'hotel.page_title': { ru: 'Каталог отелей - Bunyod-Tour', en: 'Hotels Catalog - Bunyod-Tour' },
+    'hotel.catalog_title': { ru: 'Каталог отелей', en: 'Hotels Catalog' },
+    'hotel.catalog_subtitle': { ru: 'Выберите идеальное место для вашего отдыха', en: 'Choose the perfect place for your stay' },
     'tours.page_title': { ru: 'Поиск туров - Bunyod-Tour', en: 'Search Tours - Bunyod-Tour' },
     'tour.page_title': { ru: 'Тур - Bunyod-Tour', en: 'Tour - Bunyod-Tour' },
-    'hotel.catalog_title': { ru: 'Каталог отелей', en: 'Hotels Catalog' },
     'hotel.catalog_description': { ru: 'Найдите идеальное размещение для вашего путешествия по Центральной Азии', en: 'Find the perfect accommodation for your Central Asia journey' },
     
     // Категории отелей
