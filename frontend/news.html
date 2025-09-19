@@ -181,34 +181,6 @@
         </div>
     </section>
 
-    <!-- Подписка на новости -->
-    <section class="py-16" style="background-color: #3E3E3E;">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold text-white mb-4">Подпишитесь на наши новости</h2>
-            <p class="text-gray-300 mb-8">Получайте уведомления о новых турах, специальных предложениях и интересных событиях</p>
-            
-            <div class="max-w-md mx-auto">
-                <div class="flex gap-3">
-                    <input 
-                        type="email" 
-                        id="newsletterEmail"
-                        placeholder="Ваш email" 
-                        class="flex-1 px-4 py-3 border border-gray-600 rounded-lg bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
-                    >
-                    <button 
-                        id="subscribeBtn"
-                        class="px-6 py-3 font-semibold text-white rounded-lg transition-colors" 
-                        style="background-color: #6B7280;"
-                        onmouseover="this.style.backgroundColor='#4B5563'" 
-                        onmouseout="this.style.backgroundColor='#6B7280'"
-                    >
-                        Подписаться
-                    </button>
-                </div>
-                <p id="subscriptionMessage" class="mt-3 text-sm" style="display: none;"></p>
-            </div>
-        </div>
-    </section>
 
     <!-- Динамический контейнер для footer -->
     <div id="footer-container"></div>
@@ -266,8 +238,6 @@
                 loadNews();
             });
 
-            // Подписка на новости
-            document.getElementById('subscribeBtn').addEventListener('click', subscribeToNewsletter);
         }
 
         // Загрузка новостей
@@ -467,43 +437,6 @@
             alert(`Переход к новости: ${slug}\n\nВ реальном приложении здесь будет открыта детальная страница новости.`);
         }
 
-        // Подписка на новости
-        async function subscribeToNewsletter() {
-            const email = document.getElementById('newsletterEmail').value.trim();
-            const messageEl = document.getElementById('subscriptionMessage');
-
-            if (!email) {
-                showSubscriptionMessage('Пожалуйста, введите email адрес', 'error');
-                return;
-            }
-
-            if (!isValidEmail(email)) {
-                showSubscriptionMessage('Пожалуйста, введите корректный email адрес', 'error');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/news/newsletter/subscribe', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    showSubscriptionMessage('Спасибо! Вы успешно подписались на наши новости', 'success');
-                    document.getElementById('newsletterEmail').value = '';
-                } else {
-                    showSubscriptionMessage('Ошибка при подписке. Попробуйте еще раз', 'error');
-                }
-            } catch (error) {
-                console.error('Subscription error:', error);
-                showSubscriptionMessage('Ошибка подключения. Попробуйте еще раз', 'error');
-            }
-        }
 
         // Вспомогательные функции
         function parseMultilingualContent(content, lang = 'ru') {
@@ -533,16 +466,6 @@
             `;
         }
 
-        function showSubscriptionMessage(message, type) {
-            const messageEl = document.getElementById('subscriptionMessage');
-            messageEl.textContent = message;
-            messageEl.className = `mt-3 text-sm ${type === 'success' ? 'text-green-400' : 'text-red-400'}`;
-            messageEl.style.display = 'block';
-
-            setTimeout(() => {
-                messageEl.style.display = 'none';
-            }, 5000);
-        }
 
         function isValidEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
