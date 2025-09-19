@@ -426,7 +426,6 @@ model Country {
   name        String   @unique
   nameRu      String   @map("name_ru")
   nameEn      String   @map("name_en")
-  nameTj      String   @map("name_tj")
   code        String   @unique // TJ, UZ, KG, KZ, TM
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
