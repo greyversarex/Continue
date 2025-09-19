@@ -1,1 +1,509 @@
-import React, { useState, useEffect } from 'react';\nimport axios from 'axios';\n\ninterface Hotel {\n  id?: number;\n  name: {\n    en: string;\n    ru: string;\n  };\n  description: {\n    en: string;\n    ru: string;\n  };\n  brand?: string;\n  country: string;\n  city: string;\n  address?: string;\n  rating?: number;\n  priceRange?: string;\n  amenities?: string[];\n  images?: string[];\n  isActive?: boolean;\n}\n\ninterface HotelFormProps {\n  hotel: Hotel | null;\n  onSuccess: () => void;\n}\n\ninterface ApiResponse {\n  success: boolean;\n  data?: any;\n  error?: string;\n}\n\ninterface Message {\n  type: 'success' | 'error';\n  text: string;\n}\n\nconst HotelForm: React.FC<HotelFormProps> = ({ hotel, onSuccess }) => {\n  const [formData, setFormData] = useState({\n    name_en: '',\n    name_ru: '',\n    description_en: '',\n    description_ru: '',\n    brand: '',\n    country: '',\n    city: '',\n    address: '',\n    rating: 0,\n    priceRange: '',\n    amenities: [] as string[],\n    images: [] as string[]\n  });\n\n  const [loading, setLoading] = useState(false);\n  const [message, setMessage] = useState<Message | null>(null);\n  const [newAmenity, setNewAmenity] = useState('');\n  const [newImage, setNewImage] = useState('');\n\n  // Countries data for dropdown\n  const countries = [\n    'Таджикистан',\n    'Узбекистан',\n    'Кыргызстан',\n    'Казахстан',\n    'Туркменистан'\n  ];\n\n  // Hotel brands data\n  const hotelBrands = [\n    'Four Seasons',\n    'Ritz-Carlton',\n    'W Hotels',\n    'St. Regis',\n    'Waldorf Astoria',\n    'Conrad',\n    'Peninsula',\n    'Aman',\n    'Rosewood',\n    'Hilton',\n    'Marriott',\n    'Sheraton',\n    'Westin',\n    'Hyatt',\n    'InterContinental',\n    'Crowne Plaza',\n    'DoubleTree',\n    'Renaissance Hotels',\n    'Fairmont',\n    'Sofitel',\n    'Pullman',\n    'Holiday Inn',\n    'Courtyard',\n    'Hampton Inn',\n    'Residence Inn',\n    'Hotel Indigo',\n    'Cambria Hotels',\n    'Radisson',\n    'Novotel',\n    'Ibis',\n    'Holiday Inn Express',\n    'Days Inn',\n    'Super 8',\n    'Ramada',\n    'Comfort Inn',\n    'Best Western',\n    'Serena Hotels',\n    'Golden Tulip',\n    'Maritim',\n    'Crystal Hotels',\n    'Barcelo',\n    'Независимый отель'\n  ];\n\n  // Load hotel data when editing\n  useEffect(() => {\n    if (hotel) {\n      setFormData({\n        name_en: typeof hotel.name === 'object' ? hotel.name.en : '',\n        name_ru: typeof hotel.name === 'object' ? hotel.name.ru : hotel.name?.toString() || '',\n        description_en: typeof hotel.description === 'object' ? hotel.description.en : '',\n        description_ru: typeof hotel.description === 'object' ? hotel.description.ru : hotel.description?.toString() || '',\n        brand: hotel.brand || '',\n        country: hotel.country || '',\n        city: hotel.city || '',\n        address: hotel.address || '',\n        rating: hotel.rating || 0,\n        priceRange: hotel.priceRange || '',\n        amenities: hotel.amenities || [],\n        images: hotel.images || []\n      });\n    }\n  }, [hotel]);\n\n  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {\n    const { name, value } = e.target;\n    setFormData(prev => ({\n      ...prev,\n      [name]: value\n    }));\n  };\n\n  const addAmenity = () => {\n    if (newAmenity.trim()) {\n      setFormData(prev => ({\n        ...prev,\n        amenities: [...prev.amenities, newAmenity.trim()]\n      }));\n      setNewAmenity('');\n    }\n  };\n\n  const removeAmenity = (index: number) => {\n    setFormData(prev => ({\n      ...prev,\n      amenities: prev.amenities.filter((_, i) => i !== index)\n    }));\n  };\n\n  const addImage = () => {\n    if (newImage.trim()) {\n      setFormData(prev => ({\n        ...prev,\n        images: [...prev.images, newImage.trim()]\n      }));\n      setNewImage('');\n    }\n  };\n\n  const removeImage = (index: number) => {\n    setFormData(prev => ({\n      ...prev,\n      images: prev.images.filter((_, i) => i !== index)\n    }));\n  };\n\n  const handleSubmit = async (e: React.FormEvent) => {\n    e.preventDefault();\n    setLoading(true);\n    setMessage(null);\n\n    // Package multilingual data\n    const hotelData = {\n      name: {\n        en: formData.name_en,\n        ru: formData.name_ru\n      },\n      description: {\n        en: formData.description_en,\n        ru: formData.description_ru\n      },\n      brand: formData.brand,\n      country: formData.country,\n      city: formData.city,\n      address: formData.address,\n      rating: parseInt(formData.rating.toString()) || 0,\n      priceRange: formData.priceRange,\n      amenities: formData.amenities,\n      images: formData.images\n    };\n\n    try {\n      let response;\n      \n      if (hotel) {\n        // Update existing hotel\n        response = await axios.put<ApiResponse>(`http://localhost:3001/api/hotels/${hotel.id}`, hotelData);\n      } else {\n        // Create new hotel\n        response = await axios.post<ApiResponse>('http://localhost:3001/api/hotels', hotelData);\n      }\n\n      if (response.data.success) {\n        setMessage({ \n          type: 'success', \n          text: hotel ? 'Hotel updated successfully!' : 'Hotel created successfully!' \n        });\n        \n        // Reset form if creating new\n        if (!hotel) {\n          setFormData({\n            name_en: '',\n            name_ru: '',\n            description_en: '',\n            description_ru: '',\n            brand: '',\n            country: '',\n            city: '',\n            address: '',\n            rating: 0,\n            priceRange: '',\n            amenities: [],\n            images: []\n          });\n        }\n        \n        setTimeout(() => {\n          onSuccess();\n        }, 1500);\n      }\n    } catch (err: any) {\n      console.error('Hotel form error:', err);\n      \n      let errorMessage = 'Failed to save hotel. Please try again.';\n      if (err.response?.data?.error) {\n        errorMessage = err.response.data.error;\n      }\n      \n      setMessage({ type: 'error', text: errorMessage });\n    } finally {\n      setLoading(false);\n    }\n  };\n\n  return (\n    <div className=\"hotel-form\">\n      {/* Message Display */}\n      {message && (\n        <div className={`mb-4 p-3 rounded-lg ${\n          message.type === 'success' \n            ? 'bg-green-100 border border-green-400 text-green-700'\n            : 'bg-red-100 border border-red-400 text-red-700'\n        }`}>\n          {message.text}\n        </div>\n      )}\n\n      <form onSubmit={handleSubmit} className=\"space-y-6\">\n        {/* English Fields */}\n        <div className=\"border border-gray-200 rounded-lg p-4\">\n          <h4 className=\"text-lg font-semibold text-gray-800 mb-4 flex items-center\">\n            <span className=\"mr-2\">🇺🇸</span>\n            English Content\n          </h4>\n          \n          <div className=\"space-y-4\">\n            <div>\n              <label htmlFor=\"name_en\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n                Hotel Name (English) *\n              </label>\n              <input\n                type=\"text\"\n                id=\"name_en\"\n                name=\"name_en\"\n                value={formData.name_en}\n                onChange={handleChange}\n                required\n                className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n                placeholder=\"Enter hotel name in English\"\n              />\n            </div>\n\n            <div>\n              <label htmlFor=\"description_en\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n                Description (English) *\n              </label>\n              <textarea\n                id=\"description_en\"\n                name=\"description_en\"\n                value={formData.description_en}\n                onChange={handleChange}\n                required\n                rows={4}\n                className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n                placeholder=\"Enter detailed description in English\"\n              />\n            </div>\n          </div>\n        </div>\n\n        {/* Russian Fields */}\n        <div className=\"border border-gray-200 rounded-lg p-4\">\n          <h4 className=\"text-lg font-semibold text-gray-800 mb-4 flex items-center\">\n            <span className=\"mr-2\">🇷🇺</span>\n            Russian Content\n          </h4>\n          \n          <div className=\"space-y-4\">\n            <div>\n              <label htmlFor=\"name_ru\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n                Hotel Name (Russian) *\n              </label>\n              <input\n                type=\"text\"\n                id=\"name_ru\"\n                name=\"name_ru\"\n                value={formData.name_ru}\n                onChange={handleChange}\n                required\n                className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n                placeholder=\"Введите название отеля на русском\"\n              />\n            </div>\n\n            <div>\n              <label htmlFor=\"description_ru\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n                Description (Russian) *\n              </label>\n              <textarea\n                id=\"description_ru\"\n                name=\"description_ru\"\n                value={formData.description_ru}\n                onChange={handleChange}\n                required\n                rows={4}\n                className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n                placeholder=\"Введите подробное описание на русском языке\"\n              />\n            </div>\n          </div>\n        </div>\n\n        {/* Hotel Details */}\n        <div className=\"grid md:grid-cols-2 gap-4\">\n          <div>\n            <label htmlFor=\"brand\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n              Hotel Brand\n            </label>\n            <select\n              id=\"brand\"\n              name=\"brand\"\n              value={formData.brand}\n              onChange={handleChange}\n              className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n            >\n              <option value=\"\">Select Brand</option>\n              {hotelBrands.map(brand => (\n                <option key={brand} value={brand}>{brand}</option>\n              ))}\n            </select>\n          </div>\n\n          <div>\n            <label htmlFor=\"country\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n              Country *\n            </label>\n            <select\n              id=\"country\"\n              name=\"country\"\n              value={formData.country}\n              onChange={handleChange}\n              required\n              className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n            >\n              <option value=\"\">Select Country</option>\n              {countries.map(country => (\n                <option key={country} value={country}>{country}</option>\n              ))}\n            </select>\n          </div>\n\n          <div>\n            <label htmlFor=\"city\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n              City *\n            </label>\n            <input\n              type=\"text\"\n              id=\"city\"\n              name=\"city\"\n              value={formData.city}\n              onChange={handleChange}\n              required\n              className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n              placeholder=\"Enter city\"\n            />\n          </div>\n\n          <div>\n            <label htmlFor=\"rating\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n              Star Rating\n            </label>\n            <select\n              id=\"rating\"\n              name=\"rating\"\n              value={formData.rating}\n              onChange={handleChange}\n              className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n            >\n              <option value={0}>No Rating</option>\n              <option value={1}>1 Star</option>\n              <option value={2}>2 Stars</option>\n              <option value={3}>3 Stars</option>\n              <option value={4}>4 Stars</option>\n              <option value={5}>5 Stars</option>\n            </select>\n          </div>\n        </div>\n\n        <div>\n          <label htmlFor=\"address\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n            Address\n          </label>\n          <input\n            type=\"text\"\n            id=\"address\"\n            name=\"address\"\n            value={formData.address}\n            onChange={handleChange}\n            className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n            placeholder=\"Enter full address\"\n          />\n        </div>\n\n        <div>\n          <label htmlFor=\"priceRange\" className=\"block text-sm font-medium text-gray-700 mb-1\">\n            Price Range\n          </label>\n          <input\n            type=\"text\"\n            id=\"priceRange\"\n            name=\"priceRange\"\n            value={formData.priceRange}\n            onChange={handleChange}\n            className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n            placeholder=\"e.g. $100-200 per night\"\n          />\n        </div>\n\n        {/* Amenities */}\n        <div>\n          <label className=\"block text-sm font-medium text-gray-700 mb-1\">\n            Amenities\n          </label>\n          <div className=\"flex space-x-2 mb-2\">\n            <input\n              type=\"text\"\n              value={newAmenity}\n              onChange={(e) => setNewAmenity(e.target.value)}\n              className=\"flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n              placeholder=\"Add amenity (e.g., WiFi, Pool, Gym)\"\n            />\n            <button\n              type=\"button\"\n              onClick={addAmenity}\n              className=\"bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg\"\n            >\n              Add\n            </button>\n          </div>\n          <div className=\"flex flex-wrap gap-2\">\n            {formData.amenities.map((amenity, index) => (\n              <span key={index} className=\"bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center\">\n                {amenity}\n                <button\n                  type=\"button\"\n                  onClick={() => removeAmenity(index)}\n                  className=\"ml-2 text-blue-600 hover:text-blue-800\"\n                >\n                  ×\n                </button>\n              </span>\n            ))}\n          </div>\n        </div>\n\n        {/* Images */}\n        <div>\n          <label className=\"block text-sm font-medium text-gray-700 mb-1\">\n            Images URLs\n          </label>\n          <div className=\"flex space-x-2 mb-2\">\n            <input\n              type=\"url\"\n              value={newImage}\n              onChange={(e) => setNewImage(e.target.value)}\n              className=\"flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent\"\n              placeholder=\"Add image URL\"\n            />\n            <button\n              type=\"button\"\n              onClick={addImage}\n              className=\"bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg\"\n            >\n              Add\n            </button>\n          </div>\n          <div className=\"space-y-2\">\n            {formData.images.map((image, index) => (\n              <div key={index} className=\"flex items-center space-x-2\">\n                <img src={image} alt={`Preview ${index + 1}`} className=\"w-16 h-16 object-cover rounded\" />\n                <span className=\"flex-1 text-sm text-gray-600 truncate\">{image}</span>\n                <button\n                  type=\"button\"\n                  onClick={() => removeImage(index)}\n                  className=\"text-red-600 hover:text-red-800\"\n                >\n                  Remove\n                </button>\n              </div>\n            ))}\n          </div>\n        </div>\n\n        {/* Submit Button */}\n        <div className=\"flex justify-end\">\n          <button\n            type=\"submit\"\n            disabled={loading}\n            className={`px-6 py-3 rounded-lg font-medium transition-colors ${\n              loading \n                ? 'bg-gray-400 text-gray-700 cursor-not-allowed'\n                : 'bg-blue-600 hover:bg-blue-700 text-white'\n            }`}\n          >\n            {loading ? 'Saving...' : (hotel ? 'Update Hotel' : 'Create Hotel')}\n          </button>\n        </div>\n      </form>\n    </div>\n  );\n};\n\nexport default HotelForm;
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+interface Hotel {
+  id?: number;
+  name: {
+    en: string;
+    ru: string;
+  };
+  description: {
+    en: string;
+    ru: string;
+  };
+  brand?: string;
+  country: string;
+  city: string;
+  address?: string;
+  rating?: number;
+  priceRange?: string;
+  amenities?: string[];
+  images?: string[];
+  isActive?: boolean;
+}
+
+interface HotelFormProps {
+  hotel: Hotel | null;
+  onSuccess: () => void;
+}
+
+interface ApiResponse {
+  success: boolean;
+  data?: any;
+  error?: string;
+}
+
+interface Message {
+  type: 'success' | 'error';
+  text: string;
+}
+
+const HotelForm: React.FC<HotelFormProps> = ({ hotel, onSuccess }) => {
+  const [formData, setFormData] = useState({
+    name_en: '',
+    name_ru: '',
+    description_en: '',
+    description_ru: '',
+    brand: '',
+    country: '',
+    city: '',
+    address: '',
+    rating: 0,
+    priceRange: '',
+    amenities: [] as string[],
+    images: [] as string[]
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<Message | null>(null);
+  const [newAmenity, setNewAmenity] = useState('');
+  const [newImage, setNewImage] = useState('');
+
+  // Countries data for dropdown
+  const countries = [
+    'Таджикистан',
+    'Узбекистан',
+    'Кыргызстан',
+    'Казахстан',
+    'Туркменистан'
+  ];
+
+  // Hotel brands data
+  const hotelBrands = [
+    'Four Seasons',
+    'Ritz-Carlton',
+    'W Hotels',
+    'St. Regis',
+    'Waldorf Astoria',
+    'Conrad',
+    'Peninsula',
+    'Aman',
+    'Rosewood',
+    'Hilton',
+    'Marriott',
+    'Sheraton',
+    'Westin',
+    'Hyatt',
+    'InterContinental',
+    'Crowne Plaza',
+    'DoubleTree',
+    'Renaissance Hotels',
+    'Fairmont',
+    'Sofitel',
+    'Pullman',
+    'Holiday Inn',
+    'Courtyard',
+    'Hampton Inn',
+    'Residence Inn',
+    'Hotel Indigo',
+    'Cambria Hotels',
+    'Radisson',
+    'Marriott Bonvoy',
+    'Hilton Honors',
+    'IHG Rewards',
+    'Wyndham Hotels',
+    'Choice Hotels',
+    'Best Western',
+    'Accor',
+    'Local Brand'
+  ];
+
+  // Price ranges
+  const priceRanges = [
+    '$ (Бюджетный)',
+    '$$ (Эконом)',
+    '$$$ (Средний)',
+    '$$$$ (Люкс)',
+    '$$$$$ (Ультра-люкс)'
+  ];
+
+  useEffect(() => {
+    if (hotel) {
+      setFormData({
+        name_en: hotel.name?.en || '',
+        name_ru: hotel.name?.ru || '',
+        description_en: hotel.description?.en || '',
+        description_ru: hotel.description?.ru || '',
+        brand: hotel.brand || '',
+        country: hotel.country || '',
+        city: hotel.city || '',
+        address: hotel.address || '',
+        rating: hotel.rating || 0,
+        priceRange: hotel.priceRange || '',
+        amenities: hotel.amenities || [],
+        images: hotel.images || []
+      });
+    }
+  }, [hotel]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const hotelData = {
+        name: {
+          en: formData.name_en,
+          ru: formData.name_ru
+        },
+        description: {
+          en: formData.description_en,
+          ru: formData.description_ru
+        },
+        brand: formData.brand,
+        country: formData.country,
+        city: formData.city,
+        address: formData.address,
+        rating: formData.rating,
+        priceRange: formData.priceRange,
+        amenities: JSON.stringify(formData.amenities),
+        images: JSON.stringify(formData.images),
+        isActive: true
+      };
+
+      const method = hotel?.id ? 'PUT' : 'POST';
+      const url = hotel?.id 
+        ? `http://localhost:3001/api/hotels/${hotel.id}`
+        : 'http://localhost:3001/api/hotels';
+
+      const response = await axios({
+        method,
+        url,
+        data: hotelData
+      });
+
+      if (response.data.success) {
+        setMessage({ type: 'success', text: hotel?.id ? 'Отель успешно обновлен!' : 'Отель успешно создан!' });
+        onSuccess();
+      }
+    } catch (error) {
+      console.error('Error saving hotel:', error);
+      setMessage({ type: 'error', text: 'Ошибка при сохранении отеля' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'rating' ? parseFloat(value) || 0 : value
+    }));
+  };
+
+  const addAmenity = () => {
+    if (newAmenity.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        amenities: [...prev.amenities, newAmenity.trim()]
+      }));
+      setNewAmenity('');
+    }
+  };
+
+  const removeAmenity = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      amenities: prev.amenities.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addImage = () => {
+    if (newImage.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, newImage.trim()]
+      }));
+      setNewImage('');
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
+      <h2 className="text-2xl font-bold mb-6">
+        {hotel?.id ? 'Редактировать отель' : 'Добавить новый отель'}
+      </h2>
+
+      {message && (
+        <div className={`mb-4 p-4 rounded-md ${
+          message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
+        }`}>
+          {message.text}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Multilingual Name Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="name_en" className="block text-sm font-medium text-gray-700 mb-1">
+              Название (EN)
+            </label>
+            <input
+              type="text"
+              id="name_en"
+              name="name_en"
+              value={formData.name_en}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="name_ru" className="block text-sm font-medium text-gray-700 mb-1">
+              Название (RU)
+            </label>
+            <input
+              type="text"
+              id="name_ru"
+              name="name_ru"
+              value={formData.name_ru}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Multilingual Description Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="description_en" className="block text-sm font-medium text-gray-700 mb-1">
+              Описание (EN)
+            </label>
+            <textarea
+              id="description_en"
+              name="description_en"
+              value={formData.description_en}
+              onChange={handleChange}
+              rows={4}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="description_ru" className="block text-sm font-medium text-gray-700 mb-1">
+              Описание (RU)
+            </label>
+            <textarea
+              id="description_ru"
+              name="description_ru"
+              value={formData.description_ru}
+              onChange={handleChange}
+              rows={4}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        {/* Hotel Brand */}
+        <div>
+          <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-1">
+            Бренд отеля
+          </label>
+          <select
+            id="brand"
+            name="brand"
+            value={formData.brand}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Выберите бренд</option>
+            {hotelBrands.map((brand) => (
+              <option key={brand} value={brand}>{brand}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Location Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+              Страна
+            </label>
+            <select
+              id="country"
+              name="country"
+              value={formData.country}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Выберите страну</option>
+              {countries.map((country) => (
+                <option key={country} value={country}>{country}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+              Город
+            </label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Address */}
+        <div>
+          <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+            Адрес
+          </label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Rating and Price Range */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="rating" className="block text-sm font-medium text-gray-700 mb-1">
+              Рейтинг (1-5)
+            </label>
+            <input
+              type="number"
+              id="rating"
+              name="rating"
+              min="1"
+              max="5"
+              step="0.1"
+              value={formData.rating}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="priceRange" className="block text-sm font-medium text-gray-700 mb-1">
+              Ценовая категория
+            </label>
+            <select
+              id="priceRange"
+              name="priceRange"
+              value={formData.priceRange}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Выберите ценовую категорию</option>
+              {priceRanges.map((range) => (
+                <option key={range} value={range}>{range}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Amenities */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Удобства
+          </label>
+          <div className="flex gap-2 mb-2">
+            <input
+              type="text"
+              value={newAmenity}
+              onChange={(e) => setNewAmenity(e.target.value)}
+              placeholder="Добавить удобство"
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={addAmenity}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Добавить
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {formData.amenities.map((amenity, index) => (
+              <span
+                key={index}
+                className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+              >
+                {amenity}
+                <button
+                  type="button"
+                  onClick={() => removeAmenity(index)}
+                  className="ml-2 text-red-500 hover:text-red-700"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Images */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Изображения (URL)
+          </label>
+          <div className="flex gap-2 mb-2">
+            <input
+              type="url"
+              value={newImage}
+              onChange={(e) => setNewImage(e.target.value)}
+              placeholder="https://example.com/image.jpg"
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={addImage}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Добавить
+            </button>
+          </div>
+          <div className="space-y-2">
+            {formData.images.map((image, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 p-2 bg-gray-50 rounded-md"
+              >
+                <span className="flex-1 text-sm text-gray-600 truncate">{image}</span>
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  Удалить
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Form Actions */}
+        <div className="flex gap-4 pt-6">
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Сохранение...' : (hotel?.id ? 'Обновить' : 'Создать')}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default HotelForm;

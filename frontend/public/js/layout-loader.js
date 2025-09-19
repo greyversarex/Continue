@@ -169,14 +169,12 @@ class LayoutLoader {
     updateLanguageSelector(lang) {
         const flags = {
             'en': '🇺🇸',
-            'ru': '🇷🇺', 
-            'tj': '🇹🇯'
+            'ru': '🇷🇺'
         };
         
         const names = {
             'en': 'English',
-            'ru': 'Русский',
-            'tj': 'Тоҷикӣ'
+            'ru': 'Русский'
         };
         
         const selectedFlag = document.querySelector('.selected-flag');
@@ -191,7 +189,7 @@ class LayoutLoader {
         let savedLanguage = localStorage.getItem('selectedLanguage');
         
         // Если язык не сохранен, устанавливаем английский как дефолтный
-        if (!savedLanguage || !['en', 'ru', 'tj'].includes(savedLanguage)) {
+        if (!savedLanguage || !['en', 'ru'].includes(savedLanguage)) {
             savedLanguage = 'en';
             localStorage.setItem('selectedLanguage', 'en');
         }

@@ -16,10 +16,8 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
     title_en: '',
     title_ru: '',
-    title_tj: '',
     description_en: '',
     description_ru: '',
-    description_tj: '',
     duration: '',
     price: '',
     categoryId: 0,
@@ -38,10 +36,8 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
       setFormData({
         title_en: (typeof tour.title === 'object' ? tour.title.en : tour.title) || '',
         title_ru: (typeof tour.title === 'object' ? tour.title.ru : tour.title) || '',
-        title_tj: (typeof tour.title === 'object' ? tour.title.tj : '') || '',
         description_en: (typeof tour.description === 'object' ? tour.description.en : tour.description) || '',
         description_ru: (typeof tour.description === 'object' ? tour.description.ru : tour.description) || '',
-        description_tj: (typeof tour.description === 'object' ? tour.description.tj : '') || '',
         duration: tour.duration || '',
         price: tour.price || '',
         categoryId: tour.categoryId || 0,
@@ -98,12 +94,10 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
       title: {
         en: formData.title_en,
         ru: formData.title_ru,
-        tj: formData.title_tj
       },
       description: {
         en: formData.description_en,
         ru: formData.description_ru,
-        tj: formData.description_tj
       },
       duration: formData.duration,
       price: formData.price,
@@ -137,10 +131,10 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
           setFormData({
             title_en: '',
             title_ru: '',
-            title_tj: '',
+            
             description_en: '',
             description_ru: '',
-            description_tj: '',
+            
             duration: '',
             price: '',
             categoryId: 0,
@@ -276,14 +270,6 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
           
           <div className="space-y-4">
             <div>
-              <label htmlFor="title_tj" className="block text-sm font-medium text-gray-700 mb-1">
-                Title (Tajik) *
-              </label>
-              <input
-                type="text"
-                id="title_tj"
-                name="title_tj"
-                value={formData.title_tj}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -292,13 +278,6 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
             </div>
 
             <div>
-              <label htmlFor="description_tj" className="block text-sm font-medium text-gray-700 mb-1">
-                Description (Tajik) *
-              </label>
-              <textarea
-                id="description_tj"
-                name="description_tj"
-                value={formData.description_tj}
                 onChange={handleChange}
                 required
                 rows={4}

@@ -10,17 +10,14 @@ interface NewsFormData {
   title: {
     ru: string;
     en: string;
-    tj: string;
   };
   content: {
     ru: string;
     en: string;
-    tj: string;
   };
   excerpt: {
     ru: string;
     en: string;
-    tj: string;
   };
   category: string;
   image: string;
@@ -31,43 +28,41 @@ interface NewsFormData {
   metaTitle: {
     ru: string;
     en: string;
-    tj: string;
   };
   metaDescription: {
     ru: string;
     en: string;
-    tj: string;
   };
   readTime: number;
 }
 
 const NewsForm: React.FC<NewsFormProps> = ({ news, onSuccess }) => {
   const [formData, setFormData] = useState<NewsFormData>({
-    title: { ru: '', en: '', tj: '' },
-    content: { ru: '', en: '', tj: '' },
-    excerpt: { ru: '', en: '', tj: '' },
+    title: { ru: '', en: '' },
+    content: { ru: '', en: '' },
+    excerpt: { ru: '', en: '' },
     category: 'Новости компании',
     image: '',
     author: 'Bunyod-Tour',
     isPublished: true,
     isFeatured: false,
     slug: '',
-    metaTitle: { ru: '', en: '', tj: '' },
-    metaDescription: { ru: '', en: '', tj: '' },
+    metaTitle: { ru: '', en: '' },
+    metaDescription: { ru: '', en: '' },
     readTime: 5
   });
 
-  const [activeLanguage, setActiveLanguage] = useState<'ru' | 'en' | 'tj'>('ru');
+  const [activeLanguage, setActiveLanguage] = useState<'ru' | 'en'>('ru');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (news) {
       const parseField = (field: any) => {
-        if (!field) return { ru: '', en: '', tj: '' };
+        if (!field) return { ru: '', en: '' };
         try {
           return typeof field === 'string' ? JSON.parse(field) : field;
         } catch {
-          return { ru: field || '', en: '', tj: '' };
+          return { ru: field || '', en: '' };
         }
       };
 
@@ -144,7 +139,7 @@ const NewsForm: React.FC<NewsFormProps> = ({ news, onSuccess }) => {
     }));
   };
 
-  const updateMultilingualField = (field: 'title' | 'content' | 'excerpt' | 'metaTitle' | 'metaDescription', lang: 'ru' | 'en' | 'tj', value: string) => {
+  const updateMultilingualField = (field: 'title' | 'content' | 'excerpt' | 'metaTitle' | 'metaDescription', lang: 'ru' | 'en' | , value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: {
@@ -170,12 +165,11 @@ const NewsForm: React.FC<NewsFormProps> = ({ news, onSuccess }) => {
           {[
             { key: 'ru', label: 'Русский' },
             { key: 'en', label: 'English' },
-            { key: 'tj', label: 'Тоҷикӣ' }
           ].map((lang) => (
             <button
               key={lang.key}
               type="button"
-              onClick={() => setActiveLanguage(lang.key as 'ru' | 'en' | 'tj')}
+              onClick={() => setActiveLanguage(lang.key as 'ru' | 'en' | )}
               className={`px-3 py-1 rounded-md text-sm font-medium ${
                 activeLanguage === lang.key
                   ? 'bg-blue-100 text-blue-700'
