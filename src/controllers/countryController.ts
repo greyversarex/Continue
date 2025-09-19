@@ -80,12 +80,12 @@ export class CountryController {
    */
   static async createCountry(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, nameRu, nameEn, nameTj, code, isActive = true } = req.body;
+      const { name, nameRu, nameEn, code, isActive = true } = req.body;
 
-      if (!name || !nameRu || !nameEn || !nameTj || !code) {
+      if (!name || !nameRu || !nameEn || !code) {
         return res.status(400).json({
           success: false,
-          error: 'Missing required fields: name, nameRu, nameEn, nameTj, code'
+          error: 'Missing required fields: name, nameRu, nameEn, code'
         });
       }
 
@@ -94,7 +94,6 @@ export class CountryController {
           name,
           nameRu,
           nameEn,
-          nameTj,
           code,
           isActive
         }
@@ -125,7 +124,7 @@ export class CountryController {
     try {
       const { id } = req.params;
       const countryId = parseInt(id);
-      const { name, nameRu, nameEn, nameTj, code, isActive } = req.body;
+      const { name, nameRu, nameEn, code, isActive } = req.body;
 
       if (isNaN(countryId)) {
         return res.status(400).json({
@@ -138,7 +137,6 @@ export class CountryController {
       if (name !== undefined) updateData.name = name;
       if (nameRu !== undefined) updateData.nameRu = nameRu;
       if (nameEn !== undefined) updateData.nameEn = nameEn;
-      if (nameTj !== undefined) updateData.nameTj = nameTj;
       if (code !== undefined) updateData.code = code;
       if (isActive !== undefined) updateData.isActive = isActive;
 

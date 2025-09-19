@@ -115,12 +115,12 @@ export class CityController {
    */
   static async createCity(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, nameRu, nameEn, nameTj, countryId, isActive = true } = req.body;
+      const { name, nameRu, nameEn, countryId, isActive = true } = req.body;
 
-      if (!name || !nameRu || !nameEn || !nameTj || !countryId) {
+      if (!name || !nameRu || !nameEn || !countryId) {
         return res.status(400).json({
           success: false,
-          error: 'Missing required fields: name, nameRu, nameEn, nameTj, countryId'
+          error: 'Missing required fields: name, nameRu, nameEn, countryId'
         });
       }
 
@@ -149,7 +149,6 @@ export class CityController {
           name,
           nameRu,
           nameEn,
-          nameTj,
           countryId: countryIdNum,
           isActive
         },
@@ -183,7 +182,7 @@ export class CityController {
     try {
       const { id } = req.params;
       const cityId = parseInt(id);
-      const { name, nameRu, nameEn, nameTj, countryId, isActive } = req.body;
+      const { name, nameRu, nameEn, countryId, isActive } = req.body;
 
       if (isNaN(cityId)) {
         return res.status(400).json({
@@ -196,7 +195,6 @@ export class CityController {
       if (name !== undefined) updateData.name = name;
       if (nameRu !== undefined) updateData.nameRu = nameRu;
       if (nameEn !== undefined) updateData.nameEn = nameEn;
-      if (nameTj !== undefined) updateData.nameTj = nameTj;
       if (isActive !== undefined) updateData.isActive = isActive;
 
       if (countryId !== undefined) {
