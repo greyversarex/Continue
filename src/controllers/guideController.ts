@@ -92,6 +92,7 @@ export const getAllGuides = async (req: Request, res: Response) => {
           languages: typeof guide.languages === 'string' && (guide.languages.startsWith('[') || guide.languages.startsWith('"[')) ? 
             JSON.parse(guide.languages.replace(/^"(.+)"$/, '$1')) : guide.languages,
           contact: guide.contact && typeof guide.contact === 'string' && guide.contact.startsWith('{') ? JSON.parse(guide.contact) : guide.contact,
+          password: undefined, // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
         };
       } catch (error) {
         console.error('Error parsing guide data:', error, guide);
@@ -146,6 +147,7 @@ export const getGuideById = async (req: Request, res: Response) => {
       description: safeJsonParse(guide.description),
       languages: safeJsonParse(guide.languages),
       contact: safeJsonParse(guide.contact),
+      password: undefined, // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
     };
 
     return res.json({
