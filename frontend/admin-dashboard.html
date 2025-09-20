@@ -35,6 +35,34 @@
             transform: translateX(-100%);
         }
         
+        /* Навигационная область с вертикальным скроллингом */
+        .sidebar nav {
+            max-height: calc(100vh - 120px); /* Вычитаем высоту заголовка */
+            overflow-y: auto;
+            overflow-x: hidden;
+            /* Стили для скроллбара */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) transparent;
+        }
+        
+        /* Стили скроллбара для WebKit браузеров */
+        .sidebar nav::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .sidebar nav::-webkit-scrollbar-thumb {
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+        
+        .sidebar nav::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255,255,255,0.5);
+        }
+        
         .main-content {
             margin-left: 260px;
             min-height: 100vh;
