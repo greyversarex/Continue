@@ -20,7 +20,7 @@
         
         .sidebar {
             width: 260px;
-            background: linear-gradient(135deg, #3E3E3E 0%, #2A2A2A 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             position: fixed;
             left: 0;
@@ -88,8 +88,8 @@
         }
         
         .tab-button.active {
-            color: #3E3E3E;
-            border-bottom-color: #3E3E3E;
+            color: #667eea;
+            border-bottom-color: #667eea;
         }
         
         .data-table {
@@ -166,8 +166,8 @@
         
         .form-input:focus {
             outline: none;
-            border-color: #3E3E3E;
-            box-shadow: 0 0 0 3px rgba(62,62,62,0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
         }
         
         .btn {
@@ -183,12 +183,12 @@
         }
         
         .btn-primary {
-            background: #3E3E3E;
+            background: #667eea;
             color: white;
         }
         
         .btn-primary:hover {
-            background: #2A2A2A;
+            background: #5a67d8;
         }
         
         .btn-success {
@@ -230,8 +230,8 @@
         }
         
         .badge-info {
-            background: #e5e7eb;
-            color: #374151;
+            background: #dbeafe;
+            color: #1e40af;
         }
         
         @media (max-width: 768px) {
@@ -281,9 +281,9 @@
         }
         
         .checkbox-item.selected {
-            background: #3E3E3E;
+            background: #667eea;
             color: white;
-            border-color: #3E3E3E;
+            border-color: #667eea;
         }
         
         .search-bar {
@@ -309,7 +309,7 @@
 </head>
 <body>
     <!-- Login Screen -->
-    <div id="loginScreen" class="min-h-screen bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center p-4">
+    <div id="loginScreen" class="min-h-screen bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">Админ-панель</h1>
@@ -418,7 +418,7 @@
                         <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
                     </button>
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center text-white font-semibold">
+                        <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
                             A
                         </div>
                         <span class="text-gray-700 font-medium">Администратор</span>
@@ -434,8 +434,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <div class="stat-card">
                             <div class="flex items-center justify-between mb-4">
-                                <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-map text-gray-600 text-xl"></i>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-map text-blue-600 text-xl"></i>
                                 </div>
                                 <span class="text-green-500 text-sm font-medium">+12%</span>
                             </div>
@@ -456,8 +456,8 @@
                         
                         <div class="stat-card">
                             <div class="flex items-center justify-between mb-4">
-                                <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-dollar-sign text-gray-600 text-xl"></i>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-dollar-sign text-purple-600 text-xl"></i>
                                 </div>
                                 <span class="text-green-500 text-sm font-medium">+18%</span>
                             </div>
@@ -759,7 +759,232 @@
                         </div>
                     </div>
 
-                    <!-- УДАЛЕНО: Вся Enhanced Tours Form Tab полностью удалена -->
+                    <!-- УДАЛЕНО: Enhanced Tours Form Tab - дублирование полей -->
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <form id="enhancedTourForm">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <!-- Basic Info -->
+                                    <div class="lg:col-span-2">
+                                        <h3 class="text-lg font-semibold mb-4">Основная информация</h3>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Название тура (RU)</label>
+                                        <input type="text" class="form-input" id="eTourTitleRu" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Название тура (EN)</label>
+                                        <input type="text" class="form-input" id="eTourTitleEn" required>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Краткое описание (для карточек)</label>
+                                        <textarea class="form-input" rows="3" id="eTourShortDesc" placeholder="Краткое описание для отображения на карточке тура"></textarea>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Полное описание</label>
+                                        <textarea class="form-input" rows="5" id="eTourFullDesc"></textarea>
+                                    </div>
+                                    
+                                    <!-- Pricing -->
+                                    <div class="lg:col-span-2">
+                                        <h3 class="text-lg font-semibold mb-4 mt-6">Цены и детали</h3>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Цена</label>
+                                        <input type="number" class="form-input" id="eTourPrice" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Тип цены</label>
+                                        <select class="form-input" id="eTourPriceType" required>
+                                            <option value="за человека">За человека</option>
+                                            <option value="за группу">За группу</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Оригинальная цена (для скидки)</label>
+                                        <input type="number" class="form-input" id="eTourOriginalPrice">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Количество дней</label>
+                                        <input type="number" class="form-input" id="eTourDurationDays" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Тип тура</label>
+                                        <select class="form-input" id="eTourType">
+                                            <option value="">Выберите тип тура</option>
+                                            <option value="Персональный">Персональный</option>
+                                            <option value="Групповой персональный">Групповой персональный</option>
+                                            <option value="Групповой общий">Групповой общий</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Сложность</label>
+                                        <select class="form-input" id="eTourDifficulty">
+                                            <option value="">Выберите сложность</option>
+                                            <option value="Easy">Легкий</option>
+                                            <option value="Medium">Средний</option>
+                                            <option value="Hard">Сложный</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Максимум людей</label>
+                                        <input type="number" class="form-input" id="eTourMaxPeople">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Минимум людей</label>
+                                        <input type="number" class="form-input" id="eTourMinPeople">
+                                    </div>
+                                    
+                                    <!-- Location -->
+                                    <div class="form-group">
+                                        <label class="form-label">Страна</label>
+                                        <select class="form-input" id="eTourCountry">
+                                            <option value="">Выберите страну</option>
+                                            <option value="Uzbekistan">Узбекистан</option>
+                                            <option value="Tajikistan">Таджикистан</option>
+                                            <option value="Kyrgyzstan">Кыргызстан</option>
+                                            <option value="Kazakhstan">Казахстан</option>
+                                            <option value="Turkmenistan">Туркменистан</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Город</label>
+                                        <input type="text" class="form-input" id="eTourCity">
+                                    </div>
+                                    
+                                    <!-- Images -->
+                                    <div class="lg:col-span-2">
+                                        <h3 class="text-lg font-semibold mb-4 mt-6">Изображения</h3>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Главное изображение (URL)</label>
+                                        <input type="url" class="form-input" id="eTourMainImage" placeholder="https://example.com/image.jpg">
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Загрузка изображений</label>
+                                        <div id="tour-edit-uploader-container"></div>
+                                        <label class="form-label">Галерея изображений тура</label>
+                                        <div class="flex gap-2 mb-3">
+                                            <input type="url" class="form-input flex-1" id="eNewImageUrl" placeholder="https://example.com/image.jpg">
+                                            <button type="button" onclick="addEditGalleryImage()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                                                <i class="fas fa-plus"></i>
+                                                Добавить
+                                            </button>
+                                        </div>
+                                        <div id="eGalleryImagesList" class="space-y-2">
+                                            <!-- Загруженные изображения для редактирования появятся здесь -->
+                                        </div>
+                                        <small class="text-gray-500">Добавьте URL изображений для галереи тура</small>
+                                    </div>
+                                    
+                                    <!-- Block Assignment -->
+                                    <div class="lg:col-span-2">
+                                        <h3 class="text-lg font-semibold mb-4 mt-6">Размещение в блоке</h3>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Блок туров</label>
+                                        <select class="form-input" id="eTourBlockId">
+                                            <option value="">Выберите блок туров</option>
+                                            <!-- Tour blocks will be loaded here -->
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Категория</label>
+                                        <select class="form-input" id="eTourCategoryId" required>
+                                            <option value="">Выберите категорию</option>
+                                            <!-- Categories will be loaded here -->
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Дополнительная информация -->
+                                    <div class="lg:col-span-2">
+                                        <h3 class="text-lg font-semibold mb-4 mt-6">Дополнительная информация</h3>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Информация о приёме/сборе</label>
+                                        <input type="text" class="form-input" id="eTourPickupInfo" placeholder="Например: Приём включён, Место сбора: отель">
+                                        <small class="text-gray-500">Укажите информацию о приёме/месте сбора для туристов</small>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Языки тура</label>
+                                        <div class="flex gap-2 mb-2">
+                                            <select class="form-input flex-1" id="eAvailableLanguages">
+                                                <option value="">Выберите язык для добавления</option>
+                                                <option value="Русский">Русский</option>
+                                                <option value="Английский">Английский</option>
+                                                <option value="Таджикский">Таджикский</option>
+                                                <option value="Узбекский">Узбекский</option>
+                                                <option value="Киргизский">Киргизский</option>
+                                                <option value="Казахский">Казахский</option>
+                                                <option value="Туркменский">Туркменский</option>
+                                                <option value="Персидский">Персидский</option>
+                                                <option value="Арабский">Арабский</option>
+                                                <option value="Китайский">Китайский</option>
+                                                <option value="Французский">Французский</option>
+                                                <option value="Немецкий">Немецкий</option>
+                                                <option value="Испанский">Испанский</option>
+                                                <option value="Итальянский">Итальянский</option>
+                                            </select>
+                                            <button type="button" onclick="addEditLanguageToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div id="eSelectedLanguages" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                                            <small class="text-gray-500">Выбранные языки появятся здесь</small>
+                                        </div>
+                                        <input type="hidden" id="eTourLanguages">
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label">Доступное время начала тура</label>
+                                        <div id="editStartTimesList" class="space-y-2 mb-3">
+                                            <!-- Динамически добавляемые варианты времени -->
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <input type="time" class="form-input flex-1" id="editNewStartTime" placeholder="07:30">
+                                            <button type="button" onclick="addEditStartTime()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                                                Добавить время
+                                            </button>
+                                        </div>
+                                        <small class="text-gray-500">Добавьте возможные варианты времени начала тура</small>
+                                    </div>
+                                    
+                                    <div class="form-group lg:col-span-2">
+                                        <label class="form-label flex items-center">
+                                            <input type="checkbox" id="eTourIsFeatured" class="mr-2">
+                                            Рекомендуемый тур
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i>
+                                        Создать тур
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Translations Section -->
@@ -773,8 +998,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div class="bg-white rounded-xl shadow-sm p-6">
                             <div class="flex items-center justify-between mb-4">
-                                <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-language text-gray-600 text-xl"></i>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-language text-blue-600 text-xl"></i>
                                 </div>
                             </div>
                             <h3 class="text-2xl font-bold text-gray-800" id="supportedLanguagesCount">6</h3>
@@ -807,7 +1032,7 @@
                         <!-- Single Tour Translation -->
                         <div class="bg-white rounded-xl shadow-sm p-6">
                             <h3 class="text-lg font-semibold mb-4">
-                                <i class="fas fa-map-marker-alt text-gray-600 mr-2"></i>
+                                <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
                                 Перевести один тур
                             </h3>
                             <p class="text-gray-600 mb-6 text-sm">Выберите конкретный тур для автоматического перевода на недостающие языки</p>
@@ -852,7 +1077,7 @@
                     <!-- Manual Text Translation -->
                     <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
                         <h3 class="text-lg font-semibold mb-4">
-                            <i class="fas fa-edit text-gray-600 mr-2"></i>
+                            <i class="fas fa-edit text-purple-600 mr-2"></i>
                             Ручной перевод текста
                         </h3>
                         <p class="text-gray-600 mb-6 text-sm">Переведите любой текст с одного языка на другой</p>
@@ -913,11 +1138,11 @@
                     <!-- Translation Progress -->
                     <div class="bg-white rounded-xl shadow-sm p-6" id="translationProgress" style="display: none;">
                         <h3 class="text-lg font-semibold mb-4">
-                            <i class="fas fa-spinner fa-spin text-gray-600 mr-2"></i>
+                            <i class="fas fa-spinner fa-spin text-blue-600 mr-2"></i>
                             Прогресс перевода
                         </h3>
                         <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
-                            <div class="bg-gray-600 h-2 rounded-full transition-all duration-300" id="progressBar" style="width: 0%"></div>
+                            <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" id="progressBar" style="width: 0%"></div>
                         </div>
                         <p class="text-sm text-gray-600" id="progressText">Подготовка к переводу...</p>
                         <div id="translationResults" class="mt-4 space-y-2"></div>
@@ -928,7 +1153,7 @@
                 <section id="priceCalculatorSection" style="display: none;">
                     <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
                         <h2 class="text-2xl font-semibold mb-6">
-                            <i class="fas fa-calculator text-gray-600 mr-3"></i>
+                            <i class="fas fa-calculator text-blue-600 mr-3"></i>
                             Автоматический калькулятор цен
                         </h2>
                         <p class="text-gray-600 mb-6">Главный регулятор для расчета стоимости туров в сомони (сом)</p>
@@ -1108,7 +1333,7 @@
                 <section id="bannerManagementSection" style="display: none;">
                     <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
                         <h2 class="text-2xl font-semibold mb-6">
-                            <i class="fas fa-images text-gray-600 mr-3"></i>
+                            <i class="fas fa-images text-blue-600 mr-3"></i>
                             Управление баннером
                         </h2>
                         <p class="text-gray-600 mb-6">Управление слайдами баннера на главной странице</p>
@@ -1351,131 +1576,18 @@
                         </select>
                     </div>
                     
-                    <!-- НОВОЕ: Секция категорий номеров с ценами -->
-                    <div class="form-group">
-                        <label class="form-label">Категории номеров и цены</label>
-                        <div class="bg-gray-50 p-4 rounded-lg border">
-                            <p class="text-sm text-gray-600 mb-3">Настройте цены за ночь для разных типов номеров (в USD)</p>
-                            
-                            <!-- SGL - Одноместный -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="roomSGL" class="rounded">
-                                    <label for="roomSGL" class="font-medium">SGL - Одноместный</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceSGL" class="form-input w-20" placeholder="100" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ ночь</span>
-                                </div>
-                            </div>
-                            
-                            <!-- TWL - Двухместный -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="roomTWL" class="rounded">
-                                    <label for="roomTWL" class="font-medium">TWL - Двухместный</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceTWL" class="form-input w-20" placeholder="150" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ ночь</span>
-                                </div>
-                            </div>
-                            
-                            <!-- DBL - Двухспальный -->
-                            <div class="flex items-center justify-between py-2">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="roomDBL" class="rounded">
-                                    <label for="roomDBL" class="font-medium">DBL - Двухспальный</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceDBL" class="form-input w-20" placeholder="180" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ ночь</span>
-                                </div>
-                            </div>
-                        </div>
-                        <small class="text-gray-500 mt-2 block">Отметьте доступные типы номеров и укажите цену за ночь для каждого</small>
-                    </div>
-                    
                     <div class="form-group">
                         <label class="form-label">Город</label>
                         <input type="text" class="form-input" id="hotelCity" placeholder="Душанбе, Самарканд, Бишкек и т.д.">
                     </div>
                     
-                    <!-- НОВОЕ: Секция типов питания с ценами -->
                     <div class="form-group">
-                        <label class="form-label">Типы питания и цены</label>
-                        <div class="bg-gray-50 p-4 rounded-lg border">
-                            <p class="text-sm text-gray-600 mb-3">Настройте доплату за питание в сутки (в USD)</p>
-                            
-                            <!-- RO - Без питания -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="mealRO" class="rounded">
-                                    <label for="mealRO" class="font-medium">RO - Без питания</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceMealRO" class="form-input w-20" placeholder="0" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ сутки</span>
-                                </div>
-                            </div>
-                            
-                            <!-- BB - Завтрак -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="mealBB" class="rounded">
-                                    <label for="mealBB" class="font-medium">BB - Завтрак</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceMealBB" class="form-input w-20" placeholder="25" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ сутки</span>
-                                </div>
-                            </div>
-                            
-                            <!-- HB - Полупансион -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="mealHB" class="rounded">
-                                    <label for="mealHB" class="font-medium">HB - Полупансион (завтрак + ужин)</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceMealHB" class="form-input w-20" placeholder="45" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ сутки</span>
-                                </div>
-                            </div>
-                            
-                            <!-- FB - Полный пансион -->
-                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="mealFB" class="rounded">
-                                    <label for="mealFB" class="font-medium">FB - Полный пансион (завтрак + обед + ужин)</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceMealFB" class="form-input w-20" placeholder="65" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ сутки</span>
-                                </div>
-                            </div>
-                            
-                            <!-- AI - Все включено -->
-                            <div class="flex items-center justify-between py-2">
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="mealAI" class="rounded">
-                                    <label for="mealAI" class="font-medium">AI - Все включено</label>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span>$</span>
-                                    <input type="number" id="priceMealAI" class="form-input w-20" placeholder="85" min="0" step="1" disabled>
-                                    <span class="text-sm text-gray-500">/ сутки</span>
-                                </div>
-                            </div>
-                        </div>
-                        <small class="text-gray-500 mt-2 block">Отметьте доступные типы питания и укажите доплату за питание в сутки</small>
+                        <label class="form-label">Тип питания</label>
+                        <select class="form-input" id="hotelPension">
+                            <option value="none">Не включено</option>
+                            <option value="half">Полупансион (завтрак)</option>
+                            <option value="full">Полный пансион (завтрак + обед)</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">
@@ -1599,7 +1711,7 @@
                         </div>
                         <div class="flex gap-2">
                             <input type="text" class="form-input flex-1" id="newHighlight" placeholder="Например: Профессиональный гид">
-                            <button type="button" onclick="addHighlight()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">
+                            <button type="button" onclick="addHighlight()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
                                 Добавить
                             </button>
                         </div>
@@ -1633,7 +1745,7 @@
                         </div>
                         <div class="flex gap-2">
                             <input type="time" class="form-input flex-1" id="newStartTime" placeholder="07:30">
-                            <button type="button" onclick="addStartTime()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+                            <button type="button" onclick="addStartTime()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
                                 Добавить время
                             </button>
                         </div>
@@ -1835,7 +1947,7 @@
                     <!-- Галерея изображений -->
                     <div class="form-group col-span-2">
                         <label class="form-label">
-                            <i class="fas fa-images text-gray-600 mr-2"></i>
+                            <i class="fas fa-images text-blue-600 mr-2"></i>
                             Фотографии тура
                         </label>
                         
@@ -1914,63 +2026,63 @@
             </div>
             <div class="modal-body">
                 <div class="space-y-2 max-h-96 overflow-y-auto">
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Однодневные туры', 'Day Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Однодневные туры', 'Day Tours')">
                         <div class="font-medium">Однодневные туры</div>
                         <div class="text-sm text-gray-500">Day Tours</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Многодневные туры', 'Multi-day Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Многодневные туры', 'Multi-day Tours')">
                         <div class="font-medium">Многодневные туры</div>
                         <div class="text-sm text-gray-500">Multi-day Tours</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Экскурсии', 'Excursions')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Экскурсии', 'Excursions')">
                         <div class="font-medium">Экскурсии</div>
                         <div class="text-sm text-gray-500">Excursions</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Городские туры', 'City Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Городские туры', 'City Tours')">
                         <div class="font-medium">Городские туры</div>
                         <div class="text-sm text-gray-500">City Tours</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Природа/экологические туры', 'Nature/Eco Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Природа/экологические туры', 'Nature/Eco Tours')">
                         <div class="font-medium">Природа/экологические туры</div>
                         <div class="text-sm text-gray-500">Nature/Eco Tours</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Культурно познавательные туры', 'Cultural Educational Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Культурно познавательные туры', 'Cultural Educational Tours')">
                         <div class="font-medium">Культурно познавательные туры</div>
                         <div class="text-sm text-gray-500">Cultural Educational Tours</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Исторические туры', 'Historical Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Исторические туры', 'Historical Tours')">
                         <div class="font-medium">Исторические туры</div>
                         <div class="text-sm text-gray-500">Historical Tours</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Походы/трекинги', 'Hiking/Trekking')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Походы/трекинги', 'Hiking/Trekking')">
                         <div class="font-medium">Походы/трекинги</div>
                         <div class="text-sm text-gray-500">Hiking/Trekking</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Горные ландшафты', 'Mountain Landscapes')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Горные ландшафты', 'Mountain Landscapes')">
                         <div class="font-medium">Горные ландшафты</div>
                         <div class="text-sm text-gray-500">Mountain Landscapes</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Озерные ландшафты', 'Lake Landscapes')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Озерные ландшафты', 'Lake Landscapes')">
                         <div class="font-medium">Озерные ландшафты</div>
                         <div class="text-sm text-gray-500">Lake Landscapes</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Приключенческие туры', 'Adventure Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Приключенческие туры', 'Adventure Tours')">
                         <div class="font-medium">Приключенческие туры</div>
                         <div class="text-sm text-gray-500">Adventure Tours</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Гастрономические туры', 'Gastronomic Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Гастрономические туры', 'Gastronomic Tours')">
                         <div class="font-medium">Гастрономические туры</div>
                         <div class="text-sm text-gray-500">Gastronomic Tours</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Автотуры/сафари/джип-туры', 'Auto Tours/Safari/Jeep Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Автотуры/сафари/джип-туры', 'Auto Tours/Safari/Jeep Tours')">
                         <div class="font-medium">Автотуры/сафари/джип-туры</div>
                         <div class="text-sm text-gray-500">Auto Tours/Safari/Jeep Tours</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('Агротуры', 'Agro Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('Агротуры', 'Agro Tours')">
                         <div class="font-medium">Агротуры</div>
                         <div class="text-sm text-gray-500">Agro Tours</div>
                     </div>
-                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-gray-300" onclick="selectCategory('VIP туры', 'VIP Tours')">
+                    <div class="category-item p-3 border rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300" onclick="selectCategory('VIP туры', 'VIP Tours')">
                         <div class="font-medium">VIP туры</div>
                         <div class="text-sm text-gray-500">VIP Tours</div>
                     </div>
@@ -2348,7 +2460,7 @@
                             <td class="font-semibold">$${order.totalAmount}</td>
                             <td>${getStatusBadge(order.status)}</td>
                             <td>
-                                <button onclick="viewBooking(${order.id})" class="text-gray-600 hover:text-gray-700">
+                                <button onclick="viewBooking(${order.id})" class="text-blue-600 hover:text-blue-800">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </td>
@@ -2838,11 +2950,7 @@
                 categoryId: selectedCategories.length > 0 ? selectedCategories[0].id : null,
                 tourBlockId: document.getElementById('tourBlockId')?.value ? parseInt(document.getElementById('tourBlockId').value) : null,
                 isFeatured: document.getElementById('tourIsFeatured')?.checked || false,
-                isActive: true,
-                // Собираем выбранные отели
-                hotelIds: Array.from(document.querySelectorAll('input[name="selectedHotels"]:checked')).map(cb => parseInt(cb.value)),
-                // Собираем выбранных гидов 
-                guideIds: Array.from(document.querySelectorAll('input[name="selectedGuides"]:checked')).map(cb => parseInt(cb.value))
+                isActive: true
             };
             
             console.log('📤 Sending tour data:', formData);
@@ -2923,7 +3031,7 @@
                 <div class="bg-gray-50 p-3 rounded border">
                     <div class="flex justify-between items-start mb-2">
                         <div class="flex items-center gap-3">
-                            <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-sm font-medium">${item.time}</span>
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium">${item.time}</span>
                             <strong>${item.title}</strong>
                         </div>
                         <button type="button" onclick="removeItinerary(${index})" class="text-red-500 hover:text-red-700">
@@ -2973,7 +3081,7 @@
             
             if (time && !window.editStartTimes.includes(time)) {
                 window.editStartTimes.push(time);
-                updateStartTimesList();
+                updateEditStartTimesList();
                 input.value = '';
             } else if (window.editStartTimes.includes(time)) {
                 alert('Это время уже добавлено');
@@ -2982,7 +3090,7 @@
 
         function removeEditStartTime(index) {
             window.editStartTimes.splice(index, 1);
-            updateStartTimesList();
+            updateEditStartTimesList();
         }
 
         // Функции для работы с языками в форме редактирования
@@ -3029,7 +3137,7 @@
             }
             
             container.innerHTML = (Array.isArray(languages) ? languages : []).map((language, index) => `
-                <div class="flex items-center justify-between bg-gray-100 text-gray-700 px-2 py-1 rounded mb-1">
+                <div class="flex items-center justify-between bg-blue-100 text-blue-800 px-2 py-1 rounded mb-1">
                     <span>${language}</span>
                     <button type="button" onclick="removeEditLanguage(${index})" class="text-red-500 hover:text-red-700 ml-2">
                         <i class="fas fa-times"></i>
@@ -3053,7 +3161,7 @@
             
             if (imageUrl && !window.tourGalleryImages.includes(imageUrl)) {
                 window.tourGalleryImages.push(imageUrl);
-                updateGalleryImagesList();
+                updateEditGalleryImagesList();
                 input.value = '';
             } else if (window.tourGalleryImages.includes(imageUrl)) {
                 alert('Это изображение уже добавлено');
@@ -3083,7 +3191,7 @@
 
         function removeEditGalleryImage(index) {
             window.tourGalleryImages.splice(index, 1);
-            updateGalleryImagesList();
+            updateEditGalleryImagesList();
         }
 
         // Функция для получения отмеченных услуг
@@ -3314,7 +3422,7 @@
                                     '<span class="badge badge-success">Активен</span>' : 
                                     '<span class="badge badge-danger">Неактивен</span>'}</td>
                                 <td>
-                                    <button onclick="editTour(${tour.id})" class="text-gray-600 hover:text-gray-700 mr-2" title="Редактировать тур">
+                                    <button onclick="editTour(${tour.id})" class="text-blue-600 hover:text-blue-800 mr-2" title="Редактировать тур">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <button onclick="copyReviewLink(${tour.id})" class="text-green-600 hover:text-green-800 mr-2" title="Скопировать ссылку для отзывов">
@@ -3422,17 +3530,37 @@
                             console.log('✅ Loaded description EN (main form)');
                         }
                         
-                        // УДАЛЕНО: Заполнение полей Enhanced формы (форма удалена)
+                        // Заполняем поля ФОРМЫ РЕДАКТИРОВАНИЯ (e-префикс)
+                        const eTourTitleRu = document.getElementById('eTourTitleRu');
+                        if (eTourTitleRu) {
+                            eTourTitleRu.value = title.ru || '';
+                            console.log('✅ Loaded title RU (edit form):', title.ru);
+                        }
+                        
+                        const eTourTitleEn = document.getElementById('eTourTitleEn');
+                        if (eTourTitleEn) {
+                            eTourTitleEn.value = title.en || '';
+                            console.log('✅ Loaded title EN (edit form):', title.en);
+                        }
+                        
+                        const eTourShortDesc = document.getElementById('eTourShortDesc');
+                        if (eTourShortDesc) {
+                            eTourShortDesc.value = description.ru || '';
+                            console.log('✅ Loaded short description (edit form):', description.ru);
+                        }
                         
                         const tourType = document.getElementById('tourType');
                         if (tourType) {
-                            // ИСПРАВЛЕНО: Улучшенная загрузка типа тура из разных полей
-                            const typeValue = tour.tourType || tour.format || '';
-                            tourType.value = typeValue;
-                            console.log('✅ Loaded tour type (main form):', typeValue, 'from tour.tourType:', tour.tourType, 'tour.format:', tour.format);
+                            tourType.value = tour.format || tour.tourType || '';
+                            console.log('✅ Loaded tour type (main form):', tour.format || tour.tourType);
                         }
                         
-                        // УДАЛЕНО: Заполнение eTourType (поле удалено)
+                        // И для формы редактирования
+                        const eTourType = document.getElementById('eTourType');
+                        if (eTourType) {
+                            eTourType.value = tour.format || tour.tourType || '';
+                            console.log('✅ Loaded tour type (edit form):', tour.format || tour.tourType);
+                        }
                         
                         const tourCategory = document.getElementById('tourCategory');
                         if (tourCategory) {
@@ -3440,29 +3568,12 @@
                             console.log('✅ Loaded category (main form):', tour.categoryId);
                         }
                         
-                        // ИСПРАВЛЕНО: Загрузка категории в систему выбора с правильным форматом
-                        if (tour.categoryId) {
-                            // Нужно найти название категории по ID
-                            fetch(`${getApiUrl()}/categories`)
-                                .then(res => res.json())
-                                .then(data => {
-                                    const categories = data.data || data.categories || [];
-                                    const category = categories.find(cat => cat.id === tour.categoryId);
-                                    if (category) {
-                                        const categoryName = typeof category.name === 'string' ? 
-                                            JSON.parse(category.name) : category.name;
-                                        selectedCategories = [{
-                                            id: tour.categoryId, 
-                                            name: categoryName.ru || categoryName.en || 'Категория'
-                                        }];
-                                        updateSelectedCategoriesDisplay();
-                                        console.log('✅ Loaded category into selection system:', tour.categoryId, categoryName);
-                                    }
-                                })
-                                .catch(e => console.warn('Failed to load category for editing:', e));
+                        // И для формы редактирования
+                        const eTourCategoryId = document.getElementById('eTourCategoryId');
+                        if (eTourCategoryId) {
+                            eTourCategoryId.value = tour.categoryId || '';
+                            console.log('✅ Loaded category (edit form):', tour.categoryId);
                         }
-                        
-                        // УДАЛЕНО: Заполнение eTourCategoryId (поле удалено)
                         
                         const tourBlockIdElement = document.getElementById('tourBlockId');
                         if (tourBlockIdElement) {
@@ -3488,7 +3599,12 @@
                             console.log('✅ Loaded duration days (main form):', tour.durationDays);
                         }
                         
-                        // УДАЛЕНО: Заполнение eTourDurationDays (поле удалено)
+                        // И для формы редактирования
+                        const eTourDurationDays = document.getElementById('eTourDurationDays');
+                        if (eTourDurationDays) {
+                            eTourDurationDays.value = tour.durationDays || '';
+                            console.log('✅ Loaded duration days (edit form):', tour.durationDays);
+                        }
                         
                         const tourPrice = document.getElementById('tourPrice');
                         if (tourPrice) {
@@ -3496,7 +3612,12 @@
                             console.log('✅ Loaded price (main form):', tour.price);
                         }
                         
-                        // УДАЛЕНО: Заполнение eTourPrice (поле удалено)
+                        // И для формы редактирования
+                        const eTourPrice = document.getElementById('eTourPrice');
+                        if (eTourPrice) {
+                            eTourPrice.value = tour.price || '';
+                            console.log('✅ Loaded price (edit form):', tour.price);
+                        }
                         
                         const tourPriceTypeElement = document.getElementById('tourPriceType');
                         if (tourPriceTypeElement) {
@@ -3588,10 +3709,28 @@
                                 console.warn('Failed to parse available days:', e);
                             }
                         }
-                        // УДАЛЕНО: Заполнение eTourPriceType (поле удалено)
-                        // УДАЛЕНО: Заполнение eTourPickupInfo (поле удалено)
+                        const eTourPriceTypeElement = document.getElementById('eTourPriceType');
+                        if (eTourPriceTypeElement) {
+                            eTourPriceTypeElement.value = tour.priceType || 'за человека';
+                            console.log('✅ Loaded edit price type:', tour.priceType);
+                        } else {
+                            console.error('❌ Element eTourPriceType not found');
+                        }
+                        const eTourPickupInfoElement = document.getElementById('eTourPickupInfo');
+                        if (eTourPickupInfoElement) {
+                            eTourPickupInfoElement.value = tour.pickupInfo || '';
+                            console.log('✅ Loaded edit pickup info:', tour.pickupInfo, '-> field value:', eTourPickupInfoElement.value);
+                        } else {
+                            console.error('❌ Element eTourPickupInfo not found');
+                        }
                         
-                        // УДАЛЕНО: Заполнение eTourFullDesc (поле удалено)
+                        const tourFullDesc = document.getElementById('eTourFullDesc');
+                        if (tourFullDesc) {
+                            tourFullDesc.value = description.ru || '';
+                            console.log('✅ Loaded edit full description:', description.ru, '-> field value:', tourFullDesc.value);
+                        } else {
+                            console.error('❌ Element eTourFullDesc not found');
+                        }
                         
                         // Обработка языков
                         let languages = '';
@@ -3603,54 +3742,128 @@
                                 languages = tour.languages;
                             }
                         }
-                        // ИСПРАВЛЕНО: Обработка языков для основной формы
-                        const tourLanguagesField = document.getElementById('tourLanguages');
-                        if (tourLanguagesField) {
-                            tourLanguagesField.value = languages;
-                            console.log('✅ Set tourLanguages field:', languages);
+                        // Обработка языков - используем форму редактирования
+                        const languageHiddenField = document.getElementById('eTourLanguages');
+                        if (languageHiddenField) {
+                            languageHiddenField.value = languages;
+                            console.log('✅ Set eTourLanguages hidden field:', languages);
+                            
+                            // Показываем выбранные языки в контейнере редактирования
+                            const selectedLanguagesContainer = document.getElementById('eSelectedLanguages');
+                            if (selectedLanguagesContainer) {
+                                if (languages) {
+                                    const languagesList = languages.split(', ').filter(lang => lang.trim());
+                                    selectedLanguagesContainer.innerHTML = languagesList.map(lang => 
+                                        `<span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1">${lang}</span>`
+                                    ).join(' ');
+                                    console.log('✅ Updated edit selected languages display with:', languagesList);
+                                } else {
+                                    selectedLanguagesContainer.innerHTML = '<small class="text-gray-500">Языки не выбраны</small>';
+                                }
+                            } else {
+                                console.error('❌ Element eSelectedLanguages container not found');
+                            }
+                        } else {
+                            console.error('❌ Element eTourLanguages not found');
                         }
                         
-                        // ИСПРАВЛЕНО: Обработка времен начала тура для основной формы
-                        // Проверяем наличие времен начала тура
+                        // Обработка времен начала тура
+                        window.editStartTimes = [];
                         if (tour.startTimeOptions) {
                             try {
-                                const startTimes = typeof tour.startTimeOptions === 'string' ? JSON.parse(tour.startTimeOptions) : tour.startTimeOptions;
-                                window.tourStartTimes = startTimes || [];
-                                updateStartTimesList(); // Обновляем список в основной форме
-                                console.log('✅ Loaded start times:', window.tourStartTimes);
+                                window.editStartTimes = JSON.parse(tour.startTimeOptions);
+                                console.log('✅ Loaded start times:', window.editStartTimes);
                             } catch (e) {
-                                console.warn('Failed to parse start times:', e);
-                                window.tourStartTimes = [];
+                                // Если старый формат - строка через запятую
+                                window.editStartTimes = tour.startTimeOptions.split(',').map(t => t.trim()).filter(t => t);
+                                console.log('✅ Loaded start times (legacy format):', window.editStartTimes);
                             }
                         }
-                        
-                        // ИСПРАВЛЕНО: Заполнение недостающих полей основной формы
-                        
-                        // Заполнение minPeople и maxPeople в основной форме
-                        const tourMinPeopleField = document.getElementById('tourMinPeople');
-                        if (tourMinPeopleField && tour.minPeople) {
-                            tourMinPeopleField.value = tour.minPeople.toString();
-                            console.log('✅ Loaded tourMinPeople:', tour.minPeople);
+                        try {
+                            updateEditStartTimesList();
+                            console.log('✅ Updated start times list with times:', window.editStartTimes);
+                            
+                            // Проверяем что список времени видим в форме
+                            const startTimesContainer = document.getElementById('editStartTimesList');
+                            if (startTimesContainer) {
+                                console.log('✅ Start times container HTML:', startTimesContainer.innerHTML.length > 0 ? 'Has content' : 'Empty');
+                            } else {
+                                console.error('❌ Element editStartTimesList container not found');
+                            }
+                        } catch (e) {
+                            console.error('❌ Failed to update start times list:', e);
                         }
                         
-                        const tourMaxPeopleField = document.getElementById('tourMaxPeople');
-                        if (tourMaxPeopleField && tour.maxPeople) {
-                            tourMaxPeopleField.value = tour.maxPeople.toString();
-                            console.log('✅ Loaded tourMaxPeople:', tour.maxPeople);
+                        // Загрузка дополнительных полей редактирования
+                        const tourOriginalPrice = document.getElementById('eTourOriginalPrice');
+                        if (tourOriginalPrice) {
+                            tourOriginalPrice.value = tour.originalPrice || '';
+                            console.log('✅ Loaded edit original price:', tour.originalPrice);
                         }
                         
-                        // Заполнение tourBlockId в основной форме
-                        const tourBlockIdField = document.getElementById('tourBlockId');
-                        if (tourBlockIdField && tour.tourBlockId) {
-                            tourBlockIdField.value = tour.tourBlockId.toString();
-                            console.log('✅ Loaded tourBlockId:', tour.tourBlockId);
+                        const tourDifficulty = document.getElementById('eTourDifficulty');
+                        if (tourDifficulty) {
+                            tourDifficulty.value = tour.difficulty || '';
+                            console.log('✅ Loaded edit difficulty:', tour.difficulty);
                         }
                         
-                        // Заполнение pickupInfo в основной форме
-                        const tourPickupInfoField = document.getElementById('tourPickupInfo');
-                        if (tourPickupInfoField && tour.pickupInfo) {
-                            tourPickupInfoField.value = tour.pickupInfo;
-                            console.log('✅ Loaded tourPickupInfo:', tour.pickupInfo);
+                        const eTourMaxPeopleElement = document.getElementById('eTourMaxPeople');
+                        if (eTourMaxPeopleElement) {
+                            eTourMaxPeopleElement.value = tour.maxPeople || '';
+                            console.log('✅ Loaded edit max people:', tour.maxPeople);
+                        }
+                        
+                        const eTourMinPeopleElement = document.getElementById('eTourMinPeople');
+                        if (eTourMinPeopleElement) {
+                            eTourMinPeopleElement.value = tour.minPeople || '';
+                            console.log('✅ Loaded edit min people:', tour.minPeople);
+                        }
+                        
+                        const tourMainImage = document.getElementById('eTourMainImage');
+                        if (tourMainImage) {
+                            tourMainImage.value = tour.mainImage || '';
+                            console.log('✅ Loaded edit main image:', tour.mainImage);
+                        }
+                        
+                        const eTourBlockIdElement = document.getElementById('eTourBlockId');
+                        if (eTourBlockIdElement) {
+                            eTourBlockIdElement.value = tour.tourBlockId || '';
+                            console.log('✅ Loaded edit tour block:', tour.tourBlockId);
+                        }
+                        
+                        const tourIsFeatured = document.getElementById('eTourIsFeatured');
+                        if (tourIsFeatured) {
+                            tourIsFeatured.checked = tour.isFeatured || false;
+                            console.log('✅ Loaded edit is featured:', tour.isFeatured);
+                        }
+                        // Удалены дублирующиеся поля - теперь используем только поля формы редактирования с префиксом 'e'
+                        
+                        // Загрузка "что включено" - обновляем чекбоксы includes
+                        if (tour.includes) {
+                            try {
+                                const includesData = typeof tour.includes === 'string' ? JSON.parse(tour.includes) : tour.includes;
+                                console.log('✅ Loading includes data:', includesData);
+                                
+                                // Сначала очищаем все чекбоксы
+                                const includesCheckboxes = document.querySelectorAll('#includesOptions input[type="checkbox"]');
+                                console.log('✅ Found', includesCheckboxes.length, 'includes checkboxes');
+                                includesCheckboxes.forEach(checkbox => checkbox.checked = false);
+                                
+                                // Затем отмечаем нужные
+                                if (Array.isArray(includesData)) {
+                                    includesData.forEach(item => {
+                                        const checkbox = document.querySelector(`#includesOptions input[value="${item}"]`);
+                                        if (checkbox) {
+                                            checkbox.checked = true;
+                                            console.log('✅ Checked include:', item);
+                                        } else {
+                                            console.warn('❌ Include checkbox not found for:', item);
+                                        }
+                                    });
+                                }
+                            } catch (e) {
+                                console.warn('Failed to parse includes:', e);
+                            }
                         }
                         
                         // Загрузка основных моментов (highlights)
@@ -3734,7 +3947,12 @@
                             }
                         }
                         
-                        // УДАЛЕНО: дублирующая загрузка турблока (уже обработано выше)
+                        // Загрузка турблока
+                        const tourBlockSelect = document.getElementById('tourBlockId');
+                        if (tourBlockSelect && tour.tourBlockId) {
+                            tourBlockSelect.value = tour.tourBlockId;
+                            console.log('✅ Loaded tour block:', tour.tourBlockId);
+                        }
                         
                         // Загрузка галереи изображений
                         window.tourGalleryImages = [];
@@ -3748,30 +3966,37 @@
                             }
                         }
                         try {
-                            updateGalleryImagesList();
-                            console.log('✅ Updated gallery images list with images:', window.tourGalleryImages);
+                            updateEditGalleryImagesList();
+                            console.log('✅ Updated edit gallery images list with images:', window.tourGalleryImages);
                             
-                            // ИСПРАВЛЕНО: Используем правильный контейнер галереи
-                            const galleryContainer = document.getElementById('galleryImagesList');
+                            // Проверяем что галерея видима в форме редактирования
+                            const galleryContainer = document.getElementById('eGalleryImagesList');
                             if (galleryContainer) {
                                 if (window.tourGalleryImages && window.tourGalleryImages.length > 0) {
-                                    console.log('✅ Gallery container has', window.tourGalleryImages.length, 'images');
+                                    console.log('✅ Edit gallery container has', window.tourGalleryImages.length, 'images');
                                 } else {
-                                    console.log('✅ Gallery container is empty (no images to show)');
+                                    console.log('✅ Edit gallery container is empty (no images to show)');
                                 }
                             } else {
-                                console.error('❌ Element galleryImagesList container not found');
+                                console.error('❌ Element eGalleryImagesList container not found');
+                                // Попробуем найти альтернативные контейнеры
+                                const altGallery = document.getElementById('editGalleryImagesList') || document.getElementById('galleryImagesList');
+                                if (altGallery) {
+                                    console.log('✅ Found alternative gallery container:', altGallery.id);
+                                } else {
+                                    console.error('❌ No gallery container found at all');
+                                }
                             }
                         } catch (e) {
-                            console.error('❌ Failed to update gallery images list:', e);
+                            console.error('❌ Failed to update edit gallery images list:', e);
                         }
                         
                         // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Загрузка выбранных отелей и гидов
                         // Загрузка выбранных отелей
-                        if (tour.tourHotels && Array.isArray(tour.tourHotels)) {
-                            console.log('✅ Loading selected hotels:', tour.tourHotels.map(th => th.hotelId));
-                            tour.tourHotels.forEach(tourHotel => {
-                                const hotelId = tourHotel.hotelId;
+                        if (tour.hotels && Array.isArray(tour.hotels)) {
+                            console.log('✅ Loading selected hotels:', tour.hotels.map(h => h.id || h.hotelId));
+                            tour.hotels.forEach(hotelRelation => {
+                                const hotelId = hotelRelation.id || hotelRelation.hotelId;
                                 const checkbox = document.querySelector(`input[name="selectedHotels"][value="${hotelId}"]`);
                                 if (checkbox) {
                                     checkbox.checked = true;
@@ -3780,15 +4005,13 @@
                                     console.warn('❌ Hotel checkbox not found for:', hotelId);
                                 }
                             });
-                        } else {
-                            console.log('❌ No tourHotels found or not array:', tour.tourHotels);
                         }
                         
                         // Загрузка выбранных гидов
-                        if (tour.tourGuides && Array.isArray(tour.tourGuides)) {
-                            console.log('✅ Loading selected guides:', tour.tourGuides.map(tg => tg.guideId));
-                            tour.tourGuides.forEach(tourGuide => {
-                                const guideId = tourGuide.guideId;
+                        if (tour.guides && Array.isArray(tour.guides)) {
+                            console.log('✅ Loading selected guides:', tour.guides.map(g => g.id || g.guideId));
+                            tour.guides.forEach(guideRelation => {
+                                const guideId = guideRelation.id || guideRelation.guideId;
                                 const checkbox = document.querySelector(`input[name="selectedGuides"][value="${guideId}"]`);
                                 if (checkbox) {
                                     checkbox.checked = true;
@@ -3797,8 +4020,6 @@
                                     console.warn('❌ Guide checkbox not found for:', guideId);
                                 }
                             });
-                        } else {
-                            console.log('❌ No tourGuides found or not array:', tour.tourGuides);
                         }
                         
                         console.log('✅ Tour data loaded successfully for editing:', tour.id);
@@ -3932,7 +4153,9 @@
             if (tourUploader) {
                 tourUploader.clear('tour-uploader-container');
             }
-            // ИСПРАВЛЕНО: Используем правильный uploader
+            if (window.tourEditUploader) {
+                window.tourEditUploader.clear('tour-edit-uploader-container');
+            }
             
             // Очищаем скрытое поле ID и переменные
             document.getElementById('tour-id').value = '';
@@ -4129,16 +4352,10 @@
                     const container = document.getElementById('hotelCheckboxes');
                     const hotels = data.data || data.hotels || [];
                     container.innerHTML = hotels.map(hotel => {
-                        let name;
-                    try {
-                        name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
-                    } catch (e) {
-                        console.warn('Failed to parse hotel name in checkboxes:', hotel.name);
-                        name = hotel.name || {};
-                    }
+                        const name = typeof hotel.name === 'string' ? JSON.parse(hotel.name || '{}') : hotel.name || {};
                         return `
                             <label class="checkbox-item">
-                                <input type="checkbox" name="selectedHotels" value="${hotel.id}"> ${name.ru || name.en || 'Отель'}
+                                <input type="checkbox" value="${hotel.id}"> ${name.ru || name.en || 'Отель'}
                             </label>
                         `;
                     }).join('');
@@ -4154,16 +4371,10 @@
                     const container = document.getElementById('guideCheckboxes');
                     const guides = data.data || data.guides || [];
                     container.innerHTML = guides.map(guide => {
-                        let name;
-                        try {
-                            name = typeof guide.name === 'string' ? JSON.parse(guide.name) : (guide.name || {});
-                        } catch (e) {
-                            console.warn('Failed to parse guide name in checkboxes:', guide.name);
-                            name = guide.name || {};
-                        }
+                        const name = typeof guide.name === 'string' ? JSON.parse(guide.name || '{}') : guide.name || {};
                         return `
                             <label class="checkbox-item">
-                                <input type="checkbox" name="selectedGuides" value="${guide.id}"> ${name.ru || name.en || 'Гид'}
+                                <input type="checkbox" value="${guide.id}"> ${name.ru || name.en || 'Гид'}
                             </label>
                         `;
                     }).join('');
@@ -4171,7 +4382,7 @@
         }
         
         // Hotels functions
-        // Удалено: currentHotelId - используем hotel-id
+        let currentHotelId = null;
         
         function loadHotels() {
             console.log('Loading hotels...');
@@ -4199,38 +4410,10 @@
         }
         
         function createHotelCard(hotel) {
-            // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Безопасный парсинг JSON
-            let name, description, amenities, images;
-            
-            try {
-                name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
-            } catch (e) {
-                console.warn('Failed to parse hotel name in card:', hotel.name);
-                name = hotel.name || {};
-            }
-            
-            try {
-                description = typeof hotel.description === 'string' ? JSON.parse(hotel.description) : (hotel.description || {});
-            } catch (e) {
-                console.warn('Failed to parse hotel description in card:', hotel.description);
-                description = hotel.description || {};
-            }
-            
-            try {
-                amenities = typeof hotel.amenities === 'string' ? JSON.parse(hotel.amenities) : (hotel.amenities || []);
-                if (!Array.isArray(amenities)) amenities = [];
-            } catch (e) {
-                console.warn('Failed to parse hotel amenities in card:', hotel.amenities);
-                amenities = [];
-            }
-            
-            try {
-                images = typeof hotel.images === 'string' ? JSON.parse(hotel.images) : (hotel.images || []);
-                if (!Array.isArray(images)) images = [];
-            } catch (e) {
-                console.warn('Failed to parse hotel images in card:', hotel.images);
-                images = [];
-            }
+            const name = typeof hotel.name === 'object' ? hotel.name : JSON.parse(hotel.name || '{}');
+            const description = typeof hotel.description === 'object' ? hotel.description : JSON.parse(hotel.description || '{}');
+            const amenities = Array.isArray(hotel.amenities) ? hotel.amenities : JSON.parse(hotel.amenities || '[]');
+            const images = Array.isArray(hotel.images) ? hotel.images : JSON.parse(hotel.images || '[]');
             
             return `
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -4298,8 +4481,7 @@
         }
         
         function openHotelModal(hotelId = null) {
-            // ИСПРАВЛЕНО: установка hotel-id вместо currentHotelId
-            document.getElementById('hotel-id').value = hotelId;
+            currentHotelId = hotelId;
             window.hotelImageURLs = [];
             document.getElementById('hotelModal').classList.add('active');
             
@@ -4317,8 +4499,6 @@
             } else {
                 document.getElementById('hotelModalTitle').textContent = 'Добавить отель';
                 document.getElementById('hotelForm').reset();
-                clearRoomTypeFields(); // НОВОЕ: Очистить категории номеров для создания нового отеля
-                clearMealTypeFields(); // НОВОЕ: Очистить типы питания для создания нового отеля
                 if (hotelUploader) {
                     hotelUploader.clear('hotel-uploader-container');
                 }
@@ -4332,47 +4512,10 @@
                 hotelUploader.clear('hotel-uploader-container');
             }
             window.hotelImageURLs = [];
-            // ИСПРАВЛЕНО: очистка hotel-id вместо currentHotelId
-            document.getElementById('hotel-id').value = '';
+            currentHotelId = null;
             
             // Reset the hidden input
             document.getElementById('hotelImages').value = '';
-            
-            // НОВОЕ: Очистить категории номеров и типы питания при закрытии модала
-            clearRoomTypeFields();
-            clearMealTypeFields();
-        }
-        
-        // НОВОЕ: Функция очистки полей категорий номеров
-        function clearRoomTypeFields() {
-            document.getElementById('roomSGL').checked = false;
-            document.getElementById('roomTWL').checked = false;
-            document.getElementById('roomDBL').checked = false;
-            document.getElementById('priceSGL').value = '';
-            document.getElementById('priceTWL').value = '';
-            document.getElementById('priceDBL').value = '';
-            document.getElementById('priceSGL').disabled = true;
-            document.getElementById('priceTWL').disabled = true;
-            document.getElementById('priceDBL').disabled = true;
-        }
-        
-        // НОВОЕ: Функция очистки полей типов питания
-        function clearMealTypeFields() {
-            document.getElementById('mealRO').checked = false;
-            document.getElementById('mealBB').checked = false;
-            document.getElementById('mealHB').checked = false;
-            document.getElementById('mealFB').checked = false;
-            document.getElementById('mealAI').checked = false;
-            document.getElementById('priceMealRO').value = '';
-            document.getElementById('priceMealBB').value = '';
-            document.getElementById('priceMealHB').value = '';
-            document.getElementById('priceMealFB').value = '';
-            document.getElementById('priceMealAI').value = '';
-            document.getElementById('priceMealRO').disabled = true;
-            document.getElementById('priceMealBB').disabled = true;
-            document.getElementById('priceMealHB').disabled = true;
-            document.getElementById('priceMealFB').disabled = true;
-            document.getElementById('priceMealAI').disabled = true;
         }
         
         function loadHotelData(hotelId) {
@@ -4387,34 +4530,10 @@
                     return res.json();
                 })
                 .then(data => {
-                    console.log('✅ Hotel data received:', data);
                     const hotel = data.data;
-                    
-                    // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Правильный парсинг JSON
-                    let name, description, amenities;
-                    try {
-                        name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
-                        console.log('✅ Parsed hotel name:', name);
-                    } catch (e) {
-                        console.warn('Failed to parse hotel name, using as object:', hotel.name);
-                        name = hotel.name || {};
-                    }
-                    
-                    try {
-                        description = typeof hotel.description === 'string' ? JSON.parse(hotel.description) : (hotel.description || {});
-                        console.log('✅ Parsed hotel description:', description);
-                    } catch (e) {
-                        console.warn('Failed to parse hotel description, using as object:', hotel.description);
-                        description = hotel.description || {};
-                    }
-                    
-                    try {
-                        amenities = typeof hotel.amenities === 'string' ? JSON.parse(hotel.amenities) : (hotel.amenities || []);
-                        console.log('✅ Parsed hotel amenities:', amenities);
-                    } catch (e) {
-                        console.warn('Failed to parse hotel amenities, using as array:', hotel.amenities);
-                        amenities = Array.isArray(hotel.amenities) ? hotel.amenities : [];
-                    }
+                    const name = JSON.parse(hotel.name || '{}');
+                    const description = JSON.parse(hotel.description || '{}');
+                    const amenities = JSON.parse(hotel.amenities || '[]');
                     
                     // УЛУЧШЕНИЕ: Лучшая обработка многоязычных полей
                     const hotelNameField = document.getElementById('hotelName');
@@ -4428,88 +4547,6 @@
                     if (hotelDescField) {
                         hotelDescField.value = description.ru || description.en || hotel.description || '';
                         console.log('✅ Loaded hotel description:', hotelDescField.value);
-                    }
-                    
-                    // НОВОЕ: Загрузка категорий номеров при редактировании
-                    if (hotel.roomTypes) {
-                        try {
-                            const roomTypes = typeof hotel.roomTypes === 'string' ? JSON.parse(hotel.roomTypes) : hotel.roomTypes;
-                            
-                            // SGL - Одноместный
-                            if (roomTypes.SGL) {
-                                document.getElementById('roomSGL').checked = true;
-                                document.getElementById('priceSGL').disabled = false;
-                                document.getElementById('priceSGL').value = roomTypes.SGL.price || '';
-                                console.log('✅ Loaded SGL room type:', roomTypes.SGL);
-                            }
-                            
-                            // TWL - Двухместный
-                            if (roomTypes.TWL) {
-                                document.getElementById('roomTWL').checked = true;
-                                document.getElementById('priceTWL').disabled = false;
-                                document.getElementById('priceTWL').value = roomTypes.TWL.price || '';
-                                console.log('✅ Loaded TWL room type:', roomTypes.TWL);
-                            }
-                            
-                            // DBL - Двухспальный
-                            if (roomTypes.DBL) {
-                                document.getElementById('roomDBL').checked = true;
-                                document.getElementById('priceDBL').disabled = false;
-                                document.getElementById('priceDBL').value = roomTypes.DBL.price || '';
-                                console.log('✅ Loaded DBL room type:', roomTypes.DBL);
-                            }
-                        } catch (e) {
-                            console.warn('Failed to parse room types:', hotel.roomTypes, e);
-                        }
-                    }
-                    
-                    // НОВОЕ: Загрузка типов питания при редактировании
-                    if (hotel.mealTypes) {
-                        try {
-                            const mealTypes = typeof hotel.mealTypes === 'string' ? JSON.parse(hotel.mealTypes) : hotel.mealTypes;
-                            
-                            // RO - Без питания
-                            if (mealTypes.RO) {
-                                document.getElementById('mealRO').checked = true;
-                                document.getElementById('priceMealRO').disabled = false;
-                                document.getElementById('priceMealRO').value = mealTypes.RO.price || '';
-                                console.log('✅ Loaded RO meal type:', mealTypes.RO);
-                            }
-                            
-                            // BB - Завтрак
-                            if (mealTypes.BB) {
-                                document.getElementById('mealBB').checked = true;
-                                document.getElementById('priceMealBB').disabled = false;
-                                document.getElementById('priceMealBB').value = mealTypes.BB.price || '';
-                                console.log('✅ Loaded BB meal type:', mealTypes.BB);
-                            }
-                            
-                            // HB - Полупансион
-                            if (mealTypes.HB) {
-                                document.getElementById('mealHB').checked = true;
-                                document.getElementById('priceMealHB').disabled = false;
-                                document.getElementById('priceMealHB').value = mealTypes.HB.price || '';
-                                console.log('✅ Loaded HB meal type:', mealTypes.HB);
-                            }
-                            
-                            // FB - Полный пансион
-                            if (mealTypes.FB) {
-                                document.getElementById('mealFB').checked = true;
-                                document.getElementById('priceMealFB').disabled = false;
-                                document.getElementById('priceMealFB').value = mealTypes.FB.price || '';
-                                console.log('✅ Loaded FB meal type:', mealTypes.FB);
-                            }
-                            
-                            // AI - Все включено
-                            if (mealTypes.AI) {
-                                document.getElementById('mealAI').checked = true;
-                                document.getElementById('priceMealAI').disabled = false;
-                                document.getElementById('priceMealAI').value = mealTypes.AI.price || '';
-                                console.log('✅ Loaded AI meal type:', mealTypes.AI);
-                            }
-                        } catch (e) {
-                            console.warn('Failed to parse meal types:', hotel.mealTypes, e);
-                        }
                     }
                     const addressField = document.getElementById('hotelAddress');
                     const starsField = document.getElementById('hotelStars');
@@ -4549,19 +4586,12 @@
                     document.getElementById('hotelPension').value = hotel.pension || 'none';
                     document.getElementById('hotelActive').checked = hotel.isActive;
                     
-                    // Set amenities - убеждаемся что amenities определен
-                    if (amenities && Array.isArray(amenities)) {
-                        document.querySelectorAll('#hotelForm input[type="checkbox"]').forEach(checkbox => {
-                            if (checkbox.id !== 'hotelActive') {
-                                checkbox.checked = amenities.includes(checkbox.value);
-                                if (checkbox.checked) {
-                                    console.log('✅ Set amenity checked:', checkbox.value);
-                                }
-                            }
-                        });
-                    } else {
-                        console.warn('❌ Amenities not loaded properly:', amenities);
-                    }
+                    // Set amenities
+                    document.querySelectorAll('#hotelForm input[type="checkbox"]').forEach(checkbox => {
+                        if (checkbox.id !== 'hotelActive') {
+                            checkbox.checked = amenities.includes(checkbox.value);
+                        }
+                    });
                     
                     // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Загрузка изображений отеля
                     if (hotel.images) {
@@ -4747,110 +4777,10 @@
                 tj: descValue
             };
             
-            // НОВОЕ: Обработка категорий номеров с ценами
-            const roomTypes = {};
-            
-            // SGL - Одноместный
-            if (document.getElementById('roomSGL').checked) {
-                const price = document.getElementById('priceSGL').value;
-                if (price && !isNaN(parseFloat(price))) {
-                    roomTypes.SGL = {
-                        name: 'Одноместный',
-                        price: parseFloat(price)
-                    };
-                }
-            }
-            
-            // TWL - Двухместный
-            if (document.getElementById('roomTWL').checked) {
-                const price = document.getElementById('priceTWL').value;
-                if (price && !isNaN(parseFloat(price))) {
-                    roomTypes.TWL = {
-                        name: 'Двухместный', 
-                        price: parseFloat(price)
-                    };
-                }
-            }
-            
-            // DBL - Двухспальный
-            if (document.getElementById('roomDBL').checked) {
-                const price = document.getElementById('priceDBL').value;
-                if (price && !isNaN(parseFloat(price))) {
-                    roomTypes.DBL = {
-                        name: 'Двухспальный',
-                        price: parseFloat(price)
-                    };
-                }
-            }
-            
-            // НОВОЕ: Обработка типов питания с ценами
-            const mealTypes = {};
-            
-            // RO - Без питания
-            if (document.getElementById('mealRO').checked) {
-                const price = document.getElementById('priceMealRO').value;
-                mealTypes.RO = {
-                    name: 'Без питания',
-                    price: price && !isNaN(parseFloat(price)) ? parseFloat(price) : 0
-                };
-            }
-            
-            // BB - Завтрак
-            if (document.getElementById('mealBB').checked) {
-                const price = document.getElementById('priceMealBB').value;
-                if (price && !isNaN(parseFloat(price))) {
-                    mealTypes.BB = {
-                        name: 'Завтрак',
-                        price: parseFloat(price)
-                    };
-                }
-            }
-            
-            // HB - Полупансион
-            if (document.getElementById('mealHB').checked) {
-                const price = document.getElementById('priceMealHB').value;
-                if (price && !isNaN(parseFloat(price))) {
-                    mealTypes.HB = {
-                        name: 'Полупансион',
-                        price: parseFloat(price)
-                    };
-                }
-            }
-            
-            // FB - Полный пансион
-            if (document.getElementById('mealFB').checked) {
-                const price = document.getElementById('priceMealFB').value;
-                if (price && !isNaN(parseFloat(price))) {
-                    mealTypes.FB = {
-                        name: 'Полный пансион',
-                        price: parseFloat(price)
-                    };
-                }
-            }
-            
-            // AI - Все включено
-            if (document.getElementById('mealAI').checked) {
-                const price = document.getElementById('priceMealAI').value;
-                if (price && !isNaN(parseFloat(price))) {
-                    mealTypes.AI = {
-                        name: 'Все включено',
-                        price: parseFloat(price)
-                    };
-                }
-            }
-            
-            // Get amenities (исключаем чекбоксы категорий номеров и типов питания)
+            // Get amenities
             const amenities = [];
             document.querySelectorAll('#hotelForm input[type="checkbox"]:checked').forEach(checkbox => {
-                if (checkbox.id !== 'hotelActive' && 
-                    checkbox.id !== 'roomSGL' && 
-                    checkbox.id !== 'roomTWL' && 
-                    checkbox.id !== 'roomDBL' &&
-                    checkbox.id !== 'mealRO' &&
-                    checkbox.id !== 'mealBB' &&
-                    checkbox.id !== 'mealHB' &&
-                    checkbox.id !== 'mealFB' &&
-                    checkbox.id !== 'mealAI') {
+                if (checkbox.id !== 'hotelActive') {
                     amenities.push(checkbox.value);
                 }
             });
@@ -4865,23 +4795,17 @@
                 category: document.getElementById('hotelCategory').value || null,
                 country: document.getElementById('hotelCountry').value || null,
                 city: document.getElementById('hotelCity').value || null,
-                pension: 'none', // Legacy field - теперь используем mealTypes
+                pension: document.getElementById('hotelPension').value,
                 amenities: JSON.stringify(amenities),
-                roomTypes: JSON.stringify(roomTypes), // Категории номеров с ценами
-                mealTypes: JSON.stringify(mealTypes), // НОВОЕ: Типы питания с ценами
                 isActive: document.getElementById('hotelActive').checked,
                 images: JSON.stringify(window.hotelImageURLs || []) // Use uploaded images
             };
             
             console.log('📝 Отправляем отель с данными:', hotelData);
             
-            // ИСПРАВЛЕНО: Используем hotel-id для единой логики POST/PUT
-            const hotelId = document.getElementById('hotel-id').value;
-            const isEditing = hotelId && hotelId.trim() !== '';
-            
             const apiUrl = getApiUrl();
-            const url = isEditing ? `${apiUrl}/hotels/${hotelId}` : `${apiUrl}/hotels`;
-            const method = isEditing ? 'PUT' : 'POST';
+            const url = currentHotelId ? `${apiUrl}/hotels/${currentHotelId}` : `${apiUrl}/hotels`;
+            const method = currentHotelId ? 'PUT' : 'POST';
             
             // For now, send as JSON instead of FormData (images handled separately)
             fetch(url, {
@@ -4895,7 +4819,7 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        alert(isEditing ? 'Отель успешно обновлен' : 'Отель успешно создан');
+                        alert(currentHotelId ? 'Отель успешно обновлен' : 'Отель успешно создан');
                         closeHotelModal();
                         loadHotels();
                     } else {
@@ -4908,51 +4832,6 @@
                 });
         });
         
-        // НОВОЕ: JavaScript для управления полями категорий номеров и типов питания
-        document.addEventListener('DOMContentLoaded', function() {
-            // Обработчики для включения/выключения полей цены категорий номеров
-            document.getElementById('roomSGL').addEventListener('change', function() {
-                document.getElementById('priceSGL').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceSGL').value = '';
-            });
-            
-            document.getElementById('roomTWL').addEventListener('change', function() {
-                document.getElementById('priceTWL').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceTWL').value = '';
-            });
-            
-            document.getElementById('roomDBL').addEventListener('change', function() {
-                document.getElementById('priceDBL').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceDBL').value = '';
-            });
-            
-            // НОВОЕ: Обработчики для включения/выключения полей цены типов питания
-            document.getElementById('mealRO').addEventListener('change', function() {
-                document.getElementById('priceMealRO').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceMealRO').value = '';
-            });
-            
-            document.getElementById('mealBB').addEventListener('change', function() {
-                document.getElementById('priceMealBB').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceMealBB').value = '';
-            });
-            
-            document.getElementById('mealHB').addEventListener('change', function() {
-                document.getElementById('priceMealHB').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceMealHB').value = '';
-            });
-            
-            document.getElementById('mealFB').addEventListener('change', function() {
-                document.getElementById('priceMealFB').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceMealFB').value = '';
-            });
-            
-            document.getElementById('mealAI').addEventListener('change', function() {
-                document.getElementById('priceMealAI').disabled = !this.checked;
-                if (!this.checked) document.getElementById('priceMealAI').value = '';
-            });
-        });
-
         // Initialize ObjectUploader for hotels
         let hotelUploader = null;
         let tourUploader = null;
@@ -5091,7 +4970,7 @@
                             }
                             
                             // Update gallery display for edit form
-                            updateGalleryImagesList();
+                            updateEditGalleryImagesList();
                         }
                     })
                     .catch(error => {
@@ -5103,7 +4982,7 @@
                 }
             });
             
-            // ИСПРАВЛЕНО: Не используем несуществующий tour-edit-uploader-container
+            window.tourEditUploader.createElement('tour-edit-uploader-container');
         }
 
         // Bookings functions
@@ -5137,7 +5016,7 @@
                             <td>${getPaymentBadge(order.paymentStatus)}</td>
                             <td>${getStatusBadge(order.status)}</td>
                             <td>
-                                <button onclick="viewBooking(${order.id})" class="text-gray-600 hover:text-gray-700">
+                                <button onclick="viewBooking(${order.id})" class="text-blue-600 hover:text-blue-800">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </td>
@@ -5286,7 +5165,7 @@
                                         ${'★'.repeat(Math.floor(guide.rating || 5))}${'☆'.repeat(5 - Math.floor(guide.rating || 5))}
                                     </span>
                                     <div>
-                                        <button onclick="editGuide(${guide.id})" class="text-gray-600 hover:text-gray-700 mr-2">
+                                        <button onclick="editGuide(${guide.id})" class="text-blue-600 hover:text-blue-800 mr-2">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button onclick="deleteGuide(${guide.id})" class="text-red-600 hover:text-red-800">
@@ -5338,7 +5217,7 @@
                             <td class="max-w-xs">
                                 <div class="truncate" title="${review.text}">${review.text}</div>
                                 ${review.text.length > 100 ? 
-                                    `<button onclick="showFullReview('${review.text.replace(/'/g, "\\'")}')" class="text-gray-600 text-xs">показать полностью</button>` 
+                                    `<button onclick="showFullReview('${review.text.replace(/'/g, "\\'")}')" class="text-blue-600 text-xs">показать полностью</button>` 
                                     : ''
                                 }
                             </td>
@@ -5561,7 +5440,7 @@
             const notification = document.createElement('div');
             notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white z-50 ${
                 type === 'success' ? 'bg-green-500' : 
-                type === 'error' ? 'bg-red-500' : 'bg-gray-600'
+                type === 'error' ? 'bg-red-500' : 'bg-blue-500'
             }`;
             notification.textContent = message;
             
@@ -5818,9 +5697,9 @@
         // CMS FUNCTIONS
         // =============================================
         
-        // CMS Tab switching - ИСПРАВЛЕНО
-        function switchCMSTab(tab) {
-            // Удалено: cmsToursTab больше не существует
+        // CMS Tab switching
+        // УДАЛЕНО: CMS tabs - больше нет дублированных форм
+        // function switchCMSTab(tab) {
             document.getElementById('cmsBlocksTab').style.display = 'none';
             document.getElementById('cmsSettingsTab').style.display = 'none';
             document.getElementById('cmsHomepageTab').style.display = 'none';
@@ -5875,7 +5754,7 @@
                             <td>${block.isActive ? '<span class="badge badge-success">Активен</span>' : '<span class="badge badge-warning">Неактивен</span>'}</td>
                             <td>${formatDate(block.updatedAt)}</td>
                             <td class="flex gap-2">
-                                <button onclick="editContentBlock(${block.id})" class="text-gray-600 hover:text-gray-700">
+                                <button onclick="editContentBlock(${block.id})" class="text-blue-600 hover:text-blue-800">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button onclick="deleteContentBlock(${block.id})" class="text-red-600 hover:text-red-800">
@@ -6192,7 +6071,7 @@
                             <td>${block.isActive ? '<span class="badge badge-success">Активен</span>' : '<span class="badge badge-warning">Неактивен</span>'}</td>
                             <td>${block.sortOrder}</td>
                             <td class="flex gap-2">
-                                <button onclick="editTourBlock(${block.id})" class="text-gray-600 hover:text-gray-700" title="Редактировать">
+                                <button onclick="editTourBlock(${block.id})" class="text-blue-600 hover:text-blue-800" title="Редактировать">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button onclick="manageTourBlockTours(${block.id})" class="text-green-600 hover:text-green-800" title="Управлять турами">
@@ -6442,12 +6321,29 @@
 
             // Load categories for selection
             loadCategories().then(categories => {
-                // Удалено: eTourCategoryId больше не существует
-                // Удалено: логика заполнения eTourCategoryId
+                const select = document.getElementById('eTourCategoryId');
+                if (select && categories) {
+                    select.innerHTML = '<option value="">Выберите категорию</option>' +
+                        categories.map(cat => {
+                            const title = JSON.parse(cat.title || '{}');
+                            return `<option value="${cat.id}">${title.ru || title.en || cat.name}</option>`;
+                        }).join('');
+                }
             });
         }
 
-        // УДАЛЕНО: Enhanced Tour Form Handler - больше не нужен
+        // Initialize Enhanced Tour Form Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const form = document.getElementById('enhancedTourForm');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        // УДАЛЕНО: Ссылка на saveEnhancedTour заменена на saveTourForm
+                    });
+                }
+            }, 100);
+        });
 
         // УДАЛЕНО: function saveEnhancedTour() - заменена единой логикой
         // function saveEnhancedTour() {
@@ -6456,6 +6352,92 @@
         // ===== TOUR FUNCTIONALITY CLEANED =====
         // ПОЛНОСТЬЮ УДАЛЕНА ДУБЛИРОВАННАЯ ФУНКЦИЯ saveEnhancedTour()
         
+        // ===== TRANSLATION FUNCTIONALITY =====
+        
+        // Show translations section
+                description: JSON.stringify({
+                    ru: document.getElementById('eTourFullDesc').value,
+                    en: document.getElementById('eTourFullDesc').value
+                }),
+                price: parseFloat(price),
+                priceType: document.getElementById('eTourPriceType').value || 'за человека',
+                originalPrice: document.getElementById('eTourOriginalPrice').value ? parseFloat(document.getElementById('eTourOriginalPrice').value) : null,
+                durationDays: parseInt(durationDays),
+                format: document.getElementById('eTourType').value, // Тип тура
+                tourType: document.getElementById('eTourType').value, // Для совместимости
+                difficulty: document.getElementById('eTourDifficulty').value || 'Легкий',
+                maxPeople: document.getElementById('eTourMaxPeople').value ? parseInt(document.getElementById('eTourMaxPeople').value) : null,
+                minPeople: document.getElementById('eTourMinPeople').value ? parseInt(document.getElementById('eTourMinPeople').value) : null,
+                country: document.getElementById('eTourCountry').value || 'Таджикистан',
+                city: document.getElementById('eTourCity').value || 'Душанбе',
+                mainImage: document.getElementById('eTourMainImage').value || '',
+                images: JSON.stringify(window.tourGalleryImages || []), // Галерея изображений
+                categoryId: parseInt(categoryId),
+                tourBlockId: document.getElementById('eTourBlockId').value ? parseInt(document.getElementById('eTourBlockId').value) : null,
+                isFeatured: document.getElementById('eTourIsFeatured') ? document.getElementById('eTourIsFeatured').checked : false,
+                // Новые поля
+                pickupInfo: document.getElementById('eTourPickupInfo').value || '',
+                startTimeOptions: JSON.stringify(window.editStartTimes || []), // Время начала
+                languages: document.getElementById('eTourLanguages').value || '["Русский"]', // Языки тура
+                // Календарные ограничения
+                availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
+                availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
+                isActive: true,
+                highlights: JSON.stringify(window.tourHighlights || []),
+                itinerary: JSON.stringify(window.tourItinerary || []),
+                includes: JSON.stringify(getSelectedIncludes()), // Что включено
+                excluded: JSON.stringify([])
+            };
+            
+            console.log('📝 Sending tour data:', formData);
+
+            // Определяем режим: создание или редактирование
+            const isEditing = window.currentTourId && window.currentTourId !== null;
+            const url = isEditing ? `${getApiUrl()}/tours/${window.currentTourId}` : `${getApiUrl()}/tours`;
+            const method = isEditing ? 'PUT' : 'POST';
+            
+            console.log('🚀 Saving enhanced tour:', {
+                isEditing: isEditing,
+                currentTourId: currentTourId,
+                windowCurrentTourId: window.currentTourId,
+                url: url,
+                method: method,
+                formDataKeys: Object.keys(formData)
+            });
+            
+            fetch(url, {
+                method: method,
+                headers: getAuthHeaders(),
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const message = isEditing ? 'Тур успешно обновлён!' : 'Тур успешно создан!';
+                    alert(message);
+                    if (isEditing) {
+                        // При редактировании НЕ закрываем модальное окно сразу - сначала чистим ID
+                        console.log('🔄 Tour edited successfully - clearing currentTourId before closing modal');
+                        currentTourId = null;
+                        window.currentTourId = null;
+                        closeTourModal();
+                        loadTours();
+                    } else {
+                        // При создании очищаем форму
+                        document.getElementById('enhancedTourForm').reset();
+                        loadEnhancedTourForm(); // Reload form to refresh selects
+                    }
+                } else {
+                    const action = isEditing ? 'обновлении' : 'создании';
+                    alert(`Ошибка при ${action} тура: ` + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Error saving tour:', err);
+                alert('Ошибка соединения с сервером');
+            });
+        }
+
         // ===== TRANSLATION FUNCTIONALITY =====
         
         // Show translations section
@@ -6973,7 +6955,7 @@
                     if (textElement) {
                         textElement.textContent = categoryNameRu;
                         textElement.classList.remove('text-gray-600');
-                        textElement.classList.add('text-gray-600');
+                        textElement.classList.add('text-blue-600');
                     }
                 }
                 
