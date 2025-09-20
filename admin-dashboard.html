@@ -6354,52 +6354,6 @@
         // ===== TRANSLATION FUNCTIONALITY =====
         
         // Show translations section
-            
-            console.log('📝 Sending tour data:', formData);
-
-            // Определяем режим: создание или редактирование
-            const isEditing = window.currentTourId && window.currentTourId !== null;
-            const url = isEditing ? `${getApiUrl()}/tours/${window.currentTourId}` : `${getApiUrl()}/tours`;
-            const method = isEditing ? 'PUT' : 'POST';
-            
-            console.log('🚀 Saving enhanced tour:', {
-                isEditing: isEditing,
-                url: url,
-                method: method
-            });
-            
-            fetch(url, {
-                method: method,
-                headers: getAuthHeaders(),
-                body: JSON.stringify(formData)
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const message = isEditing ? 'Тур успешно обновлён!' : 'Тур успешно создан!';
-                    alert(message);
-                    if (isEditing) {
-                        // При редактировании НЕ закрываем модальное окно сразу - сначала чистим ID
-                        console.log('🔄 Tour edited successfully - clearing currentTourId before closing modal');
-                        currentTourId = null;
-                        window.currentTourId = null;
-                        closeTourModal();
-                        loadTours();
-                    } else {
-                        // При создании очищаем форму
-                        document.getElementById('enhancedTourForm').reset();
-                        loadEnhancedTourForm(); // Reload form to refresh selects
-                    }
-                } else {
-                    const action = isEditing ? 'обновлении' : 'создании';
-                    alert(`Ошибка при ${action} тура: ` + (data.message || 'Неизвестная ошибка'));
-                }
-            })
-            .catch(err => {
-                console.error('Error saving tour:', err);
-                alert('Ошибка соединения с сервером');
-            });
-        }
 
         // ===== TRANSLATION FUNCTIONALITY =====
         
