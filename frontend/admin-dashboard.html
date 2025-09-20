@@ -2340,8 +2340,8 @@
                 <input type="hidden" id="newsId">
                 
                 <!-- 🌐 МНОГОЯЗЫЧНЫЕ ПОЛЯ НОВОСТЕЙ -->
-                <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400 mb-4">
-                    <h4 class="font-medium text-blue-800 mb-3">🌐 Заголовок новости (многоязычный)</h4>
+                <div class="mb-4">
+                    <h4 class="font-medium text-gray-800 mb-3">🌐 Заголовок новости (многоязычный)</h4>
                     <div class="grid grid-cols-1 gap-3">
                         <div class="form-group">
                             <label class="form-label">Заголовок (Русский) *</label>
@@ -2354,8 +2354,8 @@
                     </div>
                 </div>
                 
-                <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-400 mb-4">
-                    <h4 class="font-medium text-green-800 mb-3">📝 Краткое описание (многоязычное)</h4>
+                <div class="mb-4">
+                    <h4 class="font-medium text-gray-800 mb-3">📝 Краткое описание (многоязычное)</h4>
                     <div class="grid grid-cols-1 gap-3">
                         <div class="form-group">
                             <label class="form-label">Краткое описание (Русский)</label>
@@ -2368,8 +2368,8 @@
                     </div>
                 </div>
                 
-                <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400 mb-4">
-                    <h4 class="font-medium text-yellow-800 mb-3">📄 Полный контент (многоязычный)</h4>
+                <div class="mb-4">
+                    <h4 class="font-medium text-gray-800 mb-3">📄 Полный контент (многоязычный)</h4>
                     <div class="grid grid-cols-1 gap-3">
                         <div class="form-group">
                             <label class="form-label">Контент (Русский) *</label>
@@ -2382,28 +2382,13 @@
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div class="form-group">
-                        <label class="form-label">Категория *</label>
-                        <select id="newsCategory" class="form-input" required>
-                            <option value="">Выберите категорию</option>
-                            <option value="tours">Туры</option>
-                            <option value="events">События</option>
-                            <option value="announcements">Объявления</option>
-                            <option value="tips">Советы</option>
-                            <option value="general">Общие</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Автор</label>
-                        <input type="text" id="newsAuthor" class="form-input" placeholder="Bunyod-Tour">
-                    </div>
-                </div>
                 
                 <div class="form-group mb-4">
-                    <label class="form-label">URL изображения</label>
-                    <input type="url" id="newsImage" class="form-input" placeholder="https://example.com/image.jpg">
+                    <label class="form-label">Изображение новости</label>
+                    <input type="file" id="newsImageFile" class="form-input" accept="image/*">
+                    <div id="newsImagePreview" class="mt-2" style="display: none;">
+                        <img id="newsImagePreviewImg" class="w-32 h-32 object-cover rounded" alt="Превью изображения">
+                    </div>
                 </div>
                 
                 <div class="grid grid-cols-3 gap-4 mb-4">
@@ -2427,10 +2412,6 @@
                     </div>
                 </div>
                 
-                <div class="form-group mb-6">
-                    <label class="form-label">SEO - Meta описание</label>
-                    <textarea id="newsMetaDesc" class="form-input" rows="2" placeholder="Описание для поисковых систем (optional)"></textarea>
-                </div>
                 
                 <div class="flex justify-end gap-3">
                     <button type="button" onclick="closeNewsModal()" class="btn btn-secondary">
@@ -12942,16 +12923,30 @@
                     if (data.success) {
                         const news = data.data;
                         document.getElementById('newsId').value = news.id;
-                        document.getElementById('newsTitle').value = news.title;
-                        document.getElementById('newsExcerpt').value = news.excerpt || '';
-                        document.getElementById('newsContent').value = news.content;
-                        document.getElementById('newsCategory').value = news.category;
-                        document.getElementById('newsAuthor').value = news.author;
-                        document.getElementById('newsImage').value = news.image || '';
+                        
+                        // Parse multilingual data
+                        const title = typeof news.title === 'string' ? JSON.parse(news.title) : news.title;
+                        const excerpt = typeof news.excerpt === 'string' ? JSON.parse(news.excerpt) : news.excerpt;
+                        const content = typeof news.content === 'string' ? JSON.parse(news.content) : news.content;
+                        
+                        document.getElementById('newsTitleRu').value = title?.ru || '';
+                        document.getElementById('newsTitleEn').value = title?.en || '';
+                        document.getElementById('newsExcerptRu').value = excerpt?.ru || '';
+                        document.getElementById('newsExcerptEn').value = excerpt?.en || '';
+                        document.getElementById('newsContentRu').value = content?.ru || '';
+                        document.getElementById('newsContentEn').value = content?.en || '';
+                        
                         document.getElementById('newsPublished').checked = news.isPublished;
                         document.getElementById('newsFeatured').checked = news.isFeatured;
                         document.getElementById('newsReadTime').value = news.readTime || '';
-                        document.getElementById('newsMetaDesc').value = news.metaDescription || '';
+                        
+                        // Show image preview if exists
+                        if (news.image) {
+                            document.getElementById('newsImagePreview').style.display = 'block';
+                            document.getElementById('newsImagePreviewImg').src = news.image;
+                        } else {
+                            document.getElementById('newsImagePreview').style.display = 'none';
+                        }
                     }
                 } else {
                     alert('Ошибка загрузки данных новости');
@@ -12966,38 +12961,54 @@
         async function saveNews() {
             const newsId = document.getElementById('newsId').value;
             
-            // Build trilingual title object
+            // Build bilingual title object
             const titleData = {
                 ru: document.getElementById('newsTitleRu').value || '',
-                en: document.getElementById('newsTitleEn').value || '',
-                tj: document.getElementById('newsTitleTj').value || ''
+                en: document.getElementById('newsTitleEn').value || ''
             };
             
-            // Build trilingual excerpt object
+            // Build bilingual excerpt object
             const excerptData = {
                 ru: document.getElementById('newsExcerptRu').value || '',
-                en: document.getElementById('newsExcerptEn').value || '',
-                tj: document.getElementById('newsExcerptTj').value || ''
+                en: document.getElementById('newsExcerptEn').value || ''
             };
             
-            // Build trilingual content object
+            // Build bilingual content object
             const contentData = {
                 ru: document.getElementById('newsContentRu').value || '',
-                en: document.getElementById('newsContentEn').value || '',
-                tj: document.getElementById('newsContentTj').value || ''
+                en: document.getElementById('newsContentEn').value || ''
             };
+            
+            // Handle image upload
+            let imageUrl = null;
+            const imageFile = document.getElementById('newsImageFile').files[0];
+            if (imageFile) {
+                // Upload image first
+                const formData = new FormData();
+                formData.append('file', imageFile);
+                try {
+                    const uploadResponse = await fetch(`${getApiUrl()}/upload/single`, {
+                        method: 'POST',
+                        headers: getAuthHeaders(),
+                        body: formData
+                    });
+                    const uploadData = await uploadResponse.json();
+                    if (uploadData.success) {
+                        imageUrl = uploadData.data.url;
+                    }
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                }
+            }
             
             const newsData = {
                 title: JSON.stringify(titleData),
                 excerpt: JSON.stringify(excerptData),
                 content: JSON.stringify(contentData),
-                category: document.getElementById('newsCategory').value,
-                author: document.getElementById('newsAuthor').value || 'Bunyod-Tour',
-                image: document.getElementById('newsImage').value || null,
+                image: imageUrl,
                 isPublished: document.getElementById('newsPublished').checked,
                 isFeatured: document.getElementById('newsFeatured').checked,
-                readTime: parseInt(document.getElementById('newsReadTime').value) || null,
-                metaDescription: document.getElementById('newsMetaDesc').value || null
+                readTime: parseInt(document.getElementById('newsReadTime').value) || null
             };
             
             try {
@@ -13095,6 +13106,24 @@
                     dropdown.classList.add('hidden');
                 }
             });
+            
+            // Image preview handler for news
+            const newsImageFile = document.getElementById('newsImageFile');
+            if (newsImageFile) {
+                newsImageFile.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            document.getElementById('newsImagePreview').style.display = 'block';
+                            document.getElementById('newsImagePreviewImg').src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        document.getElementById('newsImagePreview').style.display = 'none';
+                    }
+                });
+            }
         });
 
     </script>
