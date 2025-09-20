@@ -3528,12 +3528,20 @@
 
         // Load categories from API
         function loadCategories() {
+            console.log('🏷️ Starting loadCategories()...');
+            console.log('🏷️ API URL:', `${getApiUrl()}/categories`);
+            
             return fetch(`${getApiUrl()}/categories`, {
                 headers: getAuthHeaders()
             })
-                .then(res => res.json())
+                .then(res => {
+                    console.log('🏷️ Categories API response status:', res.status);
+                    return res.json();
+                })
                 .then(data => {
+                    console.log('🏷️ Categories API response data:', data);
                     const categories = data.data || data.categories || [];
+                    console.log('🏷️ Processed categories array:', categories);
                     
                     // Update available categories select
                     const availableSelect = document.getElementById('availableCategories');
