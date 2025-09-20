@@ -7558,9 +7558,16 @@
             // Парсим контакты и документы
             let contact = {};
             try {
-                contact = guide.contact ? JSON.parse(guide.contact) : {};
+                if (guide.contact) {
+                    if (typeof guide.contact === 'string') {
+                        contact = JSON.parse(guide.contact);
+                    } else if (typeof guide.contact === 'object') {
+                        contact = guide.contact;
+                    }
+                }
             } catch (e) {
-                console.warn('Error parsing contact:', e);
+                console.warn('Error parsing contact:', guide.contact, e);
+                contact = {};
             }
             
             let documents = [];
