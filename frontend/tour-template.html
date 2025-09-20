@@ -345,16 +345,33 @@
                                 <p>Этот тур предлагает уникальную возможность испытать дух приключений и насладиться одними из самых впечатляющих пейзажей в мире.</p>
                             </div>
 
-                            <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-4" data-translate="tour.included">Что включено:</h3>
-                            <ul class="space-y-2" id="tour-includes">
-                                <!-- Данные загружаются динамически из админ панели -->
-                            </ul>
-                            
-                            <div id="tour-excludes-section" style="display: none;">
-                                <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-4" data-translate="tour.not_included">Не включено в тур:</h3>
-                                <ul class="space-y-2" id="tour-excludes">
-                                    <!-- Данные загружаются динамически из админ панели -->
-                                </ul>
+                            <!-- Two column layout for included/excluded services -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                                <!-- Left Column: What's Included -->
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center" data-translate="tour.included">
+                                        <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        Что включено:
+                                    </h3>
+                                    <ul class="space-y-2" id="tour-includes">
+                                        <!-- Данные загружаются динамически из админ панели -->
+                                    </ul>
+                                </div>
+                                
+                                <!-- Right Column: What's Not Included -->
+                                <div id="tour-excludes-section">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center" data-translate="tour.not_included">
+                                        <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                        Не включено в тур:
+                                    </h3>
+                                    <ul class="space-y-2" id="tour-excludes">
+                                        <!-- Данные загружаются динамически из админ панели -->
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
@@ -869,6 +886,7 @@
                         images: apiTour.images ? (typeof apiTour.images === 'string' ? JSON.parse(apiTour.images) : apiTour.images) : [],
                         highlights: apiTour.highlights ? (typeof apiTour.highlights === 'string' ? JSON.parse(apiTour.highlights) : apiTour.highlights) : [],
                         includes: apiTour.includes ? (typeof apiTour.includes === 'string' ? JSON.parse(apiTour.includes) : apiTour.includes) : [],
+                        excluded: apiTour.excluded ? (typeof apiTour.excluded === 'string' ? JSON.parse(apiTour.excluded) : apiTour.excluded) : [], // Поле "Не включено в тур"
                         itinerary: apiTour.itinerary ? (typeof apiTour.itinerary === 'string' ? JSON.parse(apiTour.itinerary) : apiTour.itinerary) : [],
                         mainImage: apiTour.mainImage || '',
                         startTimeOptions: apiTour.startTimeOptions || '',
