@@ -185,11 +185,11 @@ export class TourController {
       try {
         parsedTour = {
           ...tour,
-          title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
-          description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
+          title: safeJsonParse(tour.title),
+          description: safeJsonParse(tour.description),
           category: tour.category ? {
             ...tour.category,
-            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+            name: safeJsonParse(tour.category.name)
           } : null
           // НЕ удаляем mainImage и images - они нужны для редактирования!
         };
@@ -483,11 +483,11 @@ export class TourController {
       try {
         parsedTour = {
           ...tour,
-          title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
-          description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
+          title: safeJsonParse(tour.title),
+          description: safeJsonParse(tour.description),
           category: tour.category ? {
             ...tour.category,
-            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+            name: safeJsonParse(tour.category.name)
           } : null
         };
       } catch (jsonError) {
@@ -554,7 +554,7 @@ export class TourController {
       // Parse JSON strings if needed (same as createTour)
       if (typeof title === 'string') {
         try {
-          title = JSON.parse(title);
+          title = safeJsonParse(title);
           console.log('Parsed title for update:', title);
         } catch (e) {
           console.error('Failed to parse title:', e);
@@ -567,7 +567,7 @@ export class TourController {
 
       if (typeof description === 'string') {
         try {
-          description = JSON.parse(description);
+          description = safeJsonParse(description);
           console.log('Parsed description for update:', description);
         } catch (e) {
           console.error('Failed to parse description:', e);
@@ -723,11 +723,11 @@ export class TourController {
       try {
         parsedTour = {
           ...tour,
-          title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
-          description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
+          title: safeJsonParse(tour.title),
+          description: safeJsonParse(tour.description),
           category: tour.category ? {
             ...tour.category,
-            name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+            name: safeJsonParse(tour.category.name)
           } : null
         };
       } catch (jsonError) {
@@ -827,8 +827,8 @@ export class TourController {
         
         // Filter tours that match the search query
         const matchingTours = allTours.filter((tour: any) => {
-          const title = JSON.parse(tour.title) as MultilingualContent;
-          const description = JSON.parse(tour.description) as MultilingualContent;
+          const title = safeJsonParse(tour.title);
+          const description = safeJsonParse(tour.description);
           
           // Check in Russian content
           const titleRu = title.ru?.toLowerCase() || '';
@@ -927,11 +927,11 @@ export class TourController {
       // Parse JSON fields for response
       const parsedTours = tours.map((tour: any) => ({
         ...tour,
-        title: JSON.parse(tour.title) as MultilingualContent,
-        description: JSON.parse(tour.description) as MultilingualContent,
+        title: safeJsonParse(tour.title),
+        description: safeJsonParse(tour.description),
         category: tour.category ? {
           ...tour.category,
-          name: JSON.parse(tour.category.name) as MultilingualContent
+          name: safeJsonParse(tour.category.name)
         } : null
       }));
 
@@ -985,7 +985,7 @@ export class TourController {
           // Безопасная обработка поля title (может быть строкой или JSON)
           if (typeof tour.title === 'string') {
             try {
-              title = JSON.parse(tour.title) as MultilingualContent;
+              title = safeJsonParse(tour.title);
             } catch (e) {
               // Если это обычная строка, используем её как русский заголовок
               title = { ru: tour.title, en: tour.title };
@@ -1080,7 +1080,7 @@ export class CategoryController {
       // Parse JSON fields for response
       const parsedCategories = categories.map((category: any) => ({
         ...category,
-        name: JSON.parse(category.name) as MultilingualContent
+        name: safeJsonParse(category.name)
       }));
 
       const response: ApiResponse = {
@@ -1122,11 +1122,11 @@ export class CategoryController {
       // Parse JSON fields for response
       const parsedCategory = {
         ...category,
-        name: JSON.parse(category.name) as MultilingualContent,
+        name: safeJsonParse(category.name),
         tours: category.tours?.map((tour: any) => ({
           ...tour,
-          title: JSON.parse(tour.title) as MultilingualContent,
-          description: JSON.parse(tour.description) as MultilingualContent
+          title: safeJsonParse(tour.title),
+          description: safeJsonParse(tour.description)
         }))
       };
 
@@ -1172,7 +1172,7 @@ export class CategoryController {
       // Parse JSON fields for response
       const parsedCategory = {
         ...category,
-        name: JSON.parse(category.name) as MultilingualContent
+        name: safeJsonParse(category.name)
       };
 
       const response: ApiResponse = {
@@ -1220,7 +1220,7 @@ export class CategoryController {
       // Parse JSON fields for response
       const parsedCategory = {
         ...category,
-        name: JSON.parse(category.name) as MultilingualContent
+        name: safeJsonParse(category.name)
       };
 
       const response: ApiResponse = {
@@ -1287,11 +1287,11 @@ export class BookingRequestController {
         ...request,
         tour: {
           ...request.tour,
-          title: JSON.parse(request.tour.title) as MultilingualContent,
-          description: JSON.parse(request.tour.description) as MultilingualContent,
+          title: safeJsonParse(request.tour.title),
+          description: safeJsonParse(request.tour.description),
           category: {
             ...request.tour.category,
-            name: JSON.parse(request.tour.category.name) as MultilingualContent
+            name: safeJsonParse(request.tour.category.name)
           }
         }
       }));

@@ -87,11 +87,10 @@ export const getAllGuides = async (req: Request, res: Response) => {
         return {
           ...guide,
           photo: photoPath,
-          name: typeof guide.name === 'string' && guide.name.startsWith('{') ? JSON.parse(guide.name) : guide.name,
-          description: guide.description && typeof guide.description === 'string' && guide.description.startsWith('{') ? JSON.parse(guide.description) : guide.description,
-          languages: typeof guide.languages === 'string' && (guide.languages.startsWith('[') || guide.languages.startsWith('"[')) ? 
-            JSON.parse(guide.languages.replace(/^"(.+)"$/, '$1')) : guide.languages,
-          contact: guide.contact && typeof guide.contact === 'string' && guide.contact.startsWith('{') ? JSON.parse(guide.contact) : guide.contact,
+          name: safeJsonParse(guide.name),
+          description: safeJsonParse(guide.description),
+          languages: safeJsonParse(guide.languages),
+          contact: safeJsonParse(guide.contact),
           password: undefined, // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
         };
       } catch (error) {
