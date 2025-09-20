@@ -271,8 +271,8 @@ class LayoutLoader {
             console.log('🗺️ Creating map iframe...');
             
             // Координаты офиса Бунёд-Тур (точные GPS координаты)
-            const lat = 38.553337938993764;
-            const lng = 68.84494199525761;
+            const lat = 38.55332115848599;
+            const lng = 68.844931266422;
             
             // Создаем встроенную карту через OpenStreetMap iframe
             const mapURL = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.01},${lat-0.01},${lng+0.01},${lat+0.01}&layer=mapnik&marker=${lat},${lng}`;
