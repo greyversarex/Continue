@@ -70,15 +70,7 @@ app.get('/booking-step3.html', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'frontend', 'booking-flow.html'));
 // });
 
-// React Admin Panel - explicit route BEFORE static middleware
-app.get('/react-admin-panel.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'react-admin-panel.html'));
-});
-
-// Simple Admin Panel - explicit route BEFORE static middleware
-app.get('/simple-admin-panel.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'simple-admin-panel.html'));
-});
+// Removed non-existent admin panel routes to eliminate confusion
 
 // Import TypeScript backend routes directly (with better error handling)
 try {
