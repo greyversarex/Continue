@@ -207,16 +207,25 @@ export const deleteComponent = async (req: Request, res: Response) => {
 };
 
 /**
- * Initialize default pricing components
+ * Initialize default pricing components and ensure tours have accommodation component
  */
 export const initializeDefaults = async (req: Request, res: Response) => {
   try {
+    // 1. Инициализируем базовые компоненты  
     const components = await PriceCalculatorModel.initializeDefaults();
+    
+    // 2. Обеспечиваем, что все туры имеют компонент проживания (для устойчивости при миграции)
+    const toursFixed = await ensureToursHaveAccommodation();
+    
+    let message = `Инициализировано ${components.length} компонентов по умолчанию`;
+    if (toursFixed > 0) {
+      message += `, обновлено ${toursFixed} туров с компонентом проживания`;
+    }
     
     res.json({
       success: true,
       data: components,
-      message: `Инициализировано ${components.length} компонентов по умолчанию`
+      message
     });
   } catch (error) {
     console.error('Error initializing default components:', error);
@@ -226,6 +235,84 @@ export const initializeDefaults = async (req: Request, res: Response) => {
     });
   }
 };
+
+/**
+ * Автоматическое добавление компонента проживания в туры, которые его не имеют
+ * Обеспечивает устойчивость системы при миграции
+ */
+async function ensureToursHaveAccommodation(): Promise<number> {
+  try {
+    const prisma = (await import('../config/database')).default;
+    
+    // Получаем компонент проживания из базы
+    const accommodationComponent = await PriceCalculatorModel.findByKey('accommodation_std');
+    if (!accommodationComponent) {
+      console.log('⚠️ Accommodation component not found, skipping tour updates');
+      return 0;
+    }
+    
+    // Получаем все туры
+    const tours = await prisma.tour.findMany({
+      select: { id: true, services: true, title: true }
+    });
+    
+    let updatedCount = 0;
+    
+    for (const tour of tours) {
+      try {
+        let services = [];
+        
+        // Парсим существующие услуги тура
+        if (tour.services) {
+          try {
+            services = JSON.parse(tour.services);
+          } catch (e) {
+            console.log(`⚠️ Failed to parse services for tour ${tour.id}, starting fresh`);
+            services = [];
+          }
+        }
+        
+        // Проверяем, есть ли уже компонент проживания
+        const hasAccommodation = services.some((service: any) => 
+          service.key === 'accommodation_std' || 
+          (service.key && service.key.includes('accommodation'))
+        );
+        
+        if (!hasAccommodation) {
+          // Добавляем компонент проживания
+          services.push({
+            key: 'accommodation_std',
+            name: accommodationComponent.name,
+            price: accommodationComponent.price,
+            unit: accommodationComponent.unit,
+            quantity: 1
+          });
+          
+          // Обновляем тур
+          await prisma.tour.update({
+            where: { id: tour.id },
+            data: { services: JSON.stringify(services) }
+          });
+          
+          updatedCount++;
+          console.log(`✅ Added accommodation to tour ${tour.id}: ${JSON.stringify(tour.title).substring(0, 50)}...`);
+        }
+      } catch (error) {
+        console.error(`❌ Error updating tour ${tour.id}:`, error);
+        // Продолжаем обработку других туров
+      }
+    }
+    
+    if (updatedCount > 0) {
+      console.log(`🏨 Migration completed: Added accommodation component to ${updatedCount} tours`);
+    }
+    
+    return updatedCount;
+  } catch (error) {
+    console.error('❌ Error ensuring tours have accommodation:', error);
+    return 0;
+  }
+}
 
 /**
  * Calculate tour price based on selected components

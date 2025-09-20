@@ -16,14 +16,34 @@ async function getAccommodationPriceFromTour(tourServices: string): Promise<numb
     
     // Ищем компонент проживания (accommodation) среди услуг тура
     const accommodationService = services.find((service: any) => {
-      return service.key && (
-        service.key.includes('accommodation') || 
-        service.key.includes('хостел') || 
-        service.key.includes('гостиница') ||
-        service.name.toLowerCase().includes('хостел') ||
-        service.name.toLowerCase().includes('гостиница') ||
-        service.name.toLowerCase().includes('проживание')
-      );
+      // Защита от null/undefined значений
+      if (!service || !service.key) {
+        return false;
+      }
+      
+      // Приоритет: точное совпадение по ключу
+      if (service.key === 'accommodation_std') {
+        return true;
+      }
+      
+      // Поиск по части ключа  
+      if (service.key.includes('accommodation') || 
+          service.key.includes('хостел') || 
+          service.key.includes('гостиница')) {
+        return true;
+      }
+      
+      // Поиск по названию (с защитой от null)
+      if (service.name && typeof service.name === 'string') {
+        const nameLower = service.name.toLowerCase();
+        if (nameLower.includes('хостел') ||
+            nameLower.includes('гостиница') ||
+            nameLower.includes('проживание')) {
+          return true;
+        }
+      }
+      
+      return false;
     });
     
     if (accommodationService) {
@@ -113,16 +133,18 @@ export const bookingController = {
         console.log(`💰 Calculate - Tour base price: ${totalPrice} TJS`);
         console.log(`🏨 Calculate - Tour accommodation component: ${tourAccommodationPrice} TJS`);
         
-        // Вычитаем стоимость компонента проживания из тура
+        // Вычитаем стоимость компонента проживания из тура (с учетом длительности!)
         if (tourAccommodationPrice > 0) {
           if (tourPriceType === 'за человека') {
-            // Для цены "за человека" вычитаем проживание на всех туристов
-            totalPrice -= tourAccommodationPrice * existingBooking.numberOfTourists;
-            console.log(`➖ Calculate - Subtracted accommodation (per person): ${tourAccommodationPrice} x ${existingBooking.numberOfTourists} = ${tourAccommodationPrice * existingBooking.numberOfTourists} TJS`);
+            // Для цены "за человека" вычитаем проживание на всех туристов на все дни
+            const accommodationDeduction = tourAccommodationPrice * existingBooking.numberOfTourists * tourDuration;
+            totalPrice -= accommodationDeduction;
+            console.log(`➖ Calculate - Subtracted accommodation (per person): ${tourAccommodationPrice} x ${existingBooking.numberOfTourists} x ${tourDuration} days = ${accommodationDeduction} TJS`);
           } else {
-            // Для цены "за группу" вычитаем проживание один раз
-            totalPrice -= tourAccommodationPrice;
-            console.log(`➖ Calculate - Subtracted accommodation (per group): ${tourAccommodationPrice} TJS`);
+            // Для цены "за группу" вычитаем проживание на все дни
+            const accommodationDeduction = tourAccommodationPrice * tourDuration;
+            totalPrice -= accommodationDeduction;
+            console.log(`➖ Calculate - Subtracted accommodation (per group): ${tourAccommodationPrice} x ${tourDuration} days = ${accommodationDeduction} TJS`);
           }
         }
         
@@ -413,16 +435,18 @@ export const bookingController = {
         console.log(`💰 Update - Tour base price: ${totalPrice} TJS`);
         console.log(`🏨 Update - Tour accommodation component: ${tourAccommodationPrice} TJS`);
         
-        // Вычитаем стоимость компонента проживания из тура
+        // Вычитаем стоимость компонента проживания из тура (с учетом длительности!)
         if (tourAccommodationPrice > 0) {
           if (tourPriceType === 'за человека') {
-            // Для цены "за человека" вычитаем проживание на всех туристов
-            totalPrice -= tourAccommodationPrice * existingBooking.numberOfTourists;
-            console.log(`➖ Update - Subtracted accommodation (per person): ${tourAccommodationPrice} x ${existingBooking.numberOfTourists} = ${tourAccommodationPrice * existingBooking.numberOfTourists} TJS`);
+            // Для цены "за человека" вычитаем проживание на всех туристов на все дни
+            const accommodationDeduction = tourAccommodationPrice * existingBooking.numberOfTourists * tourDuration;
+            totalPrice -= accommodationDeduction;
+            console.log(`➖ Update - Subtracted accommodation (per person): ${tourAccommodationPrice} x ${existingBooking.numberOfTourists} x ${tourDuration} days = ${accommodationDeduction} TJS`);
           } else {
-            // Для цены "за группу" вычитаем проживание один раз
-            totalPrice -= tourAccommodationPrice;
-            console.log(`➖ Update - Subtracted accommodation (per group): ${tourAccommodationPrice} TJS`);
+            // Для цены "за группу" вычитаем проживание на все дни
+            const accommodationDeduction = tourAccommodationPrice * tourDuration;
+            totalPrice -= accommodationDeduction;
+            console.log(`➖ Update - Subtracted accommodation (per group): ${tourAccommodationPrice} x ${tourDuration} days = ${accommodationDeduction} TJS`);
           }
         }
         

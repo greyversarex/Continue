@@ -912,7 +912,10 @@ export class PriceCalculatorModel {
       // Транспорт по время туза  
       { key: 'transport_tour_4wd', category: 'tour_transport', name: 'Транспорт по время туза, 4WD', price: 1500.0, unit: 'единица/день', sortOrder: 1 },
       { key: 'transport_tour_car', category: 'tour_transport', name: 'Транспорт по время туза, легковые', price: 400.0, unit: 'единица/день', sortOrder: 2 },
-      { key: 'transport_tour_minibus', category: 'tour_transport', name: 'Транспорт по время туза, минивэнбус', price: 2000.0, unit: 'единица/день', sortOrder: 3 }
+      { key: 'transport_tour_minibus', category: 'tour_transport', name: 'Транспорт по время туза, минивэнбус', price: 2000.0, unit: 'единица/день', sortOrder: 3 },
+      
+      // Проживание (специальный компонент с динамической логикой)
+      { key: 'accommodation_std', category: 'accommodation', name: 'Проживание, STD', price: 800.0, unit: 'человек/день', sortOrder: 1 }
     ];
 
     const results = [];
