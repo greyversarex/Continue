@@ -17,13 +17,7 @@
 
     <!-- Main Content -->
     <div class="pt-28">
-        <!-- Hero Section -->
-        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-            <div class="max-w-6xl mx-auto px-6 py-16">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4" data-translate="hotel.hotels_catalog">Каталог отелей</h1>
-                <p class="text-xl opacity-90" data-translate="hotel.choose_ideal_place">Выберите идеальное место для вашего отдыха</p>
-            </div>
-        </div>
+        <!-- ❌ СИНИЙ БАННЕР УДАЛЕН по запросу пользователя -->
 
         <!-- Filters Section -->
         <div class="max-w-6xl mx-auto px-6 py-6">
@@ -227,7 +221,7 @@
                                     ${hotel.brand ? `<span class="font-medium">${hotel.brand}</span>` : ''}
                                     ${hotel.category ? `<span class="ml-2">${hotel.category}</span>` : ''}
                                 </div>
-                                <a href="/hotel-template.html?id=${hotel.id}" 
+                                <a href="/hotel-template.html?hotel=${hotel.id}" 
                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                                     Подробнее
                                 </a>
