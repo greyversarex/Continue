@@ -9509,10 +9509,6 @@
                                             <label class="form-label">Название блока (EN)</label>
                                             <input type="text" class="form-input" id="blockTitleEn" required>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="form-label">Название блока (TJ)</label>
-                                            <input type="text" class="form-input" id="blockTitleTj" placeholder="Номи блоки саёҳат дар тоҷикӣ" required>
-                                        </div>
                                         <div class="form-group lg:col-span-2">
                                             <label class="form-label">Описание блока (RU)</label>
                                             <textarea class="form-input" id="blockDescRu" rows="3"></textarea>
@@ -9520,10 +9516,6 @@
                                         <div class="form-group lg:col-span-2">
                                             <label class="form-label">Описание блока (EN)</label>
                                             <textarea class="form-input" id="blockDescEn" rows="3"></textarea>
-                                        </div>
-                                        <div class="form-group lg:col-span-2">
-                                            <label class="form-label">Описание блока (TJ)</label>
-                                            <textarea class="form-input" id="blockDescTj" placeholder="Тавсифи блоки саёҳат дар тоҷикӣ" rows="3"></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Слаг (URL)</label>
@@ -9595,10 +9587,8 @@
                     
                     document.getElementById('blockTitleRu').value = title.ru || '';
                     document.getElementById('blockTitleEn').value = title.en || '';
-                    document.getElementById('blockTitleTj').value = title.tj || '';
                     document.getElementById('blockDescRu').value = description.ru || '';
                     document.getElementById('blockDescEn').value = description.en || '';
-                    document.getElementById('blockDescTj').value = description.tj || '';
                     document.getElementById('blockSlug').value = block.slug || '';
                     document.getElementById('blockSortOrder').value = block.sortOrder || 0;
                     document.getElementById('blockIsActive').checked = block.isActive;
@@ -9629,13 +9619,11 @@
             const formData = {
                 title: JSON.stringify({
                     ru: safeGetValue('blockTitleRu', ''),
-                    en: safeGetValue('blockTitleEn', ''),
-                    tj: safeGetValue('blockTitleTj', '')
+                    en: safeGetValue('blockTitleEn', '')
                 }),
                 description: JSON.stringify({
                     ru: safeGetValue('blockDescRu', ''),
-                    en: safeGetValue('blockDescEn', ''),
-                    tj: safeGetValue('blockDescTj', '')
+                    en: safeGetValue('blockDescEn', '')
                 }),
                 slug: safeGetValue('blockSlug', ''),
                 sortOrder: safeGetValue('blockSortOrder', 0, 'int'),
