@@ -124,8 +124,21 @@ app.use((req, res, next) => {
 // Add direct route for /api/objects/direct/* to serve uploaded images
 app.use('/api/objects/direct', express.static(path.join(__dirname, 'uploads/images')));
 
-// Add secure route for tour guide photos
-app.use('/uploads/guides', express.static(path.join(__dirname, 'uploads/guides')));
+// Add secure route for tour guide photos (only images, not documents)
+app.use('/uploads/guides', (req, res, next) => {
+  // Security: Only allow image files, block documents
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+  const fileExtension = path.extname(req.path).toLowerCase();
+  
+  if (allowedExtensions.includes(fileExtension)) {
+    express.static(path.join(__dirname, 'uploads/guides'))(req, res, next);
+  } else {
+    res.status(403).json({ 
+      success: false, 
+      message: 'Access denied: Only image files are allowed' 
+    });
+  }
+});
 
 // Add upload routes for simple image handling
 const uploadRoutes = require('./src/routes/uploadRoutes.ts').default;
