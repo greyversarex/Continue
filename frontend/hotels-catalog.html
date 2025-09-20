@@ -368,7 +368,7 @@
         function getApiUrl() {
             const hostname = window.location.hostname;
             if (hostname.includes('replit.dev') || hostname.includes('replit.app')) {
-                return `https://${hostname}:5000/api`;
+                return `https://${hostname}/api`;
             }
             return '/api';
         }
