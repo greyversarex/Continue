@@ -3,351 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate="hotel.page_title">Каталог отелей - Bunyod-Tour</title>
+    <title>Каталог отелей - Bunyod-Tour</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- 🌐 ПОДКЛЮЧЕНИЕ ЦЕНТРАЛЬНОЙ СИСТЕМЫ i18n -->
-    <script defer src="/public/js/i18n.js"></script>
-    <script defer src="/public/js/layout-loader.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Noto Sans', 'Ubuntu', 'Cantarell', 'Helvetica Neue', sans-serif; }
-        
-        /* Dropdown styles from main page */
-        /* ===== PAGE-SPECIFIC STYLES FOR HOTELS-CATALOG.HTML =====
-        /* Dropdown styles moved to /public/css/layout.css */
-        
-        /* Language selector styles */
-        .language-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .lang-selector-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 0.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            min-width: 80px;
-        }
-        
-        .lang-selector-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .selected-flag {
-            width: 24px;
-            height: 16px;
-            border-radius: 2px;
-            display: inline-block;
-            margin-right: 8px;
-            border: 1px solid rgba(255,255,255,0.4);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-        
-        .flag {
-            width: 20px;
-            height: 14px;
-            border-radius: 2px;
-            display: inline-block;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        
-        /* Flag backgrounds */
-        .flag-ru, .selected-flag.flag-ru {
-            background: linear-gradient(to bottom, 
-                #ffffff 0%, #ffffff 33.33%, 
-                #0039a6 33.33%, #0039a6 66.66%, 
-                #d52b1e 66.66%, #d52b1e 100%);
-        }
-        .flag-us, .selected-flag.flag-us {
-            background: linear-gradient(to bottom, 
-                #b22234 0%, #b22234 7.7%, #ffffff 7.7%, #ffffff 15.4%, 
-                #b22234 15.4%, #b22234 23.1%, #ffffff 23.1%, #ffffff 30.8%,
-                #b22234 30.8%, #b22234 38.5%, #ffffff 38.5%, #ffffff 46.2%,
-                #b22234 46.2%, #b22234 53.8%, #ffffff 53.8%, #ffffff 61.5%,
-                #b22234 61.5%, #b22234 69.2%, #ffffff 69.2%, #ffffff 76.9%,
-                #b22234 76.9%, #b22234 84.6%, #ffffff 84.6%, #ffffff 92.3%,
-                #b22234 92.3%, #b22234 100%);
-            position: relative;
-        }
-        .flag-us::before, .selected-flag.flag-us::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 35%;
-            height: 47%;
-            background: #3c3b6e;
-            border-radius: 1px;
-        }
-        .flag-tj, .selected-flag.flag-tj {
-            background: linear-gradient(to bottom, 
-                #ce1126 0%, #ce1126 33.33%, 
-                #ffffff 33.33%, #ffffff 66.66%, 
-                #00945a 66.66%, #00945a 100%);
-        }
-        .flag-ir, .selected-flag.flag-ir {
-            background: linear-gradient(to bottom, 
-                #239f40 0%, #239f40 33.33%, 
-                #ffffff 33.33%, #ffffff 66.66%, 
-                #da0000 66.66%, #da0000 100%);
-        }
-        .flag-de, .selected-flag.flag-de {
-            background: linear-gradient(to bottom, 
-                #000000 0%, #000000 33.33%, 
-                #dd0000 33.33%, #dd0000 66.66%, 
-                #ffce00 66.66%, #ffce00 100%);
-        }
-        .flag-cn, .selected-flag.flag-cn {
-            background: #de2910;
-            position: relative;
-        }
-        .flag-cn::before, .selected-flag.flag-cn::before {
-            content: '★';
-            position: absolute;
-            color: #ffde00;
-            font-size: 7px;
-            top: 2px;
-            left: 3px;
-            text-shadow: 0 0 1px rgba(0,0,0,0.3);
-        }
-        
-        .lang-dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: rgba(47, 47, 47, 0.95);
-            backdrop-filter: blur(10px);
-            min-width: 160px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.75rem;
-            z-index: 1000;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
-        
-        .lang-dropdown-content.show {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .lang-option {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            transition: all 0.2s ease;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .lang-option:last-child {
-            border-bottom: none;
-        }
-        
-        .lang-option:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-        
-        .lang-option.active {
-            background: rgba(102, 126, 234, 0.8);
-            color: white;
-            font-weight: 600;
-        }
-        
-        .dropdown-arrow {
-            transition: transform 0.3s ease;
-            margin-left: auto;
-        }
-        
-        .dropdown-arrow.open {
-            transform: rotate(180deg);
-        }
-        
-        /* Hotel card hover effects */
-        .hotel-card {
-            transition: all 0.3s ease;
-        }
-        
-        .hotel-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
-        /* Stars styling */
-        .stars {
-            color: #ffd700;
-        }
-        
-        /* Hotel category badges */
-        .badge-luxury {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .badge-premium {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        
-        .badge-budget {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        
-        /* Loading animation */
-        .loading-card {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-        
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        /* Filter styles from main page */
-        .filter-gradient {
-            background: linear-gradient(135deg, #4A4A4A 0%, #3E3E3E 50%, #2F2F2F 100%);
-            box-shadow: 0 10px 30px rgba(47, 47, 47, 0.4);
-        }
-        .modern-select {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-        .modern-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        /* Filters */
-        .filter-chip {
-            transition: all 0.2s ease;
-        }
-        
-        .filter-chip:hover {
-            transform: scale(1.05);
-        }
-        
-        .filter-chip.active {
-            background: #3b82f6;
-            color: white;
-        }
-    </style>
+    <!-- 🌐 ЦЕНТРАЛЬНАЯ СИСТЕМА ИНТЕРНАЦИОНАЛИЗАЦИИ -->
+    <script src="/public/js/i18n.js"></script>
+    <script src="/public/js/layout-loader.js"></script>
+    <link rel="stylesheet" href="/public/css/layout.css">
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-100 min-h-screen">
     <!-- 🌐 ДИНАМИЧЕСКИЙ ХЕДЕР -->
     <div id="header-container"></div>
 
-    <!-- Page Header -->
-    <div class="bg-gray-100 py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl font-bold mb-4 text-gray-800" data-translate="hotel.catalog_title">Каталог отелей</h1>
-            <p class="text-xl text-gray-600" data-translate="hotel.catalog_subtitle">Выберите идеальное место для вашего отдыха</p>
-        </div>
-    </div>
-
-    <!-- Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Filters -->
-        <div class="filter-gradient rounded-xl shadow-lg p-8 mb-8">
-            <h2 class="text-xl font-bold mb-6 text-white" data-translate="filters.search_filters">🔍 Фильтры поиска</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <!-- Country filter -->
-                <div>
-                    <label class="block text-sm font-semibold text-white mb-3" data-translate="filters.country">🌍 Страна</label>
-                    <select id="countryFilter" class="modern-select w-full px-4 py-3 rounded-xl text-gray-800 font-medium">
-                        <option value="" data-translate="filters.all_countries">Все страны</option>
-                        <option value="Таджикистан" data-translate="country.tajikistan">Таджикистан</option>
-                        <option value="Узбекистан" data-translate="country.uzbekistan">Узбекистан</option>
-                        <option value="Киргизстан" data-translate="country.kyrgyzstan">Киргизстан</option>
-                        <option value="Туркменистан" data-translate="country.turkmenistan">Туркменистан</option>
-                        <option value="Казахстан" data-translate="country.kazakhstan">Казахстан</option>
-                    </select>
-                </div>
-                
-                <!-- Category filter -->
-                <div>
-                    <label class="block text-sm font-semibold text-white mb-3" data-translate="filters.category">🏷️ Категория</label>
-                    <select id="categoryFilter" class="modern-select w-full px-4 py-3 rounded-xl text-gray-800 font-medium">
-                        <option value="" data-translate="filters.all_categories">Все категории</option>
-                        <option value="Luxury" data-translate="hotel.category_luxury">Люкс</option>
-                        <option value="Premium" data-translate="hotel.category_premium">Премиум</option>
-                        <option value="Budget" data-translate="hotel.category_budget">Бюджетный</option>
-                    </select>
-                </div>
-                
-                <!-- Stars filter -->
-                <div>
-                    <label class="block text-sm font-semibold text-white mb-3" data-translate="filters.stars">⭐ Звезды</label>
-                    <select id="starsFilter" class="modern-select w-full px-4 py-3 rounded-xl text-gray-800 font-medium">
-                        <option value="" data-translate="filters.any_stars">Любое количество</option>
-                        <option value="5" data-translate="filters.five_stars">5 звезд</option>
-                        <option value="4" data-translate="filters.four_stars">4 звезды</option>
-                        <option value="3" data-translate="filters.three_stars">3 звезды</option>
-                        <option value="2" data-translate="filters.two_stars">2 звезды</option>
-                        <option value="1" data-translate="filters.one_star">1 звезда</option>
-                    </select>
-                </div>
-                
-                <!-- Search -->
-                <div>
-                    <label class="block text-sm font-semibold text-white mb-3" data-translate="filters.search">🔎 Поиск</label>
-                    <input type="text" id="searchInput" placeholder="Название отеля..." data-translate-placeholder="hotel.search_placeholder" 
-                           class="modern-select w-full px-4 py-3 rounded-xl text-gray-800 font-medium placeholder-gray-500">
-                </div>
+    <!-- Main Content -->
+    <div class="pt-28">
+        <!-- Hero Section -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <div class="max-w-6xl mx-auto px-6 py-16">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4" data-translate="hotel.hotels_catalog">Каталог отелей</h1>
+                <p class="text-xl opacity-90" data-translate="hotel.choose_ideal_place">Выберите идеальное место для вашего отдыха</p>
             </div>
-            
-            <div class="mt-6 flex justify-between items-center">
-                <button onclick="clearFilters()" class="text-white hover:text-gray-200 font-semibold flex items-center transition-colors">
-                    <i class="fas fa-times mr-2"></i> <span data-translate="btn.clear_filters">Очистить фильтры</span>
-                </button>
-                <span id="resultsCount" class="text-white font-medium" data-translate="common.loading">Загружается...</span>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="max-w-6xl mx-auto px-6 py-6">
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-filter text-blue-600 mr-2"></i>
+                    <span data-translate="hotel.search_filters">Фильтры поиска</span>
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Country filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="hotel.country">Страна</label>
+                        <select id="countryFilter" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="" data-translate="hotel.all_countries">Все страны</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Category filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="hotel.category">Категория</label>
+                        <select id="categoryFilter" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="" data-translate="hotel.all_categories">Все категории</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Stars filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="hotel.stars">Звезды</label>
+                        <select id="starsFilter" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="" data-translate="hotel.any_quantity">Любое количество</option>
+                            <option value="5">5 звезд</option>
+                            <option value="4">4 звезды</option>
+                            <option value="3">3 звезды</option>
+                            <option value="2">2 звезды</option>
+                            <option value="1">1 звезда</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Search input -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="hotel.search">Поиск</label>
+                        <input type="text" id="searchInput" placeholder="Название отеля..." 
+                               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               data-translate="hotel.hotel_name_placeholder">
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between mt-4">
+                    <button onclick="clearFilters()" class="text-red-600 hover:text-red-800 font-medium">
+                        <i class="fas fa-times-circle mr-1"></i>
+                        <span data-translate="hotel.clear_filters">Очистить фильтры</span>
+                    </button>
+                    <div class="text-sm text-gray-600">
+                        <span id="resultsCount" data-translate="hotel.showing_results">Показано 0 из 0 отелей</span>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Hotels Grid -->
-        <div id="hotelsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Loading cards -->
-            <div class="loading-card rounded-lg h-80"></div>
-            <div class="loading-card rounded-lg h-80"></div>
-            <div class="loading-card rounded-lg h-80"></div>
-            <div class="loading-card rounded-lg h-80"></div>
-            <div class="loading-card rounded-lg h-80"></div>
-            <div class="loading-card rounded-lg h-80"></div>
+        <div class="max-w-6xl mx-auto px-6 pb-12">
+            <div id="hotelsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Hotels will be loaded here -->
+            </div>
         </div>
-        
+
         <!-- No results message -->
         <div id="noResults" class="hidden text-center py-12">
             <i class="fas fa-bed text-gray-400 text-6xl mb-4"></i>
@@ -411,149 +154,88 @@
             }
             
             noResults.classList.add('hidden');
-            container.innerHTML = filteredHotels.map(hotel => createHotelCard(hotel)).join('');
-        }
-
-        // Create hotel card
-        function createHotelCard(hotel) {
-            // Parse JSON fields
-            const name = typeof hotel.name === 'string' ? JSON.parse(hotel.name || '{}') : hotel.name || {};
-            const description = typeof hotel.description === 'string' ? JSON.parse(hotel.description || '{}') : hotel.description || {};
-            const images = typeof hotel.images === 'string' ? JSON.parse(hotel.images || '[]') : hotel.images || [];
-            const amenities = typeof hotel.amenities === 'string' ? JSON.parse(hotel.amenities || '[]') : hotel.amenities || [];
             
-            const hotelName = name.ru || name.en || 'Отель';
-            const hotelDesc = description.ru || description.en || 'Описание отеля';
-            const mainImage = images[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300';
-            
-            // Hotel stars
-            let starsHtml = '';
-            if (hotel.stars) {
-                for (let i = 1; i <= 5; i++) {
-                    starsHtml += i <= hotel.stars 
-                        ? '<i class="fas fa-star stars"></i>' 
-                        : '<i class="far fa-star text-gray-300"></i>';
+            container.innerHTML = filteredHotels.map(hotel => {
+                // Parse multilingual fields
+                let hotelName = 'Отель';
+                let hotelDesc = 'Описание недоступно';
+                
+                try {
+                    if (typeof hotel.name === 'string') {
+                        const parsed = JSON.parse(hotel.name);
+                        hotelName = parsed.ru || parsed.en || 'Отель';
+                    } else if (hotel.name && hotel.name.ru) {
+                        hotelName = hotel.name.ru;
+                    }
+                } catch (e) {
+                    hotelName = hotel.name || 'Отель';
                 }
-            } else {
-                starsHtml = '<span class="text-gray-500 text-sm">Звезды не указаны</span>';
-            }
-            
-            // Category badge
-            let categoryBadge = '';
-            if (hotel.category) {
-                const categoryMap = {
-                    'Luxury': { text: 'Люкс', class: 'badge-luxury' },
-                    'Premium': { text: 'Премиум', class: 'badge-premium' },
-                    'Budget': { text: 'Бюджетный', class: 'badge-budget' }
-                };
-                const category = categoryMap[hotel.category];
-                if (category) {
-                    categoryBadge = `<span class="px-2 py-1 rounded-full text-xs font-medium text-white ${category.class}">${category.text}</span>`;
+                
+                try {
+                    if (typeof hotel.description === 'string') {
+                        const parsed = JSON.parse(hotel.description);
+                        hotelDesc = parsed.ru || parsed.en || 'Описание недоступно';
+                    } else if (hotel.description && hotel.description.ru) {
+                        hotelDesc = hotel.description.ru;
+                    }
+                } catch (e) {
+                    hotelDesc = hotel.description || 'Описание недоступно';
                 }
-            }
-            
-            // Rating
-            let ratingHtml = '';
-            if (hotel.rating) {
-                const rating = parseFloat(hotel.rating);
-                ratingHtml = `
-                    <div class="flex items-center">
-                        <i class="fas fa-star text-yellow-500 mr-1"></i>
-                        <span class="font-medium">${rating.toFixed(1)}</span>
-                    </div>
-                `;
-            }
-            
-            // Location
-            const locationParts = [];
-            if (hotel.city) locationParts.push(hotel.city);
-            if (hotel.country) locationParts.push(hotel.country);
-            const location = locationParts.join(', ') || 'Местоположение не указано';
-            
-            // Amenities (show first 3)
-            let amenitiesHtml = '';
-            if (amenities.length > 0) {
-                const displayAmenities = amenities.slice(0, 3);
-                amenitiesHtml = displayAmenities.map(amenity => 
-                    `<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">${amenity}</span>`
+                
+                // Get first image
+                const firstImage = hotel.images && hotel.images.length > 0 ? hotel.images[0] : null;
+                const imageUrl = firstImage || '/placeholder-hotel.jpg';
+                
+                // Generate stars
+                const stars = Array.from({length: 5}, (_, i) => 
+                    `<i class="fas fa-star ${i < (hotel.stars || 3) ? 'text-yellow-400' : 'text-gray-300'}"></i>`
                 ).join('');
                 
-                if (amenities.length > 3) {
-                    amenitiesHtml += `<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">+${amenities.length - 3}</span>`;
-                }
-            }
-            
-            return `
-                <div class="hotel-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer" onclick="viewHotel(${hotel.id})">
-                    <!-- Hotel Image -->
-                    <div class="relative h-48 bg-gray-200">
-                        <img src="${mainImage}" alt="${hotelName}" class="w-full h-full object-cover">
-                        ${images.length > 1 ? `
-                            <div class="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
-                                +${images.length - 1} фото
+                // Format amenities
+                const amenities = Array.isArray(hotel.amenities) ? hotel.amenities : [];
+                const amenitiesHtml = amenities.slice(0, 3).map(amenity => 
+                    `<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${amenity}</span>`
+                ).join('');
+                
+                return `
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                        <div class="relative">
+                            <img src="${imageUrl}" alt="${hotelName}" 
+                                 class="w-full h-48 object-cover" 
+                                 onerror="this.src='/placeholder-hotel.jpg'">
+                            <div class="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded">
+                                ${stars}
                             </div>
-                        ` : ''}
-                        ${categoryBadge ? `
-                            <div class="absolute top-2 left-2">
-                                ${categoryBadge}
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-1">${hotelName}</h3>
+                            <p class="text-gray-600 text-sm mb-2">
+                                <i class="fas fa-map-marker-alt text-red-500 mr-1"></i>
+                                ${hotel.city || hotel.address || 'Местоположение не указано'}
+                            </p>
+                            
+                            <div class="text-gray-600 text-sm mb-3 line-clamp-2">
+                                ${hotelDesc}
                             </div>
-                        ` : ''}
-                    </div>
-                    
-                    <!-- Hotel Info -->
-                    <div class="p-4">
-                        <!-- Header -->
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-semibold text-gray-900 line-clamp-1">${hotelName}</h3>
-                            ${ratingHtml}
-                        </div>
-                        
-                        <!-- Stars -->
-                        <div class="flex items-center mb-2">
-                            ${starsHtml}
-                        </div>
-                        
-                        <!-- Location -->
-                        <div class="flex items-center text-gray-600 mb-3">
-                            <i class="fas fa-map-marker-alt mr-1 text-sm"></i>
-                            <span class="text-sm">${location}</span>
-                        </div>
-                        
-                        <!-- Description -->
-                        <p class="text-gray-700 text-sm mb-3 line-clamp-2">${hotelDesc}</p>
-                        
-                        <!-- Amenities -->
-                        ${amenitiesHtml ? `
+                            
                             <div class="flex flex-wrap gap-1 mb-3">
                                 ${amenitiesHtml}
                             </div>
-                        ` : ''}
-                        
-                        <!-- Brand -->
-                        ${hotel.brand ? `
-                            <div class="text-xs text-gray-500 mb-3">
-                                <i class="fas fa-building mr-1"></i>
-                                ${hotel.brand}
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm text-gray-500">
+                                    ${hotel.brand ? `<span class="font-medium">${hotel.brand}</span>` : ''}
+                                    ${hotel.category ? `<span class="ml-2">${hotel.category}</span>` : ''}
+                                </div>
+                                <a href="/hotel-template.html?id=${hotel.id}" 
+                                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    Подробнее
+                                </a>
                             </div>
-                        ` : ''}
-                        
-                        <!-- Footer -->
-                        <div class="flex justify-between items-center pt-3 border-t border-gray-100">
-                            <div class="text-sm text-gray-600">
-                                ${hotel.pension === 'half' ? '🍽️ Завтрак' : hotel.pension === 'full' ? '🍽️ Питание' : ''}
-                            </div>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                                Подробнее
-                            </button>
                         </div>
                     </div>
-                </div>
-            `;
-        }
-
-        // View hotel details
-        function viewHotel(hotelId) {
-            window.location.href = `/hotel-template.html?hotel=${hotelId}`;
+                `;
+            }).join('');
         }
 
         // Filter hotels
@@ -564,15 +246,21 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
             filteredHotels = allHotels.filter(hotel => {
-                // Parse name for search
-                const name = typeof hotel.name === 'string' ? JSON.parse(hotel.name || '{}') : hotel.name || {};
-                const hotelName = (name.ru || name.en || '').toLowerCase();
-                
-                // Apply filters
+                // Country filter
                 const matchesCountry = !countryFilter || hotel.country === countryFilter;
+                
+                // Category filter  
                 const matchesCategory = !categoryFilter || hotel.category === categoryFilter;
-                const matchesStars = !starsFilter || hotel.stars === parseInt(starsFilter);
-                const matchesSearch = !searchTerm || hotelName.includes(searchTerm) || 
+                
+                // Stars filter
+                const matchesStars = !starsFilter || hotel.stars == parseInt(starsFilter);
+                
+                // Search filter
+                const hotelName = typeof hotel.name === 'string' ? 
+                    (hotel.name.includes('{') ? JSON.parse(hotel.name).ru || JSON.parse(hotel.name).en : hotel.name) 
+                    : (hotel.name?.ru || hotel.name?.en || '');
+                
+                const matchesSearch = !searchTerm || hotelName.toLowerCase().includes(searchTerm) || 
                                      (hotel.city && hotel.city.toLowerCase().includes(searchTerm));
                 
                 return matchesCountry && matchesCategory && matchesStars && matchesSearch;
@@ -637,40 +325,49 @@
             const dropdown = document.getElementById('langDropdown');
             const arrow = document.querySelector('.dropdown-arrow');
             dropdown.classList.toggle('show');
-            arrow.classList.toggle('open');
+            arrow.style.transform = dropdown.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
         
-        function selectLanguage(lang, flagClass, name) {
-            // Обновляем кнопку селектора
+        function switchLanguage(langCode, event) {
+            // Обновляем выбранный язык в UI
+            const selectedLang = document.querySelector('.selected-lang');
             const selectedFlag = document.querySelector('.selected-flag');
-            selectedFlag.className = `selected-flag ${flagClass}`;
-            document.querySelector('.selected-lang').textContent = name;
+            
+            if (langCode === 'en') {
+                selectedLang.textContent = 'English';
+                selectedFlag.textContent = '🇺🇸';
+                selectedFlag.className = 'selected-flag flag-en';
+            } else if (langCode === 'ru') {
+                selectedLang.textContent = 'Русский';  
+                selectedFlag.textContent = '🇷🇺';
+                selectedFlag.className = 'selected-flag flag-ru';
+            }
             
             // Убираем активный класс со всех опций
             document.querySelectorAll('#langDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
             
             // Добавляем активный класс к выбранной опции
-            document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+            document.querySelector(`[data-lang="${langCode}"]`).classList.add('active');
             
             // Закрываем выпадающий список
             document.getElementById('langDropdown').classList.remove('show');
+            document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
             
-            console.log(`Переключен язык: ${lang}`);
+            // Вызываем функцию переключения языка из i18n.js
+            if (typeof switchToLanguage === 'function') {
+                switchToLanguage(langCode);
+            }
             
-            // Закрываем dropdown  
-            toggleLanguageDropdown();
-        }
-
-        // Функции для валютного селектора
-        function toggleCurrencyDropdown() {
-            const dropdown = document.getElementById('currencyDropdown');
-            dropdown.classList.toggle('show');
+            console.log(`Переключен язык: ${langCode}`);
+            
+            // Предотвращаем переход по ссылке
+            event.preventDefault();
         }
         
-        function selectCurrency(currencyCode, symbol) {
-            // Обновляем кнопку селектора
-            document.querySelector('.selected-currency').textContent = currencyCode;
-            document.querySelector('.currency-symbol').textContent = symbol;
+        function switchCurrency(currencyCode, event) {
+            // Обновляем выбранную валюту в UI
+            const currencyBtn = document.querySelector('.currency-btn');
+            currencyBtn.textContent = currencyCode;
             
             // Убираем активный класс со всех опций
             document.querySelectorAll('#currencyDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
@@ -701,91 +398,5 @@
         
         // ✅ АРХИТЕКТУРНАЯ ЧИСТОТА: Google Maps удалён - footer карта автономна!
     </script>
-
-    <!-- Футер -->
-    <footer class="py-12 text-white" style="background-color: #3E3E3E;">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Компания -->
-                <div>
-                    <h4 class="font-semibold mb-4" data-translate="footer.company">Компания:</h4>
-                    <ul class="space-y-2 text-sm text-gray-300">
-                        <li><a href="about-us.html" class="hover:text-white">О нас</a></li>
-                        <li><a href="tour-agents.html" class="hover:text-white">Тур-агентам</a></li>
-                        <li><a href="#" class="hover:text-white" data-translate="footer.partners">Партнеры</a></li>
-                        <li><a href="investment-projects.html" class="hover:text-white" data-translate="footer.investment_projects">Инвестиционные Проекты</a></li>
-                        <li><a href="booking-guide.html" class="hover:text-white" data-translate="footer.how_to_book">Как бронировать туры?</a></li>
-                        <li><a href="tours-search.html" class="hover:text-white" data-translate="footer.tours_catalog">Каталог туров</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Социальные страницы -->
-                <div>
-                    <h4 class="font-semibold mb-4" data-translate="footer.social_pages">Социальные страницы:</h4>
-                    <div class="flex space-x-4 mb-4">
-                        <!-- Facebook -->
-                        <a href="https://www.facebook.com/Tajikistanservice" target="_blank" class="text-gray-300 hover:text-white">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                            </svg>
-                        </a>
-                        <!-- Instagram -->
-                        <a href="https://www.instagram.com/bunyodtour.tj/" target="_blank" class="text-gray-300 hover:text-white">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                            </svg>
-                        </a>
-                        <!-- YouTube -->
-                        <a href="https://www.youtube.com/channel/UCdnjmRbMVO2R7HtXAxERBjw" target="_blank" class="text-gray-300 hover:text-white">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                            </svg>
-                        </a>
-                        <!-- WhatsApp -->
-                        <a href="https://api.whatsapp.com/send/?phone=992915123344&text&type=phone_number&app_absent=0" target="_blank" class="text-gray-300 hover:text-white">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.893 3.386"/>
-                            </svg>
-                        </a>
-                        <!-- Telegram -->
-                        <a href="https://telegram.org/" target="_blank" class="text-gray-300 hover:text-white">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                            </svg>
-                        </a>
-                    </div>
-                    <p class="text-sm text-gray-300">
-                        <span data-translate="footer.license_info">Лицензия на туристическую деятельность ФС№ 0000253, от 25.10.2022 г.</span>
-                    </p>
-                </div>
-                
-                <!-- Контакты -->
-                <div>
-                    <h4 class="font-semibold mb-4" data-translate="footer.contacts">Контакты:</h4>
-                    <div class="space-y-2 text-sm text-gray-300">
-                        <p>+992 44 625 7575; +992 93-126-1134</p>
-                        <p>+992 00-110-0087; +992 88-235-3434</p>
-                        <p>info@bunyodtour.tj</p>
-                        <p><a href="oferta-ru.pdf" target="_blank" class="hover:text-white text-blue-300" data-translate="footer.public_offer">Публичная Оферта-Договор</a></p>
-                        <p><a href="payment-rules-ru.pdf" target="_blank" class="hover:text-white text-blue-300" data-translate="footer.payment_rules">Правила оплаты и возврата средств</a></p>
-                        <p><a href="privacy-policy-ru.pdf" target="_blank" class="hover:text-white text-blue-300" data-translate="footer.privacy_policy">Политика конфиденциальности</a></p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Google Map Section -->
-            <div class="border-t border-gray-600 mt-8 pt-8">
-                <h4 class="font-semibold mb-4 text-white text-center" data-translate="footer.our_location">Наше местоположение:</h4>
-                <div class="w-full h-64 rounded-lg overflow-hidden shadow-lg">
-                    <div id="map" class="w-full h-full"></div>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-600 mt-8 pt-8 text-center text-sm text-gray-300">
-                <p data-translate="footer.copyright">Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137</p>
-            </div>
-        </div>
-    <!-- 🌐 ДИНАМИЧЕСКИЙ ФУТЕР -->
-    <div id="footer-container"></div>
 </body>
 </html>

@@ -407,7 +407,7 @@
             const hostname = window.location.hostname;
             const protocol = window.location.protocol;
             if (hostname.includes('replit.dev') || hostname.includes('replit.app')) {
-                return `${protocol}//${hostname}:5000/api`;
+                return `${protocol}//${hostname}/api`;
             }
             return '/api';
         }
