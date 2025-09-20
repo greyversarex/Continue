@@ -3,6 +3,19 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// Безопасный парсинг JSON 
+function safeJsonParse(jsonString: any, defaultValue: any = null) {
+  if (!jsonString) return defaultValue;
+  if (typeof jsonString === 'object') return jsonString;
+  
+  try {
+    return JSON.parse(jsonString);
+  } catch (error) {
+    console.warn('JSON parsing error:', error);
+    return defaultValue;
+  }
+}
+
 // Get all news with pagination and filtering
 export const getAllNews = async (req: Request, res: Response) => {
     try {
@@ -266,7 +279,7 @@ export const createNews = async (req: Request, res: Response) => {
         let finalSlug = slug;
         if (!finalSlug) {
             // Generate slug from title if not provided
-            const titleText = typeof title === 'string' ? title : JSON.parse(title).ru || JSON.parse(title).en;
+            const titleText = typeof title === 'string' ? title : safeJsonParse(title, {ru: '', en: ''}).ru || safeJsonParse(title, {ru: '', en: ''}).en;
             finalSlug = titleText.toLowerCase()
                 .replace(/[^\w\s-]/g, '')
                 .replace(/\s+/g, '-')
