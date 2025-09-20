@@ -736,7 +736,28 @@ export const updateGuideProfile = async (req: Request, res: Response): Promise<v
     const updateData: any = {};
     
     if (name) updateData.name = name;
-    if (description) updateData.description = description;
+    if (description) {
+      // Правильно обрабатываем мультиязычное описание
+      if (typeof description === 'object' && description !== null) {
+        // Если это объект с языками, сохраняем как JSON
+        updateData.description = JSON.stringify(description);
+      } else if (typeof description === 'string') {
+        // Проверяем, может ли это быть JSON-строкой
+        try {
+          const parsedDesc = JSON.parse(description);
+          if (typeof parsedDesc === 'object' && parsedDesc !== null) {
+            // Это валидный JSON объект, сохраняем как есть
+            updateData.description = description;
+          } else {
+            // Это обычная строка, сохраняем как есть
+            updateData.description = description;
+          }
+        } catch {
+          // Это не JSON, сохраняем как обычную строку
+          updateData.description = description;
+        }
+      }
+    }
     if (languages) updateData.languages = languages;
     if (experience !== undefined) updateData.experience = parseInt(experience);
     if (isActive !== undefined) updateData.isActive = isActive;
