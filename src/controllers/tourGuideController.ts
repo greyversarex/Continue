@@ -633,7 +633,9 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
     // Обрабатываем загруженный аватар
     let photoPath = null;
     if (files && files.avatar && files.avatar[0]) {
-      photoPath = files.avatar[0].path;
+      // Преобразуем абсолютный путь в относительный для веба
+      const fullPath = files.avatar[0].path;
+      photoPath = fullPath.replace('/home/runner/workspace', '');
       console.log('📷 Аватар сохранен:', photoPath);
     }
 
@@ -649,7 +651,7 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
       documentsArray = files.documents.map(file => ({
         filename: file.filename,
         originalName: file.originalname,
-        path: file.path,
+        path: file.path.replace('/home/runner/workspace', ''), // Преобразуем в относительный путь
         size: file.size,
         mimeType: file.mimetype
       }));
@@ -773,8 +775,10 @@ export const updateGuideProfile = async (req: Request, res: Response): Promise<v
 
     // Обрабатываем загруженный аватар
     if (files && files.avatar && files.avatar[0]) {
-      updateData.photo = files.avatar[0].path;
-      console.log('📷 Аватар обновлен:', files.avatar[0].path);
+      // Преобразуем абсолютный путь в относительный для веба
+      const fullPath = files.avatar[0].path;
+      updateData.photo = fullPath.replace('/home/runner/workspace', '');
+      console.log('📷 Аватар обновлен:', updateData.photo);
     }
 
     // Обрабатываем загруженные документы
@@ -782,7 +786,7 @@ export const updateGuideProfile = async (req: Request, res: Response): Promise<v
       const documentsArray = files.documents.map(file => ({
         filename: file.filename,
         originalName: file.originalname,
-        path: file.path,
+        path: file.path.replace('/home/runner/workspace', ''), // Преобразуем в относительный путь
         size: file.size,
         mimeType: file.mimetype
       }));

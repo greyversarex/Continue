@@ -183,10 +183,10 @@ export const getGuidesByTour = async (req: Request, res: Response) => {
 
     const formattedGuides = tourGuides.map(tg => ({
       ...tg.guide,
-      name: JSON.parse(tg.guide.name),
-      description: tg.guide.description ? JSON.parse(tg.guide.description) : null,
-      languages: JSON.parse(tg.guide.languages),
-      contact: tg.guide.contact ? JSON.parse(tg.guide.contact) : null,
+      name: safeJsonParse(tg.guide.name),
+      description: safeJsonParse(tg.guide.description),
+      languages: safeJsonParse(tg.guide.languages),
+      contact: safeJsonParse(tg.guide.contact),
       isDefault: tg.isDefault,
     }));
 

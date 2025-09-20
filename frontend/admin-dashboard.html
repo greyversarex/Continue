@@ -3624,6 +3624,18 @@
 
         // Функции removeHighlight и updateHighlightsList удалены - используем выбор услуг из калькулятора
 
+        // Функция для безопасной обработки URL изображений
+        function getSafeImageUrl(url) {
+            if (!url || typeof url !== 'string') {
+                return '#';
+            }
+            // Проверяем, что URL не содержит JavaScript выражений или небезопасных протоколов
+            if (url.includes('${') || url.includes('javascript:') || url.includes('data:') || url.includes('<script')) {
+                return '#';
+            }
+            return url;
+        }
+
         // Инициализация глобальных переменных для галереи
         window.tourGalleryImages = window.tourGalleryImages || [];
 
@@ -3654,10 +3666,13 @@
                 console.warn('galleryImagesList container not found');
                 return;
             }
-            galleryContainer.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
+            galleryContainer.innerHTML = window.tourGalleryImages.map((imageUrl, index) => {
+                // Безопасно обрабатываем URL изображения
+                const safeImageUrl = getSafeImageUrl(imageUrl);
+                return `
                 <div class="flex items-center justify-between bg-gray-50 p-3 rounded border">
                     <div class="flex items-center gap-3">
-                        <img src="${imageUrl && typeof imageUrl === 'string' && !imageUrl.includes('${') ? imageUrl : '#'}" alt="Preview" class="w-12 h-12 object-cover rounded" onerror="this.style.display='none';">
+                        <img src="${safeImageUrl}" alt="Preview" class="w-12 h-12 object-cover rounded" onerror="this.style.display='none';">
                         <div class="flex-1 min-w-0">
                             <div class="text-sm font-medium text-gray-900 truncate">${imageUrl}</div>
                         </div>
@@ -3666,7 +3681,8 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Initialize global variable for uploaded tour images
@@ -4189,7 +4205,7 @@
             }
             container.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
                 <div class="flex items-center gap-3 p-3 bg-gray-50 rounded border">
-                    <img src="${imageUrl && typeof imageUrl === 'string' && !imageUrl.includes('${') ? imageUrl : '#'}" alt="Tour image" class="w-16 h-16 object-cover rounded">
+                    <img src="${getSafeImageUrl(imageUrl)}" alt="Tour image" class="w-16 h-16 object-cover rounded">
                     <div class="flex-1">
                         <p class="text-sm text-gray-700 break-all">${imageUrl}</p>
                     </div>
@@ -5465,7 +5481,7 @@
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <div class="relative">
                         ${images.length > 0 ? `
-                            <img src="${images && images[0] && typeof images[0] === 'string' && !images[0].includes('${') ? images[0] : '#'}" alt="${name.ru || name.en || 'Hotel'}" class="w-full h-48 object-cover">
+                            <img src="${getSafeImageUrl(images && images[0])}" alt="${name.ru || name.en || 'Hotel'}" class="w-full h-48 object-cover">
                             ${images.length > 1 ? `
                                 <div class="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
                                     +${images.length - 1} фото
@@ -5791,7 +5807,7 @@
                                         let imagesHtml = '<div class="uploaded-images-preview mb-3"><h4 class="text-sm font-semibold mb-2">Загруженные изображения:</h4><div class="flex gap-2 flex-wrap">';
                                         images.forEach((img, index) => {
                                             imagesHtml += `<div class="image-preview-item relative">
-                                                <img src="${img && typeof img === 'string' && !img.includes('${') ? img : '#'}" alt="Hotel image ${index + 1}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb;">
+                                                <img src="${getSafeImageUrl(img)}" alt="Hotel image ${index + 1}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb;">
                                                 <div class="text-xs text-gray-500 text-center mt-1">Изображение ${index + 1}</div>
                                             </div>`;
                                         });
@@ -7567,7 +7583,7 @@
                                         <input type="file" id="editGuideAvatar" accept="image/*" class="hidden" onchange="handleEditGuideAvatarUpload(this)">
                                         <div class="text-center">
                                             <div id="editGuideAvatarPreview" class="mb-3" ${guide.photo ? '' : 'style="display: none;"'}>
-                                                <img id="editGuideAvatarImg" src="${guide.photo && typeof guide.photo === 'string' && !guide.photo.includes('${') ? guide.photo : '#'}" alt="Предпросмотр" class="w-24 h-24 object-cover rounded-full mx-auto">
+                                                <img id="editGuideAvatarImg" src="${getSafeImageUrl(guide.photo)}" alt="Предпросмотр" class="w-24 h-24 object-cover rounded-full mx-auto">
                                             </div>
                                             <button type="button" onclick="document.getElementById('editGuideAvatar').click()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
                                                 <i class="fas fa-upload mr-2"></i>Выбрать фото
@@ -7742,6 +7758,17 @@
             const description = document.getElementById('editGuideComments').value.trim();
             const experience = document.getElementById('editGuideExperience').value;
             
+            // Формируем мультиязычные данные как JSON (совместимо с функцией создания)
+            const nameJson = JSON.stringify({
+                ru: name,
+                en: name  // Пока используем одно значение для обоих языков
+            });
+            
+            const descriptionJson = JSON.stringify({
+                ru: description,
+                en: description  // Пока используем одно значение для обоих языков
+            });
+            
             // Новые поля
             const passportSeries = document.getElementById('editGuidePassportSeries').value.trim();
             const registration = document.getElementById('editGuideRegistration').value.trim();
@@ -7761,8 +7788,8 @@
                 const formData = new FormData();
                 
                 // Добавляем основные поля
-                formData.append('name', name);
-                formData.append('description', description);
+                formData.append('name', nameJson);
+                formData.append('description', descriptionJson);
                 formData.append('email', email);
                 formData.append('phone', phone);
                 formData.append('languages', selectedGuideLanguages.join(', '));
