@@ -6027,37 +6027,47 @@
         document.getElementById('hotelForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Build name object from trilingual fields
+            // Build name object from bilingual fields (RU/EN)
             const nameRuValue = safeGetValue('hotelNameRu', '');
             const nameEnValue = safeGetValue('hotelNameEn', '');
-            const nameTjValue = safeGetValue('hotelNameTj', '');
             
-            if (!nameRuValue.trim() || !nameEnValue.trim() || !nameTjValue.trim()) {
-                alert('Пожалуйста, введите название отеля на всех трех языках');
+            if (!nameRuValue.trim() || !nameEnValue.trim()) {
+                alert('Пожалуйста, введите название отеля на русском и английском языках');
                 return;
             }
             
             const name = {
                 ru: nameRuValue,
-                en: nameEnValue,
-                tj: nameTjValue
+                en: nameEnValue
             };
             
-            // Build description object from trilingual fields
+            // Build description object from bilingual fields (RU/EN)
             const descRuValue = safeGetValue('hotelDescRu', '');
             const descEnValue = safeGetValue('hotelDescEn', '');
-            const descTjValue = safeGetValue('hotelDescTj', '');
             
-            if (!descRuValue.trim() || !descEnValue.trim() || !descTjValue.trim()) {
-                alert('Пожалуйста, введите описание отеля на всех трех языках');
+            if (!descRuValue.trim() || !descEnValue.trim()) {
+                alert('Пожалуйста, введите описание отеля на русском и английском языках');
                 return;
             }
             
             const description = {
                 ru: descRuValue,
-                en: descEnValue,
-                tj: descTjValue
+                en: descEnValue
             };
+            
+            // Проверка обязательных полей: страна и город
+            const countryValue = document.getElementById('hotelCountry')?.value;
+            const cityValue = document.getElementById('hotelCity')?.value;
+            
+            if (!countryValue || countryValue.trim() === '') {
+                alert('Пожалуйста, выберите страну для отеля');
+                return;
+            }
+            
+            if (!cityValue || cityValue.trim() === '') {
+                alert('Пожалуйста, выберите город для отеля');
+                return;
+            }
             
             // НОВОЕ: Обработка категорий номеров с ценами
             const roomTypes = {};
