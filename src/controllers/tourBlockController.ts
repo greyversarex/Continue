@@ -180,8 +180,7 @@ export const deleteTourBlock = async (req: Request, res: Response): Promise<Resp
     const { id } = req.params;
 
     const existingBlock = await prisma.tourBlock.findUnique({
-      where: { id: parseInt(id) },
-      include: { tours: true }
+      where: { id: parseInt(id) }
     });
 
     if (!existingBlock) {
@@ -191,11 +190,15 @@ export const deleteTourBlock = async (req: Request, res: Response): Promise<Resp
       });
     }
 
-    // Check if tours are assigned to this block
-    if (existingBlock.tours.length > 0) {
+    // Check if tours are assigned to this block via the new assignment system
+    const assignmentCount = await prisma.tourBlockAssignment.count({
+      where: { tourBlockId: parseInt(id) }
+    });
+
+    if (assignmentCount > 0) {
       return res.status(400).json({
         success: false,
-        message: 'Cannot delete tour block with assigned tours'
+        message: `Cannot delete tour block with assigned tours. Please remove ${assignmentCount} tour assignment(s) first.`
       });
     }
 
@@ -221,16 +224,51 @@ export const addTourToBlock = async (req: Request, res: Response): Promise<Respo
   try {
     const { blockId, tourId } = req.params;
 
-    const tour = await prisma.tour.update({
-      where: { id: parseInt(tourId) },
-      data: {
-        tourBlockId: parseInt(blockId)
+    // Check if tour exists
+    const tour = await prisma.tour.findUnique({
+      where: { id: parseInt(tourId) }
+    });
+
+    if (!tour) {
+      return res.status(404).json({
+        success: false,
+        message: 'Tour not found'
+      });
+    }
+
+    // Check if block exists
+    const block = await prisma.tourBlock.findUnique({
+      where: { id: parseInt(blockId) }
+    });
+
+    if (!block) {
+      return res.status(404).json({
+        success: false,
+        message: 'Tour block not found'
+      });
+    }
+
+    // Create or update assignment (upsert to handle duplicates)
+    const assignment = await prisma.tourBlockAssignment.upsert({
+      where: {
+        tourId_tourBlockId: {
+          tourId: parseInt(tourId),
+          tourBlockId: parseInt(blockId)
+        }
+      },
+      update: {
+        isPrimary: false // Keep existing isPrimary value, just ensure it exists
+      },
+      create: {
+        tourId: parseInt(tourId),
+        tourBlockId: parseInt(blockId),
+        isPrimary: false
       }
     });
 
     return res.json({
       success: true,
-      data: tour,
+      data: assignment,
       message: 'Tour added to block successfully'
     });
   } catch (error) {
@@ -245,18 +283,37 @@ export const addTourToBlock = async (req: Request, res: Response): Promise<Respo
 // Remove tour from block
 export const removeTourFromBlock = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { tourId } = req.params;
+    const { blockId, tourId } = req.params;
 
-    const tour = await prisma.tour.update({
-      where: { id: parseInt(tourId) },
-      data: {
-        tourBlockId: null
+    // Check if assignment exists
+    const assignment = await prisma.tourBlockAssignment.findUnique({
+      where: {
+        tourId_tourBlockId: {
+          tourId: parseInt(tourId),
+          tourBlockId: parseInt(blockId)
+        }
+      }
+    });
+
+    if (!assignment) {
+      return res.status(404).json({
+        success: false,
+        message: 'Tour assignment not found in this block'
+      });
+    }
+
+    // Delete the assignment
+    await prisma.tourBlockAssignment.delete({
+      where: {
+        tourId_tourBlockId: {
+          tourId: parseInt(tourId),
+          tourBlockId: parseInt(blockId)
+        }
       }
     });
 
     return res.json({
       success: true,
-      data: tour,
       message: 'Tour removed from block successfully'
     });
   } catch (error) {
