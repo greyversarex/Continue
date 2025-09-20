@@ -124,6 +124,9 @@ app.use((req, res, next) => {
 // Add direct route for /api/objects/direct/* to serve uploaded images
 app.use('/api/objects/direct', express.static(path.join(__dirname, 'uploads/images')));
 
+// Add secure route for tour guide photos
+app.use('/uploads/guides', express.static(path.join(__dirname, 'uploads/guides')));
+
 // Add upload routes for simple image handling
 const uploadRoutes = require('./src/routes/uploadRoutes.ts').default;
 app.use('/upload', uploadRoutes);
