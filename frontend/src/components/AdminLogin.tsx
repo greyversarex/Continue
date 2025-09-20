@@ -47,13 +47,13 @@ const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#3E3E3E' }}>
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
             Admin Login
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-sm text-gray-300">
             Enter the admin password to access the dashboard
           </p>
         </div>
@@ -69,7 +69,8 @@ const AdminLogin: React.FC = () => {
                 name="password"
                 type="password"
                 required
-                className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="relative block w-full px-3 py-2 border border-gray-500 placeholder-gray-400 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 focus:z-10 sm:text-sm"
+                style={{ backgroundColor: '#4A4A4A' }}
                 placeholder="Admin password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -78,7 +79,7 @@ const AdminLogin: React.FC = () => {
           </div>
 
           {error && (
-            <div className="text-red-600 text-sm text-center">
+            <div className="text-red-400 text-sm text-center">
               {error}
             </div>
           )}
@@ -86,15 +87,16 @@ const AdminLogin: React.FC = () => {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-opacity"
+              style={{ backgroundColor: '#3E3E3E' }}
             >
               Sign in
             </button>
           </div>
 
           <div className="text-center">
-            <p className="text-sm text-gray-500">
-              Demo password: <code className="bg-gray-100 px-1 rounded">123</code>
+            <p className="text-sm text-gray-400">
+              Demo password: <code className="bg-gray-600 text-gray-200 px-1 rounded">123</code>
             </p>
           </div>
         </form>
