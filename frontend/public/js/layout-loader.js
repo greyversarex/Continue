@@ -268,34 +268,29 @@ class LayoutLoader {
         }
         
         try {
-            console.log('🗺️ Creating Google Maps iframe...');
+            console.log('🗺️ Creating official Google Maps iframe with Bunyod-Tour marker...');
             
-            // Координаты офиса Бунёд-Тур (точные GPS координаты)
-            const lat = 38.55332115848599;
-            const lng = 68.844931266422;
-            
-            // Создаем встроенную карту через Google Maps с высоким зумом
-            const mapURL = `https://www.google.com/maps/@${lat},${lng},17z?entry=ttu&g_ep=EgoyMDI1MDkxOS4wIKXMDSoASAFQAw%3D%3D`;
-            console.log('🔗 Map URL:', mapURL);
+            // Официальный embed URL Google Maps с маркером "Bunyod-Tour"
+            const mapURL = "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3120.1494011721334!2d68.8439764!3d38.5533715!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38b5d11dd22fc90f%3A0xcca6b041d950e7d5!2sBunyod-Tour!5e0!3m2!1sen!2s!4v1758353913075!5m2!1sen!2s";
+            console.log('🔗 Official Google Maps URL loaded');
             
             const mapHTML = `
                 <iframe 
+                    src="${mapURL}"
                     width="100%" 
                     height="100%" 
-                    frameborder="0" 
-                    scrolling="no" 
-                    marginheight="0" 
-                    marginwidth="0" 
-                    src="${mapURL}" 
-                    style="border: none; border-radius: 8px; background-color: #f0f0f0;"
-                    onload="console.log('📍 Google Maps iframe loaded successfully!');"
-                    onerror="console.error('❌ Google Maps iframe failed to load!');">
+                    style="border:0; border-radius: 8px;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade"
+                    onload="console.log('📍 Bunyod-Tour Google Maps loaded successfully!');"
+                    onerror="console.error('❌ Google Maps failed to load!');">
                 </iframe>
             `;
             
             mapElement.innerHTML = mapHTML;
-            console.log('✅ Footer Google Maps HTML injected successfully!');
-            console.log('🎯 Company: Бунёд Тур, Location: lat=' + lat + ', lng=' + lng);
+            console.log('✅ Official Bunyod-Tour Google Maps embedded successfully!');
+            console.log('🎯 Company: Bunyod-Tour with official Google Maps marker');
             
         } catch (error) {
             console.error('❌ Footer map initialization failed:', error);
