@@ -6381,7 +6381,7 @@
             container.innerHTML = window.hotelImageURLs.map((imageUrl, index) => `
                 <div class="flex items-center justify-between bg-gray-50 p-3 rounded border mb-2">
                     <div class="flex items-center gap-3">
-                        <img src="${imageUrl && !imageUrl.includes('${') ? imageUrl : '#'}" alt="Hotel image" class="w-16 h-16 object-cover rounded" onerror="this.style.display='none';">
+                        <img src="${getSafeImageUrl(imageUrl)}" alt="Hotel image" class="w-16 h-16 object-cover rounded" onerror="this.style.display='none';">
                         <div class="flex-1 min-w-0">
                             <div class="text-sm font-medium text-gray-900 truncate">${imageUrl}</div>
                         </div>
@@ -6746,7 +6746,7 @@
                             <div class="bg-white rounded-lg shadow-sm p-4">
                                 <div class="flex items-center mb-4">
                                     ${safePhotoUrl ? 
-                                        `<img src="${safePhotoUrl && !safePhotoUrl.includes('${') ? safePhotoUrl : '#'}" alt="${safeName}" class="w-16 h-16 rounded-full object-cover mr-4" onerror="this.style.display='none';">` :
+                                        `<img src="${getSafeImageUrl(safePhotoUrl)}" alt="${safeName}" class="w-16 h-16 rounded-full object-cover mr-4" onerror="this.style.display='none';">` :
                                         `<div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mr-4">
                                             <i class="fas fa-user text-gray-400 text-2xl"></i>
                                         </div>`
@@ -6934,7 +6934,7 @@
                 return `
                     <div class="flex gap-1">
                         ${photos.slice(0, 3).map(photo => `
-                            <img src="${photo && !photo.includes('${') ? photo : '#'}" alt="Фото отзыва" 
+                            <img src="${getSafeImageUrl(photo)}" alt="Фото отзыва" 
                                  class="w-8 h-8 object-cover rounded cursor-pointer" 
                                  onclick="showPhotoModal('${photo}')"
                                  title="Нажмите для увеличения">
@@ -6957,7 +6957,7 @@
             const modal = `
                 <div id="photoModal" class="modal active" onclick="closePhotoModal()">
                     <div class="modal-content" style="max-width: 90%; background: transparent; padding: 0;">
-                        <img src="${photoUrl && !photoUrl.includes('${') ? photoUrl : '#'}" alt="Фото отзыва" style="max-width: 100%; max-height: 90vh; border-radius: 8px;">
+                        <img src="${getSafeImageUrl(photoUrl)}" alt="Фото отзыва" style="max-width: 100%; max-height: 90vh; border-radius: 8px;">
                     </div>
                 </div>
             `;
@@ -7326,6 +7326,22 @@
                                     <label class="form-label">Опыт работы (лет)</label>
                                     <input type="number" class="form-input" id="guideExperience" min="0" max="50">
                                 </div>
+
+                                <!-- Выборка страны и города -->
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Страна</label>
+                                        <select class="form-input" id="guideCountry" onchange="loadGuideCitiesByCountry()">
+                                            <option value="">Выберите страну</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Город</label>
+                                        <select class="form-input" id="guideCity" disabled>
+                                            <option value="">Сначала выберите страну</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Телефон</label>
@@ -7418,6 +7434,9 @@
                 e.preventDefault();
                 saveGuide();
             });
+            
+            // Загружаем страны при открытии модального окна
+            loadGuideCountries();
         }
         
         function closeGuideModal() {
@@ -7430,6 +7449,67 @@
             // Очищаем загруженные файлы
             guideAvatarFile = null;
             guideDocumentFiles = [];
+        }
+
+        // Функции для загрузки стран и городов для гидов
+        async function loadGuideCountries() {
+            try {
+                const response = await fetch(`${getApiUrl()}/countries`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    const countrySelect = document.getElementById('guideCountry');
+                    if (countrySelect) {
+                        countrySelect.innerHTML = '<option value="">Выберите страну</option>' +
+                            data.data.map(country => {
+                                const nameRu = country.name?.ru || country.name || 'Неизвестная страна';
+                                return `<option value="${country.id}">${nameRu}</option>`;
+                            }).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки стран:', error);
+            }
+        }
+
+        async function loadGuideCitiesByCountry() {
+            const countrySelect = document.getElementById('guideCountry');
+            const citySelect = document.getElementById('guideCity');
+            
+            if (!countrySelect || !citySelect) return;
+            
+            const countryId = countrySelect.value;
+            
+            if (!countryId) {
+                citySelect.innerHTML = '<option value="">Сначала выберите страну</option>';
+                citySelect.disabled = true;
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/cities?countryId=${countryId}`, {
+                    headers: getAuthHeaders()
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    citySelect.innerHTML = '<option value="">Выберите город</option>' +
+                        data.data.map(city => {
+                            const nameRu = city.name?.ru || city.name || 'Неизвестный город';
+                            return `<option value="${city.id}">${nameRu}</option>`;
+                        }).join('');
+                    citySelect.disabled = false;
+                } else {
+                    citySelect.innerHTML = '<option value="">Города не найдены</option>';
+                    citySelect.disabled = true;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки городов:', error);
+                citySelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+                citySelect.disabled = true;
+            }
         }
 
         function openEditGuideModal(guide) {
@@ -8221,6 +8301,10 @@
             const registration = safeGetValue('guideRegistration', '').trim();
             const residenceAddress = safeGetValue('guideResidenceAddress', '').trim();
             
+            // Получаем выбранные страну и город
+            const countryId = safeGetValue('guideCountry', '', 'int') || null;
+            const cityId = safeGetValue('guideCity', '', 'int') || null;
+            
             // Проверяем только обязательное поле - ФИО
             if (!fullNameRu && !fullNameEn) {
                 alert('Пожалуйста, заполните ФИО хотя бы на одном языке (русском или английском)');
@@ -8243,6 +8327,14 @@
             formData.append('passportSeries', passportSeries);
             formData.append('registration', registration);
             formData.append('residenceAddress', residenceAddress);
+            
+            // Добавляем страну и город
+            if (countryId) {
+                formData.append('countryId', countryId.toString());
+            }
+            if (cityId) {
+                formData.append('cityId', cityId.toString());
+            }
 
             // Добавляем аватар, если выбран
             if (guideAvatarFile) {
@@ -10683,7 +10775,7 @@
                 
                 return `
                     <div class="border rounded-lg p-4 bg-white">
-                        ${slide.image && !slide.image.includes('${') ? `<img src="${slide.image}" alt="Slide" class="w-full h-32 object-cover rounded mb-2" onerror="this.style.display='none'">` : ''}
+                        ${slide.image ? `<img src="${getSafeImageUrl(slide.image)}" alt="Slide" class="w-full h-32 object-cover rounded mb-2" onerror="this.style.display='none'">` : ''}
                         <div class="flex justify-between items-start mb-2">
                             <div>
                                 <h4 class="font-medium">${title.ru || title.en || 'Без названия'}</h4>
@@ -12020,8 +12112,8 @@
                             <div class="flex justify-between items-start mb-3">
                                 <div class="flex items-center">
                                     <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                        ${driver.photo && !driver.photo.includes('${') ? 
-                                            `<img src="${driver.photo}" alt="Avatar" class="w-full h-full rounded-full object-cover">` :
+                                        ${driver.photo ? 
+                                            `<img src="${getSafeImageUrl(driver.photo)}" alt="Avatar" class="w-full h-full rounded-full object-cover">` :
                                             `<i class="fas fa-id-card text-blue-500 text-xl"></i>`
                                         }
                                     </div>

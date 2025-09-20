@@ -612,7 +612,7 @@ export const leaveGuideReview = async (req: Request, res: Response): Promise<voi
 // Создание нового тургида с аутентификацией (для админ панели)
 export const createTourGuideProfile = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, description, login, password, email, phone, languages, experience, isActive } = req.body;
+    const { name, description, login, password, email, phone, languages, experience, isActive, countryId, cityId } = req.body;
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
     console.log('📝 Получены данные для создания гида:', req.body);
@@ -671,7 +671,9 @@ export const createTourGuideProfile = async (req: Request, res: Response): Promi
         password: hashedPassword, // ✅ БЕЗОПАСНО: Храним хешированный пароль
         isActive: isActive === 'true' || isActive === true,
         photo: photoPath, // Путь к аватару
-        documents: documentsArray.length > 0 ? JSON.stringify(documentsArray) : null // Документы в JSON
+        documents: documentsArray.length > 0 ? JSON.stringify(documentsArray) : null, // Документы в JSON
+        countryId: countryId ? parseInt(countryId) : null, // Добавляем страну
+        cityId: cityId ? parseInt(cityId) : null // Добавляем город
       }
     });
 
