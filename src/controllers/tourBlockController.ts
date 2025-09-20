@@ -71,14 +71,22 @@ export const getTourBlock = async (req: Request, res: Response): Promise<Respons
     const tourBlock = await prisma.tourBlock.findUnique({
       where: { id: parseInt(id) },
       include: {
-        tours: {
+        tourBlocks: {
           include: {
-            category: true,
-            reviews: true,
-            _count: {
-              select: { reviews: true }
+            tour: {
+              include: {
+                category: true,
+                reviews: true,
+                _count: {
+                  select: { reviews: true }
+                }
+              }
             }
-          }
+          },
+          orderBy: [
+            { isPrimary: 'desc' }, // Primary assignments first
+            { createdAt: 'asc' }   // Then by creation time
+          ]
         }
       }
     });
@@ -90,9 +98,18 @@ export const getTourBlock = async (req: Request, res: Response): Promise<Respons
       });
     }
 
+    // Transform data to maintain API compatibility
+    const transformedTourBlock = {
+      ...tourBlock,
+      // Extract tours from assignments and flatten them
+      tours: tourBlock.tourBlocks?.map(assignment => assignment.tour) || [],
+      // Remove the tourBlocks field from response to avoid confusion
+      tourBlocks: undefined
+    };
+
     return res.json({
       success: true,
-      data: tourBlock
+      data: transformedTourBlock
     });
   } catch (error) {
     console.error('Error fetching tour block:', error);
