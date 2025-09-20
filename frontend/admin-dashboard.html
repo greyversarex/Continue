@@ -2691,7 +2691,7 @@
             galleryContainer.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
                 <div class="flex items-center justify-between bg-gray-50 p-3 rounded border">
                     <div class="flex items-center gap-3">
-                        <img src="${imageUrl}" alt="Preview" class="w-12 h-12 object-cover rounded" onerror="this.style.display='none';">
+                        <img src="" alt="Preview" class="w-12 h-12 object-cover rounded" onerror="this.style.display='none';" data-placeholder="imageUrl">
                         <div class="flex-1 min-w-0">
                             <div class="text-sm font-medium text-gray-900 truncate">${imageUrl}</div>
                         </div>
@@ -2730,7 +2730,7 @@
                         previewDiv.className = 'relative border rounded-lg overflow-hidden';
                         
                         previewDiv.innerHTML = `
-                            <img src="${e.target.result}" alt="Preview ${index + 1}" class="w-full h-32 object-cover">
+                            <img src="" alt="Preview" class="w-full h-32 object-cover" data-placeholder="result">
                             <div class="absolute top-2 left-2">
                                 ${index === 0 ? '<span class="bg-green-500 text-white text-xs px-2 py-1 rounded">Главное</span>' : ''}
                             </div>
@@ -2776,7 +2776,7 @@
                 previewDiv.className = 'relative border rounded-lg overflow-hidden';
                 
                 previewDiv.innerHTML = `
-                    <img src="${imageData.dataURL}" alt="Preview ${i + 1}" class="w-full h-32 object-cover">
+                    <img src="" alt="Preview" class="w-full h-32 object-cover" data-placeholder="dataURL">
                     <div class="absolute top-2 left-2">
                         ${i === 0 ? '<span class="bg-green-500 text-white text-xs px-2 py-1 rounded">Главное</span>' : ''}
                     </div>
@@ -3178,7 +3178,7 @@
             }
             container.innerHTML = window.tourGalleryImages.map((imageUrl, index) => `
                 <div class="flex items-center gap-3 p-3 bg-gray-50 rounded border">
-                    <img src="${imageUrl}" alt="Tour image" class="w-16 h-16 object-cover rounded">
+                    <img src="" alt="Tour image" class="w-16 h-16 object-cover rounded" data-placeholder="tourImage">
                     <div class="flex-1">
                         <p class="text-sm text-gray-700 break-all">${imageUrl}</p>
                     </div>
@@ -4419,7 +4419,7 @@
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <div class="relative">
                         ${images.length > 0 ? `
-                            <img src="${images[0]}" alt="${name.ru || name.en || 'Hotel'}" class="w-full h-48 object-cover">
+                            <img src="" alt="Hotel" class="w-full h-48 object-cover" data-placeholder="hotelImage">
                             ${images.length > 1 ? `
                                 <div class="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
                                     +${images.length - 1} фото
@@ -4610,7 +4610,7 @@
                                         let imagesHtml = '<div class="uploaded-images-preview mb-3"><h4 class="text-sm font-semibold mb-2">Загруженные изображения:</h4><div class="flex gap-2 flex-wrap">';
                                         images.forEach((img, index) => {
                                             imagesHtml += `<div class="image-preview-item relative">
-                                                <img src="${img}" alt="Hotel image ${index + 1}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb;">
+                                                <img src="" alt="Hotel image" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #e5e7eb;" data-placeholder="hotelImg">
                                                 <div class="text-xs text-gray-500 text-center mt-1">Изображение ${index + 1}</div>
                                             </div>`;
                                         });
@@ -5142,7 +5142,7 @@
                             <div class="bg-white rounded-lg shadow-sm p-4">
                                 <div class="flex items-center mb-4">
                                     ${guide.photo ? 
-                                        `<img src="${guide.photo}" alt="${name.ru}" class="w-16 h-16 rounded-full object-cover mr-4">` :
+                                        `<img src="" alt="Guide" class="w-16 h-16 rounded-full object-cover mr-4" data-placeholder="guidePhoto">` :
                                         `<div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mr-4">
                                             <i class="fas fa-user text-gray-400 text-2xl"></i>
                                         </div>`
@@ -5267,7 +5267,7 @@
                 return `
                     <div class="flex gap-1">
                         ${photos.slice(0, 3).map(photo => `
-                            <img src="${photo}" alt="Фото отзыва" 
+                            <img src="" alt="Фото отзыва" data-placeholder="reviewPhoto"
                                  class="w-8 h-8 object-cover rounded cursor-pointer" 
                                  onclick="showPhotoModal('${photo}')"
                                  title="Нажмите для увеличения">
@@ -5290,7 +5290,7 @@
             const modal = `
                 <div id="photoModal" class="modal active" onclick="closePhotoModal()">
                     <div class="modal-content" style="max-width: 90%; background: transparent; padding: 0;">
-                        <img src="${photoUrl}" alt="Фото отзыва" style="max-width: 100%; max-height: 90vh; border-radius: 8px;">
+                        <img src="" alt="Фото отзыва" style="max-width: 100%; max-height: 90vh; border-radius: 8px;" data-placeholder="reviewPhotoUrl">
                     </div>
                 </div>
             `;
@@ -6698,7 +6698,7 @@
                 
                 return `
                     <div class="border rounded-lg p-4 bg-white">
-                        ${slide.image ? `<img src="${slide.image}" alt="Slide" class="w-full h-32 object-cover rounded mb-2" onerror="this.style.display='none'">` : ''}
+                        <img src="" alt="Slide" class="w-full h-32 object-cover rounded mb-2" onerror="this.style.display='none';" data-placeholder="slideImage" style="display: none;">
                         <div class="flex justify-between items-start mb-2">
                             <div>
                                 <h4 class="font-medium">${title.ru || title.en || 'Без названия'}</h4>
