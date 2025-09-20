@@ -22,9 +22,8 @@ export class TourController {
       const { blockId, limit } = req.query;
       
       let filters: any = {};
-      if (blockId) {
-        filters.tourBlockId = parseInt(blockId as string);
-      }
+      // Note: blockId filtering now handled by TourBlockAssignment system
+      // This filter is deprecated - use /api/tour-blocks/:id/tours instead
       
       const tours = await TourModel.search(filters);
       
@@ -217,7 +216,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
+      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -299,7 +298,6 @@ export class TourController {
 
       // Convert string fields to numbers for Prisma
       const categoryIdNumber = parseInt(categoryId);
-      const tourBlockIdNumber = tourBlockId ? parseInt(tourBlockId) : undefined;
       const countryIdNumber = countryId ? parseInt(countryId) : undefined;
       const cityIdNumber = cityId ? parseInt(cityId) : undefined;
       const durationDaysNumber = durationDays ? parseInt(durationDays) : undefined;
@@ -317,7 +315,6 @@ export class TourController {
 
       console.log('Converted numeric fields:', {
         categoryId: categoryIdNumber,
-        tourBlockId: tourBlockIdNumber,
         countryId: countryIdNumber,
         cityId: cityIdNumber,
         durationDays: durationDaysNumber,
@@ -340,7 +337,6 @@ export class TourController {
         priceType: priceType || 'за человека',
         originalPrice: originalPrice || null,
         categoryId: categoryIdNumber,
-        tourBlockId: tourBlockIdNumber,
         countryId: countryIdNumber,
         cityId: cityIdNumber,
         country: country || null,
@@ -541,7 +537,7 @@ export class TourController {
         });
       }
 
-      let { title, description, duration, price, categoryId, tourBlockId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
+      let { title, description, duration, price, categoryId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed (same as createTour)
       if (typeof title === 'string') {
@@ -587,7 +583,6 @@ export class TourController {
 
       // Convert numeric fields like in createTour
       const categoryIdNumber = categoryId ? parseInt(categoryId) : undefined;
-      const tourBlockIdNumber = tourBlockId ? parseInt(tourBlockId) : undefined;
       const countryIdNumber = countryId ? parseInt(countryId) : undefined;
       const cityIdNumber = cityId ? parseInt(cityId) : undefined;
       const durationDaysNumber = durationDays ? parseInt(durationDays) : undefined;
@@ -603,7 +598,6 @@ export class TourController {
       if (duration) updateData.duration = String(duration);
       if (price) updateData.price = String(price);
       if (categoryIdNumber) updateData.categoryId = categoryIdNumber;
-      if (tourBlockIdNumber !== undefined) updateData.tourBlockId = tourBlockIdNumber;
       if (countryIdNumber !== undefined) updateData.countryId = countryIdNumber;
       if (cityIdNumber !== undefined) updateData.cityId = cityIdNumber;
       if (country !== undefined) updateData.country = country;

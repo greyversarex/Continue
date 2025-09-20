@@ -73,7 +73,6 @@ export class TourModel {
         priceType: data.priceType || 'за человека',
         originalPrice: data.originalPrice || null,
         categoryId: data.categoryId,
-        tourBlockId: data.tourBlockId,
         country: data.country,
         city: data.city,
         format: data.format,
@@ -156,7 +155,6 @@ export class TourModel {
     if (data.isFeatured !== undefined) updateData.isFeatured = data.isFeatured;
     if (data.startDate !== undefined) updateData.startDate = data.startDate;
     if (data.endDate !== undefined) updateData.endDate = data.endDate;
-    if (data.tourBlockId !== undefined) updateData.tourBlockId = data.tourBlockId;
     if (data.pricingComponents !== undefined) updateData.pricingData = data.pricingComponents;
     if (data.assignedGuideId !== undefined) updateData.assignedGuideId = data.assignedGuideId;
     
