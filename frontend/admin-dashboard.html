@@ -4812,6 +4812,24 @@
                             tourBlockIdField.value = tour.tourBlockId.toString();
                         }
                         
+                        // 🎯 ДОБАВЛЕНО: Отмечаем уже назначенные блоки туров при редактировании
+                        setTimeout(() => {
+                            if (tour.tourBlockAssignments && Array.isArray(tour.tourBlockAssignments)) {
+                                console.log('🔄 Отмечаем выбранные блоки туров:', tour.tourBlockAssignments);
+                                const selectedBlockIds = tour.tourBlockAssignments.map(assignment => assignment.tourBlockId);
+                                
+                                selectedBlockIds.forEach(blockId => {
+                                    const checkbox = document.querySelector(`input[name="tourBlocks"][value="${blockId}"]`);
+                                    if (checkbox) {
+                                        checkbox.checked = true;
+                                        console.log('✅ Блок тура отмечен:', blockId);
+                                    }
+                                });
+                                
+                                console.log('✅ Все блоки туров отмечены для редактирования');
+                            }
+                        }, 800); // Ждем загрузки блоков туров
+                        
                         // Заполнение pickupInfo в основной форме
                         const tourPickupInfoField = document.getElementById('tourPickupInfo');
                         if (tourPickupInfoField && tour.pickupInfo) {
@@ -5055,6 +5073,11 @@
                 selectedGuides.push(parseInt(checkbox.value));
             });
             
+            // 🎯 ДОБАВЛЕНО: Собираем выбранные блоки туров
+            const selectedTourBlocks = [];
+            document.querySelectorAll('input[name="tourBlocks"]:checked').forEach(checkbox => {
+                selectedTourBlocks.push(parseInt(checkbox.value));
+            });
             
             // Собираем исключенные услуги
             const excludedServices = [];
@@ -5064,6 +5087,7 @@
             
             console.log('🏨 Selected hotels:', selectedHotels);
             console.log('👨‍🏫 Selected guides:', selectedGuides);
+            console.log('📦 Selected tour blocks:', selectedTourBlocks);
             console.log('❌ Excluded services:', excludedServices);
             
             // Формируем данные для отправки (с проверками на существование элементов)
@@ -5112,6 +5136,7 @@
                 images: JSON.stringify(window.tourGalleryImages || []),
                 hotelIds: selectedHotels,
                 guideIds: selectedGuides,
+                tourBlockIds: selectedTourBlocks, // 🎯 ДОБАВЛЕНО: Отправляем выбранные блоки туров
                 excluded: JSON.stringify(excludedServices),
                 isActive: true,
                 isFeatured: false

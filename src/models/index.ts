@@ -45,6 +45,15 @@ export class TourModel {
           include: {
             driver: true
           }
+        },
+        // 🔧 ДОБАВЛЕНО: Включаем назначенные блоки туров для админ панели
+        tourBlockAssignments: {
+          include: {
+            tourBlock: true
+          },
+          orderBy: {
+            isPrimary: 'desc' // Показываем основной блок первым
+          }
         }
       }
     });

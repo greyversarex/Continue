@@ -718,6 +718,35 @@ export class TourController {
         }
       }
 
+      // 🎯 ИСПРАВЛЕНО: Update tour block associations if provided
+      if (tourBlockIds && Array.isArray(tourBlockIds)) {
+        console.log('📦 Updating tour block associations:', tourBlockIds);
+        
+        // Delete existing tour block associations
+        await prisma.tourBlockAssignment.deleteMany({
+          where: { tourId: id }
+        });
+        
+        // Create new tour block associations
+        if (tourBlockIds.length > 0) {
+          const tourBlockData = tourBlockIds.map((blockId: number, index: number) => ({
+            tourId: id,
+            tourBlockId: blockId,
+            isPrimary: index === 0 // Первый блок считается основным
+          }));
+          
+          console.log('📦 TourBlockAssignment data to create:', tourBlockData);
+          
+          await prisma.tourBlockAssignment.createMany({
+            data: tourBlockData
+          });
+          
+          console.log('✅ Tour block associations updated successfully');
+        } else {
+          console.log('📦 No tour blocks to assign, existing associations cleared');
+        }
+      }
+
       // Parse JSON fields for response with safe parsing
       let parsedTour;
       try {
