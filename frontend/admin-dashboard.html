@@ -7663,7 +7663,7 @@
                                         <input type="file" id="editGuideAvatar" accept="image/*" class="hidden" onchange="handleEditGuideAvatarUpload(this)">
                                         <div class="text-center">
                                             <div id="editGuideAvatarPreview" class="mb-3" ${guide.photo ? '' : 'style="display: none;"'}>
-                                                <img id="editGuideAvatarImg" src="${getSafeImageUrl(guide.photo)}" alt="Предпросмотр" class="w-24 h-24 object-cover rounded-full mx-auto">
+                                                <img id="editGuideAvatarImg" src="${guide.photo ? (guide.photo.startsWith('/') ? guide.photo : '/' + guide.photo) : '#'}" alt="Предпросмотр" class="w-24 h-24 object-cover rounded-full mx-auto">
                                             </div>
                                             <button type="button" onclick="document.getElementById('editGuideAvatar').click()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
                                                 <i class="fas fa-upload mr-2"></i>Выбрать фото
