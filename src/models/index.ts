@@ -876,39 +876,43 @@ export class PriceCalculatorModel {
    */
   static async initializeDefaults() {
     const defaultComponents = [
-      // Транспорт
-      { key: 'transport_offroad', category: 'transport', name: 'Транспорт: внедорожник', price: 64.0, unit: 'км', sortOrder: 1 },
-      { key: 'transport_crossover', category: 'transport', name: 'Транспорт: кроссовер', price: 64.0, unit: 'км', sortOrder: 2 },
-      { key: 'transport_minibus', category: 'transport', name: 'Транспорт: микроавтобус', price: 2200.0, unit: 'день', sortOrder: 3 },
-      { key: 'transport_bus', category: 'transport', name: 'Транспорт: автобус', price: 4400.0, unit: 'день', sortOrder: 4 },
+      // Тур-гид
+      { key: 'guide_daily', category: 'guides', name: 'Тур-гид, день', price: 500.0, unit: 'единица', sortOrder: 1 },
+      { key: 'guide_vip', category: 'guides', name: 'Тур-гид, VIP', price: 1000.0, unit: 'единица', sortOrder: 2 },
+      { key: 'guide_regional', category: 'guides', name: 'Тур-гид, региональный', price: 600.0, unit: 'единица', sortOrder: 3 },
       
-      // Проживание
-      { key: 'accommodation_5star', category: 'accommodation', name: 'Гостиница: 5*, двухместный', price: 1300.0, unit: 'ночь/номер', sortOrder: 1 },
-      { key: 'accommodation_4star', category: 'accommodation', name: 'Гостиница: 4*, двухместный', price: 1100.0, unit: 'ночь/номер', sortOrder: 2 },
-      { key: 'accommodation_3star', category: 'accommodation', name: 'Гостиница: 3*, двухместный', price: 850.0, unit: 'ночь/номер', sortOrder: 3 },
-      { key: 'accommodation_2star', category: 'accommodation', name: 'Гостиница: 2*, двухместный', price: 450.0, unit: 'ночь/номер', sortOrder: 4 },
-      { key: 'accommodation_hostel', category: 'accommodation', name: 'Хостел', price: 200.0, unit: 'ночь/номер', sortOrder: 5 },
+      // Питание  
+      { key: 'meals_lunch_hb', category: 'meals', name: 'Питание, обед, НВ', price: 70.0, unit: 'человек/день', sortOrder: 1 },
+      { key: 'meals_lunch_dinner_fb', category: 'meals', name: 'Питание, обед и ужин, FB', price: 130.0, unit: 'человек/день', sortOrder: 2 },
       
-      // Питание
-      { key: 'meals_lunch', category: 'meals', name: 'Обед', price: 70.0, unit: 'раз', sortOrder: 1 },
-      { key: 'meals_dinner', category: 'meals', name: 'Ужин', price: 65.0, unit: 'раз', sortOrder: 2 },
+      // Разрешения
+      { key: 'permit_gbao', category: 'permits', name: 'Разрешение на въезд в ГБАО', price: 250.0, unit: 'человек', sortOrder: 1 },
+      { key: 'permit_nurek_gas', category: 'permits', name: 'Разрешение на въезд на платину Нурекской ГЭС', price: 450.0, unit: 'человек', sortOrder: 2 },
       
-      // Сопровождение
-      { key: 'guide_russian', category: 'guides', name: 'Проводник: русскоговорящий', price: 330.0, unit: 'день', sortOrder: 1 },
-      { key: 'guide_english', category: 'guides', name: 'Проводник: англоговорящий', price: 650.0, unit: 'день', sortOrder: 2 },
-      
-      // Билеты и сборы
-      { key: 'tickets_local', category: 'tickets', name: 'Входные билеты в объектах (для граждан Таджикистана)', price: 11.0, unit: 'раз', sortOrder: 1 },
-      { key: 'tickets_foreign', category: 'tickets', name: 'Входные билеты в объектах (для иностранцев)', price: 33.0, unit: 'раз', sortOrder: 2 },
+      // Автомобили на местные рейсы
+      { key: 'local_car_general', category: 'local_transport', name: 'Автомобиль на местные рейсы', price: 130.0, unit: 'человек/час', sortOrder: 1 },
+      { key: 'tickets_uzbekistan', category: 'local_transport', name: 'Билеты в АД по Узбекистану', price: 380.0, unit: 'человек/час', sortOrder: 2 },
+      { key: 'tickets_kamenny_rudnik', category: 'local_transport', name: 'Внутренние билеты в Каменное Рудник, Пенджакент', price: 40.0, unit: 'человек/час', sortOrder: 3 },
+      { key: 'tickets_kumi_dushanbe', category: 'local_transport', name: 'Внутренние билеты в куми Душанбе', price: 160.0, unit: 'человек/час', sortOrder: 4 },
+      { key: 'tickets_boytov', category: 'local_transport', name: 'Внутренние билеты в области / Бойтов', price: 40.0, unit: 'человек/час', sortOrder: 5 },
+      { key: 'tickets_lesgo', category: 'local_transport', name: 'Внутренние билеты в области / Лесго', price: 90.0, unit: 'человек/час', sortOrder: 6 },
+      { key: 'tickets_arzanak', category: 'local_transport', name: 'Внутренние билеты в области / Арзанак, РР не для объектов 3-5 звд пол', price: 250.0, unit: 'человек/час', sortOrder: 7 },
+      { key: 'tickets_istegovshan', category: 'local_transport', name: 'Внутренние билеты в области / Истеговшан', price: 50.0, unit: 'человек/час', sortOrder: 8 },
+      { key: 'tickets_khuron', category: 'local_transport', name: 'Внутренние билеты в области / Хурон', price: 450.0, unit: 'человек/час', sortOrder: 9 },
+      { key: 'tickets_pendjikent', category: 'local_transport', name: 'Внутренние билеты в области / Пенджакент', price: 600.0, unit: 'человек/час', sortOrder: 10 },
+      { key: 'tickets_dushanbe_4h', category: 'local_transport', name: 'Внутренние билеты в области / Душанбе, РР не для объектов до 4 часа', price: 120.0, unit: 'человек/час', sortOrder: 11 },
+      { key: 'tickets_iskandarun', category: 'local_transport', name: 'Внутренние билеты в области озеро Исканадарлун', price: 30.0, unit: 'человек/час', sortOrder: 12 },
+      { key: 'tickets_aktim', category: 'local_transport', name: 'Внутренние билеты в области рог Актим', price: 40.0, unit: 'человек/час', sortOrder: 13 },
+      { key: 'tickets_tsar', category: 'local_transport', name: 'Внутренние билеты в области ЦАР', price: 200.0, unit: 'человек/час', sortOrder: 14 },
       
       // Трансфер
-      { key: 'transfer_local', category: 'transfer', name: 'Аэропорт-гостиница (для граждан Таджикистана)', price: 330.0, unit: 'человек', sortOrder: 1 },
-      { key: 'transfer_foreign', category: 'transfer', name: 'Аэропорт-гостиница (для иностранцев)', price: 550.0, unit: 'человек', sortOrder: 2 },
+      { key: 'transfer_minivan_bus', category: 'transfer', name: 'Трансфер минивэн/автобус сроки отдыха здоровогопорога', price: 2000.0, unit: 'единица/день', sortOrder: 1 },
+      { key: 'transfer_light_rest', category: 'transfer', name: 'Трансфер легкие отдых здоровогопорога', price: 1500.0, unit: 'единица/день', sortOrder: 2 },
       
-      // Документы и разрешения
-      { key: 'documents_gbao', category: 'documents', name: 'Разрешение на въезд в ГБАО', price: 275.0, unit: 'человек', sortOrder: 1 },
-      { key: 'documents_visa_support', category: 'documents', name: 'Визовая поддержка (официальное приглашение)', price: 330.0, unit: 'человек', sortOrder: 2 },
-      { key: 'documents_foreign_visa', category: 'documents', name: 'Виза в зарубежные страны', price: 1400.0, unit: 'человек', sortOrder: 3 }
+      // Транспорт по время туза  
+      { key: 'transport_tour_4wd', category: 'tour_transport', name: 'Транспорт по время туза, 4WD', price: 1500.0, unit: 'единица/день', sortOrder: 1 },
+      { key: 'transport_tour_car', category: 'tour_transport', name: 'Транспорт по время туза, легковые', price: 400.0, unit: 'единица/день', sortOrder: 2 },
+      { key: 'transport_tour_minibus', category: 'tour_transport', name: 'Транспорт по время туза, минивэнбус', price: 2000.0, unit: 'единица/день', sortOrder: 3 }
     ];
 
     const results = [];

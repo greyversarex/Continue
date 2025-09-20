@@ -181,6 +181,23 @@ async function startServer() {
   try {
     console.log('🗄️ Подключение к PostgreSQL через Prisma...');
     
+    // Инициализация компонентов калькулятора цен (отложено после запуска сервера)
+    setTimeout(async () => {
+      try {
+        console.log('🧮 Инициализация компонентов калькулятора цен...');
+        const response = await fetch(`http://localhost:${PORT}/api/price-calculator/initialize`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const result = await response.json();
+        if (result.success) {
+          console.log(`✅ ${result.message}`);
+        }
+      } catch (error) {
+        console.log('⚠️ Компоненты калькулятора будут инициализированы при первом обращении');
+      }
+    }, 2000); // Ждем 2 секунды после запуска сервера
+    
     console.log('Starting backend API server...');
     
     const server = app.listen(PORT, '0.0.0.0', () => {
