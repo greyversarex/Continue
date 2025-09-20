@@ -340,17 +340,13 @@ model News {
   title           String
   content         String
   excerpt         String?
-  category        String
   image           String?
   images          String?
   tags            String?
-  author          String   @default("Bunyod-Tour")
   isPublished     Boolean  @default(true) @map("is_published")
   isFeatured      Boolean  @default(false) @map("is_featured")
   publishedAt     DateTime @default(now()) @map("published_at")
   slug            String   @unique
-  metaTitle       String?  @map("meta_title")
-  metaDescription String?  @map("meta_description")
   views           Int      @default(0)
   readTime        Int?     @map("read_time")
   createdAt       DateTime @default(now())

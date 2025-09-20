@@ -253,16 +253,12 @@ export const createNews = async (req: Request, res: Response) => {
             title,
             content,
             excerpt,
-            category,
             image,
             images,
             tags,
-            author,
             isPublished,
             isFeatured,
             slug,
-            metaTitle,
-            metaDescription,
             readTime
         } = req.body;
 
@@ -291,16 +287,12 @@ export const createNews = async (req: Request, res: Response) => {
                 title,
                 content,
                 excerpt,
-                category,
                 image,
                 images: images ? JSON.stringify(images) : null,
                 tags: tags ? JSON.stringify(tags) : null,
-                author: author || 'Bunyod-Tour',
                 isPublished: isPublished || false,
                 isFeatured: isFeatured || false,
                 slug: finalSlug,
-                metaTitle,
-                metaDescription,
                 readTime: readTime || null
             }
         });
