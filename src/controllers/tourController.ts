@@ -11,6 +11,18 @@ import {
   MultilingualContent 
 } from '../types';
 import prisma from '../config/database';
+// Безопасный парсинг JSON 
+function safeJsonParse(jsonString: any, defaultValue: any = { ru: '', en: '' }) {
+  if (!jsonString) return defaultValue;
+  if (typeof jsonString === 'object') return jsonString;
+  
+  try {
+    return JSON.parse(jsonString);
+  } catch (error) {
+    console.warn('JSON parsing error:', error);
+    return defaultValue;
+  }
+}
 
 export class TourController {
   /**
@@ -40,11 +52,11 @@ export class TourController {
           
           return {
             ...tourWithoutImages,
-            title: tour.title ? JSON.parse(tour.title) as MultilingualContent : { ru: '', en: '' },
-            description: tour.description ? JSON.parse(tour.description) as MultilingualContent : { ru: '', en: '' },
+            title: safeJsonParse(tour.title),
+            description: safeJsonParse(tour.description),
             category: tour.category ? {
               ...tour.category,
-              name: tour.category.name ? JSON.parse(tour.category.name) as MultilingualContent : { ru: '', en: '' }
+              name: safeJsonParse(tour.category.name)
             } : null,
             // Добавляем флаг что изображения есть, но не передаем сами изображения
             hasImages: !!(tour.mainImage || tour.images)
@@ -110,7 +122,7 @@ export class TourController {
       // If no main image, try to get first image from gallery
       if (!imagePath && tour.images) {
         try {
-          const images = JSON.parse(tour.images);
+          const images = safeJsonParse(tour.images, []);
           if (images && images.length > 0) {
             imagePath = images[0];
           }
@@ -221,7 +233,7 @@ export class TourController {
       // Parse JSON strings if needed
       if (typeof title === 'string') {
         try {
-          title = JSON.parse(title);
+          title = safeJsonParse(title);
           console.log('Parsed title:', title);
         } catch (e) {
           console.error('Failed to parse title:', e);
@@ -240,7 +252,7 @@ export class TourController {
 
       if (typeof description === 'string') {
         try {
-          description = JSON.parse(description);
+          description = safeJsonParse(description);
           console.log('Parsed description:', description);
         } catch (e) {
           console.error('Failed to parse description:', e);
@@ -1353,11 +1365,11 @@ export class BookingRequestController {
         ...bookingRequest,
         tour: {
           ...bookingRequest.tour,
-          title: JSON.parse(bookingRequest.tour.title) as MultilingualContent,
-          description: JSON.parse(bookingRequest.tour.description) as MultilingualContent,
+          title: safeJsonParse(bookingRequest.tour.title),
+          description: safeJsonParse(bookingRequest.tour.description),
           category: {
             ...bookingRequest.tour.category,
-            name: JSON.parse(bookingRequest.tour.category.name) as MultilingualContent
+            name: safeJsonParse(bookingRequest.tour.category.name)
           }
         }
       };
@@ -1425,11 +1437,11 @@ export class ReviewController {
         customer: review.customer,
         tour: review.tour ? {
           ...review.tour,
-          title: JSON.parse(review.tour.title) as MultilingualContent,
-          description: JSON.parse(review.tour.description) as MultilingualContent,
+          title: safeJsonParse(review.tour.title),
+          description: safeJsonParse(review.tour.description),
           category: {
             ...review.tour.category,
-            name: JSON.parse(review.tour.category.name) as MultilingualContent
+            name: safeJsonParse(review.tour.category.name)
           }
         } : null
       }));
@@ -1556,11 +1568,11 @@ export class ReviewController {
         ...review,
         tour: {
           ...review.tour,
-          title: JSON.parse(review.tour.title) as MultilingualContent,
-          description: JSON.parse(review.tour.description) as MultilingualContent,
+          title: safeJsonParse(review.tour.title),
+          description: safeJsonParse(review.tour.description),
           category: {
             ...review.tour.category,
-            name: JSON.parse(review.tour.category.name) as MultilingualContent
+            name: safeJsonParse(review.tour.category.name)
           }
         }
       };
