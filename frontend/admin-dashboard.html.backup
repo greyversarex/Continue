@@ -2236,6 +2236,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="components/ObjectUploader.js"></script>
     <script>
         // Global variables
         let currentSection = 'dashboard';
@@ -5697,7 +5698,8 @@
         // =============================================
         
         // CMS Tab switching
-        function switchCMSTab(tab) {
+        // УДАЛЕНО: CMS tabs - больше нет дублированных форм
+        // function switchCMSTab(tab) {
             document.getElementById('cmsBlocksTab').style.display = 'none';
             document.getElementById('cmsSettingsTab').style.display = 'none';
             document.getElementById('cmsHomepageTab').style.display = 'none';
@@ -6351,6 +6353,94 @@
         // ПОЛНОСТЬЮ УДАЛЕНА ДУБЛИРОВАННАЯ ФУНКЦИЯ saveEnhancedTour()
         
         // ===== TRANSLATION FUNCTIONALITY =====
+        
+        // Show translations section
+                description: JSON.stringify({
+                    ru: document.getElementById('eTourFullDesc').value,
+                    en: document.getElementById('eTourFullDesc').value
+                }),
+                price: parseFloat(price),
+                priceType: document.getElementById('eTourPriceType').value || 'за человека',
+                originalPrice: document.getElementById('eTourOriginalPrice').value ? parseFloat(document.getElementById('eTourOriginalPrice').value) : null,
+                durationDays: parseInt(durationDays),
+                format: document.getElementById('eTourType').value, // Тип тура
+                tourType: document.getElementById('eTourType').value, // Для совместимости
+                difficulty: document.getElementById('eTourDifficulty').value || 'Легкий',
+                maxPeople: document.getElementById('eTourMaxPeople').value ? parseInt(document.getElementById('eTourMaxPeople').value) : null,
+                minPeople: document.getElementById('eTourMinPeople').value ? parseInt(document.getElementById('eTourMinPeople').value) : null,
+                country: document.getElementById('eTourCountry').value || 'Таджикистан',
+                city: document.getElementById('eTourCity').value || 'Душанбе',
+                mainImage: document.getElementById('eTourMainImage').value || '',
+                images: JSON.stringify(window.tourGalleryImages || []), // Галерея изображений
+                categoryId: parseInt(categoryId),
+                tourBlockId: document.getElementById('eTourBlockId').value ? parseInt(document.getElementById('eTourBlockId').value) : null,
+                isFeatured: document.getElementById('eTourIsFeatured') ? document.getElementById('eTourIsFeatured').checked : false,
+                // Новые поля
+                pickupInfo: document.getElementById('eTourPickupInfo').value || '',
+                startTimeOptions: JSON.stringify(window.editStartTimes || []), // Время начала
+                languages: document.getElementById('eTourLanguages').value || '["Русский"]', // Языки тура
+                // Календарные ограничения
+                availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
+                availableDays: JSON.stringify(getSelectedCheckboxValues('day-')),
+                isActive: true,
+                highlights: JSON.stringify(window.tourHighlights || []),
+                itinerary: JSON.stringify(window.tourItinerary || []),
+                includes: JSON.stringify(getSelectedIncludes()), // Что включено
+                excluded: JSON.stringify([])
+            };
+            
+            console.log('📝 Sending tour data:', formData);
+
+            // Определяем режим: создание или редактирование
+            const isEditing = window.currentTourId && window.currentTourId !== null;
+            const url = isEditing ? `${getApiUrl()}/tours/${window.currentTourId}` : `${getApiUrl()}/tours`;
+            const method = isEditing ? 'PUT' : 'POST';
+            
+            console.log('🚀 Saving enhanced tour:', {
+                isEditing: isEditing,
+                currentTourId: currentTourId,
+                windowCurrentTourId: window.currentTourId,
+                url: url,
+                method: method,
+                formDataKeys: Object.keys(formData)
+            });
+            
+            fetch(url, {
+                method: method,
+                headers: getAuthHeaders(),
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const message = isEditing ? 'Тур успешно обновлён!' : 'Тур успешно создан!';
+                    alert(message);
+                    if (isEditing) {
+                        // При редактировании НЕ закрываем модальное окно сразу - сначала чистим ID
+                        console.log('🔄 Tour edited successfully - clearing currentTourId before closing modal');
+                        currentTourId = null;
+                        window.currentTourId = null;
+                        closeTourModal();
+                        loadTours();
+                    } else {
+                        // При создании очищаем форму
+                        document.getElementById('enhancedTourForm').reset();
+                        loadEnhancedTourForm(); // Reload form to refresh selects
+                    }
+                } else {
+                    const action = isEditing ? 'обновлении' : 'создании';
+                    alert(`Ошибка при ${action} тура: ` + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(err => {
+                console.error('Error saving tour:', err);
+                alert('Ошибка соединения с сервером');
+            });
+        }
+
+        // ===== TRANSLATION FUNCTIONALITY =====
+        
+        // Show translations section
         function showTranslations() {
             showSection('translations');
             loadTranslationData();
