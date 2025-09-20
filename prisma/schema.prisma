@@ -162,23 +162,26 @@ model TourBlockAssignment {
 }
 
 model Guide {
-  id          Int         @id @default(autoincrement())
-  name        String
-  description String?
-  photo       String?
-  avatar      String?     // Новое поле для аватара
-  documents   String?     // JSON массив документов [{name: "", path: "", type: ""}]
-  languages   String
-  contact     String?
-  experience  Int?
-  rating      Float?
-  countryId   Int?        @map("country_id")
-  cityId      Int?        @map("city_id")
-  login       String?
-  password    String?
-  isActive    Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id               Int         @id @default(autoincrement())
+  name             String
+  description      String?
+  photo            String?
+  avatar           String?     // Новое поле для аватара
+  documents        String?     // JSON массив документов [{name: "", path: "", type: ""}]
+  languages        String
+  contact          String?
+  experience       Int?
+  rating           Float?
+  countryId        Int?        @map("country_id")
+  cityId           Int?        @map("city_id")
+  passportSeries   String?     @map("passport_series")     // Серия паспорта
+  registration     String?     // Гос. регистрация  
+  residenceAddress String?     @map("residence_address")   // Адрес проживания
+  login            String?
+  password         String?
+  isActive         Boolean     @default(true)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
   orders       Order[]
   tourGuides   TourGuide[]
   assignedTours Tour[] @relation("AssignedGuide")
