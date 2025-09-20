@@ -453,8 +453,27 @@
 
         // Функция создания карточки тургида
         function createAgentCard(agent) {
-            // Используем данные напрямую из API
-            const name = agent.name || 'Гид';
+            // Парсим имя гида (мультиязычное поле)
+            let name = 'Гид';
+            try {
+                if (typeof agent.name === 'string') {
+                    // Попробуем распарсить как JSON
+                    try {
+                        const parsedName = JSON.parse(agent.name);
+                        name = parsedName.ru || parsedName.en || 'Гид';
+                    } catch {
+                        // Если не JSON, используем как есть
+                        name = agent.name || 'Гид';
+                    }
+                } else if (typeof agent.name === 'object' && agent.name) {
+                    name = agent.name.ru || agent.name.en || 'Гид';
+                } else if (agent.name) {
+                    name = agent.name;
+                }
+            } catch (e) {
+                console.warn('Error parsing guide name:', e);
+                name = 'Гид';
+            }
             const description = agent.description || 'Опытный тургид с глубокими знаниями культуры и истории Центральной Азии. Создает незабываемые путешествия для клиентов со всего мира.';
             const languages = agent.languages ? agent.languages.split(',').map(lang => lang.trim()) : ['Русский', 'Английский'];
             

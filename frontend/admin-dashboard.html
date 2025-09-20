@@ -4428,7 +4428,7 @@
                                 <td>${tour.country || '-'}</td>
                                 <td>${tour.city || '-'}</td>
                                 <td>${tour.duration || tour.durationDays || '-'} дней</td>
-                                <td class="font-semibold">$${tour.price}</td>
+                                <td class="font-semibold">${tour.price} сом.</td>
                                 <td>${tour.isActive ? 
                                     '<span class="badge badge-success">Активен</span>' : 
                                     '<span class="badge badge-danger">Неактивен</span>'}</td>
@@ -7417,6 +7417,26 @@
         }
 
         function openEditGuideModal(guide) {
+            // Парсим имя гида (мультиязычное поле)
+            let guideName = '';
+            try {
+                if (typeof guide.name === 'string') {
+                    // Попробуем распарсить как JSON
+                    try {
+                        const parsedName = JSON.parse(guide.name);
+                        guideName = parsedName.ru || parsedName.en || '';
+                    } catch {
+                        // Если не JSON, используем как есть
+                        guideName = guide.name;
+                    }
+                } else if (typeof guide.name === 'object' && guide.name) {
+                    guideName = guide.name.ru || guide.name.en || '';
+                }
+            } catch (e) {
+                console.warn('Error parsing guide name:', e);
+                guideName = '';
+            }
+            
             // Парсим контакты и документы
             let contact = {};
             try {
@@ -7450,7 +7470,7 @@
                             <div class="grid grid-cols-1 gap-4">
                                 <div class="form-group">
                                     <label class="form-label">ФИО *</label>
-                                    <input type="text" class="form-input" id="editGuideFullName" placeholder="Иванов Иван Иванович" value="${guide.name || ''}" required>
+                                    <input type="text" class="form-input" id="editGuideFullName" placeholder="Иванов Иван Иванович" value="${guideName}" required>
                                 </div>
                                 
                                 <div class="bg-gray-50 p-4 rounded-lg">
