@@ -7258,7 +7258,7 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label class="form-label">Языки *</label>
+                                    <label class="form-label">Языки</label>
                                     <div class="flex gap-2 mb-2">
                                         <select class="form-input flex-1" id="guideAvailableLanguages">
                                             <option value="">Выберите язык для добавления</option>
@@ -7285,18 +7285,18 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label class="form-label">Опыт работы (лет) *</label>
-                                    <input type="number" class="form-input" id="guideExperience" min="0" max="50" required>
+                                    <label class="form-label">Опыт работы (лет)</label>
+                                    <input type="number" class="form-input" id="guideExperience" min="0" max="50">
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label class="form-label">Телефон *</label>
-                                    <input type="tel" class="form-input" id="guidePhone" placeholder="+992901234567" required>
+                                    <label class="form-label">Телефон</label>
+                                    <input type="tel" class="form-input" id="guidePhone" placeholder="+992901234567">
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label class="form-label">Email *</label>
-                                    <input type="email" class="form-input" id="guideEmail" placeholder="guide@example.com" required>
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-input" id="guideEmail" placeholder="guide@example.com">
                                 </div>
                                 
                                 <!-- 🌐 МНОГОЯЗЫЧНОЕ ОПИСАНИЕ ГИДА -->
@@ -7353,12 +7353,12 @@
                                     <h4 class="font-medium text-blue-900 mb-3">🔐 Данные для входа в кабинет</h4>
                                     <div class="grid grid-cols-2 gap-3">
                                         <div class="form-group">
-                                            <label class="form-label">Логин *</label>
-                                            <input type="text" class="form-input" id="guideLogin" placeholder="guide_login" required>
+                                            <label class="form-label">Логин</label>
+                                            <input type="text" class="form-input" id="guideLogin" placeholder="guide_login">
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-label">Пароль *</label>
-                                            <input type="password" class="form-input" id="guidePassword" placeholder="********" required>
+                                            <label class="form-label">Пароль</label>
+                                            <input type="password" class="form-input" id="guidePassword" placeholder="********">
                                         </div>
                                     </div>
                                     <small class="text-blue-600">Гид сможет войти в свой кабинет с этими данными</small>
@@ -8100,36 +8100,52 @@
             // ИСПРАВЛЕНО: Получаем выбранные языки из нового интерфейса
             console.log('🔍 Выбранные языки:', selectedGuideLanguages);
             
-            // Безопасно получаем все значения полей используя safeGetValue
-            const fullName = safeGetValue('guideFullName', '').trim();
-            const experience = safeGetValue('guideExperience', '', 'int');
+            // Получаем ФИО из обоих языковых полей
+            const fullNameRu = safeGetValue('guideFullNameRu', '').trim();
+            const fullNameEn = safeGetValue('guideFullNameEn', '').trim();
+            
+            // Создаем многоязычное ФИО
+            const fullName = JSON.stringify({
+                ru: fullNameRu,
+                en: fullNameEn
+            });
+            
+            // Получаем остальные поля (все теперь НЕ обязательные)
+            const experience = safeGetValue('guideExperience', '', 'int') || 0;
             const phone = safeGetValue('guidePhone', '').trim();
             const email = safeGetValue('guideEmail', '').trim();
             const login = safeGetValue('guideLogin', '').trim();
             const password = safeGetValue('guidePassword', '').trim();
-            const comments = safeGetValue('guideComments', '').trim();
+            
+            // Получаем комментарии из обоих языковых полей
+            const commentsRu = safeGetValue('guideCommentsRu', '').trim();
+            const commentsEn = safeGetValue('guideCommentsEn', '').trim();
+            const comments = JSON.stringify({
+                ru: commentsRu,
+                en: commentsEn
+            });
             
             // Новые поля
             const passportSeries = safeGetValue('guidePassportSeries', '').trim();
             const registration = safeGetValue('guideRegistration', '').trim();
             const residenceAddress = safeGetValue('guideResidenceAddress', '').trim();
             
-            // Проверяем обязательные поля
-            if (!fullName || !experience || !phone || !email || !login || !password || selectedGuideLanguages.length === 0) {
-                alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой)');
+            // Проверяем только обязательное поле - ФИО
+            if (!fullNameRu && !fullNameEn) {
+                alert('Пожалуйста, заполните ФИО хотя бы на одном языке (русском или английском)');
                 return;
             }
             
             // Создаем FormData для отправки файлов и данных
             const formData = new FormData();
             formData.append('name', fullName);
-            formData.append('description', comments || 'Профессиональный гид');
-            formData.append('languages', selectedGuideLanguages.join(', '));
+            formData.append('description', comments);
+            formData.append('languages', selectedGuideLanguages.length > 0 ? selectedGuideLanguages.join(', ') : 'Русский');
             formData.append('experience', experience.toString());
-            formData.append('phone', phone);
-            formData.append('email', email);
-            formData.append('login', login);
-            formData.append('password', password);
+            formData.append('phone', phone || '');
+            formData.append('email', email || 'noemail@example.com');
+            formData.append('login', login || `guide_${Date.now()}`);
+            formData.append('password', password || '123456');
             formData.append('isActive', 'true');
             
             // Добавляем новые поля
