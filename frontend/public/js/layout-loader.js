@@ -268,14 +268,14 @@ class LayoutLoader {
         }
         
         try {
-            console.log('🗺️ Creating map iframe...');
+            console.log('🗺️ Creating Google Maps iframe...');
             
             // Координаты офиса Бунёд-Тур (точные GPS координаты)
             const lat = 38.55332115848599;
             const lng = 68.844931266422;
             
-            // Создаем встроенную карту через OpenStreetMap iframe
-            const mapURL = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.01},${lat-0.01},${lng+0.01},${lat+0.01}&layer=mapnik&marker=${lat},${lng}`;
+            // Создаем встроенную карту через Google Maps с высоким зумом
+            const mapURL = `https://www.google.com/maps/@${lat},${lng},17z?entry=ttu&g_ep=EgoyMDI1MDkxOS4wIKXMDSoASAFQAw%3D%3D`;
             console.log('🔗 Map URL:', mapURL);
             
             const mapHTML = `
@@ -288,14 +288,14 @@ class LayoutLoader {
                     marginwidth="0" 
                     src="${mapURL}" 
                     style="border: none; border-radius: 8px; background-color: #f0f0f0;"
-                    onload="console.log('📍 Map iframe loaded successfully!');"
-                    onerror="console.error('❌ Map iframe failed to load!');">
+                    onload="console.log('📍 Google Maps iframe loaded successfully!');"
+                    onerror="console.error('❌ Google Maps iframe failed to load!');">
                 </iframe>
             `;
             
             mapElement.innerHTML = mapHTML;
-            console.log('✅ Footer map HTML injected successfully!');
-            console.log('🎯 Map coordinates: lat=' + lat + ', lng=' + lng);
+            console.log('✅ Footer Google Maps HTML injected successfully!');
+            console.log('🎯 Company: Бунёд Тур, Location: lat=' + lat + ', lng=' + lng);
             
         } catch (error) {
             console.error('❌ Footer map initialization failed:', error);
