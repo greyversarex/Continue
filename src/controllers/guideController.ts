@@ -190,6 +190,7 @@ export const getGuidesByTour = async (req: Request, res: Response) => {
       languages: safeJsonParse(tg.guide.languages),
       contact: safeJsonParse(tg.guide.contact),
       isDefault: tg.isDefault,
+      password: undefined, // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
     }));
 
     return res.json({
@@ -229,16 +230,30 @@ export const updateGuide = async (req: Request, res: Response) => {
     }
     if (guideData.experience !== undefined) updateData.experience = guideData.experience;
     if (guideData.rating !== undefined) updateData.rating = guideData.rating;
+    if (guideData.countryId !== undefined) updateData.countryId = guideData.countryId;
+    if (guideData.cityId !== undefined) updateData.cityId = guideData.cityId;
+    if (guideData.passportSeries !== undefined) updateData.passportSeries = guideData.passportSeries;
+    if (guideData.registration !== undefined) updateData.registration = guideData.registration;
+    if (guideData.residenceAddress !== undefined) updateData.residenceAddress = guideData.residenceAddress;
 
     const guide = await prisma.guide.update({
       where: { id: parseInt(id) },
       data: updateData,
     });
 
+    const formattedGuide = {
+      ...guide,
+      name: safeJsonParse(guide.name),
+      description: safeJsonParse(guide.description),
+      languages: safeJsonParse(guide.languages),
+      contact: safeJsonParse(guide.contact),
+      password: undefined, // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
+    };
+
     return res.json({
       success: true,
       message: 'Guide updated successfully',
-      data: guide,
+      data: formattedGuide,
     });
   } catch (error) {
     console.error('Error updating guide:', error);

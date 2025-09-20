@@ -81,4 +81,9 @@ export interface GuideData {
   };
   experience?: number;
   rating?: number;
+  countryId?: number;
+  cityId?: number;
+  passportSeries?: string;
+  registration?: string;
+  residenceAddress?: string;
 }
