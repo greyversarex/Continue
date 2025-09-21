@@ -253,75 +253,75 @@
 
                     <!-- Длительность тура -->
                     <div class="filter-section">
-                        <div class="filter-title">Длительность тура</div>
+                        <div class="filter-title" data-translate="filters.duration">Длительность тура</div>
                         <div class="radio-group">
                             <div class="radio-item">
                                 <input type="radio" id="duration-1" name="duration" value="1">
-                                <label for="duration-1">Однодневный</label>
+                                <label for="duration-1" data-translate="duration.single_day">Однодневный</label>
                             </div>
                             <div class="radio-item">
                                 <input type="radio" id="duration-2-5" name="duration" value="2-5">
-                                <label for="duration-2-5">Многодневный (2-5 дней)</label>
+                                <label for="duration-2-5" data-translate="duration.multi_day">Многодневный (2-5 дней)</label>
                             </div>
                             <div class="radio-item">
                                 <input type="radio" id="duration-6+" name="duration" value="6+">
-                                <label for="duration-6+">Длительный (6+ дней)</label>
+                                <label for="duration-6+" data-translate="duration.long_term">Длительный (6+ дней)</label>
                             </div>
                         </div>
                     </div>
 
                     <!-- Тематика тура -->
                     <div class="filter-section">
-                        <div class="filter-title">Тематика тура</div>
+                        <div class="filter-title" data-translate="filters.theme">Тематика тура</div>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
                                 <input type="checkbox" id="theme-overview" name="theme" value="Обзорная экскурсия">
-                                <label for="theme-overview">Обзорная экскурсия</label>
+                                <label for="theme-overview" data-translate="theme.overview">Обзорная экскурсия</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="theme-trekking" name="theme" value="Походы / треккинг">
-                                <label for="theme-trekking">Походы / треккинг</label>
+                                <label for="theme-trekking" data-translate="theme.trekking">Походы / треккинг</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="theme-mountain" name="theme" value="Горные маршруты">
-                                <label for="theme-mountain">Горные маршруты</label>
+                                <label for="theme-mountain" data-translate="theme.mountain">Горные маршруты</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="theme-lake" name="theme" value="Озёрные маршруты">
-                                <label for="theme-lake">Озёрные маршруты</label>
+                                <label for="theme-lake" data-translate="theme.lake">Озёрные маршруты</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="theme-historical" name="theme" value="Исторический тур">
-                                <label for="theme-historical">Исторический тур</label>
+                                <label for="theme-historical" data-translate="theme.historical">Исторический тур</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="theme-recreational" name="theme" value="Рекреационный тур">
-                                <label for="theme-recreational">Рекреационный тур</label>
+                                <label for="theme-recreational" data-translate="theme.recreational">Рекреационный тур</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="theme-agro" name="theme" value="Агро-туризм">
-                                <label for="theme-agro">Агро-туризм</label>
+                                <label for="theme-agro" data-translate="theme.agro">Агро-туризм</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="theme-health" name="theme" value="Санаторно-оздоровительный тур">
-                                <label for="theme-health">Санаторно-оздоровительный тур</label>
+                                <label for="theme-health" data-translate="theme.health">Санаторно-оздоровительный тур</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="theme-combined" name="theme" value="Комбинированный тур по Центральной Азии">
-                                <label for="theme-combined">Комбинированный тур по Центральной Азии</label>
+                                <label for="theme-combined" data-translate="theme.combined">Комбинированный тур по Центральной Азии</label>
                             </div>
                         </div>
                     </div>
 
                     <!-- Дата проведения -->
                     <div class="filter-section">
-                        <div class="filter-title">Дата проведения</div>
+                        <div class="filter-title" data-translate="filters.date_period">Дата проведения</div>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">От</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="form.date_from">От</label>
                             <input type="date" id="dateFrom" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">До</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="form.date_to">До</label>
                             <input type="date" id="dateTo" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
@@ -329,7 +329,7 @@
                     <!-- Кнопки -->
                     <div class="space-y-3">
                         <button onclick="applyFilters()" class="filter-button w-full" data-translate="btn.apply_filters">Применить фильтры</button>
-                        <button onclick="resetFilters()" class="reset-button w-full">Сбросить все фильтры</button>
+                        <button onclick="resetFilters()" class="reset-button w-full" data-translate="btn.reset_filters">Сбросить все фильтры</button>
                     </div>
                 </div>
             </div>
@@ -338,7 +338,7 @@
             <div class="lg:col-span-3">
                 <div class="mb-6">
                     <h3 class="text-lg font-semibold text-gray-900" data-translate="title.search_results">Результаты поиска</h3>
-                    <p id="resultsCount" class="text-gray-600">Показано туров: <span id="tourCount">0</span></p>
+                    <p id="resultsCount" class="text-gray-600"><span data-translate="tours.results_count">Показано туров:</span> <span id="tourCount">0</span></p>
                 </div>
 
                 <div id="tourResults" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -360,7 +360,7 @@
             <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-screen overflow-y-auto">
                 <!-- Modal Header -->
                 <div class="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center">
-                    <h2 id="modalTitle" class="text-2xl font-bold text-gray-900">Детали тура</h2>
+                    <h2 id="modalTitle" class="text-2xl font-bold text-gray-900" data-translate="tours.tour_details">Детали тура</h2>
                     <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

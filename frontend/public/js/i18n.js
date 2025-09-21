@@ -147,7 +147,6 @@ window.translations = window.translations || {
 
     // === ЗАГОЛОВКИ СТРАНИЦ ===
     'page.title': { ru: 'Bunyod-Tour - Туры по Таджикистану', en: 'Bunyod-Tour - Tours in Tajikistan' },
-    'hotel.page_title': { ru: 'Каталог отелей - Bunyod-Tour', en: 'Hotels Catalog - Bunyod-Tour' },
     'hotel.catalog_title': { ru: 'Каталог отелей', en: 'Hotels Catalog' },
     'hotel.catalog_subtitle': { ru: 'Выберите идеальное место для вашего отдыха', en: 'Choose the perfect place for your stay' },
     'tours.page_title': { ru: 'Поиск туров - Bunyod-Tour', en: 'Search Tours - Bunyod-Tour' },
@@ -406,7 +405,7 @@ window.translations = window.translations || {
     
     // Фильтры и кнопки
     'btn.apply_filters': { ru: 'Применить фильтры', en: 'Apply Filters' },
-    'btn.reset_filters': { ru: 'Сбросить все фильтры', en: 'Reset All Filters' },
+    'btn.reset_filters': { ru: 'Сбросить все фильтры', en: 'Reset all filters' },
     
     // Сообщения о поиске
     'common.no_tours_found': { ru: 'Туры не найдены', en: 'No tours found' },
@@ -758,6 +757,52 @@ window.translations = window.translations || {
     'hotel_segment.middle': { ru: 'Средний сегмент', en: 'Mid-range Segment' },
     'hotel_segment.budget': { ru: 'Бюджетный сегмент', en: 'Budget Segment' },
     'hotel_segment.local': { ru: 'Местные и региональные', en: 'Local and Regional' },
+
+    // === ФИЛЬТРЫ СТРАНИЦЫ TOURS ===
+    'filters.duration': { ru: 'Длительность тура', en: 'Tour duration' },
+    'filters.theme': { ru: 'Тематика тура', en: 'Tour theme' },
+    'filters.date_period': { ru: 'Дата проведения', en: 'Date range' },
+    
+    // Варианты длительности
+    'duration.single_day': { ru: 'Однодневный', en: 'Single-day' },
+    'duration.multi_day': { ru: 'Многодневный (2-5 дней)', en: 'Multi-day (2-5 days)' },
+    'duration.long_term': { ru: 'Длительный (6+ дней)', en: 'Extended (6+ days)' },
+    
+    // Тематики туров
+    'theme.overview': { ru: 'Обзорная экскурсия', en: 'Sightseeing tour' },
+    'theme.trekking': { ru: 'Походы / треккинг', en: 'Hiking / trekking' },
+    'theme.mountain': { ru: 'Горные маршруты', en: 'Mountain tours' },
+    'theme.lake': { ru: 'Озёрные маршруты', en: 'Lake tours' },
+    'theme.historical': { ru: 'Исторический тур', en: 'Historical tour' },
+    'theme.recreational': { ru: 'Рекреационный тур', en: 'Leisure tour' },
+    'theme.agro': { ru: 'Агро-туризм', en: 'Agritourism' },
+    'theme.health': { ru: 'Санаторно-оздоровительный тур', en: 'Health & wellness tour' },
+    'theme.combined': { ru: 'Комбинированный тур по Центральной Азии', en: 'Multi-country Central Asia tour' },
+    
+    // Кнопки и действия для tours
+    'btn.reset_filters': { ru: 'Сбросить все фильтры', en: 'Reset all filters' },
+    'tours.results_count': { ru: 'Показано туров:', en: 'Tours shown:' },
+    'tours.tour_details': { ru: 'Детали тура', en: 'Tour Details' },
+    
+    // Поля дат
+    'form.date_from': { ru: 'От', en: 'From' },
+    'form.date_to': { ru: 'До', en: 'To' },
+
+    // === ОТЕЛИ - ДОПОЛНИТЕЛЬНЫЕ ПЕРЕВОДЫ ===
+    'hotel.page_title': { ru: 'Каталог отелей - Bunyod-Tour', en: 'Hotel catalog - Bunyod-Tour' },
+    'hotel.5_stars': { ru: '5 звезд', en: '5 stars' },
+    'hotel.4_stars': { ru: '4 звезды', en: '4 stars' },
+    'hotel.3_stars': { ru: '3 звезды', en: '3 stars' },
+    'hotel.2_stars': { ru: '2 звезды', en: '2 stars' },
+    'hotel.1_star': { ru: '1 звезда', en: '1 star' },
+    'hotel.loading_error': { ru: 'Ошибка загрузки', en: 'Loading error' },
+    'hotel.failed_to_load': { ru: 'Не удалось загрузить список отелей', en: 'Failed to load the hotel list' },
+    
+    // Дополнительные ключи для отелей
+    'hotel.default_name': { ru: 'Отель', en: 'Hotel' },
+    'hotel.no_description': { ru: 'Описание недоступно', en: 'Description unavailable' },
+    'hotel.no_location': { ru: 'Местоположение не указано', en: 'Location not specified' },
+    'hotel.view_details': { ru: 'Подробнее', en: 'View details' },
 
     // === ФУТЕР ===
     'footer.company': { ru: 'Компания:', en: 'Company:' },
