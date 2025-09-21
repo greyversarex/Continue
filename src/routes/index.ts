@@ -33,6 +33,8 @@ import tripRoutes from './tripRoutes';
 import tourAgentRoutes from './tourAgentRoutes';
 // Transfer system
 import transferRoutes from './transferRoutes';
+// Guide hire system
+import guideHireRoutes from './guideHireRoutes';
 
 // Remove old SQLite database routes (now using Prisma)
 
@@ -67,6 +69,7 @@ router.use('/cities', cityRoutes); // Cities management
 router.use('/trips', tripRoutes); // Trip management
 router.use('/tour-agents', tourAgentRoutes); // Tour agents management
 router.use('/transfers', transferRoutes); // Transfer requests management
+router.use('/guide-hire', guideHireRoutes); // Guide hiring system
 router.use('/', objectStorageRoutes);
 
 // All data access now through Prisma models
