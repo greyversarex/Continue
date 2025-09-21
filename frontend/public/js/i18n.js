@@ -723,7 +723,61 @@ window.translations = window.translations || {
     'placeholder.news_brief_description': { ru: 'Краткое описание новости (по желанию)', en: 'Brief news description (optional)' },
 
     // Языки
-    'language.russian': { ru: 'Русский', en: 'Russian' }
+    'language.russian': { ru: 'Русский', en: 'Russian' },
+    
+    // === ДОПОЛНИТЕЛЬНЫЕ ПЕРЕВОДЫ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ ===
+    
+    // Заголовки основных секций
+    'hero.more_with_bunyod': { ru: 'Больше с Bunyod-Tour', en: 'More with Bunyod-Tour' },
+    'title.tour_types': { ru: 'Виды туров', en: 'Tour Types' },
+    
+    // Описания типов туров
+    'tour_type.personal_desc': { ru: 'Только для вас с персональным подходом', en: 'Just for you with a personal approach' },
+    'tour_type.group_personal_desc': { ru: 'Комфортный тур для группы до 4 человек с персональным подходом', en: 'Comfortable tour for groups up to 4 people with personal approach' },
+    'tour_type.group_general_desc': { ru: 'Экономичный тур для группы до 20 человек, куда каждый может присоединиться', en: 'Economical tour for groups up to 20 people, anyone can join' },
+    'tour_type.special_desc': { ru: 'Тур, составленный по вашим личным пожеланиям с персональным подходом', en: 'Tour tailored to your personal preferences with individual approach' },
+    
+    // Информационные блоки - краткие описания
+    'info.free_cancellation_desc': { ru: 'Отмена бронирования до 30 дней до начала тура, возврат 100%', en: 'Cancel booking up to 30 days before tour start, 100% refund' },
+    'info.book_pay_later_desc': { ru: 'Записывайтесь на групповые туры всего за 10% от стоимости тура', en: 'Book group tours for just 10% of the tour cost' },
+    'info.hot_tours_desc': { ru: 'Успейте забронировать туры и экскурсии за доступные цены!', en: 'Hurry to book tours and excursions at affordable prices!' },
+    'info.promotions_desc': { ru: 'Бронируйте любой тур за 12 месяцев и экономьте 12%, это и другие привилегии у нас!', en: 'Book any tour 12 months in advance and save 12%, plus other privileges!' },
+    
+    // Кнопки для информационных блоков
+    'btn.details': { ru: 'подробнее', en: 'details' },
+    'btn.hide': { ru: 'скрыть', en: 'hide' },
+    
+    // Детальные описания в overlay блоках
+    'info.free_cancellation_detail1': { ru: 'Бесплатная отмена – отмена тура со стороны клиента в срок до 30 дней до начала тура, возврат 100%. Однако данный возврат не распространяется на туры, забронированные менее чем за этот срок.', en: 'Free cancellation - tour cancellation by the client up to 30 days before the tour start, 100% refund. However, this refund does not apply to tours booked less than this period.' },
+    'info.free_cancellation_detail2': { ru: 'Система должна распознавать эти требования автоматически.', en: 'The system should recognize these requirements automatically.' },
+    
+    'info.book_pay_later_detail1': { ru: 'Турист записывается на групповой общий тур; оплачивает 10% от стоимости тура, чтобы забронировать тур. Это раннее бронирование за 12 месяцев (минимум до 30 дней до начала тура).', en: 'Tourist books a group shared tour; pays 10% of the tour cost to reserve the tour. This is early booking up to 12 months (minimum until 30 days before tour start).' },
+    'info.book_pay_later_detail2': { ru: 'В калькуляторе нужно установить ограничение: любая запись на тур доступна в срок бронирования до 30 дней; в 29-й день до срока доступ закрывается.', en: 'In the calculator, a restriction should be set: any tour booking is available up to 30 days; on the 29th day before the deadline, access closes.' },
+    
+    'info.hot_tours_detail1': { ru: 'В системе бронирования необходимо установить лимит, когда необходимо, чтобы туры, особенно групповые общие экскурсии, были переключены в категорию "Горящие туры".', en: 'In the booking system, it is necessary to set a limit when tours, especially group shared excursions, should be switched to the "Hot Tours" category.' },
+    'info.hot_tours_detail2': { ru: 'Пока остается так, однако два предыдущих блока "Бронируй сейчас, плати потом" и "Горящие туры" входят в этот компонент.', en: 'For now it remains like this, however the two previous blocks "Book now, pay later" and "Hot tours" are part of this component.' },
+    
+    'info.promotions_detail': { ru: 'Пока остается так, однако два предыдущих блока "Бронируй сейчас, плати потом" входят в этот компонент.', en: 'For now it remains like this, however the two previous blocks "Book now, pay later" are part of this component.' },
+    
+    // Описания услуг в карточках
+    'service.transfer_feature1': { ru: 'Поездки по территории всех 5-СТАН с опытными водителями', en: 'Trips across all 5-STAN territories with experienced drivers' },
+    'service.transfer_feature2': { ru: 'Встречи в аэропорту, ЖД и границах 5-СТАН', en: 'Airport, railway and border pickups in 5-STAN' },
+    'service.transfer_feature3': { ru: 'Межстрановые и межгородские поездки', en: 'Inter-country and inter-city trips' },
+    'service.transfer_feature4': { ru: 'Доступные и комфортные автомобили', en: 'Affordable and comfortable vehicles' },
+    'btn.order_transfer': { ru: 'Заказать трансфер', en: 'Order Transfer' },
+    
+    'service.guides_feature1': { ru: 'Опытные тур-гиды во всех 5-СТАН', en: 'Experienced tour guides in all 5-STAN' },
+    'service.guides_feature2': { ru: 'Профессиональное сопровождение', en: 'Professional accompaniment' },
+    'service.guides_feature3': { ru: 'Знание местности и владение разными языками', en: 'Local knowledge and multilingual skills' },
+    'service.guides_feature4': { ru: 'Друг в поездке, экономия и безопасность', en: 'Friend on the trip, savings and safety' },
+    'btn.order_guide': { ru: 'Заказать тур-гида', en: 'Order Tour Guide' },
+    
+    // Optgroup labels для селекторов отелей
+    'hotel_segment.luxury': { ru: 'Люкс сегмент', en: 'Luxury Segment' },
+    'hotel_segment.premium': { ru: 'Премиум сегмент', en: 'Premium Segment' },
+    'hotel_segment.middle': { ru: 'Средний сегмент', en: 'Mid-range Segment' },
+    'hotel_segment.budget': { ru: 'Бюджетный сегмент', en: 'Budget Segment' },
+    'hotel_segment.local': { ru: 'Местные и региональные', en: 'Local and Regional' }
 };
 
 // Убираем const aliases - используем прямые ссылки на window.*
