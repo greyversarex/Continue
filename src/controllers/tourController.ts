@@ -11,27 +11,22 @@ import {
   MultilingualContent 
 } from '../types';
 import prisma from '../config/database';
-// Безопасный парсинг JSON 
-function safeJsonParse(jsonString: any, defaultValue: any = { ru: '', en: '' }) {
-  if (!jsonString) return defaultValue;
-  if (typeof jsonString === 'object') return jsonString;
-  
-  try {
-    return JSON.parse(jsonString);
-  } catch (error) {
-    console.warn('JSON parsing error:', error);
-    return defaultValue;
-  }
-}
+import { 
+  getLanguageFromRequest, 
+  createLocalizedResponse, 
+  parseMultilingualField,
+  safeJsonParse 
+} from '../utils/multilingual';
 
 export class TourController {
   /**
-   * Get all tours
-   * GET /api/tours
+   * Get all tours with multilingual support
+   * GET /api/tours?lang=en/ru
    */
   static async getAllTours(req: Request, res: Response, next: NextFunction) {
     try {
       const { blockId, limit } = req.query;
+      const language = getLanguageFromRequest(req);
       
       let filters: any = {};
       // Note: blockId filtering now handled by TourBlockAssignment system
@@ -42,8 +37,8 @@ export class TourController {
       // Apply limit if specified
       const limitedTours = limit ? tours.slice(0, parseInt(limit as string)) : tours;
       
-      // Parse JSON fields for response with safe parsing
-      const parsedTours = limitedTours.map((tour: any) => {
+      // Parse JSON fields and localize content
+      const localizedTours = limitedTours.map((tour: any) => {
         try {
           // ОПТИМИЗАЦИЯ: Удаляем большие изображения из списка туров для производительности
           const tourWithoutImages = { ...tour };
@@ -52,14 +47,20 @@ export class TourController {
           
           return {
             ...tourWithoutImages,
-            title: safeJsonParse(tour.title),
-            description: safeJsonParse(tour.description),
+            title: parseMultilingualField(tour.title, language),
+            description: parseMultilingualField(tour.description, language),
             category: tour.category ? {
               ...tour.category,
-              name: safeJsonParse(tour.category.name)
+              name: parseMultilingualField(tour.category.name, language)
             } : null,
             // Добавляем флаг что изображения есть, но не передаем сами изображения
-            hasImages: !!(tour.mainImage || tour.images)
+            hasImages: !!(tour.mainImage || tour.images),
+            // НОВОЕ: добавляем raw JSON для админки (если нужно)
+            _raw: req.query.includeRaw ? {
+              title: safeJsonParse(tour.title),
+              description: safeJsonParse(tour.description),
+              categoryName: tour.category ? safeJsonParse(tour.category.name) : null
+            } : undefined
           };
         } catch (jsonError) {
           console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
@@ -69,22 +70,23 @@ export class TourController {
           
           return {
             ...tourWithoutImages,
-            title: { ru: tour.title || '', en: tour.title || '' },
-            description: { ru: tour.description || '', en: tour.description || '' },
+            title: tour.title || '',
+            description: tour.description || '',
             category: tour.category ? {
               ...tour.category,
-              name: { ru: tour.category.name || '', en: tour.category.name || '' }
+              name: tour.category.name || ''
             } : null,
             hasImages: !!(tour.mainImage || tour.images)
           };
         }
       });
 
-      const response: ApiResponse = {
-        success: true,
-        data: parsedTours,
-        message: 'Tours retrieved successfully'
-      };
+      const response = createLocalizedResponse(
+        localizedTours,
+        [], // Поля уже обработаны выше
+        language,
+        'Tours retrieved successfully'
+      );
 
       res.status(200).json(response);
     } catch (error) {
@@ -152,13 +154,16 @@ export class TourController {
   }
 
   /**
-   * Get a single tour by ID
-   * GET /api/tours/:id
+   * Get a single tour by ID with multilingual support
+   * GET /api/tours/:id?lang=en/ru&includeRaw=true
    */
   static async getTourById(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseInt(req.params.id);
-      console.log('📋 getTourById called with ID:', id);
+      const language = getLanguageFromRequest(req);
+      const includeRaw = req.query.includeRaw === 'true';
+      
+      console.log('📋 getTourById called with:', { id, language, includeRaw });
       
       if (isNaN(id)) {
         console.log('❌ Invalid tour ID provided:', req.params.id);
@@ -180,40 +185,60 @@ export class TourController {
         });
       }
 
-      // Parse JSON fields for response - ДЛЯ РЕДАКТИРОВАНИЯ возвращаем ВСЕ данные включая изображения
+      // Parse JSON fields for response
       let parsedTour;
       try {
-        parsedTour = {
-          ...tour,
-          title: safeJsonParse(tour.title),
-          description: safeJsonParse(tour.description),
-          category: tour.category ? {
-            ...tour.category,
-            name: safeJsonParse(tour.category.name)
-          } : null
-          // НЕ удаляем mainImage и images - они нужны для редактирования!
-        };
+        if (includeRaw) {
+          // ДЛЯ РЕДАКТИРОВАНИЯ: возвращаем raw JSON + локализованные поля
+          parsedTour = {
+            ...tour,
+            title: safeJsonParse(tour.title),
+            description: safeJsonParse(tour.description),
+            category: tour.category ? {
+              ...tour.category,
+              name: safeJsonParse(tour.category.name)
+            } : null,
+            // Добавляем локализованные версии для превью
+            _localized: {
+              title: parseMultilingualField(tour.title, language),
+              description: parseMultilingualField(tour.description, language),
+              categoryName: tour.category ? parseMultilingualField(tour.category.name, language) : null
+            }
+            // НЕ удаляем mainImage и images - они нужны для редактирования!
+          };
+        } else {
+          // ДЛЯ ПУБЛИЧНОГО ПРОСМОТРА: возвращаем только локализованный контент
+          parsedTour = {
+            ...tour,
+            title: parseMultilingualField(tour.title, language),
+            description: parseMultilingualField(tour.description, language),
+            category: tour.category ? {
+              ...tour.category,
+              name: parseMultilingualField(tour.category.name, language)
+            } : null
+          };
+        }
       } catch (jsonError) {
         console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
         parsedTour = {
           ...tour,
-          title: { ru: tour.title || '', en: tour.title || '' },
-          description: { ru: tour.description || '', en: tour.description || '' },
+          title: tour.title || '',
+          description: tour.description || '',
           category: tour.category ? {
             ...tour.category,
-            name: { ru: tour.category.name || '', en: tour.category.name || '' }
+            name: tour.category.name || ''
           } : null
-          // НЕ удаляем mainImage и images - они нужны для редактирования!
         };
       }
 
-      const response: ApiResponse = {
-        success: true,
-        data: parsedTour,
-        message: 'Tour retrieved successfully'
-      };
+      const response = createLocalizedResponse(
+        parsedTour,
+        [], // Поля уже обработаны выше
+        language,
+        'Tour retrieved successfully'
+      );
 
-      console.log('✅ Returning tour data successfully for ID:', id);
+      console.log('✅ Returning tour data successfully for ID:', id, 'Language:', language);
       return res.status(200).json(response);
     } catch (error) {
       console.error('❌ Error in getTourById:', error);
