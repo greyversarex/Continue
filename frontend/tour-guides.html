@@ -575,8 +575,6 @@
     <div id="footer-container"></div>
 
     <script>
-        console.log('🚀 ТЕСТ: JavaScript на странице тургидов НАЧАЛ выполняться!');
-        
         // API функции
         async function fetchTourAgents() {
             try {
@@ -596,59 +594,50 @@
 
         // Функция создания карточки тургида
         function createAgentCard(agent) {
-            // Парсим имя гида (может быть простой строкой или JSON)
-            const defaultGuideName = window.getTranslation ? window.getTranslation('guides.default_guide_name', window.currentLanguage) : 'Гид';
-            let name = defaultGuideName;
-            try {
-                if (agent.name) {
-                    if (typeof agent.name === 'string') {
-                        // Проверяем, является ли строка JSON
-                        if (agent.name.trim().startsWith('{') || agent.name.trim().startsWith('[')) {
-                            try {
-                                const parsedName = JSON.parse(agent.name);
-                                name = parsedName.ru || parsedName.en || agent.name;
-                            } catch {
-                                // Если не удалось распарсить JSON, используем как простую строку
-                                name = agent.name;
-                            }
-                        } else {
-                            // Простая строка - используем как есть
-                            name = agent.name;
-                        }
-                    } else if (typeof agent.name === 'object') {
-                        name = agent.name.ru || agent.name.en || defaultGuideName;
-                    } else {
-                        name = String(agent.name) || defaultGuideName;
-                    }
+            // КАЧЕСТВЕННОЕ РЕШЕНИЕ: Получаем имя гида с учетом текущего языка
+            let name = 'Гид'; // fallback
+            
+            if (agent.name) {
+                if (typeof agent.name === 'object' && agent.name !== null) {
+                    // Мультиязычный объект: {"ru": "...", "en": "..."}
+                    name = agent.name[window.currentLanguage] || agent.name.ru || agent.name.en || Object.values(agent.name)[0] || 'Гид';
+                } else if (typeof agent.name === 'string') {
+                    name = agent.name;
+                } else {
+                    name = String(agent.name) || 'Гид';
                 }
-            } catch (e) {
-                console.warn('Error parsing guide name:', e, 'Raw name:', agent.name);
-                name = defaultGuideName;
             }
-            const defaultDescription = window.getTranslation ? window.getTranslation('guides.default_description', window.currentLanguage) : 'Опытный тургид с глубокими знаниями культуры и истории Центральной Азии. Создает незабываемые путешествия для клиентов со всего мира.';
-            const description = agent.description || defaultDescription;
-            // Парсим языки
-            const defaultLanguages = window.getTranslation ? [
-                window.getTranslation('guides.russian_lang', window.currentLanguage),
-                window.getTranslation('guides.english_lang', window.currentLanguage)
-            ] : ['Русский', 'Английский'];
-            let languages = defaultLanguages; // по умолчанию
-            try {
-                if (agent.languages) {
-                    if (Array.isArray(agent.languages)) {
-                        languages = agent.languages;
-                    } else if (typeof agent.languages === 'string') {
-                        // Проверяем, JSON ли это
-                        if (agent.languages.startsWith('[') || agent.languages.startsWith('{')) {
+            
+            // КАЧЕСТВЕННОЕ РЕШЕНИЕ: Получаем описание с учетом текущего языка
+            let description = 'Опытный тургид с глубокими знаниями культуры и истории Центральной Азии.';
+            
+            if (agent.description) {
+                if (typeof agent.description === 'object' && agent.description !== null) {
+                    // Мультиязычный объект
+                    description = agent.description[window.currentLanguage] || agent.description.ru || agent.description.en || Object.values(agent.description)[0] || description;
+                } else if (typeof agent.description === 'string') {
+                    description = agent.description;
+                }
+            }
+            
+            // КАЧЕСТВЕННОЕ РЕШЕНИЕ: Парсим языки безопасно
+            let languages = ['Русский', 'Английский']; // fallback
+            
+            if (agent.languages) {
+                if (Array.isArray(agent.languages)) {
+                    languages = agent.languages;
+                } else if (typeof agent.languages === 'string') {
+                    try {
+                        if (agent.languages.trim().startsWith('[')) {
                             languages = JSON.parse(agent.languages);
                         } else {
-                            languages = agent.languages.split(',').map(lang => lang.trim());
+                            languages = agent.languages.split(',').map(lang => lang.trim()).filter(lang => lang);
                         }
+                    } catch (e) {
+                        console.warn('Error parsing languages:', e);
+                        languages = agent.languages.split(',').map(lang => lang.trim()).filter(lang => lang);
                     }
                 }
-            } catch (e) {
-                console.warn('Error parsing agent languages:', e);
-                languages = defaultLanguages;
             }
             
             // Определяем аватар
@@ -1084,7 +1073,7 @@
             alert(message);
         }
 
-        // Функция обновления карточек при смене языка
+        // КАЧЕСТВЕННОЕ РЕШЕНИЕ: Функция обновления карточек при смене языка
         function updateAgentCardsLanguage() {
             const agents = window.loadedAgents || [];
             const container = document.getElementById('agentsContainer');
@@ -1092,46 +1081,51 @@
             if (agents.length > 0 && container && !container.classList.contains('hidden')) {
                 // Пересоздаем карточки с новым языком
                 container.innerHTML = agents.map(agent => createAgentCard(agent)).join('');
-                console.log('🔄 Карточки гидов обновлены для языка:', window.currentLanguage);
+                
+                // КРИТИЧЕСКИ ВАЖНО: Применяем переводы ко всем статическим элементам
+                if (window.translateStaticInterface) {
+                    window.translateStaticInterface(window.currentLanguage);
+                }
+                
             }
             
             // Обновляем модальное окно найма если оно открыто
             updateHireModalLanguage();
         }
         
-        // Функция обновления модального окна найма при смене языка
+        // КАЧЕСТВЕННОЕ РЕШЕНИЕ: Функция обновления модального окна найма при смене языка
         function updateHireModalLanguage() {
             const modal = document.getElementById('hireModal');
             if (modal && !modal.classList.contains('hidden')) {
+                // Применяем переводы ко всем элементам модального окна
+                if (window.translateStaticInterface) {
+                    window.translateStaticInterface(window.currentLanguage);
+                }
+                
                 // Обновляем заголовок модального окна с именем гида
                 if (selectedGuideName) {
                     const modalTitle = document.getElementById('modalTitle');
-                    if (modalTitle) {
-                        const hireGuideText = window.getTranslation ? 
-                            window.getTranslation('guides.hire_guide', window.currentLanguage) : 
-                            'Нанять тургида';
+                    if (modalTitle && window.getTranslation) {
+                        const hireGuideText = window.getTranslation('guides.hire_guide', window.currentLanguage);
                         modalTitle.textContent = `${hireGuideText}: ${selectedGuideName}`;
                     }
                 }
                 
                 // Пересоздаем календарь с новыми названиями месяцев
-                renderHireCalendar();
-                console.log('🔄 Модальное окно найма обновлено для языка:', window.currentLanguage);
+                if (typeof renderHireCalendar === 'function') {
+                    renderHireCalendar();
+                }
+                
             }
         }
 
-        // ГЛОБАЛЬНАЯ РЕГИСТРАЦИЯ ОБРАБОТЧИКА СМЕНЫ ЯЗЫКА (до DOMContentLoaded)
-        console.log('🔧 Регистрируем onLanguageChanged для страницы тургидов...');
+        // Глобальная регистрация обработчика смены языка
         window.onLanguageChanged = function(newLang) {
-            console.log('🌍 Язык изменен на:', newLang, 'обновляем карточки гидов');
             updateAgentCardsLanguage();
         };
-        console.log('✅ onLanguageChanged обработчик зарегистрирован ГЛОБАЛЬНО');
 
         // Event listeners для модального окна
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔧 DOMContentLoaded - страница тургидов инициализируется...');
-            
             // Основная инициализация
             displayTourAgents();
             
