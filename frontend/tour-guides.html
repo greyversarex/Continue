@@ -595,7 +595,8 @@
         // Функция создания карточки тургида
         function createAgentCard(agent) {
             // Парсим имя гида (может быть простой строкой или JSON)
-            let name = 'Гид';
+            const defaultGuideName = window.getTranslation ? window.getTranslation('guides.default_guide_name', window.currentLanguage) : 'Гид';
+            let name = defaultGuideName;
             try {
                 if (agent.name) {
                     if (typeof agent.name === 'string') {
@@ -613,18 +614,23 @@
                             name = agent.name;
                         }
                     } else if (typeof agent.name === 'object') {
-                        name = agent.name.ru || agent.name.en || 'Гид';
+                        name = agent.name.ru || agent.name.en || defaultGuideName;
                     } else {
-                        name = String(agent.name) || 'Гид';
+                        name = String(agent.name) || defaultGuideName;
                     }
                 }
             } catch (e) {
                 console.warn('Error parsing guide name:', e, 'Raw name:', agent.name);
-                name = 'Гид';
+                name = defaultGuideName;
             }
-            const description = agent.description || 'Опытный тургид с глубокими знаниями культуры и истории Центральной Азии. Создает незабываемые путешествия для клиентов со всего мира.';
+            const defaultDescription = window.getTranslation ? window.getTranslation('guides.default_description', window.currentLanguage) : 'Опытный тургид с глубокими знаниями культуры и истории Центральной Азии. Создает незабываемые путешествия для клиентов со всего мира.';
+            const description = agent.description || defaultDescription;
             // Парсим языки
-            let languages = ['Русский', 'Английский']; // по умолчанию
+            const defaultLanguages = window.getTranslation ? [
+                window.getTranslation('guides.russian_lang', window.currentLanguage),
+                window.getTranslation('guides.english_lang', window.currentLanguage)
+            ] : ['Русский', 'Английский'];
+            let languages = defaultLanguages; // по умолчанию
             try {
                 if (agent.languages) {
                     if (Array.isArray(agent.languages)) {
@@ -640,7 +646,7 @@
                 }
             } catch (e) {
                 console.warn('Error parsing agent languages:', e);
-                languages = ['Русский', 'Английский'];
+                languages = defaultLanguages;
             }
             
             // Определяем аватар
@@ -751,7 +757,10 @@
         // Функция связи с агентом
         function contactAgent(agentId, agentName) {
             // Здесь можно добавить логику связи с тургидом
-            alert(`Связаться с ${agentName}. ID: ${agentId}`);
+            const message = window.getTranslation ? 
+                window.getTranslation('guides.contact_message', window.currentLanguage).replace('%name%', agentName).replace('%id%', agentId) :
+                `Связаться с ${agentName}. ID: ${agentId}`;
+            alert(message);
         }
         
         // Функции для языкового селектора
@@ -1025,14 +1034,23 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert('Заявка на найм тургида успешно отправлена! Мы свяжемся с вами в ближайшее время.');
+                    const successMessage = window.getTranslation ?
+                        window.getTranslation('guides.request_sent_success', window.currentLanguage) :
+                        'Заявка на найм тургида успешно отправлена! Мы свяжемся с вами в ближайшее время.';
+                    alert(successMessage);
                     closeHireModal();
                 } else {
-                    alert('Ошибка: ' + result.message);
+                    const errorMessage = window.getTranslation ?
+                        window.getTranslation('guides.error_prefix', window.currentLanguage) + ': ' + result.message :
+                        'Ошибка: ' + result.message;
+                    alert(errorMessage);
                 }
             } catch (error) {
                 console.error('Error submitting hire request:', error);
-                alert('Произошла ошибка при отправке заявки. Попробуйте еще раз.');
+                const errorMessage = window.getTranslation ?
+                    window.getTranslation('guides.submission_error', window.currentLanguage) :
+                    'Произошла ошибка при отправке заявки. Попробуйте еще раз.';
+                alert(errorMessage);
             }
         }
 
@@ -1044,7 +1062,10 @@
         }
 
         function showGuideDetails(guideId) {
-            alert(`Подробная информация о тургиде будет добавлена позже. ID: ${guideId}`);
+            const message = window.getTranslation ?
+                window.getTranslation('guides.details_coming_soon', window.currentLanguage).replace('%id%', guideId) :
+                `Подробная информация о тургиде будет добавлена позже. ID: ${guideId}`;
+            alert(message);
         }
 
         // Функция обновления карточек при смене языка

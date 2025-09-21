@@ -372,6 +372,19 @@ window.translations = window.translations || {
     'guides.comments_placeholder': { ru: 'Дополнительные пожелания или вопросы...', en: 'Additional wishes or questions...' },
     'guides.submit_request': { ru: 'Отправить заявку на найм', en: 'Submit Hire Request' },
     
+    // Элементы карточек гидов
+    'guides.default_guide_name': { ru: 'Гид', en: 'Guide' },
+    'guides.default_description': { ru: 'Опытный тургид с глубокими знаниями культуры и истории Центральной Азии. Создает незабываемые путешествия для клиентов со всего мира.', en: 'Experienced tour guide with deep knowledge of Central Asian culture and history. Creates unforgettable journeys for clients from around the world.' },
+    'guides.russian_lang': { ru: 'Русский', en: 'Russian' },
+    'guides.english_lang': { ru: 'Английский', en: 'English' },
+    
+    // Сообщения и алерты
+    'guides.contact_message': { ru: 'Связаться с %name%. ID: %id%', en: 'Contact %name%. ID: %id%' },
+    'guides.details_coming_soon': { ru: 'Подробная информация о тургиде будет добавлена позже. ID: %id%', en: 'Detailed guide information will be added later. ID: %id%' },
+    'guides.request_sent_success': { ru: 'Заявка на найм тургида успешно отправлена! Мы свяжемся с вами в ближайшее время.', en: 'Tour guide hire request sent successfully! We will contact you soon.' },
+    'guides.error_prefix': { ru: 'Ошибка', en: 'Error' },
+    'guides.submission_error': { ru: 'Произошла ошибка при отправке заявки. Попробуйте еще раз.', en: 'An error occurred while submitting the request. Please try again.' },
+    
     // Дни недели для календаря
     'calendar.monday': { ru: 'Пн', en: 'Mo' },
     'calendar.tuesday': { ru: 'Вт', en: 'Tu' },
