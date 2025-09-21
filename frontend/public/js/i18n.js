@@ -38,7 +38,6 @@ window.translations = window.translations || {
     'nav.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
     'nav.promotions': { ru: 'Акции', en: 'Promotions' },
     'nav.news': { ru: 'Новости', en: 'News' },
-    'nav.for_agents': { ru: 'Для турагентов', en: 'For Tour Agents' },
     'nav.our_agents': { ru: 'Наши турагенты', en: 'Our Tour Agents' },
     
     // Кнопки и действия
@@ -101,7 +100,6 @@ window.translations = window.translations || {
     'footer.quick_links': { ru: 'Быстрые ссылки', en: 'Quick Links' },
     'footer.social_media': { ru: 'Социальные сети', en: 'Social Media' },
     'footer.our_location': { ru: 'Наше местоположение:', en: 'Our Location:' },
-    'footer.copyright': { ru: '© 2024 Bunyod-Tour. Все права защищены.', en: '© 2024 Bunyod-Tour. All rights reserved.' },
     
     // Фильтры
     'filters.title': { ru: 'Фильтры поиска', en: 'Search Filters' },
@@ -214,7 +212,6 @@ window.translations = window.translations || {
     'nav.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
     'nav.promotions': { ru: 'Акции', en: 'Promotions' },
     'nav.news': { ru: 'Новости', en: 'News' },
-    'nav.for_agents': { ru: 'Тур-агентам', en: 'For Tour Agents' },
     
     // Типы туров по категориям
     'tour.single_day': { ru: 'Однодневные', en: 'Single Day' },
@@ -239,16 +236,6 @@ window.translations = window.translations || {
     'tour_type.group_general': { ru: 'Групповой общий', en: 'Group General' },
     'tour_type.special': { ru: 'Специальный', en: 'Special' },
     
-    // Расширенный футер
-    'footer.company': { ru: 'Компания:', en: 'Company:' },
-    'footer.partners': { ru: 'Партнеры', en: 'Partners' },
-    'footer.investment_projects': { ru: 'Инвестиционные Проекты', en: 'Investment Projects' },
-    'footer.how_to_book': { ru: 'Как бронировать туры?', en: 'How to Book Tours?' },
-    'footer.tours_catalog': { ru: 'Каталог туров', en: 'Tours Catalog' },
-    'footer.hotels_catalog': { ru: 'Каталог отелей', en: 'Hotels Catalog' },
-    'footer.social_pages': { ru: 'Социальные страницы:', en: 'Social Pages:' },
-    'footer.license_info': { ru: 'Лицензия на туристическую деятельность ФС№ 0000253, от 25.10.2022 г.', en: 'Tourist Activity License FS№ 0000253, dated 25.10.2022' },
-    'footer.contacts': { ru: 'Контакты:', en: 'Contacts:' },
     'footer.public_offer': { ru: 'Публичная Оферта-Договор', en: 'Public Offer Agreement' },
     'footer.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
     'footer.privacy_policy': { ru: 'Политика конфиденциальности', en: 'Privacy Policy' },
@@ -448,7 +435,6 @@ window.translations = window.translations || {
     'nav.offer_agreement': { ru: 'Договор оферта', en: 'Offer Agreement' },
     'nav.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
     'nav.our_agents': { ru: 'Наши турагенты', en: 'Our Travel Agents' },
-    'nav.for_agents': { ru: 'Для турагентов', en: 'For Travel Agents' },
 
     // Типы туров в навигации
     'tour.single_day': { ru: 'Однодневные', en: 'Single Day' },
@@ -470,12 +456,6 @@ window.translations = window.translations || {
     // Placeholder
     'placeholder.search_perfect_tour': { ru: 'Найдите идеальный тур: Памир, Искандеркуль, треккинг...', en: 'Find the perfect tour: Pamir, Iskanderkul, trekking...' },
 
-    // Страны
-    'country.tajikistan': { ru: 'Таджикистан', en: 'Tajikistan' },
-    'country.uzbekistan': { ru: 'Узбекистан', en: 'Uzbekistan' },
-    'country.kyrgyzstan': { ru: 'Кыргызстан', en: 'Kyrgyzstan' },
-    'country.kazakhstan': { ru: 'Казахстан', en: 'Kazakhstan' },
-    'country.turkmenistan': { ru: 'Туркменистан', en: 'Turkmenistan' },
 
     // Типы туров
     'tour_type.personal': { ru: 'Персональный', en: 'Personal' },
@@ -784,12 +764,12 @@ window.translations = window.translations || {
     'footer.social_pages': { ru: 'Социальные страницы:', en: 'Social Pages:' },
     'footer.contact_info': { ru: 'Контакты:', en: 'Contact Info:' },
     
-    // Ссылки в разделе компании
+    // Ссылки в разделе компании  
     'footer.tour_agents': { ru: 'Тур-агентам', en: 'For Tour Agents' },
     'footer.partners': { ru: 'Партнеры', en: 'Partners' },
     'footer.investment_projects': { ru: 'Инвестиционные Проекты', en: 'Investment Projects' },
-    'footer.how_to_book': { ru: 'Как бронировать туры?', en: 'How to Book Tours?' },
-    'footer.tours_catalog': { ru: 'Каталог туров', en: 'Tours Catalog' },
+    'footer.how_to_book': { ru: 'Как бронировать туры?', en: 'How to Book a Tour?' },
+    'footer.tours_catalog': { ru: 'Каталог туров', en: 'Tour Catalog' },
     
     // Информация о лицензии
     'footer.license_info': { ru: 'Лицензия на туристическую деятельность ФС№ 0000253, от 25.10.2022 г.', en: 'Tourism Activity License FS№ 0000253, dated 25.10.2022' },
@@ -800,7 +780,8 @@ window.translations = window.translations || {
     'footer.privacy_policy': { ru: 'Политика конфиденциальности', en: 'Privacy Policy' },
     
     // Копирайт
-    'footer.copyright': { ru: 'Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137', en: 'All rights reserved | LLC "Bunyod-Tour" (2017-2025) | TIN: 010098739; OGRN: 0110023137' }
+    'footer.copyright': { ru: 'Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137', en: 'All rights reserved | LLC "Bunyod-Tour" (2017-2025) | TIN: 010098739; OGRN: 0110023137' },
+    
 };
 
 // Убираем const aliases - используем прямые ссылки на window.*
