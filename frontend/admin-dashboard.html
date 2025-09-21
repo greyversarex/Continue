@@ -2983,6 +2983,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="components/ObjectUploader.js"></script>
     <script>
+        // Утилита для безопасного парсинга JSON
+        function safeParseJSON(jsonString) {
+            if (!jsonString) return null;
+            if (typeof jsonString === 'object') return jsonString;
+            
+            try {
+                return JSON.parse(jsonString);
+            } catch (error) {
+                console.warn('JSON parsing error:', error, 'String:', jsonString);
+                return null;
+            }
+        }
+
         // Global variables
         let currentSection = 'dashboard';
         let currentBookingId = null;
@@ -4448,10 +4461,9 @@
                     }
                     
                     tbody.innerHTML = tours.map(tour => {
-                        const title = typeof tour.title === 'string' ? JSON.parse(tour.title || '{}') : tour.title || {};
-                        const categoryName = tour.category ? 
-                            (typeof tour.category.name === 'string' ? JSON.parse(tour.category.name || '{}') : tour.category.name || {}) :
-                            {};
+                        // Безопасный парсинг JSON для многоязычных полей
+                        const title = safeParseJSON(tour.title) || {};
+                        const categoryName = tour.category ? safeParseJSON(tour.category.name) || {} : {};
                         return `
                             <tr>
                                 <td>${tour.id}</td>
