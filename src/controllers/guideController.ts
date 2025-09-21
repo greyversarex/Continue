@@ -128,10 +128,22 @@ export const getAllGuides = async (req: Request, res: Response) => {
             },
           },
         },
+        guideCountry: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        guideCity: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
-    const formattedGuides = guides.map(guide => {
+    const formattedGuides = guides.map((guide: any) => {
       try {
         // Fix photo path to be web-accessible
         let photoPath = guide.photo;
@@ -239,7 +251,7 @@ export const getGuidesByTour = async (req: Request, res: Response) => {
       },
     });
 
-    const formattedGuides = tourGuides.map(tg => ({
+    const formattedGuides = tourGuides.map((tg: any) => ({
       ...tg.guide,
       name: safeJsonParse(tg.guide.name),
       description: safeJsonParse(tg.guide.description),
