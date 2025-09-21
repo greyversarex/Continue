@@ -1,13 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma, { withRetry } from '../config/database';
 import { ApiResponse } from '../types';
+import { 
+  getLanguageFromRequest, 
+  createLocalizedResponse, 
+  parseMultilingualField 
+} from '../utils/multilingual';
 
 export class CountryController {
   /**
-   * Получить все страны
+   * Получить все страны с поддержкой мультиязычности
+   * GET /api/countries?lang=en/ru
    */
   static async getAllCountries(req: Request, res: Response, next: NextFunction) {
     try {
+      const language = getLanguageFromRequest(req);
+      const includeRaw = req.query.includeRaw === 'true';
+      
       const countries = await withRetry(() => prisma.country.findMany({
         where: { isActive: true },
         include: {
@@ -17,13 +26,40 @@ export class CountryController {
           }
         },
         orderBy: { nameRu: 'asc' }
-      }));
+      })) as any[];
 
-      const response: ApiResponse = {
-        success: true,
-        data: countries,
-        message: 'Countries retrieved successfully'
-      };
+      // Локализация данных стран и городов
+      const localizedCountries = countries.map((country: any) => {
+        const localizedCities = country.cities?.map((city: any) => ({
+          ...city,
+          name: language === 'en' ? city.nameEn || city.nameRu : city.nameRu || city.nameEn
+        }));
+
+        if (includeRaw) {
+          // ДЛЯ АДМИНКИ: возвращаем raw данные + локализованные поля
+          return {
+            ...country,
+            cities: localizedCities,
+            _localized: {
+              name: language === 'en' ? country.nameEn || country.nameRu : country.nameRu || country.nameEn
+            }
+          };
+        } else {
+          // ДЛЯ ПУБЛИЧНОГО ИСПОЛЬЗОВАНИЯ: только локализованный контент
+          return {
+            ...country,
+            name: language === 'en' ? country.nameEn || country.nameRu : country.nameRu || country.nameEn,
+            cities: localizedCities
+          };
+        }
+      });
+
+      const response = createLocalizedResponse(
+        localizedCountries,
+        [], // Поля уже обработаны выше
+        language,
+        'Countries retrieved successfully'
+      );
 
       return res.status(200).json(response);
     } catch (error) {

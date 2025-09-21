@@ -1,10 +1,19 @@
 import { Request, Response } from 'express';
 import { HotelModel } from '../models';
+import { 
+  getLanguageFromRequest, 
+  createLocalizedResponse, 
+  parseMultilingualField,
+  localizeArray 
+} from '../utils/multilingual';
 
-// Get all hotels
+// Get all hotels with multilingual support
+// GET /api/hotels?lang=en/ru&includeRaw=true&tourId=123
 export const getHotels = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { tourId } = req.query;
+    const language = getLanguageFromRequest(req);
+    const includeRaw = req.query.includeRaw === 'true';
     
     let hotels;
     if (tourId) {
@@ -15,10 +24,37 @@ export const getHotels = async (req: Request, res: Response): Promise<Response> 
       hotels = await HotelModel.findAll();
     }
 
-    return res.json({
-      success: true,
-      data: hotels
+    // Localize hotels data
+    const localizedHotels = hotels.map((hotel: any) => {
+      if (includeRaw) {
+        // ДЛЯ АДМИНКИ: возвращаем raw JSON + локализованные поля
+        return {
+          ...hotel,
+          _localized: {
+            name: parseMultilingualField(hotel.name, language),
+            description: parseMultilingualField(hotel.description, language),
+            address: parseMultilingualField(hotel.address, language)
+          }
+        };
+      } else {
+        // ДЛЯ ПУБЛИЧНОГО ИСПОЛЬЗОВАНИЯ: только локализованный контент
+        return {
+          ...hotel,
+          name: parseMultilingualField(hotel.name, language),
+          description: parseMultilingualField(hotel.description, language),
+          address: parseMultilingualField(hotel.address, language)
+        };
+      }
     });
+
+    const response = createLocalizedResponse(
+      localizedHotels,
+      [], // Поля уже обработаны выше
+      language,
+      'Hotels retrieved successfully'
+    );
+
+    return res.json(response);
   } catch (error) {
     console.error('Error fetching hotels:', error);
     return res.status(500).json({
@@ -29,10 +65,13 @@ export const getHotels = async (req: Request, res: Response): Promise<Response> 
   }
 };
 
-// Get single hotel
+// Get single hotel with multilingual support
+// GET /api/hotels/:id?lang=en/ru&includeRaw=true
 export const getHotel = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { id } = req.params;
+    const language = getLanguageFromRequest(req);
+    const includeRaw = req.query.includeRaw === 'true';
     
     const hotel = await HotelModel.findById(parseInt(id));
     
@@ -43,10 +82,36 @@ export const getHotel = async (req: Request, res: Response): Promise<Response> =
       });
     }
 
-    return res.json({
-      success: true,
-      data: hotel
-    });
+    // Localize hotel data
+    let localizedHotel;
+    if (includeRaw) {
+      // ДЛЯ АДМИНКИ: возвращаем raw JSON + локализованные поля
+      localizedHotel = {
+        ...hotel,
+        _localized: {
+          name: parseMultilingualField(hotel.name, language),
+          description: parseMultilingualField(hotel.description, language),
+          address: parseMultilingualField(hotel.address, language)
+        }
+      };
+    } else {
+      // ДЛЯ ПУБЛИЧНОГО ИСПОЛЬЗОВАНИЯ: только локализованный контент
+      localizedHotel = {
+        ...hotel,
+        name: parseMultilingualField(hotel.name, language),
+        description: parseMultilingualField(hotel.description, language),
+        address: parseMultilingualField(hotel.address, language)
+      };
+    }
+
+    const response = createLocalizedResponse(
+      localizedHotel,
+      [], // Поля уже обработаны выше
+      language,
+      'Hotel retrieved successfully'
+    );
+
+    return res.json(response);
   } catch (error) {
     console.error('Error fetching hotel:', error);
     return res.status(500).json({
