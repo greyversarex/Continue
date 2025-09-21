@@ -179,6 +179,11 @@ model Guide {
   residenceAddress String?     @map("residence_address")   // Адрес проживания
   login            String?
   password         String?
+  // Поля для системы найма тургида
+  pricePerDay      Float?      @map("price_per_day")       // Цена за день найма
+  currency         String?     @default("TJS")             // Валюта оплаты
+  availableDates   String?     @map("available_dates")     // JSON массив доступных дат ["2025-01-15", "2025-01-16", ...]
+  isHireable       Boolean     @default(true) @map("is_hireable") // Доступен ли для найма
   isActive         Boolean     @default(true)
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
@@ -187,8 +192,31 @@ model Guide {
   assignedTours Tour[] @relation("AssignedGuide")
   guideCountry Country? @relation(fields: [countryId], references: [id])
   guideCity    City?    @relation(fields: [cityId], references: [id])
+  guideHireRequests GuideHireRequest[] // Заявки на найм гида
 
   @@map("guides")
+}
+
+model GuideHireRequest {
+  id              Int      @id @default(autoincrement())
+  guideId         Int      @map("guide_id")
+  touristName     String   @map("tourist_name")
+  touristEmail    String?  @map("tourist_email")
+  touristPhone    String?  @map("tourist_phone")
+  selectedDates   String   @map("selected_dates")    // JSON массив выбранных дат ["2025-01-15", "2025-01-16"]
+  numberOfDays    Int      @map("number_of_days")
+  comments        String?  // Пожелания туриста
+  totalPrice      Float    @map("total_price")       // Общая стоимость найма
+  currency        String   @default("TJS")           // Валюта расчета
+  status          String   @default("pending")       // pending, approved, rejected, completed
+  paymentStatus   String   @default("unpaid") @map("payment_status") // unpaid, paid, refunded
+  adminNotes      String?  @map("admin_notes")       // Заметки администратора
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  guide           Guide    @relation(fields: [guideId], references: [id], onDelete: Cascade)
+
+  @@map("guide_hire_requests")
 }
 
 model Driver {
