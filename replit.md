@@ -35,7 +35,8 @@ The backend uses **Express.js and TypeScript** with a **modular architecture** f
 -   **Email Notification System**: Nodemailer for automated confirmations and notifications.
 -   **Internationalization (i18n)**: Supports English and Russian with a language switcher.
 -   **Deployment**: Configured for Replit with PostgreSQL, unified server (port 5000), CORS for Replit proxy, and autoscale production environment.
--   **Automatic Database Initialization**: Production-ready system for deploying on new servers with empty PostgreSQL databases. Automatically applies Prisma schema, creates essential data (13 categories, 6 tour blocks, Central Asia countries/cities), and provides frontend fallbacks for empty states.
+-   **Automatic Database Initialization**: Production-ready system for deploying on new servers with empty PostgreSQL databases. Automatically applies Prisma schema, creates essential data (15 correct categories, 6 tour blocks, Central Asia countries/cities), and provides frontend fallbacks for empty states.
+-   **Smart Category Migration System**: Automatic migration from legacy 13 categories to correct 15 categories matching navigation menu. Safely preserves tours in existing categories while updating system to proper category structure.
 
 ### UI/UX Decisions
 -   **Admin Dashboard**: Comprehensive management for tours, orders, hotels, guides, and reviews.
@@ -83,6 +84,15 @@ Successfully completed migration from trilingual (EN/RU/TJ) to bilingual (EN/RU)
 - **Database Schema**: Removed `nameTj` fields from Prisma models (Country, City) and synchronized with database
 - **Type System**: Updated MultilingualContent interface to support only EN/RU languages
 - **Result**: System fully operational in bilingual mode with successful backend compilation and zero LSP errors
+
+### Category System & Tour Display Fix (September 21, 2025)
+Major system improvements for production deployment and correct category handling:
+
+- **15 True Categories Implementation**: Updated system from legacy 13 categories to exact 15 categories matching frontend navigation menu ("Однодневные", "Многодневные", "Экскурсии", etc.)
+- **Smart Migration System**: Automatic migration that safely preserves tours in existing categories while updating to correct category structure. Empty categories removed, filled categories preserved during migration.
+- **Tour Card Display Fix**: Resolved DOM conflicts when same tour appears in multiple blocks by implementing unique card IDs (`${tour.id}-block-${blockId}`) for proper image loading and slideshow isolation.
+- **Production Database Initialization**: System now correctly initializes on fresh databases and migrates existing databases to proper 15-category structure automatically on server startup.
+- **Result**: Platform ready for deployment on new servers with guaranteed correct category structure and proper tour card display across all tour blocks.
 
 ## External Dependencies
 
