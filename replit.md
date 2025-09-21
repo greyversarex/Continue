@@ -94,6 +94,18 @@ Major system improvements for production deployment and correct category handlin
 - **Production Database Initialization**: System now correctly initializes on fresh databases and migrates existing databases to proper 15-category structure automatically on server startup.
 - **Result**: Platform ready for deployment on new servers with guaranteed correct category structure and proper tour card display across all tour blocks.
 
+### Critical Multilingual System Fixes (September 21, 2025)
+Complete resolution of JSON parsing and data persistence issues affecting form submissions:
+
+- **JSON Parsing Fix**: Corrected `safeJsonParse` utility function in `src/utils/multilingual.ts` to properly handle different data types (objects returned as-is, valid JSON strings parsed, plain strings passed through unchanged). This prevents data loss from incorrect JSON.parse attempts on already-parsed objects.
+- **Model Layer Corrections**: Enhanced `TourModel.create` and `TourModel.update` methods in `src/models/index.ts` to intelligently handle multilingual fields - objects are JSON-stringified for database storage, strings are passed through unchanged. This resolves double JSON encoding issues that caused form submission failures.
+- **Russian Default Language**: Changed system default language from English to Russian across all components:
+  - Updated `frontend/public/js/i18n.js` to default `window.currentLanguage = 'ru'`
+  - Modified `frontend/public/js/layout-loader.js` setDefaultLanguage() function to default to Russian
+  - All new users now see Russian interface by default with proper language detection and localStorage persistence
+- **Data Validation**: Forms now correctly save and display multilingual content without JSON parsing errors. Server logs show clean operation with proper category migration (15 categories), tour block assignments, and error-free data persistence.
+- **Result**: Complete elimination of JSON parsing errors, proper multilingual data persistence, and Russian-first user experience across the entire platform.
+
 ## External Dependencies
 
 ### Core Framework Dependencies
