@@ -666,12 +666,12 @@
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                             </svg>
-                            Профессиональный гид
+                            ${window.getTranslation ? window.getTranslation('guides.professional_guide', window.currentLanguage) : 'Профессиональный гид'}
                         </div>
                         
                         <!-- Языки -->
                         <div class="mb-4">
-                            <h4 class="text-xs font-semibold text-gray-700 mb-2">ЯЗЫКИ</h4>
+                            <h4 class="text-xs font-semibold text-gray-700 mb-2">${window.getTranslation ? window.getTranslation('guides.languages', window.currentLanguage) : 'ЯЗЫКИ'}</h4>
                             <div class="flex flex-wrap gap-1 justify-center">
                                 ${languages.map(lang => 
                                     `<span class="skill-tag text-xs px-2 py-1">${lang}</span>`
@@ -685,17 +685,17 @@
                                 <div class="text-lg font-bold gradient-bg bg-clip-text text-transparent">
                                     ${agent.experience || '2'}
                                 </div>
-                                <div class="text-xs text-gray-500">лет</div>
+                                <div class="text-xs text-gray-500">${window.getTranslation ? window.getTranslation('guides.years', window.currentLanguage) : 'лет'}</div>
                             </div>
                             <div class="stats-item">
                                 <div class="text-lg font-bold gradient-bg bg-clip-text text-transparent">
                                     ${agent.rating || '5'}
                                 </div>
-                                <div class="text-xs text-gray-500">рейтинг</div>
+                                <div class="text-xs text-gray-500">${window.getTranslation ? window.getTranslation('guides.rating', window.currentLanguage) : 'рейтинг'}</div>
                             </div>
                             <div class="stats-item">
                                 <div class="rating-stars text-yellow-400 text-sm">★★★★★</div>
-                                <div class="text-xs text-gray-500">отзывы</div>
+                                <div class="text-xs text-gray-500">${window.getTranslation ? window.getTranslation('guides.reviews', window.currentLanguage) : 'отзывы'}</div>
                             </div>
                         </div>
                         
@@ -705,10 +705,10 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4l8 8 1-1-8-8-1 1z"/>
                                 </svg>
-                                Нанять гида
+                                ${window.getTranslation ? window.getTranslation('guides.hire_guide', window.currentLanguage) : 'Нанять гида'}
                             </button>
                             <button class="w-full text-gray-600 hover:text-gray-800 text-sm font-medium py-2 transition-colors" onclick="showGuideDetails(${agent.id})">
-                                Подробная информация
+                                ${window.getTranslation ? window.getTranslation('guides.detailed_info', window.currentLanguage) : 'Подробная информация'}
                             </button>
                         </div>
                     </div>
