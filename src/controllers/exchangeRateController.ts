@@ -10,10 +10,17 @@ export const getExchangeRates = async (req: Request, res: Response) => {
             where: { isActive: true },
             orderBy: { currency: 'asc' }
         });
+
+        // Сортируем так, чтобы TJS была первой (базовая валюта)
+        const sortedRates = rates.sort((a: any, b: any) => {
+            if (a.currency === 'TJS') return -1;
+            if (b.currency === 'TJS') return 1;
+            return a.currency.localeCompare(b.currency);
+        });
         
         res.json({
             success: true,
-            data: rates
+            data: sortedRates
         });
     } catch (error) {
         console.error('Error fetching exchange rates:', error);
@@ -32,7 +39,7 @@ export const getExchangeRatesMap = async (req: Request, res: Response) => {
         });
         
         const ratesMap: { [key: string]: { rate: number, symbol: string, name: string } } = {};
-        rates.forEach(rate => {
+        rates.forEach((rate: any) => {
             ratesMap[rate.currency] = {
                 rate: rate.rate,
                 symbol: rate.symbol,
@@ -156,6 +163,95 @@ export const initializeExchangeRates = async (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             message: 'Ошибка при инициализации курсов валют'
+        });
+    }
+};
+
+// Удалить курс валюты
+export const deleteExchangeRate = async (req: Request, res: Response) => {
+    try {
+        const { currency } = req.params;
+
+        // Проверяем, что это не базовая валюта TJS
+        if (currency === 'TJS') {
+            res.status(400).json({
+                success: false,
+                message: 'Нельзя удалить базовую валюту TJS'
+            });
+            return;
+        }
+
+        const deletedRate = await prisma.exchangeRate.delete({
+            where: { currency }
+        });
+
+        res.json({
+            success: true,
+            message: 'Курс валюты удален',
+            data: deletedRate
+        });
+    } catch (error: any) {
+        if (error.code === 'P2025') {
+            res.status(404).json({
+                success: false,
+                message: 'Курс валюты не найден'
+            });
+        } else {
+            console.error('Error deleting exchange rate:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Ошибка при удалении курса валюты'
+            });
+        }
+    }
+};
+
+// Создать новый курс валюты
+export const createExchangeRate = async (req: Request, res: Response) => {
+    try {
+        const { currency, rate, symbol, name } = req.body;
+
+        if (!currency || !rate || !symbol || !name) {
+            res.status(400).json({
+                success: false,
+                message: 'Все поля обязательны: currency, rate, symbol, name'
+            });
+            return;
+        }
+
+        // Проверяем, что валюта еще не существует
+        const existingRate = await prisma.exchangeRate.findUnique({
+            where: { currency }
+        });
+
+        if (existingRate) {
+            res.status(409).json({
+                success: false,
+                message: 'Валюта уже существует'
+            });
+            return;
+        }
+
+        const newRate = await prisma.exchangeRate.create({
+            data: {
+                currency: currency.toUpperCase(),
+                rate: parseFloat(rate),
+                symbol,
+                name,
+                isActive: true
+            }
+        });
+
+        res.json({
+            success: true,
+            message: 'Новая валюта добавлена',
+            data: newRate
+        });
+    } catch (error) {
+        console.error('Error creating exchange rate:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Ошибка при создании курса валюты'
         });
     }
 };

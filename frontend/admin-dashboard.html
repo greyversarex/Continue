@@ -1524,10 +1524,16 @@
                     <div class="bg-white rounded-xl shadow-sm p-6">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-semibold">Текущие курсы валют</h3>
-                            <button onclick="loadExchangeRates()" class="btn btn-secondary">
-                                <i class="fas fa-sync-alt"></i>
-                                Обновить
-                            </button>
+                            <div class="flex gap-2">
+                                <button onclick="openAddExchangeRateModal()" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i>
+                                    Добавить валюту
+                                </button>
+                                <button onclick="loadExchangeRates()" class="btn btn-secondary">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Обновить
+                                </button>
+                            </div>
                         </div>
 
                         <div class="overflow-x-auto">
@@ -1599,8 +1605,10 @@
                 <input type="hidden" id="editCurrency">
                 
                 <div class="form-group">
-                    <label class="form-label">Валюта</label>
-                    <input type="text" class="form-input" id="editCurrencyCode" readonly>
+                    <label class="form-label">Код валюты *</label>
+                    <input type="text" class="form-input" id="editCurrencyCode" maxlength="3" placeholder="USD, EUR, CNY..." 
+                           style="text-transform: uppercase;" required>
+                    <small class="text-gray-500 mt-1">3-буквенный код валюты (например: USD, EUR, CNY)</small>
                 </div>
                 
                 <div class="form-group">
@@ -11595,11 +11603,17 @@
                     </td>
                     <td>
                         ${rate.currency !== 'TJS' ? `
-                            <button onclick="editExchangeRate('${rate.currency}')" class="btn btn-sm btn-primary">
-                                <i class="fas fa-edit"></i>
-                                Редактировать
-                            </button>
-                        ` : '<span class="text-gray-400 text-sm">Базовая</span>'}
+                            <div class="flex gap-2">
+                                <button onclick="editExchangeRate('${rate.currency}')" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit"></i>
+                                    Редактировать
+                                </button>
+                                <button onclick="deleteExchangeRate('${rate.currency}')" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                    Удалить
+                                </button>
+                            </div>
+                        ` : '<span class="text-gray-400 text-sm">Базовая валюта</span>'}
                     </td>
                 </tr>
             `).join('');
@@ -11612,11 +11626,20 @@
                     if (data.success) {
                         const rate = data.data.find(r => r.currency === currency);
                         if (rate) {
+                            // Заполняем форму данными
                             document.getElementById('editCurrency').value = rate.currency;
                             document.getElementById('editCurrencyCode').value = rate.currency;
                             document.getElementById('editCurrencyName').value = rate.name;
                             document.getElementById('editCurrencySymbol').value = rate.symbol;
                             document.getElementById('editCurrencyRate').value = rate.rate;
+                            
+                            // Настраиваем модальное окно для редактирования
+                            document.getElementById('exchangeRateModalTitle').textContent = 'Редактировать курс валюты';
+                            const currencyCodeField = document.getElementById('editCurrencyCode');
+                            currencyCodeField.readOnly = true;
+                            currencyCodeField.style.backgroundColor = '#f9fafb';
+                            currencyCodeField.style.cursor = 'not-allowed';
+                            window.isEditMode = true;
                             
                             document.getElementById('exchangeRateModal').classList.add('active');
                         }
@@ -11631,6 +11654,54 @@
         function closeExchangeRateModal() {
             document.getElementById('exchangeRateModal').classList.remove('active');
             document.getElementById('exchangeRateForm').reset();
+            // Сброс режима модального окна
+            delete window.isEditMode;
+        }
+
+        // Открыть модальное окно для добавления новой валюты
+        function openAddExchangeRateModal() {
+            // Очищаем форму
+            document.getElementById('exchangeRateForm').reset();
+            document.getElementById('editCurrency').value = '';
+            
+            // Настраиваем модальное окно для создания
+            document.getElementById('exchangeRateModalTitle').textContent = 'Добавить новую валюту';
+            const currencyCodeField = document.getElementById('editCurrencyCode');
+            currencyCodeField.readOnly = false;
+            currencyCodeField.style.backgroundColor = '';
+            currencyCodeField.style.cursor = '';
+            window.isEditMode = false;
+            
+            // Показываем модальное окно
+            document.getElementById('exchangeRateModal').classList.add('active');
+        }
+
+        // Удалить курс валюты
+        async function deleteExchangeRate(currency) {
+            if (!confirm(`Вы уверены, что хотите удалить валюту ${currency}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/exchange-rates/${currency}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccessMessage('Валюта удалена');
+                    loadExchangeRates();
+                } else {
+                    showErrorMessage(data.message || 'Ошибка при удалении валюты');
+                }
+            } catch (error) {
+                console.error('Error deleting exchange rate:', error);
+                showErrorMessage('Ошибка при удалении валюты');
+            }
         }
 
         async function calculateCurrency() {
@@ -11662,32 +11733,67 @@
         document.getElementById('exchangeRateForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const currency = safeGetValue('editCurrency', '');
+            const isEdit = window.isEditMode;
+            const currencyCode = safeGetValue('editCurrencyCode', '').toUpperCase();
+            const originalCurrency = safeGetValue('editCurrency', '');
             const rate = safeGetValue('editCurrencyRate', 0, 'float');
             const symbol = safeGetValue('editCurrencySymbol', '');
             const name = safeGetValue('editCurrencyName', '');
             
+            // Валидация
+            if (!currencyCode || !name || !symbol || !rate) {
+                showErrorMessage('Все поля обязательны для заполнения');
+                return;
+            }
+
+            if (currencyCode.length !== 3) {
+                showErrorMessage('Код валюты должен состоять из 3 символов');
+                return;
+            }
+            
             try {
-                const response = await fetch(`${getApiUrl()}/exchange-rates/${currency}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ rate, symbol, name })
-                });
+                let response;
+                let successMessage;
+                
+                if (isEdit) {
+                    // Редактирование существующей валюты
+                    response = await fetch(`${getApiUrl()}/exchange-rates/${originalCurrency}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ rate, symbol, name })
+                    });
+                    successMessage = 'Курс валюты обновлен';
+                } else {
+                    // Создание новой валюты
+                    response = await fetch(`${getApiUrl()}/exchange-rates`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            currency: currencyCode, 
+                            rate, 
+                            symbol, 
+                            name 
+                        })
+                    });
+                    successMessage = 'Новая валюта добавлена';
+                }
                 
                 const data = await response.json();
                 
                 if (data.success) {
-                    showSuccessMessage('Курс валюты обновлен');
+                    showSuccessMessage(successMessage);
                     closeExchangeRateModal();
                     loadExchangeRates();
                 } else {
-                    showErrorMessage(data.message || 'Ошибка при обновлении курса валюты');
+                    showErrorMessage(data.message || 'Ошибка при сохранении валюты');
                 }
             } catch (error) {
-                console.error('Error updating exchange rate:', error);
-                showErrorMessage('Ошибка при обновлении курса валюты');
+                console.error('Error saving exchange rate:', error);
+                showErrorMessage('Ошибка при сохранении валюты');
             }
         });
 
