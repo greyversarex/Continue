@@ -678,19 +678,25 @@
                                 </svg>
                                 <span>
                                     ${(() => {
-                                        if (agent.guideCountry && agent.guideCity) {
-                                            const countryName = typeof agent.guideCountry.name === 'string' 
-                                                ? (agent.guideCountry.name.includes('{') ? JSON.parse(agent.guideCountry.name).ru || JSON.parse(agent.guideCountry.name).en : agent.guideCountry.name)
-                                                : (agent.guideCountry.name?.ru || agent.guideCountry.name?.en || 'Не указано');
-                                            const cityName = typeof agent.guideCity.name === 'string' 
-                                                ? (agent.guideCity.name.includes('{') ? JSON.parse(agent.guideCity.name).ru || JSON.parse(agent.guideCity.name).en : agent.guideCity.name)
-                                                : (agent.guideCity.name?.ru || agent.guideCity.name?.en || 'Не указано');
+                                        // Функция для получения названия с поддержкой многоязычности
+                                        const getName = (nameData) => {
+                                            if (!nameData) return null;
+                                            if (typeof nameData === 'string') return nameData;
+                                            if (typeof nameData === 'object') {
+                                                return nameData.ru || nameData.en || 'Не указано';
+                                            }
+                                            return null;
+                                        };
+                                        
+                                        const countryName = getName(agent.guideCountry?.name);
+                                        const cityName = getName(agent.guideCity?.name);
+                                        
+                                        if (cityName && countryName) {
                                             return `${cityName}, ${countryName}`;
-                                        } else if (agent.guideCountry) {
-                                            const countryName = typeof agent.guideCountry.name === 'string' 
-                                                ? (agent.guideCountry.name.includes('{') ? JSON.parse(agent.guideCountry.name).ru || JSON.parse(agent.guideCountry.name).en : agent.guideCountry.name)
-                                                : (agent.guideCountry.name?.ru || agent.guideCountry.name?.en || 'Не указано');
+                                        } else if (countryName) {
                                             return countryName;
+                                        } else if (cityName) {
+                                            return cityName;
                                         } else {
                                             return 'Центральная Азия';
                                         }

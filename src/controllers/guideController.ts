@@ -86,14 +86,21 @@ export const createGuide = async (req: Request, res: Response) => {
       },
     });
 
-    // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
+    // 🔒 БЕЗОПАСНОСТЬ: Возвращаем только публичные поля, исключаем PII
     const safeGuide = {
-      ...guide,
-      password: undefined,
+      id: guide.id,
       name: safeJsonParse(guide.name),
       description: safeJsonParse(guide.description),
+      photo: guide.photo,
       languages: safeJsonParse(guide.languages),
-      contact: safeJsonParse(guide.contact)
+      experience: guide.experience,
+      rating: guide.rating,
+      currency: guide.currency,
+      isHireable: guide.isHireable,
+      isActive: guide.isActive,
+      createdAt: guide.createdAt,
+      updatedAt: guide.updatedAt,
+      hasPassword: !!guide.password && guide.password.trim() !== '', // ✅ Показываем наличие пароля
     };
     
     return res.status(201).json({
@@ -152,14 +159,34 @@ export const getAllGuides = async (req: Request, res: Response) => {
           photoPath = photoPath.replace('/home/runner/workspace/', '/');
         }
 
+        // Process country and city for multilingual support
+        const processedGuideCountry = guide.guideCountry ? {
+          ...guide.guideCountry,
+          name: safeJsonParse(guide.guideCountry.name) || guide.guideCountry.name
+        } : null;
+
+        const processedGuideCity = guide.guideCity ? {
+          ...guide.guideCity,
+          name: safeJsonParse(guide.guideCity.name) || guide.guideCity.name
+        } : null;
+
+        // 🔒 БЕЗОПАСНОСТЬ: Возвращаем только публичные поля, исключаем PII
         return {
-          ...guide,
-          photo: photoPath,
+          id: guide.id,
           name: safeJsonParse(guide.name),
           description: safeJsonParse(guide.description),
+          photo: photoPath,
           languages: safeJsonParse(guide.languages),
-          contact: safeJsonParse(guide.contact),
-          password: undefined, // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
+          experience: guide.experience,
+          rating: guide.rating,
+          currency: guide.currency,
+          isHireable: guide.isHireable,
+          isActive: guide.isActive,
+          createdAt: guide.createdAt,
+          updatedAt: guide.updatedAt,
+          tourGuides: guide.tourGuides,
+          guideCountry: processedGuideCountry,
+          guideCity: processedGuideCity,
           hasPassword: !!guide.password && guide.password.trim() !== '', // ✅ Показываем наличие пароля
         };
       } catch (error) {
@@ -199,6 +226,18 @@ export const getGuideById = async (req: Request, res: Response) => {
             },
           },
         },
+        guideCountry: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        guideCity: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -209,13 +248,41 @@ export const getGuideById = async (req: Request, res: Response) => {
       });
     }
 
+    // ✅ Нормализация пути к фото
+    const photoPath = guide.photo ? 
+      (guide.photo.startsWith('/') ? guide.photo : `/${guide.photo}`) : 
+      null;
+
+    // ✅ Обработка связанной страны с безопасным парсингом
+    const processedGuideCountry = guide.guideCountry ? {
+      id: guide.guideCountry.id,
+      name: safeJsonParse(guide.guideCountry.name)
+    } : null;
+
+    // ✅ Обработка связанного города с безопасным парсингом  
+    const processedGuideCity = guide.guideCity ? {
+      id: guide.guideCity.id,
+      name: safeJsonParse(guide.guideCity.name)
+    } : null;
+
+    // 🔒 БЕЗОПАСНОСТЬ: Возвращаем только публичные поля, исключаем PII
     const formattedGuide = {
-      ...guide,
+      id: guide.id,
       name: safeJsonParse(guide.name),
       description: safeJsonParse(guide.description),
+      photo: photoPath,
       languages: safeJsonParse(guide.languages),
-      contact: safeJsonParse(guide.contact),
-      password: undefined, // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
+      experience: guide.experience,
+      rating: guide.rating,
+      currency: guide.currency,
+      isHireable: guide.isHireable,
+      isActive: guide.isActive,
+      createdAt: guide.createdAt,
+      updatedAt: guide.updatedAt,
+      tourGuides: guide.tourGuides,
+      guideCountry: processedGuideCountry,
+      guideCity: processedGuideCity,
+      hasPassword: !!guide.password && guide.password.trim() !== '', // ✅ Показываем наличие пароля
     };
 
     return res.json({
@@ -244,22 +311,66 @@ export const getGuidesByTour = async (req: Request, res: Response) => {
         },
       },
       include: {
-        guide: true,
+        guide: {
+          include: {
+            guideCountry: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            guideCity: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         isDefault: 'desc',
       },
     });
 
-    const formattedGuides = tourGuides.map((tg: any) => ({
-      ...tg.guide,
-      name: safeJsonParse(tg.guide.name),
-      description: safeJsonParse(tg.guide.description),
-      languages: safeJsonParse(tg.guide.languages),
-      contact: safeJsonParse(tg.guide.contact),
-      isDefault: tg.isDefault,
-      password: undefined, // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
-    }));
+    // 🔒 БЕЗОПАСНОСТЬ: Возвращаем только публичные поля, исключаем PII
+    const formattedGuides = tourGuides.map((tg: any) => {
+      // ✅ Нормализация пути к фото
+      const photoPath = tg.guide.photo ? 
+        (tg.guide.photo.startsWith('/') ? tg.guide.photo : `/${tg.guide.photo}`) : 
+        null;
+
+      // ✅ Обработка связанной страны с безопасным парсингом
+      const processedGuideCountry = tg.guide.guideCountry ? {
+        id: tg.guide.guideCountry.id,
+        name: safeJsonParse(tg.guide.guideCountry.name)
+      } : null;
+
+      // ✅ Обработка связанного города с безопасным парсингом  
+      const processedGuideCity = tg.guide.guideCity ? {
+        id: tg.guide.guideCity.id,
+        name: safeJsonParse(tg.guide.guideCity.name)
+      } : null;
+
+      return {
+        id: tg.guide.id,
+        name: safeJsonParse(tg.guide.name),
+        description: safeJsonParse(tg.guide.description),
+        photo: photoPath,
+        languages: safeJsonParse(tg.guide.languages),
+        experience: tg.guide.experience,
+        rating: tg.guide.rating,
+        currency: tg.guide.currency,
+        isHireable: tg.guide.isHireable,
+        isActive: tg.guide.isActive,
+        createdAt: tg.guide.createdAt,
+        updatedAt: tg.guide.updatedAt,
+        guideCountry: processedGuideCountry,
+        guideCity: processedGuideCity,
+        isDefault: tg.isDefault,
+        hasPassword: !!tg.guide.password && tg.guide.password.trim() !== '', // ✅ Показываем наличие пароля
+      };
+    });
 
     return res.json({
       success: true,
