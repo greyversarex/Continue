@@ -777,7 +777,30 @@ window.translations = window.translations || {
     'hotel_segment.premium': { ru: 'Премиум сегмент', en: 'Premium Segment' },
     'hotel_segment.middle': { ru: 'Средний сегмент', en: 'Mid-range Segment' },
     'hotel_segment.budget': { ru: 'Бюджетный сегмент', en: 'Budget Segment' },
-    'hotel_segment.local': { ru: 'Местные и региональные', en: 'Local and Regional' }
+    'hotel_segment.local': { ru: 'Местные и региональные', en: 'Local and Regional' },
+
+    // === ФУТЕР ===
+    'footer.company': { ru: 'Компания:', en: 'Company:' },
+    'footer.social_pages': { ru: 'Социальные страницы:', en: 'Social Pages:' },
+    'footer.contact_info': { ru: 'Контакты:', en: 'Contact Info:' },
+    
+    // Ссылки в разделе компании
+    'footer.tour_agents': { ru: 'Тур-агентам', en: 'For Tour Agents' },
+    'footer.partners': { ru: 'Партнеры', en: 'Partners' },
+    'footer.investment_projects': { ru: 'Инвестиционные Проекты', en: 'Investment Projects' },
+    'footer.how_to_book': { ru: 'Как бронировать туры?', en: 'How to Book Tours?' },
+    'footer.tours_catalog': { ru: 'Каталог туров', en: 'Tours Catalog' },
+    
+    // Информация о лицензии
+    'footer.license_info': { ru: 'Лицензия на туристическую деятельность ФС№ 0000253, от 25.10.2022 г.', en: 'Tourism Activity License FS№ 0000253, dated 25.10.2022' },
+    
+    // Документы
+    'footer.public_offer': { ru: 'Публичная Оферта-Договор', en: 'Public Offer Agreement' },
+    'footer.payment_rules': { ru: 'Правила оплаты и возврата средств', en: 'Payment and Refund Rules' },
+    'footer.privacy_policy': { ru: 'Политика конфиденциальности', en: 'Privacy Policy' },
+    
+    // Копирайт
+    'footer.copyright': { ru: 'Все права защищены | ООО "Бунёд-Тур" (2017-2025) | ИНН: 010098739; ОГРН: 0110023137', en: 'All rights reserved | LLC "Bunyod-Tour" (2017-2025) | TIN: 010098739; OGRN: 0110023137' }
 };
 
 // Убираем const aliases - используем прямые ссылки на window.*
