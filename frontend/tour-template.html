@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -326,7 +326,7 @@
                     <div class="border-b border-gray-200">
                         <nav class="flex space-x-8 px-6 pt-4" aria-label="Tabs">
                             <button id="tab-description" class="whitespace-nowrap py-2 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600" onclick="switchTab('description')">
-                                <span data-translate="tour.tab.description">Описание</span> тура
+                                <span data-translate="tour.tab.description">Описание тура</span>
                             </button>
                             <button id="tab-program" class="whitespace-nowrap py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" onclick="switchTab('program')">
                                 <span data-translate="tour.tab.program">Программа тура</span>
@@ -349,11 +349,11 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
                                 <!-- Left Column: What's Included -->
                                 <div>
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center" data-translate="tour.included">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                         <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                         </svg>
-                                        Что включено:
+                                        <span data-translate="tour.included">Что включено:</span>
                                     </h3>
                                     <ul class="space-y-2" id="tour-includes">
                                         <!-- Данные загружаются динамически из админ панели -->
@@ -362,11 +362,11 @@
                                 
                                 <!-- Right Column: What's Not Included -->
                                 <div id="tour-excludes-section">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center" data-translate="tour.not_included">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                         <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                         </svg>
-                                        Не включено в тур:
+                                        <span data-translate="tour.not_included">Не включено в тур:</span>
                                     </h3>
                                     <ul class="space-y-2" id="tour-excludes">
                                         <!-- Данные загружаются динамически из админ панели -->
@@ -588,14 +588,14 @@
                     
                     <!-- Time Selection -->
                     <div class="mb-4" id="time-selection-section" style="display: none;">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Время начала тура</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2" data-translate="booking.tour_start_time">Время начала тура</label>
                         <div class="space-y-2" id="time-options">
                             <!-- Time options will be populated here -->
                         </div>
                     </div>
                     
                     <!-- Book Now Button -->
-                    <button onclick="goToBookingPage()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                    <button onclick="goToBookingPage()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors" data-translate="btn.book_now">
                         Забронировать сейчас
                     </button>
                     
@@ -607,8 +607,8 @@
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                             </svg>
                             <div>
-                                <span class="font-medium">Бесплатная отмена</span>
-                                <p class="text-gray-600">до 24 часов до начала тура (местное время)</p>
+                                <span class="font-medium" data-translate="booking.free_cancellation">Бесплатная отмена</span>
+                                <p class="text-gray-600" data-translate="booking.cancellation_terms">до 24 часов до начала тура (местное время)</p>
                             </div>
                         </div>
                         
@@ -617,8 +617,8 @@
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                             </svg>
                             <div>
-                                <span class="font-medium">Забронировать сейчас, оплатить позже</span>
-                                <p class="text-gray-600">Забронируйте место и сохраните гибкость</p>
+                                <span class="font-medium" data-translate="booking.book_now_pay_later">Забронировать сейчас, оплатить позже</span>
+                                <p class="text-gray-600" data-translate="booking.reserve_flexibility">Забронируйте место и сохраните гибкость</p>
                             </div>
                         </div>
                     </div>
@@ -630,8 +630,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                             <div>
-                                <p class="text-sm font-medium text-yellow-800">Бронируйте заранее!</p>
-                                <p class="text-xs text-yellow-700">В среднем этот тур бронируют за 20 дней.</p>
+                                <p class="text-sm font-medium text-yellow-800" data-translate="booking.book_ahead">Бронируйте заранее!</p>
+                                <p class="text-xs text-yellow-700" data-translate="booking.average_notice">В среднем этот тур бронируют за 20 дней.</p>
                             </div>
                         </div>
                     </div>

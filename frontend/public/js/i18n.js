@@ -41,8 +41,14 @@ window.translations = window.translations || {
     'nav.our_agents': { ru: 'Наши турагенты', en: 'Our Tour Agents' },
     
     // Кнопки и действия
-    'btn.book_now': { ru: 'Забронировать', en: 'Book Now' },
     'btn.more_details': { ru: 'Подробнее', en: 'More Details' },
+    'btn.more_photos': { ru: 'Ещё фото', en: 'More Photos' },
+    'btn.view_all_photos': { ru: 'Посмотреть все фотографии', en: 'View All Photos' },
+    'btn.share': { ru: 'Поделиться', en: 'Share' },
+    'btn.copy_link': { ru: 'Скопировать ссылку', en: 'Copy Link' },
+    'btn.download_pdf': { ru: 'Скачать PDF', en: 'Download PDF' },
+    'btn.book_now': { ru: 'Забронировать сейчас', en: 'Book Now' },
+    'btn.apply': { ru: 'Применить', en: 'Apply' },
     'btn.view_all': { ru: 'Смотреть все', en: 'View All' },
     'btn.send': { ru: 'Отправить', en: 'Send' },
     'btn.search': { ru: 'Поиск', en: 'Search' },
@@ -179,6 +185,35 @@ window.translations = window.translations || {
     
     // Кнопки каталога отелей
     'btn.clear_filters': { ru: 'Очистить фильтры', en: 'Clear Filters' },
+    
+    // Ключи для tour-template.html
+    'tour.duration_label': { ru: 'Длительность:', en: 'Duration:' },
+    'tour.meals_not_included': { ru: 'Приём не включен', en: 'Meals Not Included' },
+    'tour.languages_label': { ru: 'Языки:', en: 'Languages:' },
+    'tour.included': { ru: 'Что включено:', en: 'What\'s Included:' },
+    'tour.not_included': { ru: 'Не включено в тур:', en: 'Not Included:' },
+    'tour.tab.description': { ru: 'Описание тура', en: 'Tour Description' },
+    'tour.tab.program': { ru: 'Программа тура', en: 'Tour Program' },
+    
+    // Особенности бронирования
+    'booking.free_cancellation': { ru: 'Бесплатная отмена', en: 'Free Cancellation' },
+    'booking.cancellation_terms': { ru: 'до 24 часов до начала тура (местное время)', en: 'up to 24 hours before tour start (local time)' },
+    'booking.book_now_pay_later': { ru: 'Забронировать сейчас, оплатить позже', en: 'Book Now, Pay Later' },
+    'booking.reserve_flexibility': { ru: 'Забронируйте место и сохраните гибкость', en: 'Reserve your spot and stay flexible' },
+    'booking.book_ahead': { ru: 'Бронируйте заранее!', en: 'Book Ahead!' },
+    'booking.average_notice': { ru: 'В среднем этот тур бронируют за 20 дней.', en: 'On average, this tour is booked 20 days in advance.' },
+    'booking.tour_start_time': { ru: 'Время начала тура', en: 'Tour Start Time' },
+    
+    // Возрастные категории
+    'form.adults_age': { ru: 'Взрослые (от 9 лет)', en: 'Adults (9+ years)' },
+    'form.children_age': { ru: 'Ребёнок (до 8 лет)', en: 'Children (up to 8 years)' },
+    'form.infants_age': { ru: 'Младенцы (0-2 лет)', en: 'Infants (0-2 years)' },
+    'form.max_travelers_note': { ru: 'Вы можете выбрать до 15 туристов всего', en: 'You can select up to 15 travelers total' },
+    
+    // Навигация и breadcrumbs
+    'breadcrumb.central_asia': { ru: 'Туры по Центральной Азии', en: 'Central Asia Tours' },
+    'breadcrumb.tajikistan': { ru: 'Туры по Таджикистану', en: 'Tajikistan Tours' },
+    'breadcrumb.mountain_tours': { ru: 'Горные туры', en: 'Mountain Tours' },
     
     // Страны Центральной Азии
     'country.uzbekistan': { ru: 'Узбекистан', en: 'Uzbekistan' },
@@ -485,21 +520,13 @@ window.translations = window.translations || {
     // Языки
     'lang.russian': { ru: 'Русский', en: 'Russian' },
 
-    // === НОВЫЕ КЛЮЧИ ДЛЯ TOUR PAGES INTERNATIONALIZATION ===
+    // Дополнительные языки для списков
+    'lang.english': { ru: 'Английский', en: 'English' },
+    'lang.tajik': { ru: 'Таджикский', en: 'Tajik' },
     
-    // Tour template page specific keys
-    'tour.page_title': { ru: 'Тур - Bunyod-Tour v4.0', en: 'Tour - Bunyod-Tour v4.0' },
-    'tour.duration_label': { ru: 'Продолжительность:', en: 'Duration:' },
-    'tour.meals_included_label': { ru: 'Приём включен:', en: 'Meals included:' },
-    'tour.meals_not_included': { ru: 'Приём не включен', en: 'Meals not included' },
-    'tour.languages_label': { ru: 'Языки:', en: 'Languages:' },
-    'tour.tab.description': { ru: 'Описание', en: 'Description' },
-    'tour.tab.program': { ru: 'Программа тура', en: 'Tour Program' },
-    'tour.included': { ru: 'Что включено:', en: 'What\'s included:' },
-    'tour.not_included': { ru: 'Не включено в тур:', en: 'Not included in tour:' },
-    'tour.reviews': { ru: 'Отзывы', en: 'Reviews' },
-    'tour.loading_reviews': { ru: 'Загрузка отзывов...', en: 'Loading reviews...' },
-    'tour.price_per_person': { ru: 'за человека', en: 'per person' },
+    // Единицы времени
+    'time.hours': { ru: 'часов', en: 'hours' },
+    'time.hour': { ru: 'час', en: 'hour' },
     
     // Navigation submenus for tours
     'nav.tours.one_day': { ru: 'Однодневные', en: 'One Day' },
@@ -790,6 +817,7 @@ window.translations = window.translations || {
 
     // === ОТЕЛИ - ДОПОЛНИТЕЛЬНЫЕ ПЕРЕВОДЫ ===
     'hotel.page_title': { ru: 'Каталог отелей - Bunyod-Tour', en: 'Hotel catalog - Bunyod-Tour' },
+    'tour.page_title': { ru: 'Тур - Bunyod-Tour', en: 'Tour - Bunyod-Tour' },
     'hotel.5_stars': { ru: '5 звезд', en: '5 stars' },
     'hotel.4_stars': { ru: '4 звезды', en: '4 stars' },
     'hotel.3_stars': { ru: '3 звезды', en: '3 stars' },

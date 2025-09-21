@@ -351,6 +351,8 @@
             if (typeof switchToLanguage === 'function') {
                 switchToLanguage(langCode);
             }
+            // Обновляем placeholders после переключения языка
+            updatePlaceholders();
             
             console.log(`Переключен язык: ${langCode}`);
             
