@@ -361,6 +361,17 @@ window.translations = window.translations || {
     'guides.view_profile': { ru: 'Посмотреть профиль', en: 'View Profile' },
     'guides.no_guides': { ru: 'Гиды не найдены', en: 'No guides found' },
     
+    // Форма найма гида
+    'guides.your_name': { ru: 'Ваше имя *', en: 'Your Name *' },
+    'guides.email': { ru: 'Email *', en: 'Email *' },
+    'guides.phone': { ru: 'Телефон', en: 'Phone' },
+    'guides.comments': { ru: 'Комментарии', en: 'Comments' },
+    'guides.enter_name': { ru: 'Введите ваше имя', en: 'Enter your name' },
+    'guides.email_placeholder': { ru: 'your@email.com', en: 'your@email.com' },
+    'guides.phone_placeholder': { ru: '+992 XX XXX XXXX', en: '+992 XX XXX XXXX' },
+    'guides.comments_placeholder': { ru: 'Дополнительные пожелания или вопросы...', en: 'Additional wishes or questions...' },
+    'guides.submit_request': { ru: 'Отправить заявку на найм', en: 'Submit Hire Request' },
+    
     // Дни недели для календаря
     'calendar.monday': { ru: 'Пн', en: 'Mo' },
     'calendar.tuesday': { ru: 'Вт', en: 'Tu' },
