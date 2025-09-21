@@ -333,6 +333,38 @@ function switchToLanguage(language) {
   console.log(`🌍 Язык успешно переключен на: ${language}`);
 }
 
+// === ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ СОВМЕСТИМОСТИ ===
+
+/**
+ * Получает заголовок на указанном языке
+ * @param {any} titleObject - Объект или JSON строка с заголовком
+ * @param {string} lang - Код языка
+ * @returns {string} Заголовок на нужном языке
+ */
+function getTitleByLanguage(titleObject, lang) {
+    return parseMultilingualField(titleObject, lang) || 'Название не указано';
+}
+
+/**
+ * Получает описание на указанном языке
+ * @param {any} descriptionObject - Объект или JSON строка с описанием
+ * @param {string} lang - Код языка
+ * @returns {string} Описание на нужном языке
+ */
+function getDescriptionByLanguage(descriptionObject, lang) {
+    return parseMultilingualField(descriptionObject, lang) || 'Описание не указано';
+}
+
+/**
+ * Получает название категории на указанном языке
+ * @param {any} categoryObject - Объект или JSON строка с названием категории
+ * @param {string} lang - Код языка
+ * @returns {string} Название категории на нужном языке
+ */
+function getCategoryNameByLanguage(categoryObject, lang) {
+    return parseMultilingualField(categoryObject, lang) || 'Категория';
+}
+
 // === ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ===
 
 // Основные функции
@@ -357,6 +389,11 @@ window.createMultilingualDataAttribute = createMultilingualDataAttribute;
 window.getCurrentLanguage = getCurrentLanguage;
 window.switchToLanguage = switchToLanguage;
 
+// Функции совместимости
+window.getTitleByLanguage = getTitleByLanguage;
+window.getDescriptionByLanguage = getDescriptionByLanguage;
+window.getCategoryNameByLanguage = getCategoryNameByLanguage;
+
 // Создаем объект с утилитами для удобного доступа
 window.MultilingualUtils = {
   safeJsonParse,
@@ -372,7 +409,10 @@ window.MultilingualUtils = {
   updateLocationNames,
   createMultilingualDataAttribute,
   getCurrentLanguage,
-  switchToLanguage
+  switchToLanguage,
+  getTitleByLanguage,
+  getDescriptionByLanguage,
+  getCategoryNameByLanguage
 };
 
 console.log('🌐 Система многоязычных утилит загружена успешно');

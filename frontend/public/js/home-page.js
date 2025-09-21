@@ -1383,6 +1383,13 @@ function renderTourBlock(block, tours) {
             updateCarouselButtons(carouselId);
             toggleCarouselButtons(carouselId, tours.length);
         }, 100);
+        
+        // 🌐 Переводим все динамические элементы после рендера туров
+        if (typeof translateAllDynamicContent === 'function') {
+            const currentLang = getCurrentLanguage();
+            translateAllDynamicContent(currentLang);
+            console.log(`🌐 Переведены элементы блока ${block.id} на язык: ${currentLang}`);
+        }
     }
 }
 
@@ -1517,6 +1524,7 @@ function renderTourCard(tour, blockId = null) {
                 <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow" data-tour-title="${JSON.stringify(titleData).replace(/"/g, '&quot;')}">
                     ${titleText}
                 </h3>
+                <p class="text-sm text-gray-600 mb-3 line-clamp-2" data-tour-description="${JSON.stringify(descriptionData).replace(/"/g, '&quot;')}">${descriptionText}</p>
                 <div class="flex items-center justify-between mt-auto">
                     <div>
                         ${tour.originalPrice ? `
