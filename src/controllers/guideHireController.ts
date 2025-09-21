@@ -402,70 +402,111 @@ export const updateGuideHireRequestStatus = async (req: Request, res: Response) 
       return;
     }
 
-    // Если заявка одобряется, проверяем доступность дат и удаляем их
+    // Если заявка одобряется, делаем это в безопасной для конкурентности транзакции
     if (status === 'approved' && currentRequest.status !== 'approved') {
       const selectedDates = parseJsonField(currentRequest.selectedDates) || [];
-      const currentAvailableDates = parseJsonField(currentRequest.guide.availableDates) || [];
       
-      // Проверяем что все выбранные даты еще доступны
-      const unavailableDates = selectedDates.filter((date: string) => !currentAvailableDates.includes(date));
-      if (unavailableDates.length > 0) {
-        res.status(409).json({
-          success: false,
-          message: `Следующие даты больше не доступны: ${unavailableDates.join(', ')}. Заявка не может быть одобрена.`
-        });
-        return;
-      }
-      
-      // Удаляем забронированные даты из доступных
-      const updatedAvailableDates = currentAvailableDates.filter(
-        (date: string) => !selectedDates.includes(date)
-      );
-
-      // Обновляем доступность тургида в транзакции
-      await prisma.$transaction(async (tx: any) => {
-        // Обновляем доступность тургида
-        await tx.guide.update({
-          where: { id: currentRequest.guideId },
-          data: {
-            availableDates: JSON.stringify(updatedAvailableDates)
+      try {
+        const result = await prisma.$transaction(async (tx: any) => {
+          // 1. Пытаемся одобрить заявку только если она все еще в статусе pending
+          const approvedRequests = await tx.guideHireRequest.updateMany({
+            where: { 
+              id: parseInt(requestId),
+              status: 'pending' // Условие: одобряем только если еще pending
+            },
+            data: {
+              status: 'approved',
+              paymentStatus: paymentStatus || undefined,
+              adminNotes: adminNotes || undefined
+            }
+          });
+          
+          // Если ни одна заявка не была обновлена (уже не pending), возвращаем ошибку
+          if (approvedRequests.count === 0) {
+            throw new Error('REQUEST_ALREADY_PROCESSED');
           }
+          
+          // 2. Свежий перезапрос доступности тургида внутри транзакции
+          const freshGuide = await tx.guide.findUnique({
+            where: { id: currentRequest.guideId },
+            select: { availableDates: true }
+          });
+          
+          if (!freshGuide) {
+            throw new Error('GUIDE_NOT_FOUND');
+          }
+          
+          const freshAvailableDates = parseJsonField(freshGuide.availableDates) || [];
+          
+          // 3. Проверяем что все даты все еще доступны
+          const unavailableDates = selectedDates.filter((date: string) => !freshAvailableDates.includes(date));
+          if (unavailableDates.length > 0) {
+            throw new Error(`DATES_UNAVAILABLE:${unavailableDates.join(',')}`);
+          }
+          
+          // 4. Обновляем доступность тургида, удаляя забронированные даты
+          const updatedAvailableDates = freshAvailableDates.filter(
+            (date: string) => !selectedDates.includes(date)
+          );
+          
+          await tx.guide.update({
+            where: { id: currentRequest.guideId },
+            data: {
+              availableDates: JSON.stringify(updatedAvailableDates)
+            }
+          });
+          
+          return true;
         });
         
-        // Обновляем статус заявки
-        await tx.guideHireRequest.update({
+        // Получаем обновленную заявку для ответа
+        const updatedRequest = await prisma.guideHireRequest.findUnique({
           where: { id: parseInt(requestId) },
-          data: {
-            status: status,
-            paymentStatus: paymentStatus || undefined,
-            adminNotes: adminNotes || undefined
-          }
-        });
-      });
-      
-      // Получаем обновленную заявку для ответа
-      const updatedRequest = await prisma.guideHireRequest.findUnique({
-        where: { id: parseInt(requestId) },
-        include: {
-          guide: {
-            select: {
-              id: true,
-              name: true,
-              photo: true
+          include: {
+            guide: {
+              select: {
+                id: true,
+                name: true,
+                photo: true
+              }
             }
           }
-        }
-      });
+        });
 
-      res.json({
-        success: true,
-        message: 'Заявка одобрена и даты зарезервированы',
-        data: {
-          ...updatedRequest,
-          selectedDates: parseJsonField(updatedRequest!.selectedDates)
+        res.json({
+          success: true,
+          message: 'Заявка одобрена и даты зарезервированы',
+          data: {
+            ...updatedRequest,
+            selectedDates: parseJsonField(updatedRequest!.selectedDates)
+          }
+        });
+        return;
+        
+      } catch (error: any) {
+        if (error.message === 'REQUEST_ALREADY_PROCESSED') {
+          res.status(409).json({
+            success: false,
+            message: 'Заявка уже была обработана другим администратором'
+          });
+          return;
+        } else if (error.message.startsWith('DATES_UNAVAILABLE:')) {
+          const unavailableDates = error.message.split(':')[1];
+          res.status(409).json({
+            success: false,
+            message: `Следующие даты больше не доступны: ${unavailableDates}. Заявка не может быть одобрена.`
+          });
+          return;
+        } else if (error.message === 'GUIDE_NOT_FOUND') {
+          res.status(404).json({
+            success: false,
+            message: 'Тургид не найден'
+          });
+          return;
+        } else {
+          throw error; // Неожиданная ошибка, передаем дальше
         }
-      });
-      return;
+      }
     }
 
     // Если заявка отклоняется или отменяется после одобрения, возвращаем даты
@@ -476,12 +517,15 @@ export const updateGuideHireRequestStatus = async (req: Request, res: Response) 
       // Возвращаем даты обратно в доступные (если они еще не прошли)
       const today = new Date().toISOString().split('T')[0];
       const futureDates = selectedDates.filter((date: string) => date >= today);
-      const updatedAvailableDates = [...currentAvailableDates, ...futureDates].sort();
+      
+      // Объединяем и удаляем дубликаты
+      const combinedDates = [...currentAvailableDates, ...futureDates];
+      const uniqueDates = [...new Set(combinedDates)].sort();
 
       await prisma.guide.update({
         where: { id: currentRequest.guideId },
         data: {
-          availableDates: JSON.stringify(updatedAvailableDates)
+          availableDates: JSON.stringify(uniqueDates)
         }
       });
     }
