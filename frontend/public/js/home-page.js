@@ -94,26 +94,51 @@ function updateCategoryFilter() {
         // Очищаем существующие опции (кроме первой)
         categorySelect.innerHTML = '<option value="" data-translate="filter.category">Категория</option>';
         
-        // Добавляем категории из API
-        categoriesData.forEach(category => {
-            const option = document.createElement('option');
-            option.value = category.id; // Используем ID категории как значение
-            
-            // Получаем название на текущем языке
-            let categoryName = 'Категория';
-            if (category.name) {
-                if (typeof category.name === 'object') {
-                    categoryName = category.name.ru || category.name.en || 'Категория';
-                } else {
-                    categoryName = category.name;
+        // Проверяем наличие категорий
+        if (categoriesData && categoriesData.length > 0) {
+            // Добавляем категории из API
+            categoriesData.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id; // Используем ID категории как значение
+                
+                // Получаем название на текущем языке
+                let categoryName = 'Категория';
+                if (category.name) {
+                    if (typeof category.name === 'object') {
+                        categoryName = category.name.ru || category.name.en || 'Категория';
+                    } else {
+                        try {
+                            const parsed = JSON.parse(category.name);
+                            categoryName = parsed.ru || parsed.en || 'Категория';
+                        } catch {
+                            categoryName = category.name;
+                        }
+                    }
                 }
-            }
+                
+                option.textContent = categoryName;
+                categorySelect.appendChild(option);
+            });
             
-            option.textContent = categoryName;
-            categorySelect.appendChild(option);
-        });
-        
-        console.log('🏷️ Category filter updated with', categoriesData.length, 'categories');
+            console.log('🏷️ Category filter updated with', categoriesData.length, 'categories');
+        } else {
+            // Fallback: добавляем базовые категории если API не вернул данные
+            console.log('⚠️ No categories from API, using fallback categories');
+            const fallbackCategories = [
+                { value: 'cultural', text: 'Культурные туры' },
+                { value: 'adventure', text: 'Приключенческие туры' },
+                { value: 'nature', text: 'Природные туры' },
+                { value: 'city', text: 'Городские туры' },
+                { value: 'mountain', text: 'Горные туры' }
+            ];
+            
+            fallbackCategories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.value;
+                option.textContent = category.text;
+                categorySelect.appendChild(option);
+            });
+        }
     }
 }
 
@@ -1195,16 +1220,22 @@ async function loadTourBlocks() {
         const response = await fetch(`${API_BASE_URL}/tour-blocks`);
         const result = await response.json();
         
-        if (result.success) {
+        if (result.success && result.data && result.data.length > 0) {
             // Сортируем блоки по sortOrder для правильного порядка отображения
             const sortedBlocks = result.data.sort((a, b) => a.sortOrder - b.sortOrder);
             
             for (const block of sortedBlocks) {
                 await loadToursForBlock(block);
             }
+        } else {
+            // Fallback: показываем сообщение когда нет tour blocks
+            console.log('⚠️ No tour blocks found, showing fallback message');
+            showEmptyTourBlocksMessage();
         }
     } catch (error) {
         console.error('Error loading tour blocks:', error);
+        // Показываем fallback сообщение при ошибке
+        showEmptyTourBlocksMessage();
     }
 }
 

@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path');
 const { exec } = require('child_process');
-// Remove old SQLite initialization
-// const { initializeDatabase } = require('./src/database/init');
+// 🗄️ ДОБАВЛЕНО: Автоматическая инициализация базы данных для новых серверов
+const { initializeDatabase } = require('./src/utils/initializeDatabase.ts');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -196,6 +196,16 @@ app.use((error, req, res, next) => {
 async function startServer() {
   try {
     console.log('🗄️ Подключение к PostgreSQL через Prisma...');
+    
+    // 🚀 ДОБАВЛЕНО: Автоматическая инициализация базы данных при первом запуске
+    console.log('🔍 Проверка инициализации базы данных...');
+    try {
+      await initializeDatabase();
+      console.log('✅ База данных готова к работе!');
+    } catch (error) {
+      console.error('❌ Ошибка инициализации БД:', error);
+      console.log('⚠️ Сервер продолжит работу, но некоторые функции могут быть недоступны');
+    }
     
     // Инициализация компонентов калькулятора цен (отложено после запуска сервера)
     setTimeout(async () => {
