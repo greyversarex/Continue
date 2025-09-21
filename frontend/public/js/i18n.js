@@ -47,7 +47,7 @@ window.translations = window.translations || {
     'btn.view_all': { ru: 'Смотреть все', en: 'View All' },
     'btn.send': { ru: 'Отправить', en: 'Send' },
     'btn.search': { ru: 'Поиск', en: 'Search' },
-    'btn.filter': { ru: 'Фильтр', en: 'Filter' },
+    'btn.filter': { ru: 'Фильтры', en: 'Filters' },
     'btn.contact_us': { ru: 'Связаться с нами', en: 'Contact Us' },
     
     // Заголовки и подзаголовки
@@ -112,6 +112,8 @@ window.translations = window.translations || {
     'filter.tour_type': { ru: 'Тип тура', en: 'Tour Type' },
     'filter.category': { ru: 'Категория', en: 'Category' },
     'filter.date': { ru: 'Дата', en: 'Date' },
+    'filter.hotel_brand': { ru: 'Бренд отеля', en: 'Hotel Brand' },
+    'filter.hotel_stars': { ru: 'Звезды отеля', en: 'Hotel Stars' },
     
     // Формы
     'form.country': { ru: 'Страна', en: 'Country' },
