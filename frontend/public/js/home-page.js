@@ -1135,12 +1135,11 @@ function selectLanguageNew(lang, flagClass, flagEmoji, name) {
     // ГАРАНТИРОВАННЫЙ эмодзи (приоритет: карта по lang -> карта по flagClass -> flagEmoji -> fallback)
     const correctEmoji = emojiMap[lang] || emojiMap[flagClass] || flagEmoji || '🌐';
     
-    // Обновляем кнопку селектора - ПРИНУДИТЕЛЬНО используем правильный эмодзи
-    const selectedFlag = document.querySelector('.selected-flag');
-    selectedFlag.className = `selected-flag ${flagClass}`;
-    selectedFlag.textContent = correctEmoji; // ПРИНУДИТЕЛЬНО правильный эмодзи
-    selectedFlag.innerHTML = correctEmoji;   // На всякий случай и innerHTML
-    document.querySelector('.selected-lang').textContent = name;
+    // Обновляем кнопку селектора - только название языка (флаги в выпадающем меню)
+    const selectedLang = document.querySelector('.selected-lang');
+    if (selectedLang) {
+        selectedLang.textContent = name;
+    }
     
     // ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА: Принудительно исправляем ВСЕ флаги в выпадающем меню
     document.querySelectorAll('#langDropdown .flag').forEach(flag => {
@@ -1158,11 +1157,22 @@ function selectLanguageNew(lang, flagClass, flagEmoji, name) {
     // Убираем активный класс со всех опций
     document.querySelectorAll('#langDropdown .lang-option').forEach(opt => opt.classList.remove('active'));
     
-    // Добавляем активный класс к выбранной опции
-    document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+    // Добавляем активный класс к выбранной опции (с проверкой существования)
+    const selectedOption = document.querySelector(`[data-lang="${lang}"]`);
+    if (selectedOption) {
+        selectedOption.classList.add('active');
+    }
     
-    // Закрываем выпадающий список
-    document.getElementById('langDropdown').classList.remove('show');
+    // Закрываем выпадающий список (с проверкой существования)
+    const dropdown = document.getElementById('langDropdown');
+    if (dropdown) {
+        dropdown.classList.remove('show');
+    }
+    
+    // Вызываем функцию переключения языка
+    if (typeof switchSiteLanguage === 'function') {
+        switchSiteLanguage(lang);
+    }
     
 }
 
