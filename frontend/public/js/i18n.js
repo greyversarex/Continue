@@ -283,6 +283,74 @@ window.translations = window.translations || {
     'lang.russian': { ru: 'Русский', en: 'Russian' },
     'lang.english': { ru: 'English', en: 'English' },
     
+    // === ПОЛНЫЕ ПЕРЕВОДЫ ДЛЯ ВСЕХ СТРАНИЦ ===
+    
+    // About Us страница
+    'about.page_title': { ru: 'О нас - Bunyod-Tour', en: 'About Us - Bunyod-Tour' },
+    'about.main_title': { ru: 'О компании Bunyod-Tour', en: 'About Bunyod-Tour Company' },
+    'about.subtitle': { ru: 'Ваш надежный партнер в путешествиях по Центральной Азии', en: 'Your reliable partner for travels in Central Asia' },
+    'about.mission_title': { ru: 'Наша миссия', en: 'Our Mission' },
+    'about.mission_text': { ru: 'Мы стремимся показать красоту и богатство культуры Центральной Азии каждому путешественнику, создавая незабываемые впечатления и безопасные путешествия.', en: 'We strive to show the beauty and richness of Central Asian culture to every traveler, creating unforgettable experiences and safe journeys.' },
+    'about.vision_title': { ru: 'Наше видение', en: 'Our Vision' },
+    'about.vision_text': { ru: 'Стать ведущей туристической компанией в регионе, объединяющей традиции и современные технологии для создания лучших туристических продуктов.', en: 'To become the leading tourism company in the region, combining traditions and modern technologies to create the best tourism products.' },
+    'about.experience_years': { ru: 'лет опыта', en: 'years of experience' },
+    'about.happy_clients': { ru: 'довольных клиентов', en: 'happy clients' },
+    'about.tours_completed': { ru: 'проведенных туров', en: 'completed tours' },
+    'about.team_members': { ru: 'участников команды', en: 'team members' },
+    
+    // News страница
+    'news.page_title': { ru: 'Новости - Bunyod-Tour', en: 'News - Bunyod-Tour' },
+    'news.main_title': { ru: 'Новости туризма', en: 'Tourism News' },
+    'news.subtitle': { ru: 'Последние новости и события в мире туризма Центральной Азии', en: 'Latest news and events in Central Asian tourism' },
+    'news.read_more': { ru: 'Читать далее', en: 'Read More' },
+    'news.date_published': { ru: 'Дата публикации', en: 'Published on' },
+    'news.no_news': { ru: 'Новостей пока нет', en: 'No news available yet' },
+    'news.load_more': { ru: 'Загрузить еще', en: 'Load More' },
+    'news.category_general': { ru: 'Общие новости', en: 'General News' },
+    'news.category_tours': { ru: 'Туры', en: 'Tours' },
+    'news.category_events': { ru: 'События', en: 'Events' },
+    
+    // Visa Support страница  
+    'visa.page_title': { ru: 'Визовая поддержка - Bunyod-Tour', en: 'Visa Support - Bunyod-Tour' },
+    'visa.main_title': { ru: 'Визовая поддержка', en: 'Visa Support' },
+    'visa.subtitle': { ru: 'Полная поддержка в оформлении виз для путешествий по Центральной Азии', en: 'Complete support for visa processing for travel in Central Asia' },
+    'visa.countries_title': { ru: 'Визовые требования по странам', en: 'Visa Requirements by Country' },
+    'visa.tajikistan': { ru: 'Таджикистан', en: 'Tajikistan' },
+    'visa.uzbekistan': { ru: 'Узбекистан', en: 'Uzbekistan' },
+    'visa.kyrgyzstan': { ru: 'Кыргызстан', en: 'Kyrgyzstan' },
+    'visa.kazakhstan': { ru: 'Казахстан', en: 'Kazakhstan' },
+    'visa.turkmenistan': { ru: 'Туркменистан', en: 'Turkmenistan' },
+    'visa.services_title': { ru: 'Наши услуги', en: 'Our Services' },
+    'visa.consultation': { ru: 'Консультация по визовым вопросам', en: 'Visa consultation' },
+    'visa.document_preparation': { ru: 'Подготовка документов', en: 'Document preparation' },
+    'visa.invitation_letters': { ru: 'Приглашения и письма поддержки', en: 'Invitation and support letters' },
+    'visa.processing_assistance': { ru: 'Помощь в подаче документов', en: 'Processing assistance' },
+    'visa.contact_us': { ru: 'Свяжитесь с нами для получения визовой поддержки', en: 'Contact us for visa support' },
+    
+    // Tour Guides страница
+    'guides.page_title': { ru: 'Гиды - Bunyod-Tour', en: 'Tour Guides - Bunyod-Tour' },
+    'guides.main_title': { ru: 'Наши гиды', en: 'Our Tour Guides' },
+    'guides.subtitle': { ru: 'Профессиональные гиды с многолетним опытом работы в туризме', en: 'Professional guides with years of experience in tourism' },
+    'guides.experience': { ru: 'Опыт работы', en: 'Experience' },
+    'guides.languages': { ru: 'Языки', en: 'Languages' },
+    'guides.specialization': { ru: 'Специализация', en: 'Specialization' },
+    'guides.rating': { ru: 'Рейтинг', en: 'Rating' },
+    'guides.contact': { ru: 'Связаться', en: 'Contact' },
+    'guides.reviews': { ru: 'отзывов', en: 'reviews' },
+    'guides.book_guide': { ru: 'Забронировать гида', en: 'Book Guide' },
+    'guides.view_profile': { ru: 'Посмотреть профиль', en: 'View Profile' },
+    'guides.no_guides': { ru: 'Гиды не найдены', en: 'No guides found' },
+    
+    // Общие элементы для всех страниц
+    'common.loading': { ru: 'Загрузка...', en: 'Loading...' },
+    'common.error': { ru: 'Произошла ошибка', en: 'An error occurred' },
+    'common.try_again': { ru: 'Попробовать снова', en: 'Try again' },
+    'common.contact_us': { ru: 'Свяжитесь с нами', en: 'Contact Us' },
+    'common.email': { ru: 'Электронная почта', en: 'Email' },
+    'common.phone': { ru: 'Телефон', en: 'Phone' },
+    'common.address': { ru: 'Адрес', en: 'Address' },
+    'common.back_to_top': { ru: 'Наверх', en: 'Back to Top' },
+    
     // НОВЫЕ PLACEHOLDER'Ы ДЛЯ АДМИН-ПАНЕЛИ
     'placeholder.search_hotels': { ru: 'Поиск отелей...', en: 'Search hotels...' },
     'placeholder.search_tour_agents': { ru: 'Поиск турагентов...', en: 'Search tour agents...' },
@@ -970,6 +1038,12 @@ function updateLanguageSelector(lang) {
     
     if (selectedLangText) {
         selectedLangText.textContent = selectedLang.name;
+    }
+    
+    // Обновляем новый переключатель с ID current-language
+    const currentLanguageElement = document.getElementById('current-language');
+    if (currentLanguageElement) {
+        currentLanguageElement.textContent = selectedLang.name;
     }
     
     // ОБНОВЛЯЕМ ПЕРЕКЛЮЧАТЕЛЬ В АДМИН-ПАНЕЛИ
