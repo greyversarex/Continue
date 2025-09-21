@@ -99,42 +99,42 @@ async function createDefaultTourBlocks() {
             description: JSON.stringify({ ru: "Самые востребованные туры нашей компании", en: "Most popular tours of our company" }),
             slug: "popular-tours",
             isActive: true,
-            order: 1
+            sortOrder: 1
         },
         {
             title: JSON.stringify({ ru: "Рекомендованные туры по Центральной Азии", en: "Recommended Central Asia Tours" }),
             description: JSON.stringify({ ru: "Лучшие туры для знакомства с Центральной Азией", en: "Best tours to discover Central Asia" }),
             slug: "recommended-central-asia",
             isActive: true,
-            order: 2
+            sortOrder: 2
         },
         {
             title: JSON.stringify({ ru: "Туры по Таджикистану", en: "Tajikistan Tours" }),
             description: JSON.stringify({ ru: "Откройте для себя красоты Таджикистана", en: "Discover the beauty of Tajikistan" }),
             slug: "tajikistan-tours",
             isActive: true,
-            order: 3
+            sortOrder: 3
         },
         {
             title: JSON.stringify({ ru: "Туры по Узбекистану", en: "Uzbekistan Tours" }),
             description: JSON.stringify({ ru: "Исследуйте древние города Узбекистана", en: "Explore ancient cities of Uzbekistan" }),
             slug: "uzbekistan-tours",
             isActive: true,
-            order: 4
+            sortOrder: 4
         },
         {
             title: JSON.stringify({ ru: "Туры по Кыргызстану", en: "Kyrgyzstan Tours" }),
             description: JSON.stringify({ ru: "Горные приключения в Кыргызстане", en: "Mountain adventures in Kyrgyzstan" }),
             slug: "kyrgyzstan-tours",
             isActive: true,
-            order: 5
+            sortOrder: 5
         },
         {
             title: JSON.stringify({ ru: "Эксклюзивные туры", en: "Exclusive Tours" }),
             description: JSON.stringify({ ru: "Уникальные и эксклюзивные туристические программы", en: "Unique and exclusive tour programs" }),
             slug: "exclusive-tours",
             isActive: true,
-            order: 6
+            sortOrder: 6
         }
     ];
     
