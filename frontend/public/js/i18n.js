@@ -1094,6 +1094,16 @@ function switchSiteLanguage(lang) {
     if (dropdown) dropdown.classList.remove('show');
     if (arrow) arrow.classList.remove('open');
     
+    // ВЫЗЫВАЕМ ПОЛЬЗОВАТЕЛЬСКИЕ ОБРАБОТЧИКИ СМЕНЫ ЯЗЫКА
+    console.log('🧪 ТЕСТ: Проверяем onLanguageChanged. Тип:', typeof window.onLanguageChanged);
+    if (typeof window.onLanguageChanged === 'function') {
+        console.log('🔄 Вызываем onLanguageChanged для языка:', lang);
+        window.onLanguageChanged(lang);
+    } else {
+        console.warn('⚠️ onLanguageChanged не найден или не функция!');
+    }
+    
+    console.info('🌍 Language set to:', lang);
 }
 
 // === ОБНОВЛЕНИЕ ПЕРЕКЛЮЧАТЕЛЯ ЯЗЫКОВ ===
