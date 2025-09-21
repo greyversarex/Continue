@@ -1047,48 +1047,65 @@ function updateTextNodes(element, newText) {
 function translateDynamicContent(lang) {
     console.log(`🔄 Переключение динамического контента на: ${lang}`);
     
-    // 🎯 ПОЛУЧАЕМ ТЕКУЩИЙ ЯЗЫК ИЗ ЦЕНТРАЛЬНОЙ СИСТЕМЫ
-    const currentLang = window.i18n ? window.i18n.currentLanguage() : lang;
-    
-    let updatedCount = 0;
-    
-    // 🏷️ ОБНОВЛЯЕМ ЗАГОЛОВКИ ТУРОВ (БЕЗОПАСНЫЙ ПОДХОД)
-    const tourTitles = document.querySelectorAll('[data-tour-title]');
-    tourTitles.forEach(element => {
-        const titleRu = element.dataset.titleRu || '';
-        const titleEn = element.dataset.titleEn || '';
-        const title = currentLang === 'en' ? (titleEn || titleRu || 'Название не указано') : (titleRu || titleEn || 'Название не указано');
-        element.textContent = title;
-        updatedCount++;
-    });
-    
-    // 📝 ОБНОВЛЯЕМ ОПИСАНИЯ ТУРОВ (БЕЗОПАСНЫЙ ПОДХОД)
-    const tourDescriptions = document.querySelectorAll('[data-tour-description]');
-    tourDescriptions.forEach(element => {
-        const descRu = element.dataset.descRu || '';
-        const descEn = element.dataset.descEn || '';
-        const description = currentLang === 'en' ? (descEn || descRu || 'Описание не указано') : (descRu || descEn || 'Описание не указано');
-        element.textContent = description;
-        updatedCount++;
-    });
-    
-    // 🏷️ ОБНОВЛЯЕМ КАТЕГОРИИ ТУРОВ (БЕЗОПАСНЫЙ ПОДХОД)
-    const tourCategories = document.querySelectorAll('[data-tour-category]');
-    tourCategories.forEach(element => {
-        const catRu = element.dataset.catRu || '';
-        const catEn = element.dataset.catEn || '';
-        const categoryName = currentLang === 'en' ? (catEn || catRu || 'Категория') : (catRu || catEn || 'Категория');
-        element.textContent = categoryName;
-        updatedCount++;
-    });
-    
-    // 🔄 ПЕРЕРЕНДЕРИМ ТУРЫ С НОВЫМ ЯЗЫКОМ (если нужно)
-    if (typeof renderTours === 'function') {
-        // Если у нас есть функция renderTours, используем её
-        console.log('🔄 Перерендериваем туры с новым языком...');
-        renderTours();
+    // Используем новые утилиты для многоязычности
+    if (typeof window.translateAllDynamicContent === 'function') {
+        window.translateAllDynamicContent(lang);
+    } else {
+        // Fallback для старой системы
+        console.warn('Утилиты многоязычности не найдены, используем fallback');
+        
+        let updatedCount = 0;
+        
+        // Обновляем заголовки туров
+        const tourTitles = document.querySelectorAll('[data-tour-title]');
+        tourTitles.forEach(element => {
+            const titleData = element.dataset.tourTitle;
+            if (titleData) {
+                try {
+                    const parsed = JSON.parse(titleData.replace(/&quot;/g, '"'));
+                    const text = (lang === 'en' ? parsed.en : parsed.ru) || parsed.ru || parsed.en || 'Название не указано';
+                    element.textContent = text;
+                    updatedCount++;
+                } catch (e) {
+                    console.warn('Error parsing tour title:', e);
+                }
+            }
+        });
+        
+        // Обновляем названия категорий
+        const categoryNames = document.querySelectorAll('[data-category-name]');
+        categoryNames.forEach(element => {
+            const categoryData = element.dataset.categoryName;
+            if (categoryData) {
+                try {
+                    const parsed = JSON.parse(categoryData.replace(/&quot;/g, '"'));
+                    const text = (lang === 'en' ? parsed.en : parsed.ru) || parsed.ru || parsed.en || 'Категория';
+                    element.textContent = text;
+                    updatedCount++;
+                } catch (e) {
+                    console.warn('Error parsing category name:', e);
+                }
+            }
+        });
+        
+        // Обновляем заголовки блоков туров
+        const blockTitles = document.querySelectorAll('[data-tour-block-title]');
+        blockTitles.forEach(element => {
+            const titleData = element.dataset.tourBlockTitle;
+            if (titleData) {
+                try {
+                    const parsed = JSON.parse(titleData.replace(/&quot;/g, '"'));
+                    const text = (lang === 'en' ? parsed.en : parsed.ru) || parsed.ru || parsed.en || 'Блок туров';
+                    element.textContent = text;
+                    updatedCount++;
+                } catch (e) {
+                    console.warn('Error parsing block title:', e);
+                }
+            }
+        });
+        
+        console.log(`✅ Обновлено ${updatedCount} элементов (fallback mode)`);
     }
-    
 }
 
 // 🎯 ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ПОЛУЧЕНИЯ КОНТЕНТА ПО ЯЗЫКУ
@@ -1290,16 +1307,21 @@ async function loadToursForBlock(block) {
 }
 
 function renderTourBlock(block, tours) {
-    // Безопасная обработка названия блока
-    let blockTitle;
+    // Получаем текущий язык
+    const currentLang = getCurrentLanguage();
+    
+    // Безопасная обработка названия блока с поддержкой многоязычности
+    let blockTitleData, blockTitleText;
     try {
         if (typeof block.title === 'string') {
-            blockTitle = JSON.parse(block.title);
+            blockTitleData = JSON.parse(block.title);
         } else {
-            blockTitle = block.title || {};
+            blockTitleData = block.title || {};
         }
+        blockTitleText = getLocalizedText(blockTitleData, currentLang) || 'Блок туров';
     } catch (e) {
-        blockTitle = { ru: block.title || 'Блок туров', en: block.title || 'Tour Block' };
+        blockTitleData = { ru: block.title || 'Блок туров', en: block.title || 'Tour Block' };
+        blockTitleText = block.title || 'Блок туров';
     }
     
     const blockId = `tour-block-${block.id}`;
@@ -1332,8 +1354,8 @@ function renderTourBlock(block, tours) {
     if (existingSection) {
         existingSection.innerHTML = `
             <div class="max-w-7xl mx-auto px-6">
-                <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
-                    ${blockTitle.ru}
+                <h2 class="text-3xl font-bold text-center mb-12 text-gray-900" data-tour-block-title="${JSON.stringify(blockTitleData).replace(/"/g, '&quot;')}">
+                    ${blockTitleText}
                 </h2>
                 
                 <div class="tour-block-container">
@@ -1365,20 +1387,41 @@ function renderTourBlock(block, tours) {
 }
 
 function renderTourCard(tour, blockId = null) {
-    // Парсим JSON поля для корректного отображения
-    let title, description;
+    // Получаем текущий язык
+    const currentLang = getCurrentLanguage();
+    
+    // Парсим JSON поля для корректного отображения и сохраняем в data-атрибутах
+    let titleData, titleText;
     try {
-        title = typeof tour.title === 'string' ? JSON.parse(tour.title) : tour.title;
-        title = title.ru || title.en || 'Название не указано';
+        titleData = typeof tour.title === 'string' ? JSON.parse(tour.title) : tour.title;
+        titleText = getLocalizedText(titleData, currentLang) || 'Название не указано';
     } catch (e) {
-        title = tour.title || 'Название не указано';
+        titleData = { ru: tour.title || 'Название не указано', en: tour.title || 'Title not specified' };
+        titleText = tour.title || 'Название не указано';
     }
     
+    let descriptionData, descriptionText;
     try {
-        description = typeof tour.description === 'string' ? JSON.parse(tour.description) : tour.description;
-        description = description.ru || description.en || 'Описание не указано';
+        descriptionData = typeof tour.description === 'string' ? JSON.parse(tour.description) : tour.description;
+        descriptionText = getLocalizedText(descriptionData, currentLang) || 'Описание не указано';
     } catch (e) {
-        description = tour.description || 'Описание не указано';
+        descriptionData = { ru: tour.description || 'Описание не указано', en: tour.description || 'Description not available' };
+        descriptionText = tour.description || 'Описание не указано';
+    }
+    
+    // Обрабатываем название категории
+    let categoryData, categoryText;
+    if (tour.category && tour.category.name) {
+        try {
+            categoryData = typeof tour.category.name === 'string' ? JSON.parse(tour.category.name) : tour.category.name;
+            categoryText = getLocalizedText(categoryData, currentLang) || 'Категория';
+        } catch (e) {
+            categoryData = { ru: tour.category.name || 'Категория', en: tour.category.name || 'Category' };
+            categoryText = tour.category.name || 'Категория';
+        }
+    } else {
+        categoryData = { ru: 'Категория', en: 'Category' };
+        categoryText = 'Категория';
     }
     
     const shortDesc = tour.shortDesc || null;
@@ -1429,7 +1472,7 @@ function renderTourCard(tour, blockId = null) {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 616 0z"/>
                             </svg>
-                            <div class="text-sm font-medium text-blue-600">${title}</div>
+                            <div class="text-sm font-medium text-blue-600" data-tour-title="${JSON.stringify(titleData).replace(/"/g, '&quot;')}">${titleText}</div>
                         </div>`
                     }
                 </div>
@@ -1463,7 +1506,7 @@ function renderTourCard(tour, blockId = null) {
                 <!-- Категория тура (обязательно показываем) -->
                 <div class="flex items-center text-xs mb-2" style="color: #3E3E3E;">
                     <span class="mr-1">🏷️</span>
-                    <span class="font-medium">${tour.category && tour.category.name ? (tour.category.name.ru || tour.category.name.en || 'Категория') : 'Категория'}</span>
+                    <span class="font-medium" data-category-name="${JSON.stringify(categoryData).replace(/"/g, '&quot;')}">${categoryText}</span>
                 </div>
                 ${tour.rating ? `
                 <div class="flex items-center text-green-600 text-xs mb-2">
@@ -1471,8 +1514,8 @@ function renderTourCard(tour, blockId = null) {
                     <span class="font-semibold">${tour.rating}</span>
                     <span class="text-gray-500 ml-1">(${tour.reviewsCount || 0})</span>
                 </div>` : ''}
-                <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow">
-                    ${title}
+                <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 flex-grow" data-tour-title="${JSON.stringify(titleData).replace(/"/g, '&quot;')}">
+                    ${titleText}
                 </h3>
                 <div class="flex items-center justify-between mt-auto">
                     <div>
