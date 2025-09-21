@@ -859,7 +859,7 @@
         <!-- Брендинг -->
         <div class="absolute bottom-8 right-8">
             <div class="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg text-sm">
-                Больше с Bunyod-Tour
+                <span data-translate="hero.more_with_bunyod">Больше с Bunyod-Tour</span>
             </div>
         </div>
     </section>
@@ -946,7 +946,7 @@
                             <!-- Hotel Brand Filter -->
                             <select id="hotelBrandFilter" class="filter-select" onchange="updateHotelFilters()">
                                 <option value="" data-translate="filter.hotel_brand">Бренд отеля</option>
-                                <optgroup label="Люкс сегмент">
+                                <optgroup data-translate-label="hotel_segment.luxury" label="Люкс сегмент">
                                     <option value="Four Seasons">Four Seasons</option>
                                     <option value="Ritz-Carlton">Ritz-Carlton</option>
                                     <option value="W Hotels">W Hotels</option>
@@ -957,7 +957,7 @@
                                     <option value="Aman">Aman</option>
                                     <option value="Rosewood">Rosewood</option>
                                 </optgroup>
-                                <optgroup label="Премиум сегмент">
+                                <optgroup data-translate-label="hotel_segment.premium" label="Премиум сегмент">
                                     <option value="Hilton">Hilton Hotels & Resorts</option>
                                     <option value="Marriott">Marriott Hotels</option>
                                     <option value="Sheraton">Sheraton</option>
@@ -971,7 +971,7 @@
                                     <option value="Sofitel">Sofitel</option>
                                     <option value="Pullman">Pullman</option>
                                 </optgroup>
-                                <optgroup label="Средний сегмент">
+                                <optgroup data-translate-label="hotel_segment.middle" label="Средний сегмент">
                                     <option value="Holiday Inn">Holiday Inn</option>
                                     <option value="Courtyard">Courtyard by Marriott</option>
                                     <option value="Hampton Inn">Hampton Inn</option>
@@ -982,7 +982,7 @@
                                     <option value="Novotel">Novotel</option>
                                     <option value="Ibis">Ibis</option>
                                 </optgroup>
-                                <optgroup label="Бюджетный сегмент">
+                                <optgroup data-translate-label="hotel_segment.budget" label="Бюджетный сегмент">
                                     <option value="Holiday Inn Express">Holiday Inn Express</option>
                                     <option value="Days Inn">Days Inn</option>
                                     <option value="Super 8">Super 8</option>
@@ -990,7 +990,7 @@
                                     <option value="Comfort Inn">Comfort Inn</option>
                                     <option value="Best Western">Best Western</option>
                                 </optgroup>
-                                <optgroup label="Местные и региональные">
+                                <optgroup data-translate-label="hotel_segment.local" label="Местные и региональные">
                                     <option value="Serena Hotels">Serena Hotels</option>
                                     <option value="Golden Tulip">Golden Tulip</option>
                                     <option value="Maritim">Maritim</option>
@@ -1034,27 +1034,27 @@
                 <!-- Бесплатная отмена -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
                     <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center" data-translate="title.free_cancellation">Бесплатная отмена</h3>
-                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Отмена бронирования до 30 дней до начала тура, возврат 100%</p>
+                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start" data-translate="info.free_cancellation_desc">Отмена бронирования до 30 дней до начала тура, возврат 100%</p>
                     <div class="flex justify-end mt-auto">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('cancel-details', this)">
-                            подробнее
+                            <span data-translate="btn.details">подробнее</span>
                         </button>
                     </div>
                     <!-- Оверлей для деталей -->
                     <div id="cancel-details" class="details-overlay hidden absolute inset-0 bg-gray-50 rounded-lg p-6 z-10">
                         <div class="h-full flex flex-col">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Бесплатная отмена</h3>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2" data-translate="title.free_cancellation">Бесплатная отмена</h3>
                             <div class="flex-grow overflow-y-auto pr-2">
-                                <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                                <p class="text-sm text-gray-700 leading-relaxed mb-3" data-translate="info.free_cancellation_detail1">
                                     Бесплатная отмена – отмена тура со стороны клиента в срок до 30 дней до начала тура, возврат 100%. Однако данный возврат не распространяется на туры, забронированные менее чем за этот срок.
                                 </p>
-                                <p class="text-sm text-gray-700 leading-relaxed">
+                                <p class="text-sm text-gray-700 leading-relaxed" data-translate="info.free_cancellation_detail2">
                                     Система должна распознавать эти требования автоматически.
                                 </p>
                             </div>
                             <div class="flex justify-end mt-4">
                                 <button class="details-btn text-sm text-red-600 hover:text-red-800 font-medium" onclick="toggleDetails('cancel-details', this)">
-                                    скрыть
+                                    <span data-translate="btn.hide">скрыть</span>
                                 </button>
                             </div>
                         </div>
@@ -1064,27 +1064,27 @@
                 <!-- Бронируй сейчас - плати потом -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
                     <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center" data-translate="title.book_now_pay_later">Бронируй сейчас - плати потом</h3>
-                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Записывайтесь на групповые туры всего за 10% от стоимости тура</p>
+                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start" data-translate="info.book_pay_later_desc">Записывайтесь на групповые туры всего за 10% от стоимости тура</p>
                     <div class="flex justify-end mt-auto">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('book-details', this)">
-                            подробнее
+                            <span data-translate="btn.details">подробнее</span>
                         </button>
                     </div>
                     <!-- Оверлей для деталей -->
                     <div id="book-details" class="details-overlay hidden absolute inset-0 bg-gray-50 rounded-lg p-6 z-10">
                         <div class="h-full flex flex-col">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Бронируй сейчас - плати потом</h3>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2" data-translate="title.book_now_pay_later">Бронируй сейчас - плати потом</h3>
                             <div class="flex-grow overflow-y-auto pr-2">
-                                <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                                <p class="text-sm text-gray-700 leading-relaxed mb-3" data-translate="info.book_pay_later_detail1">
                                     Турист записывается на групповой общий тур; оплачивает 10% от стоимости тура, чтобы забронировать тур. Это раннее бронирование за 12 месяцев (минимум до 30 дней до начала тура).
                                 </p>
-                                <p class="text-sm text-gray-700 leading-relaxed">
+                                <p class="text-sm text-gray-700 leading-relaxed" data-translate="info.book_pay_later_detail2">
                                     В калькуляторе нужно установить ограничение: любая запись на тур доступна в срок бронирования до 30 дней; в 29-й день до срока доступ закрывается.
                                 </p>
                             </div>
                             <div class="flex justify-end mt-4">
                                 <button class="details-btn text-sm text-red-600 hover:text-red-800 font-medium" onclick="toggleDetails('book-details', this)">
-                                    скрыть
+                                    <span data-translate="btn.hide">скрыть</span>
                                 </button>
                             </div>
                         </div>
@@ -1094,27 +1094,27 @@
                 <!-- Горящие туры -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
                     <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center" data-translate="title.hot_tours">Горящие туры</h3>
-                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Успейте забронировать туры и экскурсии за доступные цены!</p>
+                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start" data-translate="info.hot_tours_desc">Успейте забронировать туры и экскурсии за доступные цены!</p>
                     <div class="flex justify-end mt-auto">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('hot-details', this)">
-                            подробнее
+                            <span data-translate="btn.details">подробнее</span>
                         </button>
                     </div>
                     <!-- Оверлей для деталей -->
                     <div id="hot-details" class="details-overlay hidden absolute inset-0 bg-gray-50 rounded-lg p-6 z-10">
                         <div class="h-full flex flex-col">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Горящие туры</h3>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2" data-translate="title.hot_tours">Горящие туры</h3>
                             <div class="flex-grow overflow-y-auto pr-2">
-                                <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                                <p class="text-sm text-gray-700 leading-relaxed mb-3" data-translate="info.hot_tours_detail1">
                                     В системе бронирования необходимо установить лимит, когда необходимо, чтобы туры, особенно групповые общие экскурсии, были переключены в категорию "Горящие туры".
                                 </p>
-                                <p class="text-sm text-gray-700 leading-relaxed">
+                                <p class="text-sm text-gray-700 leading-relaxed" data-translate="info.hot_tours_detail2">
                                     Пока остается так, однако два предыдущих блока "Бронируй сейчас, плати потом" и "Горящие туры" входят в этот компонент.
                                 </p>
                             </div>
                             <div class="flex justify-end mt-4">
                                 <button class="details-btn text-sm text-red-600 hover:text-red-800 font-medium" onclick="toggleDetails('hot-details', this)">
-                                    скрыть
+                                    <span data-translate="btn.hide">скрыть</span>
                                 </button>
                             </div>
                         </div>
@@ -1124,24 +1124,24 @@
                 <!-- Акции -->
                 <div class="bg-gray-50 rounded-lg p-6 relative info-block flex flex-col h-full">
                     <h3 class="text-lg font-bold text-gray-900 mb-2 min-h-[2.5rem] flex items-center" data-translate="title.promotions">Акции</h3>
-                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start">Бронируйте любой тур за 12 месяцев и экономьте 12%, это и другие привилегии у нас!</p>
+                    <p class="text-sm text-gray-600 mb-4 flex-grow min-h-[3rem] flex items-start" data-translate="info.promotions_desc">Бронируйте любой тур за 12 месяцев и экономьте 12%, это и другие привилегии у нас!</p>
                     <div class="flex justify-end mt-auto">
                         <button class="details-btn text-sm text-blue-600 hover:text-blue-800 font-medium" onclick="toggleDetails('promo-details', this)">
-                            подробнее
+                            <span data-translate="btn.details">подробнее</span>
                         </button>
                     </div>
                     <!-- Оверлей для деталей -->
                     <div id="promo-details" class="details-overlay hidden absolute inset-0 bg-gray-50 rounded-lg p-6 z-10">
                         <div class="h-full flex flex-col">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Акции</h3>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2" data-translate="title.promotions">Акции</h3>
                             <div class="flex-grow overflow-y-auto pr-2">
-                                <p class="text-sm text-gray-700 leading-relaxed">
+                                <p class="text-sm text-gray-700 leading-relaxed" data-translate="info.promotions_detail">
                                     Пока остается так, однако два предыдущих блока "Бронируй сейчас, плати потом" входят в этот компонент.
                                 </p>
                             </div>
                             <div class="flex justify-end mt-4">
                                 <button class="details-btn text-sm text-red-600 hover:text-red-800 font-medium" onclick="toggleDetails('promo-details', this)">
-                                    скрыть
+                                    <span data-translate="btn.hide">скрыть</span>
                                 </button>
                             </div>
                         </div>
@@ -1159,7 +1159,7 @@
     <!-- Виды туров -->
     <section class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center mb-12 text-gray-900">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-900" data-translate="title.tour_types">
                 Виды туров
             </h2>
             
@@ -1169,7 +1169,7 @@
                     <!-- Персональный -->
                     <div class="text-center flex-1 px-6 py-4">
                         <h3 class="text-xl font-bold text-gray-900 mb-3" data-translate="tour_type.personal">Персональный</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Только для вас с персональным подходом</p>
+                        <p class="text-gray-600 text-sm leading-relaxed" data-translate="tour_type.personal_desc">Только для вас с персональным подходом</p>
                     </div>
 
                     <!-- Разделитель 1 -->
@@ -1179,7 +1179,7 @@
                     <!-- Групповой персональный -->
                     <div class="text-center flex-1 px-6 py-4">
                         <h3 class="text-xl font-bold text-gray-900 mb-3" data-translate="tour_type.group_personal">Групповой персональный</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Комфортный тур для группы до 4 человек с персональным подходом</p>
+                        <p class="text-gray-600 text-sm leading-relaxed" data-translate="tour_type.group_personal_desc">Комфортный тур для группы до 4 человек с персональным подходом</p>
                     </div>
 
                     <!-- Разделитель 2 -->
@@ -1189,7 +1189,7 @@
                     <!-- Групповой общий -->
                     <div class="text-center flex-1 px-6 py-4">
                         <h3 class="text-xl font-bold text-gray-900 mb-3" data-translate="tour_type.group_general">Групповой общий</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Экономичный тур для группы до 20 человек, куда каждый может присоединиться</p>
+                        <p class="text-gray-600 text-sm leading-relaxed" data-translate="tour_type.group_general_desc">Экономичный тур для группы до 20 человек, куда каждый может присоединиться</p>
                     </div>
 
                     <!-- Разделитель 3 -->
@@ -1199,7 +1199,7 @@
                     <!-- Специальный -->
                     <div class="text-center flex-1 px-6 py-4">
                         <h3 class="text-xl font-bold text-gray-900 mb-3" data-translate="tour_type.special">Специальный</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Тур, составленный по вашим личным пожеланиям с персональным подходом</p>
+                        <p class="text-gray-600 text-sm leading-relaxed" data-translate="tour_type.special_desc">Тур, составленный по вашим личным пожеланиям с персональным подходом</p>
                     </div>
                 </div>
             </div>
@@ -1257,13 +1257,13 @@
                         <h3 class="text-xl font-bold text-gray-900 mb-2" data-translate="service.transfer_title">ТРАНСФЕР</h3>
                     </div>
                     <ul class="text-sm text-gray-700 mb-6 space-y-2 flex-grow">
-                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> Поездки по территории всех 5-СТАН с опытными водителями</li>
-                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> Встречи в аэропорту, ЖД и границах 5-СТАН</li>
-                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> Межстрановые и межгородские поездки</li>
-                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> Доступные и комфортные автомобили</li>
+                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> <span data-translate="service.transfer_feature1">Поездки по территории всех 5-СТАН с опытными водителями</span></li>
+                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> <span data-translate="service.transfer_feature2">Встречи в аэропорту, ЖД и границах 5-СТАН</span></li>
+                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> <span data-translate="service.transfer_feature3">Межстрановые и межгородские поездки</span></li>
+                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> <span data-translate="service.transfer_feature4">Доступные и комфортные автомобили</span></li>
                     </ul>
                     <button class="w-full text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg mt-auto" style="background-color: #3E3E3E;">
-                        Заказать трансфер
+                        <span data-translate="btn.order_transfer">Заказать трансфер</span>
                     </button>
                 </div>
 
@@ -1307,13 +1307,13 @@
                         <h3 class="text-xl font-bold text-gray-900 mb-2" data-translate="service.guides_title">ТУР-ГИДЫ</h3>
                     </div>
                     <ul class="text-sm text-gray-700 mb-6 space-y-2 flex-grow">
-                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> Опытные тур-гиды во всех 5-СТАН</li>
-                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> Профессиональное сопровождение</li>
-                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> Знание местности и владение разными языками</li>
-                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> Друг в поездке, экономия и безопасность</li>
+                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> <span data-translate="service.guides_feature1">Опытные тур-гиды во всех 5-СТАН</span></li>
+                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> <span data-translate="service.guides_feature2">Профессиональное сопровождение</span></li>
+                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> <span data-translate="service.guides_feature3">Знание местности и владение разными языками</span></li>
+                        <li class="flex items-start"><span class="mr-2" style="color: #3E3E3E;">•</span> <span data-translate="service.guides_feature4">Друг в поездке, экономия и безопасность</span></li>
                     </ul>
                     <button class="w-full text-white py-3 px-6 rounded-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg mt-auto" style="background-color: #3E3E3E;">
-                        Заказать тур-гида
+                        <span data-translate="btn.order_guide">Заказать тур-гида</span>
                     </button>
                 </div>
 

@@ -61,7 +61,7 @@ window.translations = window.translations || {
     'title.find_perfect_tour': { ru: 'Найдите идеальный тур', en: 'Find the Perfect Tour' },
     'title.free_cancellation': { ru: 'Бесплатная отмена', en: 'Free Cancellation' },
     'title.book_now_pay_later': { ru: 'Бронируй сейчас - плати потом', en: 'Book Now - Pay Later' },
-    'title.hot_tours': { ru: 'Горящие туры', en: 'Hot Tours' },
+    'title.hot_tours': { ru: 'Горящие туры', en: 'Last-minute Tours' },
     'title.promotions': { ru: 'Акции', en: 'Promotions' },
     'title.search_results': { ru: 'Результаты поиска', en: 'Search Results' },
     'title.our_services': { ru: 'Наши услуги', en: 'Our Services' },
@@ -740,7 +740,7 @@ window.translations = window.translations || {
     // Информационные блоки - краткие описания
     'info.free_cancellation_desc': { ru: 'Отмена бронирования до 30 дней до начала тура, возврат 100%', en: 'Cancel booking up to 30 days before tour start, 100% refund' },
     'info.book_pay_later_desc': { ru: 'Записывайтесь на групповые туры всего за 10% от стоимости тура', en: 'Book group tours for just 10% of the tour cost' },
-    'info.hot_tours_desc': { ru: 'Успейте забронировать туры и экскурсии за доступные цены!', en: 'Hurry to book tours and excursions at affordable prices!' },
+    'info.hot_tours_desc': { ru: 'Успейте забронировать туры и экскурсии за доступные цены!', en: 'Hurry to book last-minute deals at great prices!' },
     'info.promotions_desc': { ru: 'Бронируйте любой тур за 12 месяцев и экономьте 12%, это и другие привилегии у нас!', en: 'Book any tour 12 months in advance and save 12%, plus other privileges!' },
     
     // Кнопки для информационных блоков
@@ -974,6 +974,17 @@ function translateStaticInterface(lang) {
         
         if (translation && translation !== key) {
             element.value = translation;
+            translatedCount++;
+        }
+    });
+    
+    // ПЕРЕВОДИМ LABEL АТРИБУТЫ (data-translate-label) - для optgroup и других элементов
+    document.querySelectorAll('[data-translate-label]').forEach(element => {
+        const key = element.getAttribute('data-translate-label');
+        const translation = getTranslation(key, lang);
+        
+        if (translation && translation !== key) {
+            element.label = translation;
             translatedCount++;
         }
     });
