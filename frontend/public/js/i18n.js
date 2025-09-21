@@ -72,54 +72,6 @@ window.translations = window.translations || {
     'title.our_services': { ru: 'Наши услуги', en: 'Our Services' },
     'title.why_choose_us': { ru: 'Почему выбирают нас', en: 'Why Choose Us' },
     
-    // Страница тургидов
-    'guides.page_title': { ru: 'Наши тургиды - Bunyod-Tour', en: 'Our Tour Guides - Bunyod-Tour' },
-    'guides.title': { ru: 'НАШИ ТУРГИДЫ', en: 'OUR TOUR GUIDES' },
-    'guides.subtitle': { ru: 'Познакомьтесь с нашей командой экспертов, которые сделают ваше путешествие по Центральной Азии незабываемым. Каждый из наших тургидов - профессионал с многолетним опытом и глубокими знаниями региона.', en: 'Meet our team of experts who will make your journey through Central Asia unforgettable. Each of our tour guides is a professional with years of experience and deep knowledge of the region.' },
-    'guides.licensed': { ru: 'Лицензированные гиды', en: 'Licensed Guides' },
-    'guides.licensed_desc': { ru: 'Все наши гиды имеют официальные лицензии и сертификаты', en: 'All our guides have official licenses and certificates' },
-    'guides.clients': { ru: 'Более 1000 довольных клиентов', en: 'Over 1000 Happy Clients' },
-    'guides.clients_desc': { ru: 'Наши гиды провели тысячи успешных туров', en: 'Our guides have conducted thousands of successful tours' },
-    'guides.multilingual': { ru: 'Мультиязычная поддержка', en: 'Multilingual Support' },
-    'guides.multilingual_desc': { ru: 'Наши гиды говорят на множестве языков для вашего комфорта', en: 'Our guides speak multiple languages for your comfort' },
-    'guides.loading': { ru: 'Загружаем список тургидов...', en: 'Loading tour guides list...' },
-    'guides.professional_guide': { ru: 'Профессиональный гид', en: 'Professional Guide' },
-    'guides.languages': { ru: 'ЯЗЫКИ', en: 'LANGUAGES' },
-    'guides.years': { ru: 'лет', en: 'years' },
-    'guides.rating': { ru: 'рейтинг', en: 'rating' },
-    'guides.reviews': { ru: 'отзывы', en: 'reviews' },
-    'guides.hire_guide': { ru: 'Нанять гида', en: 'Hire Guide' },
-    'guides.detailed_info': { ru: 'Подробная информация', en: 'Detailed Information' },
-    'guides.select_dates': { ru: 'Выберите даты', en: 'Select Dates' },
-    'guides.cost_calculation': { ru: 'Расчет стоимости', en: 'Cost Calculation' },
-    'guides.price_per_day': { ru: 'Цена за день:', en: 'Price per day:' },
-    'guides.selected_days': { ru: 'Выбрано дней:', en: 'Selected days:' },
-    'guides.total': { ru: 'Итого:', en: 'Total:' },
-    'guides.your_information': { ru: 'Ваша информация', en: 'Your Information' },
-    'guides.your_name': { ru: 'Ваше имя *', en: 'Your Name *' },
-    'guides.email': { ru: 'Email *', en: 'Email *' },
-    'guides.phone': { ru: 'Телефон', en: 'Phone' },
-    'guides.comments': { ru: 'Комментарии', en: 'Comments' },
-    'guides.submit_request': { ru: 'Отправить заявку на найм', en: 'Submit Hire Request' },
-    'guides.name_placeholder': { ru: 'Введите ваше имя', en: 'Enter your name' },
-    'guides.email_placeholder': { ru: 'your@email.com', en: 'your@email.com' },
-    'guides.phone_placeholder': { ru: '+992 XX XXX XXXX', en: '+992 XX XXX XXXX' },
-    'guides.comments_placeholder': { ru: 'Дополнительные пожелания или вопросы...', en: 'Additional wishes or questions...' },
-    'guides.details_coming_soon': { ru: 'Подробная информация о тургиде будет добавлена позже.', en: 'Detailed information about the guide will be added later.' },
-    
-    // Календарь
-    'calendar.mon': { ru: 'Пн', en: 'Mo' },
-    'calendar.tue': { ru: 'Вт', en: 'Tu' },
-    'calendar.wed': { ru: 'Ср', en: 'We' },
-    'calendar.thu': { ru: 'Чт', en: 'Th' },
-    'calendar.fri': { ru: 'Пт', en: 'Fr' },
-    'calendar.sat': { ru: 'Сб', en: 'Sa' },
-    'calendar.sun': { ru: 'Вс', en: 'Su' },
-    'calendar.selected': { ru: 'Выбрано', en: 'Selected' },
-    'calendar.available': { ru: 'Доступно', en: 'Available' },
-    'calendar.occupied': { ru: 'Занято', en: 'Occupied' },
-    'calendar.unavailable': { ru: 'Недоступно', en: 'Unavailable' },
-
     // Ценовые обозначения
     'price.from': { ru: 'Цена от:', en: 'Price from:' },
     'price.per_person': { ru: 'за человека', en: 'per person' },
@@ -396,54 +348,14 @@ window.translations = window.translations || {
     'guides.occupied': { ru: 'Занято', en: 'Occupied' },
     'guides.unavailable': { ru: 'Недоступно', en: 'Unavailable' },
     'guides.experience': { ru: 'Опыт работы', en: 'Experience' },
-    'guides.languages': { ru: 'ЯЗЫКИ', en: 'LANGUAGES' },
-    'guides.professional_guide': { ru: 'Профессиональный гид', en: 'Professional Guide' },
+    'guides.languages': { ru: 'Языки', en: 'Languages' },
     'guides.specialization': { ru: 'Специализация', en: 'Specialization' },
-    'guides.rating': { ru: 'рейтинг', en: 'rating' },
+    'guides.rating': { ru: 'Рейтинг', en: 'Rating' },
     'guides.contact': { ru: 'Связаться', en: 'Contact' },
-    'guides.reviews': { ru: 'отзывы', en: 'reviews' },
-    'guides.years': { ru: 'лет', en: 'years' },
-    'guides.hire_guide': { ru: 'Нанять гида', en: 'Hire Guide' },
-    'guides.detailed_info': { ru: 'Подробная информация', en: 'Detailed Information' },
+    'guides.reviews': { ru: 'отзывов', en: 'reviews' },
     'guides.book_guide': { ru: 'Забронировать гида', en: 'Book Guide' },
     'guides.view_profile': { ru: 'Посмотреть профиль', en: 'View Profile' },
     'guides.no_guides': { ru: 'Гиды не найдены', en: 'No guides found' },
-    
-    // Форма найма гида
-    'guides.your_name': { ru: 'Ваше имя *', en: 'Your Name *' },
-    'guides.email': { ru: 'Email *', en: 'Email *' },
-    'guides.phone': { ru: 'Телефон', en: 'Phone' },
-    'guides.comments': { ru: 'Комментарии', en: 'Comments' },
-    'guides.enter_name': { ru: 'Введите ваше имя', en: 'Enter your name' },
-    'guides.email_placeholder': { ru: 'your@email.com', en: 'your@email.com' },
-    'guides.phone_placeholder': { ru: '+992 XX XXX XXXX', en: '+992 XX XXX XXXX' },
-    'guides.comments_placeholder': { ru: 'Дополнительные пожелания или вопросы...', en: 'Additional wishes or questions...' },
-    'guides.submit_request': { ru: 'Отправить заявку на найм', en: 'Submit Hire Request' },
-    
-    // Элементы карточек гидов
-    'guides.default_guide_name': { ru: 'Гид', en: 'Guide' },
-    'guides.default_description': { ru: 'Опытный тургид с глубокими знаниями культуры и истории Центральной Азии. Создает незабываемые путешествия для клиентов со всего мира.', en: 'Experienced tour guide with deep knowledge of Central Asian culture and history. Creates unforgettable journeys for clients from around the world.' },
-    'guides.russian_lang': { ru: 'Русский', en: 'Russian' },
-    'guides.english_lang': { ru: 'Английский', en: 'English' },
-    
-    // Сообщения и алерты
-    'guides.contact_message': { ru: 'Связаться с %name%. ID: %id%', en: 'Contact %name%. ID: %id%' },
-    'guides.details_coming_soon': { ru: 'Подробная информация о тургиде будет добавлена позже. ID: %id%', en: 'Detailed guide information will be added later. ID: %id%' },
-    'guides.request_sent_success': { ru: 'Заявка на найм тургида успешно отправлена! Мы свяжемся с вами в ближайшее время.', en: 'Tour guide hire request sent successfully! We will contact you soon.' },
-    'guides.error_prefix': { ru: 'Ошибка', en: 'Error' },
-    'guides.submission_error': { ru: 'Произошла ошибка при отправке заявки. Попробуйте еще раз.', en: 'An error occurred while submitting the request. Please try again.' },
-    
-    // Модальное окно найма гида
-    'guides.select_dates': { ru: 'Выберите даты', en: 'Select Dates' },
-    'guides.cost_calculation': { ru: 'Расчет стоимости', en: 'Cost Calculation' },
-    'guides.price_per_day': { ru: 'Цена за день:', en: 'Price per day:' },
-    'guides.selected_days': { ru: 'Выбрано дней:', en: 'Selected days:' },
-    'guides.total': { ru: 'Итого:', en: 'Total:' },
-    'guides.your_data': { ru: 'Ваши данные', en: 'Your Information' },
-    'guides.selected': { ru: 'Выбрано', en: 'Selected' },
-    'guides.available': { ru: 'Доступно', en: 'Available' },
-    'guides.occupied': { ru: 'Занято', en: 'Occupied' },
-    'guides.unavailable': { ru: 'Недоступно', en: 'Unavailable' },
     
     // Дни недели для календаря
     'calendar.monday': { ru: 'Пн', en: 'Mo' },
@@ -453,20 +365,6 @@ window.translations = window.translations || {
     'calendar.friday': { ru: 'Пт', en: 'Fr' },
     'calendar.saturday': { ru: 'Сб', en: 'Sa' },
     'calendar.sunday': { ru: 'Вс', en: 'Su' },
-    
-    // Названия месяцев для календаря
-    'months.january': { ru: 'Январь', en: 'January' },
-    'months.february': { ru: 'Февраль', en: 'February' },
-    'months.march': { ru: 'Март', en: 'March' },
-    'months.april': { ru: 'Апрель', en: 'April' },
-    'months.may': { ru: 'Май', en: 'May' },
-    'months.june': { ru: 'Июнь', en: 'June' },
-    'months.july': { ru: 'Июль', en: 'July' },
-    'months.august': { ru: 'Август', en: 'August' },
-    'months.september': { ru: 'Сентябрь', en: 'September' },
-    'months.october': { ru: 'Октябрь', en: 'October' },
-    'months.november': { ru: 'Ноябрь', en: 'November' },
-    'months.december': { ru: 'Декабрь', en: 'December' },
     
     // Общие элементы для всех страниц
     'common.loading': { ru: 'Загрузка...', en: 'Loading...' },
@@ -1142,12 +1040,6 @@ function switchSiteLanguage(lang) {
     if (dropdown) dropdown.classList.remove('show');
     if (arrow) arrow.classList.remove('open');
     
-    // Вызываем пользовательские обработчики смены языка
-    if (typeof window.onLanguageChanged === 'function') {
-        window.onLanguageChanged(lang);
-    }
-    
-    console.info('🌍 Language set to:', lang);
 }
 
 // === ОБНОВЛЕНИЕ ПЕРЕКЛЮЧАТЕЛЯ ЯЗЫКОВ ===
