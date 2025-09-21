@@ -19,6 +19,7 @@ function toggleDetails(detailsId, button) {
 let citiesByCountry = {};
 let countriesData = [];
 let citiesData = [];
+let categoriesData = []; // 🏷️ ДОБАВЛЕНО: Хранение категорий из API
 
 // Загрузка стран и городов из API
 async function loadCountriesAndCities() {
@@ -61,6 +62,58 @@ async function loadCountriesAndCities() {
             'Казахстан': ['Астана', 'Алматы'],
             'Туркменистан': ['Ашхабад']
         };
+    }
+}
+
+// 🏷️ ДОБАВЛЕНО: Загрузка категорий из API
+async function loadCategories() {
+    try {
+        console.log('🏷️ Loading categories from API...');
+        const response = await fetch('/api/categories');
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                categoriesData = result.data;
+                console.log('🏷️ Categories loaded:', categoriesData.length);
+                updateCategoryFilter();
+            } else {
+                console.error('❌ Failed to load categories:', result.error);
+            }
+        } else {
+            console.error('❌ Categories API request failed:', response.status);
+        }
+    } catch (error) {
+        console.error('❌ Error loading categories:', error);
+    }
+}
+
+// 🏷️ ДОБАВЛЕНО: Обновление фильтра категорий
+function updateCategoryFilter() {
+    const categorySelect = document.getElementById('categoryFilter');
+    if (categorySelect) {
+        // Очищаем существующие опции (кроме первой)
+        categorySelect.innerHTML = '<option value="" data-translate="filter.category">Категория</option>';
+        
+        // Добавляем категории из API
+        categoriesData.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id; // Используем ID категории как значение
+            
+            // Получаем название на текущем языке
+            let categoryName = 'Категория';
+            if (category.name) {
+                if (typeof category.name === 'object') {
+                    categoryName = category.name.ru || category.name.en || 'Категория';
+                } else {
+                    categoryName = category.name;
+                }
+            }
+            
+            option.textContent = categoryName;
+            categorySelect.appendChild(option);
+        });
+        
+        console.log('🏷️ Category filter updated with', categoriesData.length, 'categories');
     }
 }
 
@@ -1565,6 +1618,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Сначала загружаем страны и города для фильтров
     await loadCountriesAndCities();
+    
+    // 🏷️ ДОБАВЛЕНО: Загружаем категории для фильтра
+    await loadCategories();
     
     loadTourBlocks();
     loadSlides();
