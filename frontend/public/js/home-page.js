@@ -1239,6 +1239,29 @@ async function loadTourBlocks() {
     }
 }
 
+// 🚨 ДОБАВЛЕНО: Показ сообщения когда нет tour blocks
+function showEmptyTourBlocksMessage() {
+    const tourBlocksContainer = document.getElementById('tour-blocks-container');
+    if (tourBlocksContainer) {
+        tourBlocksContainer.innerHTML = `
+            <div class="max-w-4xl mx-auto px-6 py-16 text-center">
+                <div class="bg-gray-50 rounded-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                        🏗️ Настраиваем туры для вас
+                    </h2>
+                    <p class="text-gray-600 mb-6">
+                        Мы работаем над добавлением лучших туров по Центральной Азии. 
+                        Скоро здесь появятся невероятные путешествия!
+                    </p>
+                    <p class="text-sm text-gray-500">
+                        Администратор может добавить туры через админ-панель.
+                    </p>
+                </div>
+            </div>
+        `;
+    }
+}
+
 async function loadToursForBlock(block) {
     try {
         const response = await fetch(`${API_BASE_URL}/tour-blocks/${block.id}/tours`);

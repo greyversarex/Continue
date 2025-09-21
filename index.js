@@ -1,3 +1,6 @@
+// 🔧 КРИТИЧНО: Регистрируем ts-node ПЕРВЫМ для импорта TypeScript модулей
+require('ts-node/register');
+
 const express = require('express');
 const path = require('path');
 const { exec } = require('child_process');
@@ -196,6 +199,33 @@ app.use((error, req, res, next) => {
 async function startServer() {
   try {
     console.log('🗄️ Подключение к PostgreSQL через Prisma...');
+    
+    // 🏗️ КРИТИЧНО: Применяем схему БД перед инициализацией данных
+    console.log('🔧 Применение схемы базы данных...');
+    try {
+      await new Promise((resolve, reject) => {
+        exec('npx prisma db push --force-reset', (error, stdout, stderr) => {
+          if (error) {
+            console.log('⚠️ db push failed, trying without reset...');
+            exec('npx prisma db push', (error2, stdout2, stderr2) => {
+              if (error2) {
+                console.error('❌ Prisma schema deployment failed:', stderr2);
+                reject(error2);
+              } else {
+                console.log('✅ Схема БД применена успешно');
+                resolve(stdout2);
+              }
+            });
+          } else {
+            console.log('✅ Схема БД применена с обновлением');
+            resolve(stdout);
+          }
+        });
+      });
+    } catch (error) {
+      console.error('❌ Не удалось применить схему БД:', error);
+      console.log('⚠️ Продолжаем без обновления схемы...');
+    }
     
     // 🚀 ДОБАВЛЕНО: Автоматическая инициализация базы данных при первом запуске
     console.log('🔍 Проверка инициализации базы данных...');
