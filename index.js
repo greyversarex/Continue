@@ -204,20 +204,21 @@ async function startServer() {
     console.log('🔧 Применение схемы базы данных...');
     try {
       await new Promise((resolve, reject) => {
-        exec('npx prisma db push --force-reset', (error, stdout, stderr) => {
+        // 🛡️ БЕЗОПАСНО ДЛЯ ПРОДАКШЕНА: используем обычный push без force-reset
+        exec('npx prisma db push', (error, stdout, stderr) => {
           if (error) {
-            console.log('⚠️ db push failed, trying without reset...');
-            exec('npx prisma db push', (error2, stdout2, stderr2) => {
+            console.log('⚠️ Prisma push failed, trying with accept-data-loss...');
+            exec('npx prisma db push --accept-data-loss', (error2, stdout2, stderr2) => {
               if (error2) {
                 console.error('❌ Prisma schema deployment failed:', stderr2);
                 reject(error2);
               } else {
-                console.log('✅ Схема БД применена успешно');
+                console.log('✅ Схема БД применена с предупреждениями');
                 resolve(stdout2);
               }
             });
           } else {
-            console.log('✅ Схема БД применена с обновлением');
+            console.log('✅ Схема БД применена успешно');
             resolve(stdout);
           }
         });

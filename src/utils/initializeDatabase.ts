@@ -179,7 +179,7 @@ async function createDefaultCities() {
     // Сначала получаем ID стран
     const countries = await prisma.country.findMany();
     const countryMap = new Map();
-    countries.forEach(country => {
+    countries.forEach((country: any) => {
         countryMap.set(country.name, country.id);
     });
     

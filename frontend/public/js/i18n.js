@@ -554,7 +554,46 @@ window.translations = window.translations || {
     // Tour agents navigation
     'nav.agents': { ru: 'Тур-агенты', en: 'Tour Agents' },
     'nav.agents.our_agents': { ru: 'Наши турагенты', en: 'Our Tour Agents' },
-    'nav.agents.for_agents': { ru: 'Для турагентов', en: 'For Tour Agents' },\n    \n    // Ключи для about-us.html\n    'about.page_title': { ru: 'О нас - Bunyod-Tour', en: 'About Us - Bunyod-Tour' },\n    'about.nav.about': { ru: 'О нас', en: 'About Us' },\n    'about.nav.mission': { ru: 'Миссия', en: 'Mission' },\n    'about.nav.team': { ru: 'Команда', en: 'Team' },\n    'about.title': { ru: 'О НАС', en: 'ABOUT US' },\n    'about.mission_title': { ru: 'МИССИЯ', en: 'MISSION' },\n    'about.services_title': { ru: 'НАШИ УСЛУГИ / ПРОДУКТЫ', en: 'OUR SERVICES / PRODUCTS' },\n    'about.company_title': { ru: 'Наша компания', en: 'Our Company' },\n    'about.agency_service': { ru: 'АГЕНТСКИЙ СЕРВИС', en: 'AGENCY SERVICE' },\n    \n    // Ключи для news.html\n    'news.page_title': { ru: 'Новости - Bunyod-Tour', en: 'News - Bunyod-Tour' },\n    'news.featured_news': { ru: 'Рекомендуемая новость', en: 'Featured News' },\n    'news.all_news': { ru: 'Все новости', en: 'All News' },\n    'news.no_news_found': { ru: 'Новостей не найдено', en: 'No news found' },\n    'news.loading_error': { ru: 'Ошибка при загрузке новостей', en: 'Error loading news' },\n    'news.connection_error': { ru: 'Ошибка подключения к серверу', en: 'Server connection error' },\n    'news.error': { ru: 'Ошибка', en: 'Error' },\n    'news.read_more': { ru: 'Читать далее', en: 'Read More' },\n    \n    // Ключи для visa-support.html\n    'visa.page_title': { ru: 'Визовая поддержка - Bunyod-Tour', en: 'Visa Support - Bunyod-Tour' },\n    'visa.main_title': { ru: 'ВИЗА ТАДЖИКИСТАНА', en: 'TAJIKISTAN VISA' },\n    'visa.intro_text': { ru: 'Для визита в Таджикистан выдается три вида визы:', en: 'Three types of visas are issued for visiting Tajikistan:' },\n    'visa.visa_free': { ru: 'Безвизовый режим', en: 'Visa-free regime' },\n    'visa.e_visa': { ru: 'Электронная виза', en: 'Electronic visa' },\n    'visa.standard_visa': { ru: 'Стандартная виза', en: 'Standard visa' },\n    'visa.visa_free_section': { ru: 'БЕЗВИЗОВЫЙ РЕЖИМ', en: 'VISA-FREE REGIME' },\n    \n    // Ключи для tour-guides.html\n    'guides.page_title': { ru: 'Тургиды - Bunyod-Tour', en: 'Tour Guides - Bunyod-Tour' },\n    'guides.main_title': { ru: 'НАШИ ТУРГИДЫ', en: 'OUR TOUR GUIDES' },\n    'guides.coming_soon': { ru: 'Скоро здесь появятся наши тургиды', en: 'Our tour guides will appear here soon' },\n    'guides.hire_guide': { ru: 'Нанять тургида', en: 'Hire a Tour Guide' },\n    'guides.select_dates': { ru: 'Выберите даты', en: 'Select Dates' },\n    'guides.cost_calculation': { ru: 'Расчет стоимости', en: 'Cost Calculation' },\n    'guides.your_data': { ru: 'Ваши данные', en: 'Your Information' },
+    'nav.agents.for_agents': { ru: 'Для турагентов', en: 'For Tour Agents' },
+    
+    // Ключи для about-us.html
+    'about.page_title': { ru: 'О нас - Bunyod-Tour', en: 'About Us - Bunyod-Tour' },
+    'about.nav.about': { ru: 'О нас', en: 'About Us' },
+    'about.nav.mission': { ru: 'Миссия', en: 'Mission' },
+    'about.nav.team': { ru: 'Команда', en: 'Team' },
+    'about.title': { ru: 'О НАС', en: 'ABOUT US' },
+    'about.mission_title': { ru: 'МИССИЯ', en: 'MISSION' },
+    'about.services_title': { ru: 'НАШИ УСЛУГИ / ПРОДУКТЫ', en: 'OUR SERVICES / PRODUCTS' },
+    'about.company_title': { ru: 'Наша компания', en: 'Our Company' },
+    'about.agency_service': { ru: 'АГЕНТСКИЙ СЕРВИС', en: 'AGENCY SERVICE' },
+    
+    // Ключи для news.html
+    'news.page_title': { ru: 'Новости - Bunyod-Tour', en: 'News - Bunyod-Tour' },
+    'news.featured_news': { ru: 'Рекомендуемая новость', en: 'Featured News' },
+    'news.all_news': { ru: 'Все новости', en: 'All News' },
+    'news.no_news_found': { ru: 'Новостей не найдено', en: 'No news found' },
+    'news.loading_error': { ru: 'Ошибка при загрузке новостей', en: 'Error loading news' },
+    'news.connection_error': { ru: 'Ошибка подключения к серверу', en: 'Server connection error' },
+    'news.error': { ru: 'Ошибка', en: 'Error' },
+    'news.read_more': { ru: 'Читать далее', en: 'Read More' },
+    
+    // Ключи для visa-support.html
+    'visa.page_title': { ru: 'Визовая поддержка - Bunyod-Tour', en: 'Visa Support - Bunyod-Tour' },
+    'visa.main_title': { ru: 'ВИЗА ТАДЖИКИСТАНА', en: 'TAJIKISTAN VISA' },
+    'visa.intro_text': { ru: 'Для визита в Таджикистан выдается три вида визы:', en: 'Three types of visas are issued for visiting Tajikistan:' },
+    'visa.visa_free': { ru: 'Безвизовый режим', en: 'Visa-free regime' },
+    'visa.e_visa': { ru: 'Электронная виза', en: 'Electronic visa' },
+    'visa.standard_visa': { ru: 'Стандартная виза', en: 'Standard visa' },
+    'visa.visa_free_section': { ru: 'БЕЗВИЗОВЫЙ РЕЖИМ', en: 'VISA-FREE REGIME' },
+    
+    // Ключи для tour-guides.html
+    'guides.page_title': { ru: 'Тургиды - Bunyod-Tour', en: 'Tour Guides - Bunyod-Tour' },
+    'guides.main_title': { ru: 'НАШИ ТУРГИДЫ', en: 'OUR TOUR GUIDES' },
+    'guides.coming_soon': { ru: 'Скоро здесь появятся наши тургиды', en: 'Our tour guides will appear here soon' },
+    'guides.hire_guide': { ru: 'Нанять тургида', en: 'Hire a Tour Guide' },
+    'guides.select_dates': { ru: 'Выберите даты', en: 'Select Dates' },
+    'guides.cost_calculation': { ru: 'Расчет стоимости', en: 'Cost Calculation' },
+    'guides.your_data': { ru: 'Ваши данные', en: 'Your Information' },
     
     // Language selector
     'nav.lang.russian': { ru: 'Русский', en: 'Russian' },
