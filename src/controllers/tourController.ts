@@ -56,7 +56,7 @@ export class TourController {
             // Добавляем флаг что изображения есть, но не передаем сами изображения
             hasImages: !!(tour.mainImage || tour.images),
             // НОВОЕ: добавляем raw JSON для админки (если нужно)
-            _raw: req.query.includeRaw ? {
+            _raw: req.query.includeRaw === 'true' ? {
               title: safeJsonParse(tour.title),
               description: safeJsonParse(tour.description),
               categoryName: tour.category ? safeJsonParse(tour.category.name) : null

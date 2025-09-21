@@ -2983,8 +2983,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="components/ObjectUploader.js"></script>
     <script>
-        // Утилита для безопасного парсинга JSON
-        function safeParseJSON(jsonString) {
+        // Утилита для безопасного парсинга JSON (совместимая с бэкендом)
+        function safeJsonParse(jsonString) {
             if (!jsonString) return null;
             if (typeof jsonString === 'object') return jsonString;
             
@@ -4462,8 +4462,8 @@
                     
                     tbody.innerHTML = tours.map(tour => {
                         // Безопасный парсинг JSON для многоязычных полей
-                        const title = safeParseJSON(tour.title) || {};
-                        const categoryName = tour.category ? safeParseJSON(tour.category.name) || {} : {};
+                        const title = safeJsonParse(tour.title) || {};
+                        const categoryName = tour.category ? safeJsonParse(tour.category.name) || {} : {};
                         return `
                             <tr>
                                 <td>${tour.id}</td>
