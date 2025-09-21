@@ -554,7 +554,7 @@ window.translations = window.translations || {
     // Tour agents navigation
     'nav.agents': { ru: 'Тур-агенты', en: 'Tour Agents' },
     'nav.agents.our_agents': { ru: 'Наши турагенты', en: 'Our Tour Agents' },
-    'nav.agents.for_agents': { ru: 'Для турагентов', en: 'For Tour Agents' },
+    'nav.agents.for_agents': { ru: 'Для турагентов', en: 'For Tour Agents' },\n    \n    // Ключи для about-us.html\n    'about.page_title': { ru: 'О нас - Bunyod-Tour', en: 'About Us - Bunyod-Tour' },\n    'about.nav.about': { ru: 'О нас', en: 'About Us' },\n    'about.nav.mission': { ru: 'Миссия', en: 'Mission' },\n    'about.nav.team': { ru: 'Команда', en: 'Team' },\n    'about.title': { ru: 'О НАС', en: 'ABOUT US' },\n    'about.mission_title': { ru: 'МИССИЯ', en: 'MISSION' },\n    'about.services_title': { ru: 'НАШИ УСЛУГИ / ПРОДУКТЫ', en: 'OUR SERVICES / PRODUCTS' },\n    'about.company_title': { ru: 'Наша компания', en: 'Our Company' },\n    'about.agency_service': { ru: 'АГЕНТСКИЙ СЕРВИС', en: 'AGENCY SERVICE' },
     
     // Language selector
     'nav.lang.russian': { ru: 'Русский', en: 'Russian' },
