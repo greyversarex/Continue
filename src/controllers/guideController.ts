@@ -148,6 +148,7 @@ export const getAllGuides = async (req: Request, res: Response) => {
           languages: safeJsonParse(guide.languages),
           contact: safeJsonParse(guide.contact),
           password: undefined, // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
+          hasPassword: !!guide.password && guide.password.trim() !== '', // ✅ Показываем наличие пароля
         };
       } catch (error) {
         console.error('Error parsing guide data:', error, guide);

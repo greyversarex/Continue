@@ -162,7 +162,25 @@
 
             try {
                 guideData = JSON.parse(data);
-                document.getElementById('guideName').textContent = guideData.name;
+                
+                // 🌍 Правильное отображение имени гида с поддержкой языков
+                let displayName = 'Загрузка...';
+                if (guideData.name) {
+                    if (typeof guideData.name === 'string') {
+                        try {
+                            // Попытка парсинга JSON имени
+                            const nameObj = JSON.parse(guideData.name);
+                            displayName = nameObj.ru || nameObj.en || guideData.name;
+                        } catch {
+                            // Если не JSON, используем как есть
+                            displayName = guideData.name;
+                        }
+                    } else if (typeof guideData.name === 'object') {
+                        displayName = guideData.name.ru || guideData.name.en || 'Гид';
+                    }
+                }
+                
+                document.getElementById('guideName').textContent = displayName;
                 return true;
             } catch (error) {
                 console.error('Error parsing guide data:', error);
