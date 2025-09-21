@@ -859,7 +859,11 @@
             selectedGuideName = guideName;
             selectedHireDates = [];
             
-            document.getElementById('modalTitle').textContent = `Нанять тургида: ${guideName}`;
+            // Обновляем заголовок модального окна с учетом языка
+            const hireGuideText = window.getTranslation ? 
+                window.getTranslation('guides.hire_guide', window.currentLanguage) : 
+                'Нанять тургида';
+            document.getElementById('modalTitle').textContent = `${hireGuideText}: ${guideName}`;
             document.getElementById('hireModal').classList.remove('hidden');
             
             // Загружаем доступность тургида
@@ -920,7 +924,17 @@
             const year = currentHireDate.getFullYear();
             const month = currentHireDate.getMonth();
             
-            document.getElementById('currentHireMonth').textContent = `${monthNames[month]} ${year}`;
+            // Переводим название месяца
+            const monthKeys = [
+                'months.january', 'months.february', 'months.march', 'months.april',
+                'months.may', 'months.june', 'months.july', 'months.august',
+                'months.september', 'months.october', 'months.november', 'months.december'
+            ];
+            const monthName = window.getTranslation ? 
+                window.getTranslation(monthKeys[month], window.currentLanguage) : 
+                monthNames[month];
+            
+            document.getElementById('currentHireMonth').textContent = `${monthName} ${year}`;
             
             const firstDayOfMonth = new Date(year, month, 1);
             const lastDayOfMonth = new Date(year, month + 1, 0);
@@ -1077,6 +1091,30 @@
                 // Пересоздаем карточки с новым языком
                 container.innerHTML = agents.map(agent => createAgentCard(agent)).join('');
                 console.log('🔄 Карточки гидов обновлены для языка:', window.currentLanguage);
+            }
+            
+            // Обновляем модальное окно найма если оно открыто
+            updateHireModalLanguage();
+        }
+        
+        // Функция обновления модального окна найма при смене языка
+        function updateHireModalLanguage() {
+            const modal = document.getElementById('hireModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                // Обновляем заголовок модального окна с именем гида
+                if (selectedGuideName) {
+                    const modalTitle = document.getElementById('modalTitle');
+                    if (modalTitle) {
+                        const hireGuideText = window.getTranslation ? 
+                            window.getTranslation('guides.hire_guide', window.currentLanguage) : 
+                            'Нанять тургида';
+                        modalTitle.textContent = `${hireGuideText}: ${selectedGuideName}`;
+                    }
+                }
+                
+                // Пересоздаем календарь с новыми названиями месяцев
+                renderHireCalendar();
+                console.log('🔄 Модальное окно найма обновлено для языка:', window.currentLanguage);
             }
         }
 

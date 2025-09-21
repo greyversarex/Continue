@@ -385,6 +385,18 @@ window.translations = window.translations || {
     'guides.error_prefix': { ru: 'Ошибка', en: 'Error' },
     'guides.submission_error': { ru: 'Произошла ошибка при отправке заявки. Попробуйте еще раз.', en: 'An error occurred while submitting the request. Please try again.' },
     
+    // Модальное окно найма гида
+    'guides.select_dates': { ru: 'Выберите даты', en: 'Select Dates' },
+    'guides.cost_calculation': { ru: 'Расчет стоимости', en: 'Cost Calculation' },
+    'guides.price_per_day': { ru: 'Цена за день:', en: 'Price per day:' },
+    'guides.selected_days': { ru: 'Выбрано дней:', en: 'Selected days:' },
+    'guides.total': { ru: 'Итого:', en: 'Total:' },
+    'guides.your_data': { ru: 'Ваши данные', en: 'Your Information' },
+    'guides.selected': { ru: 'Выбрано', en: 'Selected' },
+    'guides.available': { ru: 'Доступно', en: 'Available' },
+    'guides.occupied': { ru: 'Занято', en: 'Occupied' },
+    'guides.unavailable': { ru: 'Недоступно', en: 'Unavailable' },
+    
     // Дни недели для календаря
     'calendar.monday': { ru: 'Пн', en: 'Mo' },
     'calendar.tuesday': { ru: 'Вт', en: 'Tu' },
@@ -393,6 +405,20 @@ window.translations = window.translations || {
     'calendar.friday': { ru: 'Пт', en: 'Fr' },
     'calendar.saturday': { ru: 'Сб', en: 'Sa' },
     'calendar.sunday': { ru: 'Вс', en: 'Su' },
+    
+    // Названия месяцев для календаря
+    'months.january': { ru: 'Январь', en: 'January' },
+    'months.february': { ru: 'Февраль', en: 'February' },
+    'months.march': { ru: 'Март', en: 'March' },
+    'months.april': { ru: 'Апрель', en: 'April' },
+    'months.may': { ru: 'Май', en: 'May' },
+    'months.june': { ru: 'Июнь', en: 'June' },
+    'months.july': { ru: 'Июль', en: 'July' },
+    'months.august': { ru: 'Август', en: 'August' },
+    'months.september': { ru: 'Сентябрь', en: 'September' },
+    'months.october': { ru: 'Октябрь', en: 'October' },
+    'months.november': { ru: 'Ноябрь', en: 'November' },
+    'months.december': { ru: 'Декабрь', en: 'December' },
     
     // Общие элементы для всех страниц
     'common.loading': { ru: 'Загрузка...', en: 'Loading...' },
