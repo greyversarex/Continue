@@ -1354,7 +1354,7 @@ function renderTourBlock(block, tours) {
     if (existingSection) {
         existingSection.innerHTML = `
             <div class="max-w-7xl mx-auto px-6">
-                <h2 class="text-3xl font-bold text-center mb-12 text-gray-900" data-tour-block-title="${JSON.stringify(blockTitleData).replace(/"/g, '&quot;')}">
+                <h2 class="text-3xl font-bold text-center mb-12 text-gray-900" ${createMultilingualDataAttribute(blockTitleData, 'tour-block-title')}>
                     ${blockTitleText}
                 </h2>
                 
@@ -1468,7 +1468,7 @@ function renderTourCard(tour, blockId = null) {
                     ${tourImages.length > 0 ? 
                         tourImages.map((imgSrc, index) => `
                             <img src="${imgSrc}" 
-                                 alt="${title}" 
+                                 alt="${titleText}" 
                                  class="tour-slide-image w-full h-full object-cover absolute inset-0 transition-opacity duration-500 ${index === 0 ? 'opacity-100' : 'opacity-0'}" 
                                  data-slide-index="${index}"
                                  data-tour-id="${uniqueCardId}"
