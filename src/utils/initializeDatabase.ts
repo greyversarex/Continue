@@ -10,34 +10,81 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 /**
- * 🏷️ Создание категорий по умолчанию
+ * 🏷️ Миграция категорий к правильному набору (15 истинных категорий)
+ */
+async function migrateCategoriesToCorrectSet() {
+    console.log('🔄 Миграция категорий к правильному набору...');
+    
+    // 🎯 ИСТИННЫЕ КАТЕГОРИИ согласно навигационному меню сайта
+    const correctCategories = [
+        { name: JSON.stringify({ en: "Day Tours", ru: "Однодневные" }) },
+        { name: JSON.stringify({ en: "Multi-day Tours", ru: "Многодневные" }) },
+        { name: JSON.stringify({ en: "Excursions", ru: "Экскурсии" }) },
+        { name: JSON.stringify({ en: "City Tours", ru: "Городские туры" }) },
+        { name: JSON.stringify({ en: "Nature/Ecological Tours", ru: "Природа/экологические туры" }) },
+        { name: JSON.stringify({ en: "Cultural & Educational Tours", ru: "Культурно познавательные туры" }) },
+        { name: JSON.stringify({ en: "Historical Tours", ru: "Исторические туры" }) },
+        { name: JSON.stringify({ en: "Hiking/Trekking", ru: "Походы/треккинги" }) },
+        { name: JSON.stringify({ en: "Mountain Landscapes", ru: "Горные ландшафты" }) },
+        { name: JSON.stringify({ en: "Lake Landscapes", ru: "Озерные ландшафты" }) },
+        { name: JSON.stringify({ en: "Adventure Tours", ru: "Приключенческие туры" }) },
+        { name: JSON.stringify({ en: "Gastronomic Tours", ru: "Гастрономические туры" }) },
+        { name: JSON.stringify({ en: "Auto Tours/Safari/Jeep Tours", ru: "Автотуры/сафари/джип-туры" }) },
+        { name: JSON.stringify({ en: "Agrotourism", ru: "Агротуры" }) },
+        { name: JSON.stringify({ en: "VIP Tours", ru: "VIP туры" }) }
+    ];
+    
+    try {
+        // Безопасно удаляем старые категории (только если нет связанных туров)
+        const existingCategories = await prisma.category.findMany({
+            include: { _count: { select: { tours: true } } }
+        });
+        
+        console.log(`📊 Найдено ${existingCategories.length} существующих категорий`);
+        
+        // Удаляем только пустые категории
+        for (const category of existingCategories) {
+            if (category._count.tours === 0) {
+                await prisma.category.delete({ where: { id: category.id } });
+                console.log(`🗑️ Удалена пустая категория: ${category.name}`);
+            } else {
+                console.log(`⚠️ Пропускаем категорию с турами: ${category.name} (${category._count.tours} туров)`);
+            }
+        }
+        
+        // Создаем все 15 правильных категорий
+        for (const category of correctCategories) {
+            // Проверяем, не существует ли уже такая категория
+            const existing = await prisma.category.findFirst({
+                where: { name: category.name }
+            });
+            
+            if (!existing) {
+                await prisma.category.create({ data: category });
+                const parsed = JSON.parse(category.name);
+                console.log(`✅ Создана категория: ${parsed.ru}`);
+            } else {
+                const parsed = JSON.parse(category.name);
+                console.log(`✅ Категория уже существует: ${parsed.ru}`);
+            }
+        }
+        
+        console.log(`✅ Миграция категорий завершена! Всего должно быть ${correctCategories.length} категорий`);
+        
+    } catch (error) {
+        console.error('❌ Ошибка при миграции категорий:', error);
+        throw error;
+    }
+}
+
+/**
+ * 🏷️ Создание категорий по умолчанию (только для пустых БД)
  */
 async function createDefaultCategories() {
     console.log('🏷️ Создание категорий по умолчанию...');
     
-    const categories = [
-        { name: JSON.stringify({ en: "Excursions", ru: "Экскурсии" }) },
-        { name: JSON.stringify({ en: "Cultural Tours", ru: "Культурные туры" }) },
-        { name: JSON.stringify({ en: "Adventure Tours", ru: "Приключенческие туры" }) },
-        { name: JSON.stringify({ en: "Mountain Tours", ru: "Горные туры" }) },
-        { name: JSON.stringify({ en: "Nature Tours", ru: "Природные туры" }) },
-        { name: JSON.stringify({ en: "City Tours", ru: "Городские туры" }) },
-        { name: JSON.stringify({ en: "Historical Tours", ru: "Исторические туры" }) },
-        { name: JSON.stringify({ en: "Silk Road Tours", ru: "Туры по Шелковому пути" }) },
-        { name: JSON.stringify({ en: "Trekking & Hiking", ru: "Треккинг и пешие походы" }) },
-        { name: JSON.stringify({ en: "Gastronomic Tours", ru: "Гастрономические туры" }) },
-        { name: JSON.stringify({ en: "Multi-day Tours", ru: "Многодневные туры" }) },
-        { name: JSON.stringify({ en: "Day Tours", ru: "Однодневные туры" }) },
-        { name: JSON.stringify({ en: "Photographic Tours", ru: "Фототуры" }) }
-    ];
-    
-    for (const category of categories) {
-        await prisma.category.create({
-            data: category
-        });
-    }
-    
-    console.log(`✅ Создано ${categories.length} категорий по умолчанию`);
+    // Эта функция теперь вызывает миграцию
+    await migrateCategoriesToCorrectSet();
 }
 
 /**
@@ -52,42 +99,42 @@ async function createDefaultTourBlocks() {
             description: JSON.stringify({ ru: "Самые востребованные туры нашей компании", en: "Most popular tours of our company" }),
             slug: "popular-tours",
             isActive: true,
-            sortOrder: 1
+            order: 1
         },
         {
             title: JSON.stringify({ ru: "Рекомендованные туры по Центральной Азии", en: "Recommended Central Asia Tours" }),
             description: JSON.stringify({ ru: "Лучшие туры для знакомства с Центральной Азией", en: "Best tours to discover Central Asia" }),
             slug: "recommended-central-asia",
             isActive: true,
-            sortOrder: 2
+            order: 2
         },
         {
             title: JSON.stringify({ ru: "Туры по Таджикистану", en: "Tajikistan Tours" }),
             description: JSON.stringify({ ru: "Откройте для себя красоты Таджикистана", en: "Discover the beauty of Tajikistan" }),
             slug: "tajikistan-tours",
             isActive: true,
-            sortOrder: 3
+            order: 3
         },
         {
             title: JSON.stringify({ ru: "Туры по Узбекистану", en: "Uzbekistan Tours" }),
             description: JSON.stringify({ ru: "Исследуйте древние города Узбекистана", en: "Explore ancient cities of Uzbekistan" }),
             slug: "uzbekistan-tours",
             isActive: true,
-            sortOrder: 4
+            order: 4
         },
         {
             title: JSON.stringify({ ru: "Туры по Кыргызстану", en: "Kyrgyzstan Tours" }),
             description: JSON.stringify({ ru: "Горные приключения в Кыргызстане", en: "Mountain adventures in Kyrgyzstan" }),
             slug: "kyrgyzstan-tours",
             isActive: true,
-            sortOrder: 5
+            order: 5
         },
         {
             title: JSON.stringify({ ru: "Эксклюзивные туры", en: "Exclusive Tours" }),
             description: JSON.stringify({ ru: "Уникальные и эксклюзивные туристические программы", en: "Unique and exclusive tour programs" }),
             slug: "exclusive-tours",
             isActive: true,
-            sortOrder: 6
+            order: 6
         }
     ];
     
@@ -179,7 +226,7 @@ async function createDefaultSlides() {
             image: "/public/images/default-slide-1.jpg",
             link: "/tours",
             isActive: true,
-            sortOrder: 1
+            order: 1
         },
         {
             title: JSON.stringify({ 
@@ -193,7 +240,7 @@ async function createDefaultSlides() {
             image: "/public/images/default-slide-2.jpg", 
             link: "/tours",
             isActive: true,
-            sortOrder: 2
+            order: 2
         },
         {
             title: JSON.stringify({ 
@@ -207,7 +254,7 @@ async function createDefaultSlides() {
             image: "/public/images/default-slide-3.jpg",
             link: "/guides", 
             isActive: true,
-            sortOrder: 3
+            order: 3
         }
     ];
     
@@ -271,10 +318,13 @@ export async function initializeDatabase() {
         }
         
         // Создаем недостающие данные
-        if (stats.categories === 0) {
+        // 🔧 ИСПРАВЛЕНИЕ: Всегда мигрируем к правильному набору из 15 категорий
+        if (stats.categories !== 15) {
+            console.log(`🔄 Категорий ${stats.categories}, нужно 15. Запускаем миграцию...`);
             await createDefaultCategories();
         } else {
-            console.log('✅ Категории уже существуют, пропускаем создание');
+            console.log('✅ Категории в правильном количестве (15), проверяем содержимое...');
+            await createDefaultCategories(); // Все равно проверяем содержимое
         }
         
         if (stats.countries === 0) {

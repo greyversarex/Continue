@@ -1334,7 +1334,7 @@ function renderTourBlock(block, tours) {
                     </button>
                     
                     <div class="tour-carousel" id="${carouselId}" onscroll="updateCarouselButtons('${carouselId}')">
-                        ${tours.map(tour => renderTourCard(tour)).join('')}
+                        ${tours.map(tour => renderTourCard(tour, block.id)).join('')}
                     </div>
                     
                     <button class="carousel-button next" onclick="scrollCarousel('${carouselId}', 1)" id="next-${carouselId}">
@@ -1354,7 +1354,7 @@ function renderTourBlock(block, tours) {
     }
 }
 
-function renderTourCard(tour) {
+function renderTourCard(tour, blockId = null) {
     // Парсим JSON поля для корректного отображения
     let title, description;
     try {
@@ -1393,21 +1393,25 @@ function renderTourCard(tour) {
         tourImages.push('/placeholder-tour.jpg'); // Placeholder если нет изображений
     }
     
+    // 🔧 ИСПРАВЛЕНИЕ: Создаем уникальные ID для каждого экземпляра карточки
+    const uniqueCardId = blockId ? `${tour.id}-block-${blockId}` : `${tour.id}`;
+    
     return `
         <div class="tour-card group cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-all flex flex-col h-full"
              onclick="window.location.href='tour-template.html?tour=${tour.id || 1}'"
-             onmouseenter="startImageSlideshow(${tour.id})"
-             onmouseleave="stopImageSlideshow(${tour.id})"
-             data-tour-id="${tour.id}">
+             onmouseenter="startImageSlideshow('${uniqueCardId}')"
+             onmouseleave="stopImageSlideshow('${uniqueCardId}')"
+             data-tour-id="${tour.id}"
+             data-unique-card-id="${uniqueCardId}">
             <div class="relative overflow-hidden rounded-t-lg">
-                <div class="w-full h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center" id="tour-image-container-${tour.id}">
+                <div class="w-full h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center" id="tour-image-container-${uniqueCardId}">
                     ${tourImages.length > 0 ? 
                         tourImages.map((imgSrc, index) => `
                             <img src="${imgSrc}" 
                                  alt="${title}" 
                                  class="tour-slide-image w-full h-full object-cover absolute inset-0 transition-opacity duration-500 ${index === 0 ? 'opacity-100' : 'opacity-0'}" 
                                  data-slide-index="${index}"
-                                 data-tour-id="${tour.id}"
+                                 data-tour-id="${uniqueCardId}"
                                  onerror="this.style.display='none';">
                         `).join('') :
                         `<div class="text-center p-4">
@@ -1428,7 +1432,7 @@ function renderTourCard(tour) {
                 <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
                     ${tourImages.map((_, index) => `
                         <div class="w-2 h-2 rounded-full bg-white opacity-50 tour-slide-dot" 
-                             data-tour-id="${tour.id}" 
+                             data-tour-id="${uniqueCardId}" 
                              data-slide-index="${index}"
                              ${index === 0 ? 'style="opacity: 1;"' : ''}></div>
                     `).join('')}
