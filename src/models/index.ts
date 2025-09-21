@@ -74,9 +74,9 @@ export class TourModel {
 
     return await prisma.tour.create({
       data: {
-        title: JSON.stringify(data.title),
-        description: JSON.stringify(data.description),
-        shortDesc: data.shortDescription ? JSON.stringify(data.shortDescription) : null,
+        title: typeof data.title === 'object' ? JSON.stringify(data.title) : data.title,
+        description: typeof data.description === 'object' ? JSON.stringify(data.description) : data.description,
+        shortDesc: data.shortDescription ? (typeof data.shortDescription === 'object' ? JSON.stringify(data.shortDescription) : data.shortDescription) : null,
         duration: String(data.duration), // Ensure duration is a string
         price: data.price,
         priceType: data.priceType || 'за человека',
@@ -127,9 +127,9 @@ export class TourModel {
   static async update(id: number, data: Partial<CreateTourData>) {
     const updateData: any = {};
 
-    if (data.title) updateData.title = JSON.stringify(data.title);
-    if (data.description) updateData.description = JSON.stringify(data.description);
-    if (data.shortDescription) updateData.shortDesc = JSON.stringify(data.shortDescription);
+    if (data.title) updateData.title = typeof data.title === 'object' ? JSON.stringify(data.title) : data.title;
+    if (data.description) updateData.description = typeof data.description === 'object' ? JSON.stringify(data.description) : data.description;
+    if (data.shortDescription) updateData.shortDesc = typeof data.shortDescription === 'object' ? JSON.stringify(data.shortDescription) : data.shortDescription;
     if (data.duration) updateData.duration = String(data.duration);
     if (data.price) updateData.price = data.price;
     if (data.priceType !== undefined) updateData.priceType = data.priceType;

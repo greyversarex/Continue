@@ -11,7 +11,7 @@ if (window.bunyodTourI18nLoaded) {
 window.bunyodTourI18nLoaded = true;
 
 // Глобальная переменная для текущего языка
-window.currentLanguage = window.currentLanguage || 'en'; // По умолчанию английский
+window.currentLanguage = window.currentLanguage || 'ru'; // По умолчанию русский
 
 // Поддерживаемые языки
 window.supportedLanguages = window.supportedLanguages || ['en', 'ru'];

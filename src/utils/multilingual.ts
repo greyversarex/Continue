@@ -18,6 +18,10 @@ export function safeJsonParse(jsonString: any, defaultValue: any = { ru: '', en:
   try {
     return JSON.parse(jsonString);
   } catch (error) {
+    // Если это обычная строка, возвращаем её как есть, а не default value
+    if (typeof jsonString === 'string') {
+      return jsonString;
+    }
     console.warn('JSON parsing error:', error);
     return defaultValue;
   }
