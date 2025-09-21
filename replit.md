@@ -35,6 +35,7 @@ The backend uses **Express.js and TypeScript** with a **modular architecture** f
 -   **Email Notification System**: Nodemailer for automated confirmations and notifications.
 -   **Internationalization (i18n)**: Supports English and Russian with a language switcher.
 -   **Deployment**: Configured for Replit with PostgreSQL, unified server (port 5000), CORS for Replit proxy, and autoscale production environment.
+-   **Automatic Database Initialization**: Production-ready system for deploying on new servers with empty PostgreSQL databases. Automatically applies Prisma schema, creates essential data (13 categories, 6 tour blocks, Central Asia countries/cities), and provides frontend fallbacks for empty states.
 
 ### UI/UX Decisions
 -   **Admin Dashboard**: Comprehensive management for tours, orders, hotels, guides, and reviews.
