@@ -1124,24 +1124,42 @@ export class TourController {
 
 export class CategoryController {
   /**
-   * Get all categories
-   * GET /api/categories
+   * Get all categories with multilingual support
+   * GET /api/categories?lang=en/ru&includeRaw=true
    */
   static async getAllCategories(req: Request, res: Response, next: NextFunction) {
     try {
+      const language = getLanguageFromRequest(req);
+      const includeRaw = req.query.includeRaw === 'true';
+      
       const categories = await CategoryModel.findAll();
       
-      // Parse JSON fields for response
-      const parsedCategories = categories.map((category: any) => ({
-        ...category,
-        name: safeJsonParse(category.name)
-      }));
+      // Parse JSON fields and localize content
+      const localizedCategories = categories.map((category: any) => {
+        if (includeRaw) {
+          // ДЛЯ АДМИНКИ: возвращаем raw JSON + локализованные поля
+          return {
+            ...category,
+            name: safeJsonParse(category.name),
+            _localized: {
+              name: parseMultilingualField(category.name, language)
+            }
+          };
+        } else {
+          // ДЛЯ ПУБЛИЧНОГО ИСПОЛЬЗОВАНИЯ: только локализованный контент
+          return {
+            ...category,
+            name: parseMultilingualField(category.name, language)
+          };
+        }
+      });
 
-      const response: ApiResponse = {
-        success: true,
-        data: parsedCategories,
-        message: 'Categories retrieved successfully'
-      };
+      const response = createLocalizedResponse(
+        localizedCategories,
+        [], // Поля уже обработаны выше
+        language,
+        'Categories retrieved successfully'
+      );
 
       return res.status(200).json(response);
     } catch (error) {
@@ -1150,12 +1168,14 @@ export class CategoryController {
   }
 
   /**
-   * Get a single category by ID
-   * GET /api/categories/:id
+   * Get a single category by ID with multilingual support
+   * GET /api/categories/:id?lang=en/ru&includeRaw=true
    */
   static async getCategoryById(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseInt(req.params.id);
+      const language = getLanguageFromRequest(req);
+      const includeRaw = req.query.includeRaw === 'true';
       
       if (isNaN(id)) {
         return res.status(400).json({
@@ -1173,22 +1193,46 @@ export class CategoryController {
         });
       }
 
-      // Parse JSON fields for response
-      const parsedCategory = {
-        ...category,
-        name: safeJsonParse(category.name),
-        tours: category.tours?.map((tour: any) => ({
-          ...tour,
-          title: safeJsonParse(tour.title),
-          description: safeJsonParse(tour.description)
-        }))
-      };
+      // Parse JSON fields and localize content
+      let localizedCategory;
+      if (includeRaw) {
+        // ДЛЯ АДМИНКИ: возвращаем raw JSON + локализованные поля
+        localizedCategory = {
+          ...category,
+          name: safeJsonParse(category.name),
+          tours: category.tours?.map((tour: any) => ({
+            ...tour,
+            title: safeJsonParse(tour.title),
+            description: safeJsonParse(tour.description)
+          })),
+          _localized: {
+            name: parseMultilingualField(category.name, language),
+            tours: category.tours?.map((tour: any) => ({
+              ...tour,
+              title: parseMultilingualField(tour.title, language),
+              description: parseMultilingualField(tour.description, language)
+            }))
+          }
+        };
+      } else {
+        // ДЛЯ ПУБЛИЧНОГО ИСПОЛЬЗОВАНИЯ: только локализованный контент
+        localizedCategory = {
+          ...category,
+          name: parseMultilingualField(category.name, language),
+          tours: category.tours?.map((tour: any) => ({
+            ...tour,
+            title: parseMultilingualField(tour.title, language),
+            description: parseMultilingualField(tour.description, language)
+          }))
+        };
+      }
 
-      const response: ApiResponse = {
-        success: true,
-        data: parsedCategory,
-        message: 'Category retrieved successfully'
-      };
+      const response = createLocalizedResponse(
+        localizedCategory,
+        [], // Поля уже обработаны выше
+        language,
+        'Category retrieved successfully'
+      );
 
       return res.status(200).json(response);
     } catch (error) {
