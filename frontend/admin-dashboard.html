@@ -7749,6 +7749,29 @@
                                         </div>
                                     ` : ''}
                                 </div>
+
+                                <!-- 🔐 ДАННЫЕ ДЛЯ ВХОДА В КАБИНЕТ -->
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-medium text-blue-900 mb-3">🔐 Данные для входа в кабинет</h4>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Логин</label>
+                                            <input type="text" class="form-input" id="editGuideLogin" placeholder="guide_login" value="${guide.login || ''}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Новый пароль</label>
+                                            <input type="password" class="form-input" id="editGuidePassword" placeholder="Оставьте пустым, чтобы не изменять">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Статус</label>
+                                        <select class="form-input" id="editGuideIsActive">
+                                            <option value="true" ${guide.isActive ? 'selected' : ''}>Активен</option>
+                                            <option value="false" ${!guide.isActive ? 'selected' : ''}>Деактивирован</option>
+                                        </select>
+                                    </div>
+                                    <small class="text-blue-600">Гид сможет войти в свой кабинет с этими данными</small>
+                                </div>
                             </div>
                             
                             <div class="flex justify-end gap-3 mt-6">
@@ -7893,6 +7916,11 @@
             const passportSeries = document.getElementById('editGuidePassportSeries').value.trim();
             const registration = document.getElementById('editGuideRegistration').value.trim();
             const residenceAddress = document.getElementById('editGuideResidenceAddress').value.trim();
+            
+            // 🔐 Поля авторизации
+            const login = document.getElementById('editGuideLogin').value.trim();
+            const password = document.getElementById('editGuidePassword').value.trim();
+            const isActive = document.getElementById('editGuideIsActive').value === 'true';
 
             if (!name || !email || selectedGuideLanguages.length === 0) {
                 alert('Пожалуйста, заполните все обязательные поля');
@@ -7919,6 +7947,14 @@
                 formData.append('passportSeries', passportSeries);
                 formData.append('registration', registration);
                 formData.append('residenceAddress', residenceAddress);
+                
+                // 🔐 Добавляем поля авторизации
+                formData.append('login', login);
+                formData.append('isActive', isActive.toString());
+                // Добавляем пароль только если он не пустой
+                if (password) {
+                    formData.append('password', password);
+                }
                 
                 // Добавляем файлы
                 if (editGuideAvatarFile) {

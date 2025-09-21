@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/database';
 import { GuideData } from '../types/booking';
+import bcrypt from 'bcrypt';
 
 // Безопасная функция для парсинга JSON
 function safeJsonParse(value: string | null): any {
@@ -21,11 +22,49 @@ function safeJsonParse(value: string | null): any {
 
 export const createGuide = async (req: Request, res: Response) => {
   try {
-    const { name, description, photo, languages, contact, experience, rating, isActive } = req.body;
+    const { 
+      name, 
+      description, 
+      photo, 
+      languages, 
+      contact, 
+      experience, 
+      rating, 
+      isActive,
+      login,
+      password,
+      countryId,
+      cityId,
+      passportSeries,
+      registration,
+      residenceAddress
+    } = req.body;
     
     // Convert numeric fields
     const experienceNumber = experience ? parseInt(experience) : null;
     const ratingNumber = rating ? parseFloat(rating) : null;
+    
+    // 🔒 Хешируем пароль для безопасности
+    let hashedPassword = null;
+    if (password) {
+      const saltRounds = 10;
+      hashedPassword = await bcrypt.hash(password, saltRounds);
+    }
+    
+    // ✅ Безопасная обработка isActive с правильным значением по умолчанию
+    const active = isActive === undefined ? true : (typeof isActive === 'boolean' ? isActive : String(isActive).toLowerCase() === 'true');
+    
+    // Проверка уникальности логина если он задан
+    if (login) {
+      const existingGuide = await prisma.guide.findFirst({ where: { login } });
+      if (existingGuide) {
+        res.status(400).json({
+          success: false,
+          message: 'Логин уже используется другим гидом'
+        });
+        return;
+      }
+    }
     
     const guide = await prisma.guide.create({
       data: {
@@ -36,14 +75,31 @@ export const createGuide = async (req: Request, res: Response) => {
         contact: contact ? (typeof contact === 'string' ? contact : JSON.stringify(contact)) : null,
         experience: experienceNumber,
         rating: ratingNumber,
-        isActive: isActive !== undefined ? isActive : true
+        isActive: active,
+        login: login || null,
+        password: hashedPassword,
+        countryId: countryId ? parseInt(String(countryId)) : null,
+        cityId: cityId ? parseInt(String(cityId)) : null,
+        passportSeries: passportSeries || null,
+        registration: registration || null,
+        residenceAddress: residenceAddress || null
       },
     });
 
+    // 🔒 БЕЗОПАСНОСТЬ: Исключаем пароль из ответа
+    const safeGuide = {
+      ...guide,
+      password: undefined,
+      name: safeJsonParse(guide.name),
+      description: safeJsonParse(guide.description),
+      languages: safeJsonParse(guide.languages),
+      contact: safeJsonParse(guide.contact)
+    };
+    
     return res.status(201).json({
       success: true,
       message: 'Guide created successfully',
-      data: guide,
+      data: safeGuide,
     });
   } catch (error) {
     console.error('Error creating guide:', error);
@@ -210,6 +266,7 @@ export const updateGuide = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const guideData: Partial<GuideData> = req.body;
+    const { login, password, isActive } = req.body;
 
     const updateData: any = {};
     
@@ -234,6 +291,35 @@ export const updateGuide = async (req: Request, res: Response) => {
     if (guideData.passportSeries !== undefined) updateData.passportSeries = guideData.passportSeries;
     if (guideData.registration !== undefined) updateData.registration = guideData.registration;
     if (guideData.residenceAddress !== undefined) updateData.residenceAddress = guideData.residenceAddress;
+    
+    // 🔒 Обработка полей авторизации с проверками
+    if (login !== undefined) {
+      // Проверка уникальности логина
+      if (login.trim()) {
+        const existingGuide = await prisma.guide.findFirst({ 
+          where: { login: login.trim(), id: { not: parseInt(id) } } 
+        });
+        if (existingGuide) {
+          res.status(400).json({
+            success: false,
+            message: 'Логин уже используется другим гидом'
+          });
+          return;
+        }
+        updateData.login = login.trim();
+      }
+    }
+    
+    if (isActive !== undefined) {
+      // Безопасная обработка boolean
+      updateData.isActive = typeof isActive === 'boolean' ? isActive : String(isActive).toLowerCase() === 'true';
+    }
+    
+    // 🔒 Хешируем новый пароль если он передан
+    if (password && password.trim()) {
+      const saltRounds = 10;
+      updateData.password = await bcrypt.hash(password.trim(), saltRounds);
+    }
 
     const guide = await prisma.guide.update({
       where: { id: parseInt(id) },
