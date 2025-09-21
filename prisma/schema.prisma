@@ -206,8 +206,11 @@ model GuideHireRequest {
   selectedDates   String   @map("selected_dates")    // JSON массив выбранных дат ["2025-01-15", "2025-01-16"]
   numberOfDays    Int      @map("number_of_days")
   comments        String?  // Пожелания туриста
-  totalPrice      Float    @map("total_price")       // Общая стоимость найма
-  currency        String   @default("TJS")           // Валюта расчета
+  totalPrice      Float    @map("total_price")       // Общая стоимость найма в пользовательской валюте
+  baseTotalPrice  Float?   @map("base_total_price")  // Базовая стоимость в валюте гида
+  currency        String   @default("TJS")           // Валюта расчета (пользовательская)
+  baseCurrency    String?  @map("base_currency")     // Валюта тургида (базовая)
+  exchangeRate    Float?   @map("exchange_rate")     // Курс обмена на момент создания заявки
   status          String   @default("pending")       // pending, approved, rejected, completed
   paymentStatus   String   @default("unpaid") @map("payment_status") // unpaid, paid, refunded
   adminNotes      String?  @map("admin_notes")       // Заметки администратора

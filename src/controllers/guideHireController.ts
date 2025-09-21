@@ -3,6 +3,49 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// Утилитарная функция для конвертации валют
+const convertCurrency = async (amount: number, fromCurrency: string, toCurrency: string): Promise<{ convertedAmount: number; rate: number; symbol: string } | null> => {
+  try {
+    if (fromCurrency === toCurrency) {
+      const currency = await prisma.exchangeRate.findFirst({
+        where: { currency: toCurrency, isActive: true }
+      });
+      return {
+        convertedAmount: amount,
+        rate: 1,
+        symbol: currency?.symbol || toCurrency
+      };
+    }
+
+    // Получаем курсы валют
+    const [fromRate, toRate] = await Promise.all([
+      prisma.exchangeRate.findFirst({ 
+        where: { currency: fromCurrency, isActive: true } 
+      }),
+      prisma.exchangeRate.findFirst({ 
+        where: { currency: toCurrency, isActive: true } 
+      })
+    ]);
+
+    if (!fromRate || !toRate) {
+      return null;
+    }
+
+    // Сначала конвертируем в TJS (базовую валюту), затем в целевую
+    const tjsAmount = fromCurrency === 'TJS' ? amount : amount / fromRate.rate;
+    const convertedAmount = toCurrency === 'TJS' ? tjsAmount : tjsAmount * toRate.rate;
+
+    return {
+      convertedAmount: Math.round(convertedAmount * 100) / 100,
+      rate: toRate.rate,
+      symbol: toRate.symbol
+    };
+  } catch (error) {
+    console.error('Error in currency conversion:', error);
+    return null;
+  }
+};
+
 // Типы для системы найма
 interface GuideAvailabilityData {
   availableDates: string[];
@@ -254,7 +297,24 @@ export const createGuideHireRequest = async (req: Request, res: Response) => {
 
     // Рассчитываем стоимость
     const numberOfDays = selectedDates.length;
-    const totalPrice = guide.pricePerDay * numberOfDays;
+    const baseTotalPrice = guide.pricePerDay * numberOfDays;
+    
+    // Получаем пользовательскую валюту из заголовков или query параметров
+    const userCurrency = (req.query.currency as string) || (req.headers['x-currency'] as string) || guide.currency || 'TJS';
+    
+    // Конвертируем цену в пользовательскую валюту
+    let totalPrice = baseTotalPrice;
+    let currency = guide.currency || 'TJS';
+    let exchangeRate = 1;
+    
+    if (userCurrency !== (guide.currency || 'TJS')) {
+      const conversion = await convertCurrency(baseTotalPrice, guide.currency || 'TJS', userCurrency);
+      if (conversion) {
+        totalPrice = conversion.convertedAmount;
+        currency = userCurrency;
+        exchangeRate = conversion.rate;
+      }
+    }
 
     // Создаем заявку на найм
     const hireRequest = await prisma.guideHireRequest.create({
@@ -267,7 +327,10 @@ export const createGuideHireRequest = async (req: Request, res: Response) => {
         numberOfDays: numberOfDays,
         comments: comments || null,
         totalPrice: totalPrice,
-        currency: guide.currency || 'TJS',
+        baseTotalPrice: baseTotalPrice,
+        currency: currency,
+        baseCurrency: guide.currency || 'TJS',
+        exchangeRate: exchangeRate,
         status: 'pending',
         paymentStatus: 'unpaid'
       },
