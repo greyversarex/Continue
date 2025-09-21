@@ -20,6 +20,27 @@ function safeJsonParse(value: string | null): any {
   }
 }
 
+// ✅ Унифицированная функция нормализации путей к фото
+const normalizePhotoPath = (photoPath: string | null): string | null => {
+  if (!photoPath) return null;
+  
+  // Убираем абсолютные пути файловой системы для безопасности
+  let normalizedPath = photoPath;
+  
+  // Удаляем абсолютные префиксы workspace
+  if (normalizedPath.includes('/home/runner/workspace/')) {
+    normalizedPath = normalizedPath.replace('/home/runner/workspace/', '/');
+  }
+  
+  // Удаляем любой возможный абсолютный путь к проекту
+  if (normalizedPath.includes(process.cwd())) {
+    normalizedPath = normalizedPath.replace(process.cwd(), '');
+  }
+  
+  // Убеждаемся что путь начинается с /
+  return normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
+};
+
 export const createGuide = async (req: Request, res: Response) => {
   try {
     const { 
@@ -84,14 +105,43 @@ export const createGuide = async (req: Request, res: Response) => {
         registration: registration || null,
         residenceAddress: residenceAddress || null
       },
+      include: {
+        guideCountry: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        guideCity: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
+
+    // ✅ Нормализация пути к фото
+    const photoPath = normalizePhotoPath(guide.photo);
+
+    // ✅ Обработка связанной страны с безопасным парсингом
+    const processedGuideCountry = guide.guideCountry ? {
+      id: guide.guideCountry.id,
+      name: safeJsonParse(guide.guideCountry.name)
+    } : null;
+
+    // ✅ Обработка связанного города с безопасным парсингом  
+    const processedGuideCity = guide.guideCity ? {
+      id: guide.guideCity.id,
+      name: safeJsonParse(guide.guideCity.name)
+    } : null;
 
     // 🔒 БЕЗОПАСНОСТЬ: Возвращаем только публичные поля, исключаем PII
     const safeGuide = {
       id: guide.id,
       name: safeJsonParse(guide.name),
       description: safeJsonParse(guide.description),
-      photo: guide.photo,
+      photo: photoPath,
       languages: safeJsonParse(guide.languages),
       experience: guide.experience,
       rating: guide.rating,
@@ -100,6 +150,8 @@ export const createGuide = async (req: Request, res: Response) => {
       isActive: guide.isActive,
       createdAt: guide.createdAt,
       updatedAt: guide.updatedAt,
+      guideCountry: processedGuideCountry,
+      guideCity: processedGuideCity,
       hasPassword: !!guide.password && guide.password.trim() !== '', // ✅ Показываем наличие пароля
     };
     
@@ -152,12 +204,8 @@ export const getAllGuides = async (req: Request, res: Response) => {
 
     const formattedGuides = guides.map((guide: any) => {
       try {
-        // Fix photo path to be web-accessible
-        let photoPath = guide.photo;
-        if (photoPath && photoPath.includes('/home/runner/workspace/uploads/')) {
-          // Convert absolute path to relative web path
-          photoPath = photoPath.replace('/home/runner/workspace/', '/');
-        }
+        // ✅ Нормализация пути к фото
+        const photoPath = normalizePhotoPath(guide.photo);
 
         // Process country and city for multilingual support
         const processedGuideCountry = guide.guideCountry ? {
@@ -249,9 +297,7 @@ export const getGuideById = async (req: Request, res: Response) => {
     }
 
     // ✅ Нормализация пути к фото
-    const photoPath = guide.photo ? 
-      (guide.photo.startsWith('/') ? guide.photo : `/${guide.photo}`) : 
-      null;
+    const photoPath = normalizePhotoPath(guide.photo);
 
     // ✅ Обработка связанной страны с безопасным парсингом
     const processedGuideCountry = guide.guideCountry ? {
@@ -336,9 +382,7 @@ export const getGuidesByTour = async (req: Request, res: Response) => {
     // 🔒 БЕЗОПАСНОСТЬ: Возвращаем только публичные поля, исключаем PII
     const formattedGuides = tourGuides.map((tg: any) => {
       // ✅ Нормализация пути к фото
-      const photoPath = tg.guide.photo ? 
-        (tg.guide.photo.startsWith('/') ? tg.guide.photo : `/${tg.guide.photo}`) : 
-        null;
+      const photoPath = normalizePhotoPath(tg.guide.photo);
 
       // ✅ Обработка связанной страны с безопасным парсингом
       const processedGuideCountry = tg.guide.guideCountry ? {
@@ -540,3 +584,5 @@ export const linkGuideToTour = async (req: Request, res: Response) => {
     });
   }
 };
+// Создаём alias для совместимости
+export const createTourGuideProfile = createGuide;
