@@ -3,6 +3,8 @@
 ## Overview
 Bunyod-Tour is a comprehensive tourism booking platform for Central Asia, offering tour, hotel, and guide booking, secure payments, and administrative management. It aims to provide a seamless user experience and efficient tools for administrators, supporting multilingual content and diverse payment methods. The project targets significant market potential by modernizing and streamlining regional tourism services.
 
+**Status**: Successfully imported from GitHub and fully configured for Replit environment (September 22, 2025)
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 Development approach: Improve existing files rather than creating new ones. User prefers enhancement of existing admin-dashboard.html over creation of separate admin panels.
@@ -35,6 +37,7 @@ The backend uses **Express.js and TypeScript** with a **modular architecture** f
 -   **Email Notification System**: Nodemailer for automated confirmations and notifications.
 -   **Internationalization (i18n)**: Supports English and Russian with a language switcher.
 -   **Deployment**: Configured for Replit with PostgreSQL, unified server (port 5000), CORS for Replit proxy, and autoscale production environment.
+-   **Replit Setup (September 22, 2025)**: Complete GitHub import with all dependencies installed, database initialized, TypeScript configured, and server running on port 5000 with proper CORS settings for Replit proxy compatibility.
 -   **Automatic Database Initialization**: Production-ready system for deploying on new servers with empty PostgreSQL databases. Automatically applies Prisma schema, creates essential data (15 correct categories, 6 tour blocks, Central Asia countries/cities), and provides frontend fallbacks for empty states.
 -   **Smart Category Migration System**: Automatic migration from legacy 13 categories to correct 15 categories matching navigation menu. Safely preserves tours in existing categories while updating system to proper category structure.
 
