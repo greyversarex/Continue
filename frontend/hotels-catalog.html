@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- 🌐 ЦЕНТРАЛЬНАЯ СИСТЕМА ИНТЕРНАЦИОНАЛИЗАЦИИ -->
     <script src="/public/js/i18n.js"></script>
+    <script src="/public/js/multilingual-utils.js"></script>
     <script src="/public/js/layout-loader.js"></script>
     <link rel="stylesheet" href="/public/css/layout.css">
 </head>
@@ -150,31 +151,16 @@
             noResults.classList.add('hidden');
             
             container.innerHTML = filteredHotels.map(hotel => {
-                // Parse multilingual fields
-                let hotelName = getTranslation('hotel.default_name');
-                let hotelDesc = getTranslation('hotel.no_description');
+                // 🌐 МНОГОЯЗЫЧНАЯ ОБРАБОТКА С ИСПОЛЬЗОВАНИЕМ ЦЕНТРАЛЬНОЙ СИСТЕМЫ
+                const currentLang = getCurrentLanguage(); // Получаем текущий язык
                 
-                try {
-                    if (typeof hotel.name === 'string') {
-                        const parsed = JSON.parse(hotel.name);
-                        hotelName = parsed.ru || parsed.en || getTranslation('hotel.default_name');
-                    } else if (hotel.name && hotel.name.ru) {
-                        hotelName = hotel.name.ru;
-                    }
-                } catch (e) {
-                    hotelName = hotel.name || getTranslation('hotel.default_name');
-                }
+                // Используем утилиты для безопасного парсинга
+                const nameData = safeJsonParse(hotel.name, { ru: '', en: '' });
+                const descData = safeJsonParse(hotel.description, { ru: '', en: '' });
                 
-                try {
-                    if (typeof hotel.description === 'string') {
-                        const parsed = JSON.parse(hotel.description);
-                        hotelDesc = parsed.ru || parsed.en || getTranslation('hotel.no_description');
-                    } else if (hotel.description && hotel.description.ru) {
-                        hotelDesc = hotel.description.ru;
-                    }
-                } catch (e) {
-                    hotelDesc = hotel.description || getTranslation('hotel.no_description');
-                }
+                // Получаем текст на текущем языке с fallback
+                const hotelName = getLocalizedText(nameData, currentLang) || getTranslation('hotel.default_name');
+                const hotelDesc = getLocalizedText(descData, currentLang) || getTranslation('hotel.no_description');
                 
                 // Get first image
                 const firstImage = hotel.images && hotel.images.length > 0 ? hotel.images[0] : null;
@@ -202,14 +188,15 @@
                             </div>
                         </div>
                         <div class="p-4">
-                            <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-1">${hotelName}</h3>
+                            <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-1" 
+                                data-hotel-name="${JSON.stringify(nameData).replace(/"/g, '&quot;')}">${hotelName}</h3>
                             <p class="text-gray-600 text-sm mb-2">
                                 <i class="fas fa-map-marker-alt text-red-500 mr-1"></i>
                                 ${hotel.city || hotel.address || getTranslation('hotel.no_location')}
                             </p>
                             
-                            <div class="text-gray-600 text-sm mb-3 line-clamp-2">
-                                ${hotelDesc}
+                            <div class="text-gray-600 text-sm mb-3 line-clamp-2"
+                                 data-hotel-description="${JSON.stringify(descData).replace(/"/g, '&quot;')}">${hotelDesc}
                             </div>
                             
                             <div class="flex flex-wrap gap-1 mb-3">
@@ -284,6 +271,19 @@
             updateResultsCount();
         }
 
+        // 🌐 ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКОВ ДЛЯ ОТЕЛЕЙ
+        function updateHotelsLanguage(language) {
+            console.log(`🏨 Переключение языка отелей на: ${language}`);
+            
+            // Обновляем названия отелей
+            updateHotelContent(language);
+            
+            // Перерисовываем список отелей с новым языком
+            displayHotels();
+            
+            console.log(`✅ Язык отелей обновлен на: ${language}`);
+        }
+
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
             loadHotels();
@@ -293,6 +293,16 @@
             document.getElementById('categoryFilter').addEventListener('change', filterHotels);
             document.getElementById('starsFilter').addEventListener('change', filterHotels);
             document.getElementById('searchInput').addEventListener('input', filterHotels);
+            
+            // 🌐 СЛУШАЕМ СОБЫТИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА
+            document.addEventListener('languageChanged', function(event) {
+                updateHotelsLanguage(event.detail.language);
+            });
+            
+            // 🌐 СЛУШАЕМ СОБЫТИЯ ПЕРЕКЛЮЧЕНИЯ ДИНАМИЧЕСКОГО КОНТЕНТА
+            document.addEventListener('dynamicContentTranslated', function(event) {
+                console.log('🔄 Получено событие переключения динамического контента для отелей');
+            });
         });
         
         // Add CSS for line clamp

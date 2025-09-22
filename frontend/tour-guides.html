@@ -12,6 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 🌐 ЦЕНТРАЛЬНАЯ СИСТЕМА ИНТЕРНАЦИОНАЛИЗАЦИИ -->
     <script src="/public/js/i18n.js"></script>
+    <script src="/public/js/multilingual-utils.js"></script>
     <script src="/public/js/layout-loader.js"></script>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -593,35 +594,19 @@
 
         // Функция создания карточки тургида
         function createAgentCard(agent) {
-            // Парсим имя гида (может быть простой строкой или JSON)
-            let name = 'Гид';
-            try {
-                if (agent.name) {
-                    if (typeof agent.name === 'string') {
-                        // Проверяем, является ли строка JSON
-                        if (agent.name.trim().startsWith('{') || agent.name.trim().startsWith('[')) {
-                            try {
-                                const parsedName = JSON.parse(agent.name);
-                                name = parsedName.ru || parsedName.en || agent.name;
-                            } catch {
-                                // Если не удалось распарсить JSON, используем как простую строку
-                                name = agent.name;
-                            }
-                        } else {
-                            // Простая строка - используем как есть
-                            name = agent.name;
-                        }
-                    } else if (typeof agent.name === 'object') {
-                        name = agent.name.ru || agent.name.en || 'Гид';
-                    } else {
-                        name = String(agent.name) || 'Гид';
-                    }
-                }
-            } catch (e) {
-                console.warn('Error parsing guide name:', e, 'Raw name:', agent.name);
-                name = 'Гид';
-            }
-            const description = agent.description || 'Опытный тургид с глубокими знаниями культуры и истории Центральной Азии. Создает незабываемые путешествия для клиентов со всего мира.';
+            // 🌐 МНОГОЯЗЫЧНАЯ ОБРАБОТКА С ИСПОЛЬЗОВАНИЕМ ЦЕНТРАЛЬНОЙ СИСТЕМЫ
+            const currentLang = getCurrentLanguage(); // Получаем текущий язык
+            
+            // Используем утилиты для безопасного парсинга имени
+            const nameData = safeJsonParse(agent.name, { ru: 'Гид', en: 'Guide' });
+            const descData = safeJsonParse(agent.description, { 
+                ru: 'Опытный тургид с глубокими знаниями культуры и истории Центральной Азии.',
+                en: 'Experienced tour guide with deep knowledge of Central Asian culture and history.'
+            });
+            
+            // Получаем текст на текущем языке с fallback
+            const name = getLocalizedText(nameData, currentLang) || (currentLang === 'en' ? 'Guide' : 'Гид');
+            const description = getLocalizedText(descData, currentLang) || (currentLang === 'en' ? 'Experienced guide with deep regional knowledge.' : 'Опытный гид с глубокими знаниями региона.');
             // Парсим языки
             let languages = ['Русский', 'Английский']; // по умолчанию
             try {
@@ -661,7 +646,8 @@
                         </div>
                         
                         <!-- Имя и должность -->
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">${name}</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-1" 
+                            data-guide-name="${JSON.stringify(nameData).replace(/"/g, '&quot;')}">${name}</h3>
                         <div class="experience-badge mb-3">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
@@ -800,6 +786,19 @@
             dropdown.classList.toggle('show');
         }
         
+        // 🌐 ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКОВ ДЛЯ ГИДОВ
+        function updateGuidesLanguage(language) {
+            console.log(`👨‍🦱 Переключение языка гидов на: ${language}`);
+            
+            // Обновляем названия и описания гидов
+            updateGuideContent(language);
+            
+            // Перерисовываем список гидов с новым языком
+            displayTourAgents();
+            
+            console.log(`✅ Язык гидов обновлен на: ${language}`);
+        }
+
         function selectLanguage(lang, flagClass, langName) {
             // Обновляем отображаемые элементы
             document.querySelector('.selected-flag').className = `selected-flag ${flagClass}`;
@@ -814,7 +813,11 @@
             // Закрываем дропдаун
             document.getElementById('langDropdown').classList.remove('show');
             
-            // Здесь можно добавить логику смены языка
+            // 🌐 ИНТЕГРИРУЕМ С ЦЕНТРАЛЬНОЙ СИСТЕМОЙ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКОВ
+            if (window.i18n && window.i18n.switchSiteLanguage) {
+                window.i18n.switchSiteLanguage(lang);
+                updateGuidesLanguage(lang);
+            }
         }
         
         // Функции для валютного селектора
@@ -1084,6 +1087,16 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Основная инициализация
             displayTourAgents();
+            
+            // 🌐 СЛУШАЕМ СОБЫТИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА
+            document.addEventListener('languageChanged', function(event) {
+                updateGuidesLanguage(event.detail.language);
+            });
+            
+            // 🌐 СЛУШАЕМ СОБЫТИЯ ПЕРЕКЛЮЧЕНИЯ ДИНАМИЧЕСКОГО КОНТЕНТА
+            document.addEventListener('dynamicContentTranslated', function(event) {
+                console.log('🔄 Получено событие переключения динамического контента для гидов');
+            });
             
             // Модальное окно найма
             document.getElementById('closeHireModal').addEventListener('click', closeHireModal);
