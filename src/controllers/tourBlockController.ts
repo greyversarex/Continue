@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { parseMultilingualField, getLanguageFromRequest } from '../utils/multilingual';
 
 const prisma = new PrismaClient();
 
@@ -7,45 +8,20 @@ const prisma = new PrismaClient();
 export const getTourBlocks = async (req: Request, res: Response): Promise<Response> => {
   try {
     console.log('Fetching tour blocks...');
+    const language = getLanguageFromRequest(req);
+    
     const tourBlocks = await prisma.tourBlock.findMany({
       orderBy: { sortOrder: 'asc' }
     });
 
     console.log('Found tour blocks:', tourBlocks.length);
     
-    // Parse JSON fields safely
+    // Parse multilingual fields safely
     const parsedBlocks = tourBlocks.map((block: any) => {
-      let title = block.title;
-      let description = block.description;
-      
-      // Safely parse title if it's a JSON string
-      if (typeof block.title === 'string') {
-        try {
-          // Check if it looks like JSON (starts with { or [)
-          if (block.title.trim().startsWith('{') || block.title.trim().startsWith('[')) {
-            title = JSON.parse(block.title);
-          }
-        } catch (e) {
-          // Keep original string if parsing fails
-          title = block.title;
-        }
-      }
-      
-      // Safely parse description if it's a JSON string
-      if (block.description && typeof block.description === 'string') {
-        try {
-          if (block.description.trim().startsWith('{') || block.description.trim().startsWith('[')) {
-            description = JSON.parse(block.description);
-          }
-        } catch (e) {
-          description = block.description;
-        }
-      }
-      
       return {
         ...block,
-        title,
-        description
+        title: parseMultilingualField(block.title, language),
+        description: block.description ? parseMultilingualField(block.description, language) : null
       };
     });
 
