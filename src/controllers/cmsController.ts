@@ -411,6 +411,119 @@ export class CMSController {
   }
 
   /**
+   * Создать новый элемент меню
+   */
+  static async createMenuItem(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { title, url, type, parentId, sortOrder } = req.body;
+
+      if (!title || !url || !type) {
+        return res.status(400).json({
+          success: false,
+          error: 'Missing required fields: title, url, type'
+        });
+      }
+
+      const menuItem = await prisma.menuItem.create({
+        data: {
+          title: JSON.stringify(title),
+          url,
+          type,
+          parentId: parentId || null,
+          sortOrder: sortOrder || 0
+        }
+      });
+
+      const parsedMenuItem = {
+        ...menuItem,
+        title: JSON.parse(menuItem.title)
+      };
+
+      const response: ApiResponse = {
+        success: true,
+        data: parsedMenuItem,
+        message: 'Menu item created successfully'
+      };
+
+      return res.status(201).json(response);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * Обновить элемент меню
+   */
+  static async updateMenuItem(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { title, url, type, parentId, sortOrder, isActive } = req.body;
+
+      const menuItem = await prisma.menuItem.update({
+        where: { id: parseInt(id) },
+        data: {
+          title: title ? JSON.stringify(title) : undefined,
+          url,
+          type,
+          parentId: parentId !== undefined ? parentId : undefined,
+          sortOrder,
+          isActive: isActive ?? undefined
+        }
+      });
+
+      const parsedMenuItem = {
+        ...menuItem,
+        title: JSON.parse(menuItem.title)
+      };
+
+      const response: ApiResponse = {
+        success: true,
+        data: parsedMenuItem,
+        message: 'Menu item updated successfully'
+      };
+
+      return res.status(200).json(response);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
+   * Удалить элемент меню
+   */
+  static async deleteMenuItem(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+
+      // Check if menu item has children
+      const childrenCount = await prisma.menuItem.count({
+        where: { parentId: parseInt(id) }
+      });
+
+      if (childrenCount > 0) {
+        return res.status(409).json({
+          success: false,
+          error: 'Cannot delete menu item that has child items. Please delete or reassign children first.',
+          childrenCount
+        });
+      }
+
+      await prisma.menuItem.delete({
+        where: { id: parseInt(id) }
+      });
+
+      const response: ApiResponse = {
+        success: true,
+        message: 'Menu item deleted successfully'
+      };
+
+      return res.status(200).json(response);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  /**
    * Получить новости
    */
   static async getNews(req: Request, res: Response, next: NextFunction) {

@@ -20,6 +20,12 @@ router.post('/pages', adminAuthMiddleware, CMSController.createPage);
 router.put('/pages/:id', adminAuthMiddleware, CMSController.updatePage);
 
 // Меню
+router.get('/menu-items', CMSController.getMenuItems);
+router.post('/menu-items', adminAuthMiddleware, CMSController.createMenuItem);
+router.put('/menu-items/:id', adminAuthMiddleware, CMSController.updateMenuItem);
+router.delete('/menu-items/:id', adminAuthMiddleware, CMSController.deleteMenuItem);
+
+// Temporary alias for backwards compatibility
 router.get('/menu', CMSController.getMenuItems);
 
 // Новости
