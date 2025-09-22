@@ -4,7 +4,8 @@ import {
   getLanguageFromRequest, 
   createLocalizedResponse, 
   parseMultilingualField,
-  localizeArray 
+  localizeArray,
+  safeJsonParse
 } from '../utils/multilingual';
 
 // Get all hotels with multilingual support
@@ -24,25 +25,55 @@ export const getHotels = async (req: Request, res: Response): Promise<Response> 
       hotels = await HotelModel.findAll();
     }
 
-    // Localize hotels data
+    // Localize hotels data with safe JSON parsing
     const localizedHotels = hotels.map((hotel: any) => {
-      if (includeRaw) {
-        // ДЛЯ АДМИНКИ: возвращаем raw JSON + локализованные поля
-        return {
-          ...hotel,
-          _localized: {
+      try {
+        if (includeRaw) {
+          // ДЛЯ АДМИНКИ: возвращаем ТОЛЬКО БЕЗОПАСНЫЕ поля + raw JSON + локализованные поля
+          return {
+            id: hotel.id,
+            images: hotel.images,
+            rating: hotel.rating,
+            stars: hotel.stars,
+            amenities: hotel.amenities,
+            brand: hotel.brand,
+            category: hotel.category,
+            countryId: hotel.countryId,
+            cityId: hotel.cityId,
+            pension: hotel.pension,
+            roomTypes: hotel.roomTypes,
+            mealTypes: hotel.mealTypes,
+            isActive: hotel.isActive,
+            createdAt: hotel.createdAt,
+            updatedAt: hotel.updatedAt,
+            _localized: {
+              name: parseMultilingualField(hotel.name, language),
+              description: parseMultilingualField(hotel.description, language),
+              address: parseMultilingualField(hotel.address, language)
+            },
+            // Добавляем raw JSON для админки
+            _raw: {
+              name: safeJsonParse(hotel.name),
+              description: safeJsonParse(hotel.description),
+              address: safeJsonParse(hotel.address)
+            }
+          };
+        } else {
+          // ДЛЯ ПУБЛИЧНОГО ИСПОЛЬЗОВАНИЯ: только локализованный контент
+          return {
+            ...hotel,
             name: parseMultilingualField(hotel.name, language),
             description: parseMultilingualField(hotel.description, language),
             address: parseMultilingualField(hotel.address, language)
-          }
-        };
-      } else {
-        // ДЛЯ ПУБЛИЧНОГО ИСПОЛЬЗОВАНИЯ: только локализованный контент
+          };
+        }
+      } catch (jsonError) {
+        console.error('Error parsing hotel JSON fields:', jsonError, 'Hotel ID:', hotel.id);
         return {
           ...hotel,
-          name: parseMultilingualField(hotel.name, language),
-          description: parseMultilingualField(hotel.description, language),
-          address: parseMultilingualField(hotel.address, language)
+          name: hotel.name || '',
+          description: hotel.description || '',
+          address: hotel.address || ''
         };
       }
     });
@@ -82,25 +113,55 @@ export const getHotel = async (req: Request, res: Response): Promise<Response> =
       });
     }
 
-    // Localize hotel data
+    // Localize hotel data with safe JSON parsing
     let localizedHotel;
-    if (includeRaw) {
-      // ДЛЯ АДМИНКИ: возвращаем raw JSON + локализованные поля
-      localizedHotel = {
-        ...hotel,
-        _localized: {
+    try {
+      if (includeRaw) {
+        // ДЛЯ АДМИНКИ: возвращаем ТОЛЬКО БЕЗОПАСНЫЕ поля + raw JSON + локализованные поля
+        localizedHotel = {
+          id: hotel.id,
+          images: hotel.images,
+          rating: hotel.rating,
+          stars: hotel.stars,
+          amenities: hotel.amenities,
+          brand: hotel.brand,
+          category: hotel.category,
+          countryId: hotel.countryId,
+          cityId: hotel.cityId,
+          pension: hotel.pension,
+          roomTypes: hotel.roomTypes,
+          mealTypes: hotel.mealTypes,
+          isActive: hotel.isActive,
+          createdAt: hotel.createdAt,
+          updatedAt: hotel.updatedAt,
+          _localized: {
+            name: parseMultilingualField(hotel.name, language),
+            description: parseMultilingualField(hotel.description, language),
+            address: parseMultilingualField(hotel.address, language)
+          },
+          // Добавляем raw JSON для админки
+          _raw: {
+            name: safeJsonParse(hotel.name),
+            description: safeJsonParse(hotel.description),
+            address: safeJsonParse(hotel.address)
+          }
+        };
+      } else {
+        // ДЛЯ ПУБЛИЧНОГО ИСПОЛЬЗОВАНИЯ: только локализованный контент
+        localizedHotel = {
+          ...hotel,
           name: parseMultilingualField(hotel.name, language),
           description: parseMultilingualField(hotel.description, language),
           address: parseMultilingualField(hotel.address, language)
-        }
-      };
-    } else {
-      // ДЛЯ ПУБЛИЧНОГО ИСПОЛЬЗОВАНИЯ: только локализованный контент
+        };
+      }
+    } catch (jsonError) {
+      console.error('Error parsing hotel JSON fields:', jsonError, 'Hotel ID:', hotel.id);
       localizedHotel = {
         ...hotel,
-        name: parseMultilingualField(hotel.name, language),
-        description: parseMultilingualField(hotel.description, language),
-        address: parseMultilingualField(hotel.address, language)
+        name: hotel.name || '',
+        description: hotel.description || '',
+        address: hotel.address || ''
       };
     }
 

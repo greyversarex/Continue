@@ -2,23 +2,12 @@ import { Request, Response } from 'express';
 import prisma from '../config/database';
 import { GuideData } from '../types/booking';
 import bcrypt from 'bcrypt';
-
-// Безопасная функция для парсинга JSON
-function safeJsonParse(value: string | null): any {
-  if (!value) return null;
-  
-  try {
-    // Если строка выглядит как JSON (начинается с { или [), парсим её
-    if (value.trim().startsWith('{') || value.trim().startsWith('[')) {
-      return JSON.parse(value);
-    }
-    // Иначе возвращаем как простую строку
-    return value;
-  } catch (error) {
-    // Если парсинг не удался, возвращаем исходную строку
-    return value;
-  }
-}
+import { 
+  getLanguageFromRequest, 
+  createLocalizedResponse, 
+  parseMultilingualField,
+  safeJsonParse
+} from '../utils/multilingual';
 
 // ✅ Унифицированная функция нормализации путей к фото
 const normalizePhotoPath = (photoPath: string | null): string | null => {
@@ -89,8 +78,8 @@ export const createGuide = async (req: Request, res: Response) => {
     
     const guide = await prisma.guide.create({
       data: {
-        name: typeof name === 'string' ? name : JSON.stringify(name),
-        description: description ? (typeof description === 'string' ? description : JSON.stringify(description)) : null,
+        name: typeof name === 'object' ? name : { ru: name || '', en: name || '' },
+        description: typeof description === 'object' ? description : { ru: description || '', en: description || '' },
         photo,
         languages: typeof languages === 'string' ? languages : JSON.stringify(languages),
         contact: contact ? (typeof contact === 'string' ? contact : JSON.stringify(contact)) : null,
@@ -170,8 +159,13 @@ export const createGuide = async (req: Request, res: Response) => {
   }
 };
 
+// Get all guides with multilingual support
+// GET /api/guides?lang=en/ru&includeRaw=true
 export const getAllGuides = async (req: Request, res: Response) => {
   try {
+    const language = getLanguageFromRequest(req);
+    const includeRaw = req.query.includeRaw === 'true';
+    
     const guides = await prisma.guide.findMany({
       where: {
         isActive: true,
@@ -202,29 +196,88 @@ export const getAllGuides = async (req: Request, res: Response) => {
       },
     });
 
-    const formattedGuides = guides.map((guide: any) => {
+    // Localize guides data with safe JSON parsing
+    const localizedGuides = guides.map((guide: any) => {
       try {
         // ✅ Нормализация пути к фото
         const photoPath = normalizePhotoPath(guide.photo);
 
         // Process country and city for multilingual support
         const processedGuideCountry = guide.guideCountry ? {
-          ...guide.guideCountry,
-          name: safeJsonParse(guide.guideCountry.name) || guide.guideCountry.name
+          id: guide.guideCountry.id,
+          name: parseMultilingualField(guide.guideCountry.name, language),
         } : null;
 
         const processedGuideCity = guide.guideCity ? {
-          ...guide.guideCity,
-          name: safeJsonParse(guide.guideCity.name) || guide.guideCity.name
+          id: guide.guideCity.id,
+          name: parseMultilingualField(guide.guideCity.name, language),
         } : null;
 
-        // 🔒 БЕЗОПАСНОСТЬ: Возвращаем только публичные поля, исключаем PII
+        if (includeRaw) {
+          // ДЛЯ АДМИНКИ: возвращаем ТОЛЬКО БЕЗОПАСНЫЕ поля + raw JSON + локализованные поля
+          return {
+            id: guide.id,
+            photo: photoPath,
+            languages: guide.languages,
+            experience: guide.experience,
+            rating: guide.rating,
+            currency: guide.currency,
+            isHireable: guide.isHireable,
+            isActive: guide.isActive,
+            createdAt: guide.createdAt,
+            updatedAt: guide.updatedAt,
+            countryId: guide.countryId,
+            cityId: guide.cityId,
+            contact: guide.contact,
+            _localized: {
+              name: parseMultilingualField(guide.name, language),
+              description: parseMultilingualField(guide.description, language),
+            },
+            // Добавляем raw JSON для админки
+            _raw: {
+              name: safeJsonParse(guide.name),
+              description: safeJsonParse(guide.description),
+            },
+            guideCountry: processedGuideCountry,
+            guideCity: processedGuideCity,
+            hasPassword: !!guide.password && guide.password.trim() !== '',
+            // 🔒 ИСКЛЮЧЕНЫ: password, login, passportSeries, registration, residenceAddress
+          };
+        } else {
+          // ДЛЯ ПУБЛИЧНОГО ИСПОЛЬЗОВАНИЯ: только локализованный контент
+          return {
+            id: guide.id,
+            name: parseMultilingualField(guide.name, language),
+            description: parseMultilingualField(guide.description, language),
+            photo: photoPath,
+            languages: guide.languages,
+            experience: guide.experience,
+            rating: guide.rating,
+            currency: guide.currency,
+            isHireable: guide.isHireable,
+            isActive: guide.isActive,
+            createdAt: guide.createdAt,
+            updatedAt: guide.updatedAt,
+            tourGuides: guide.tourGuides.map((tg: any) => ({
+              ...tg,
+              tour: tg.tour ? {
+                ...tg.tour,
+                title: parseMultilingualField(tg.tour.title, language)
+              } : null
+            })),
+            guideCountry: processedGuideCountry,
+            guideCity: processedGuideCity,
+            hasPassword: !!guide.password && guide.password.trim() !== '',
+          };
+        }
+      } catch (jsonError) {
+        console.error('Error parsing guide JSON fields:', jsonError, 'Guide ID:', guide.id);
         return {
           id: guide.id,
-          name: safeJsonParse(guide.name),
-          description: safeJsonParse(guide.description),
-          photo: photoPath,
-          languages: safeJsonParse(guide.languages),
+          name: guide.name || '',
+          description: guide.description || '',
+          photo: normalizePhotoPath(guide.photo),
+          languages: guide.languages,
           experience: guide.experience,
           rating: guide.rating,
           currency: guide.currency,
@@ -232,21 +285,23 @@ export const getAllGuides = async (req: Request, res: Response) => {
           isActive: guide.isActive,
           createdAt: guide.createdAt,
           updatedAt: guide.updatedAt,
-          tourGuides: guide.tourGuides,
-          guideCountry: processedGuideCountry,
-          guideCity: processedGuideCity,
-          hasPassword: !!guide.password && guide.password.trim() !== '', // ✅ Показываем наличие пароля
+          tourGuides: guide.tourGuides || [],
+          guideCountry: guide.guideCountry,
+          guideCity: guide.guideCity,
+          hasPassword: !!guide.password && guide.password.trim() !== '',
+          // 🔒 ИСКЛЮЧЕНЫ: password, login, passportSeries, registration, residenceAddress
         };
-      } catch (error) {
-        console.error('Error parsing guide data:', error, guide);
-        return guide;
       }
     });
 
-    return res.json({
-      success: true,
-      data: formattedGuides,
-    });
+    const response = createLocalizedResponse(
+      localizedGuides,
+      [], // Поля уже обработаны выше
+      language,
+      'Guides retrieved successfully'
+    );
+
+    return res.json(response);
   } catch (error) {
     console.error('Error fetching guides:', error);
     return res.status(500).json({
