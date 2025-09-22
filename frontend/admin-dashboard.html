@@ -4548,7 +4548,7 @@
                 document.getElementById('tour-id').value = tourId;
                 
                 // Load tour data for editing
-                fetch(`${getApiUrl()}/tours/${tourId}`, {
+                fetch(`${getApiUrl()}/tours/${tourId}?includeRaw=true`, {
                     headers: getAuthHeaders()
                 })
                     .then(res => {
@@ -4566,20 +4566,34 @@
                         }
                         console.log('Tour object:', tour);
                         
-                        // Safely parse title and description (handle both string and object formats)
+                        // Parse title and description from raw JSON data
                         let title, description;
-                        try {
-                            title = typeof tour.title === 'string' ? JSON.parse(tour.title || '{}') : (tour.title || {});
-                        } catch (e) {
-                            console.warn('Failed to parse title:', e);
-                            title = { ru: tour.title || '', en: '' };
+                        
+                        // С includeRaw=true API возвращает JSON объекты, не строки
+                        if (typeof tour.title === 'object' && tour.title !== null) {
+                            title = tour.title;
+                        } else if (typeof tour.title === 'string') {
+                            try {
+                                title = JSON.parse(tour.title);
+                            } catch (e) {
+                                console.warn('Failed to parse title:', e);
+                                title = { ru: tour.title, en: '' };
+                            }
+                        } else {
+                            title = { ru: '', en: '' };
                         }
                         
-                        try {
-                            description = typeof tour.description === 'string' ? JSON.parse(tour.description || '{}') : (tour.description || {});
-                        } catch (e) {
-                            console.warn('Failed to parse description:', e);
-                            description = { ru: tour.description || '', en: '' };
+                        if (typeof tour.description === 'object' && tour.description !== null) {
+                            description = tour.description;
+                        } else if (typeof tour.description === 'string') {
+                            try {
+                                description = JSON.parse(tour.description);
+                            } catch (e) {
+                                console.warn('Failed to parse description:', e);
+                                description = { ru: tour.description, en: '' };
+                            }
+                        } else {
+                            description = { ru: '', en: '' };
                         }
                         
                         // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Заполняем ОБЕ формы одновременно!
@@ -4630,8 +4644,19 @@
                                     const categories = data.data || data.categories || [];
                                     const category = categories.find(cat => cat.id === tour.categoryId);
                                     if (category) {
-                                        const categoryName = typeof category.name === 'string' ? 
-                                            JSON.parse(category.name) : category.name;
+                                        let categoryName;
+                                        if (typeof category.name === 'object' && category.name !== null) {
+                                            categoryName = category.name;
+                                        } else if (typeof category.name === 'string') {
+                                            try {
+                                                categoryName = JSON.parse(category.name);
+                                            } catch (e) {
+                                                console.warn('Failed to parse category name:', e);
+                                                categoryName = { ru: category.name, en: '' };
+                                            }
+                                        } else {
+                                            categoryName = { ru: 'Категория', en: 'Category' };
+                                        }
                                         selectedCategories = [{
                                             id: tour.categoryId, 
                                             name: categoryName.ru || categoryName.en || 'Категория'

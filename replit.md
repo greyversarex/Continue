@@ -106,6 +106,18 @@ Complete resolution of JSON parsing and data persistence issues affecting form s
 - **Data Validation**: Forms now correctly save and display multilingual content without JSON parsing errors. Server logs show clean operation with proper category migration (15 categories), tour block assignments, and error-free data persistence.
 - **Result**: Complete elimination of JSON parsing errors, proper multilingual data persistence, and Russian-first user experience across the entire platform.
 
+### Admin Panel Multilingual Editing Fix (September 22, 2025)
+Critical resolution of English variant display and saving issues in admin panel tour editing:
+
+- **Raw JSON Data Support**: Added `includeRaw=true` parameter to tour editing API requests in admin panel to retrieve original JSON objects instead of processed strings. This enables proper editing of both Russian and English variants.
+- **Enhanced JSON Parsing**: Improved admin panel tour editing logic to safely handle both JSON objects (from `includeRaw=true`) and strings (for backward compatibility). Implemented robust fallback logic that prevents data loss during parsing.
+- **Category Name Parsing Fix**: Resolved category name parsing issues in tour editing with same robust object/string handling approach, ensuring category assignments work correctly during tour editing.
+- **Frontend Integration**: Tours now load both RU/EN variants correctly in admin panel forms when editing existing tours. The system properly populates `tourTitleRu`, `tourTitleEn`, `tourDescRu`, and `tourDescEn` fields.
+- **Backend Compatibility**: API already supported `includeRaw=true` parameter in `getTourById` method, returning both raw JSON objects and localized strings for admin editing needs.
+- **Result**: Admin panel tour editing now correctly displays and allows editing of both Russian and English variants for titles and descriptions. Category assignments during tour creation and editing work reliably.
+
+**Note**: Hotels and guides editing still require similar `includeRaw=true` implementation for complete multilingual editing support across all entity types.
+
 ## External Dependencies
 
 ### Core Framework Dependencies
