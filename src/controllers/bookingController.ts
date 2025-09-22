@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { emailService } from '../services/emailService';
+import { parseMultilingualField, getLanguageFromRequest } from '../utils/multilingual';
 
 const prisma = new PrismaClient();
 
@@ -342,19 +343,21 @@ export const bookingController = {
         }
       });
 
+      const language = getLanguageFromRequest(req);
+
       return res.status(201).json({
         success: true,
         data: {
           bookingId: booking.id,
           tour: {
             ...tour,
-            title: JSON.parse(tour.title),
-            description: JSON.parse(tour.description)
+            title: parseMultilingualField(tour.title, language),
+            description: parseMultilingualField(tour.description, language)
           },
           hotel: hotel ? {
             ...hotel,
-            name: JSON.parse(hotel.name),
-            description: hotel.description ? JSON.parse(hotel.description) : null
+            name: parseMultilingualField(hotel.name, language),
+            description: hotel.description ? parseMultilingualField(hotel.description, language) : null
           } : null
         },
         message: 'Booking draft created successfully'
@@ -757,6 +760,8 @@ export const bookingController = {
       }
 
       // Парсим JSON поля для ответа
+      const language = getLanguageFromRequest(req);
+      
       const formattedBooking = {
         ...booking,
         tourists: booking.tourists ? JSON.parse(booking.tourists) : [],
@@ -764,17 +769,17 @@ export const bookingController = {
         mealSelection: booking.mealSelection ? JSON.parse(booking.mealSelection) : null,
         tour: {
           ...booking.tour,
-          title: JSON.parse(booking.tour.title),
-          description: JSON.parse(booking.tour.description),
+          title: parseMultilingualField(booking.tour.title, language),
+          description: parseMultilingualField(booking.tour.description, language),
           category: {
             ...booking.tour.category,
-            name: JSON.parse(booking.tour.category.name)
+            name: booking.tour.category.name // Category.name is String, not JSON
           }
         },
         hotel: booking.hotel ? {
           ...booking.hotel,
-          name: JSON.parse(booking.hotel.name),
-          description: booking.hotel.description ? JSON.parse(booking.hotel.description) : null,
+          name: parseMultilingualField(booking.hotel.name, language),
+          description: booking.hotel.description ? parseMultilingualField(booking.hotel.description, language) : null,
           amenities: booking.hotel.amenities ? JSON.parse(booking.hotel.amenities) : [],
           roomTypes: booking.hotel.roomTypes,
           mealTypes: booking.hotel.mealTypes

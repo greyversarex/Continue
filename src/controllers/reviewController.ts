@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/database';
 import { ReviewData } from '../types/booking';
+import { parseMultilingualField, getLanguageFromRequest } from '../utils/multilingual';
 
 export const createReview = async (req: Request, res: Response) => {
   try {
@@ -77,6 +78,8 @@ export const createReview = async (req: Request, res: Response) => {
       },
     });
 
+    const language = getLanguageFromRequest(req);
+
     return res.status(201).json({
       success: true,
       message: 'Review submitted successfully. It will be visible after moderation.',
@@ -84,7 +87,7 @@ export const createReview = async (req: Request, res: Response) => {
         ...review,
         tour: {
           ...review.tour,
-          title: JSON.parse(review.tour.title),
+          title: parseMultilingualField(review.tour.title, language),
         },
       },
     });
@@ -181,15 +184,17 @@ export const getAllReviews = async (req: Request, res: Response) => {
       take: parseInt(limit as string),
     });
 
+    const language = getLanguageFromRequest(req);
+
     const formattedReviews = reviews.map(review => ({
       ...review,
       photos: review.photos ? JSON.parse(review.photos) : [],
       tour: {
         ...review.tour,
-        title: JSON.parse(review.tour.title),
+        title: parseMultilingualField(review.tour.title, language),
         category: {
           ...review.tour.category,
-          name: JSON.parse(review.tour.category.name),
+          name: review.tour.category.name, // Category.name is String, not JSON
         },
       },
     }));
@@ -245,6 +250,8 @@ export const moderateReview = async (req: Request, res: Response) => {
       },
     });
 
+    const language = getLanguageFromRequest(req);
+
     return res.json({
       success: true,
       message: `Review ${isApproved ? 'approved' : 'rejected'} successfully`,
@@ -252,7 +259,7 @@ export const moderateReview = async (req: Request, res: Response) => {
         ...review,
         tour: {
           ...review.tour,
-          title: JSON.parse(review.tour.title),
+          title: parseMultilingualField(review.tour.title, language),
         },
       },
     });
@@ -385,6 +392,8 @@ export const approveReview = async (req: Request, res: Response) => {
       },
     });
 
+    const language = getLanguageFromRequest(req);
+
     return res.status(200).json({
       success: true,
       message: 'Review approved successfully',
@@ -392,7 +401,7 @@ export const approveReview = async (req: Request, res: Response) => {
         ...review,
         tour: {
           ...review.tour,
-          title: JSON.parse(review.tour.title),
+          title: parseMultilingualField(review.tour.title, language),
         },
       },
     });
@@ -449,6 +458,8 @@ export const rejectReview = async (req: Request, res: Response) => {
       },
     });
 
+    const language = getLanguageFromRequest(req);
+
     return res.status(200).json({
       success: true,
       message: 'Review rejected successfully',
@@ -456,7 +467,7 @@ export const rejectReview = async (req: Request, res: Response) => {
         ...review,
         tour: {
           ...review.tour,
-          title: JSON.parse(review.tour.title),
+          title: parseMultilingualField(review.tour.title, language),
         },
       },
     });

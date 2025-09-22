@@ -6,6 +6,7 @@ import nodemailer from 'nodemailer';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs/promises';
+import { parseMultilingualField } from '../utils/multilingual';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'tour-guide-secret-key';
@@ -502,7 +503,7 @@ export const collectReviews = async (req: Request, res: Response): Promise<void>
             subject: 'Оставьте отзыв о туре',
             html: `
               <h2>Здравствуйте, ${tourist.name}!</h2>
-              <p>Благодарим вас за участие в туре "${JSON.parse(tour.title).ru}".</p>
+              <p>Благодарим вас за участие в туре "${parseMultilingualField(tour.title, 'ru')}".</p>
               <p>Мы будем благодарны, если вы поделитесь своими впечатлениями:</p>
               <a href="${reviewLink}" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Оставить отзыв</a>
             `

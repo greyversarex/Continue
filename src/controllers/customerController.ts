@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/database';
+import { parseMultilingualField, getLanguageFromRequest } from '../utils/multilingual';
 
 export const createCustomer = async (req: Request, res: Response) => {
   try {
@@ -144,6 +145,8 @@ export const getCustomer = async (req: Request, res: Response) => {
     }
 
     // Format the response
+    const language = getLanguageFromRequest(req);
+    
     const formattedCustomer = {
       ...customer,
       orders: customer.orders.map(order => ({
@@ -151,14 +154,14 @@ export const getCustomer = async (req: Request, res: Response) => {
         tourists: JSON.parse(order.tourists),
         tour: {
           ...order.tour,
-          title: JSON.parse(order.tour.title),
+          title: parseMultilingualField(order.tour.title, language),
         },
       })),
       reviews: customer.reviews.map(review => ({
         ...review,
         tour: {
           ...review.tour,
-          title: JSON.parse(review.tour.title),
+          title: parseMultilingualField(review.tour.title, language),
         },
       })),
     };

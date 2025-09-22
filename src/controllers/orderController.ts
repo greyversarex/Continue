@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/database';
 import { BookingFormData, OrderData } from '../types/booking';
 import { emailService } from '../services/emailService';
+import { parseMultilingualField, getLanguageFromRequest } from '../utils/multilingual';
 
 // Generate unique order number
 const generateOrderNumber = (): string => {
@@ -169,6 +170,7 @@ export const createOrder = async (req: Request, res: Response) => {
 export const getOrder = async (req: Request, res: Response) => {
   try {
     const { orderNumber } = req.params;
+    const language = getLanguageFromRequest(req);
 
     const order = await prisma.order.findUnique({
       where: { orderNumber },
@@ -191,24 +193,24 @@ export const getOrder = async (req: Request, res: Response) => {
       });
     }
 
-    // Parse JSON fields
+    // Process multilingual fields correctly
     const formattedOrder = {
       ...order,
       tourists: JSON.parse(order.tourists),
       tour: {
         ...order.tour,
-        title: JSON.parse(order.tour.title),
-        description: JSON.parse(order.tour.description),
+        title: parseMultilingualField(order.tour.title, language),
+        description: parseMultilingualField(order.tour.description, language),
       },
       hotel: order.hotel ? {
         ...order.hotel,
-        name: JSON.parse(order.hotel.name),
-        description: order.hotel.description ? JSON.parse(order.hotel.description) : null,
+        name: parseMultilingualField(order.hotel.name, language),
+        description: order.hotel.description ? parseMultilingualField(order.hotel.description, language) : null,
       } : null,
       guide: order.guide ? {
         ...order.guide,
-        name: JSON.parse(order.guide.name),
-        description: order.guide.description ? JSON.parse(order.guide.description) : null,
+        name: parseMultilingualField(order.guide.name, language),
+        description: order.guide.description ? parseMultilingualField(order.guide.description, language) : null,
       } : null,
     };
 
@@ -229,6 +231,7 @@ export const getOrder = async (req: Request, res: Response) => {
 export const getOrderById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const language = getLanguageFromRequest(req);
 
     const order = await prisma.order.findUnique({
       where: { id: parseInt(id) },
@@ -251,24 +254,24 @@ export const getOrderById = async (req: Request, res: Response) => {
       });
     }
 
-    // Parse JSON fields
+    // Process multilingual fields correctly
     const formattedOrder = {
       ...order,
       tourists: JSON.parse(order.tourists),
       tour: {
         ...order.tour,
-        title: JSON.parse(order.tour.title),
-        description: JSON.parse(order.tour.description),
+        title: parseMultilingualField(order.tour.title, language),
+        description: parseMultilingualField(order.tour.description, language),
       },
       hotel: order.hotel ? {
         ...order.hotel,
-        name: JSON.parse(order.hotel.name),
-        description: order.hotel.description ? JSON.parse(order.hotel.description) : null,
+        name: parseMultilingualField(order.hotel.name, language),
+        description: order.hotel.description ? parseMultilingualField(order.hotel.description, language) : null,
       } : null,
       guide: order.guide ? {
         ...order.guide,
-        name: JSON.parse(order.guide.name),
-        description: order.guide.description ? JSON.parse(order.guide.description) : null,
+        name: parseMultilingualField(order.guide.name, language),
+        description: order.guide.description ? parseMultilingualField(order.guide.description, language) : null,
       } : null,
     };
 
@@ -325,20 +328,22 @@ export const getAllOrders = async (req: Request, res: Response) => {
       take: parseInt(limit as string),
     });
 
+    const language = getLanguageFromRequest(req);
+
     const formattedOrders = orders.map(order => ({
       ...order,
       tourists: JSON.parse(order.tourists),
       tour: {
         ...order.tour,
-        title: JSON.parse(order.tour.title),
+        title: parseMultilingualField(order.tour.title, language),
       },
       hotel: order.hotel ? {
         ...order.hotel,
-        name: JSON.parse(order.hotel.name),
+        name: parseMultilingualField(order.hotel.name, language),
       } : null,
       guide: order.guide ? {
         ...order.guide,
-        name: JSON.parse(order.guide.name),
+        name: parseMultilingualField(order.guide.name, language),
       } : null,
     }));
 
