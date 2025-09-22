@@ -1,7 +1,8 @@
-// Multilingual content type
+// Multilingual content type - compatible with Prisma InputJsonValue
 export interface MultilingualContent {
   en: string;
   ru: string;
+  [lang: string]: string; // Index signature for Prisma compatibility
 }
 
 // Category types

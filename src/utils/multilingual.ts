@@ -174,3 +174,57 @@ export function createLocalizedResponse(
     language // Указываем какой язык был использован
   };
 }
+
+/**
+ * Centralized tour mapper - eliminates direct tour.category references
+ * Maps tour data with proper localization and safe category handling
+ */
+export function mapTour(tour: any, language: SupportedLanguage = 'ru', options: { includeRaw?: boolean; removeImages?: boolean } = {}) {
+  const { includeRaw = false, removeImages = false } = options;
+  
+  try {
+    const mappedTour = {
+      ...tour,
+      title: parseMultilingualField(tour.title, language),
+      description: parseMultilingualField(tour.description, language),
+      shortDesc: tour.shortDesc ? parseMultilingualField(tour.shortDesc, language) : null,
+      hasImages: !!(tour.mainImage || tour.images),
+      // Safe category handling - no JSON parsing needed for Category.name (String type)
+      category: tour.category ? {
+        id: tour.category.id,
+        name: tour.category.name // Category.name is String, not JSON - no parsing needed
+      } : null
+    };
+
+    // Remove images for performance if requested
+    if (removeImages) {
+      delete mappedTour.mainImage;
+      delete mappedTour.images;
+    }
+
+    // Add raw JSON for admin if requested
+    if (includeRaw) {
+      mappedTour._raw = {
+        title: safeJsonParse(tour.title),
+        description: safeJsonParse(tour.description),
+        shortDesc: tour.shortDesc ? safeJsonParse(tour.shortDesc) : null
+      };
+    }
+
+    return mappedTour;
+  } catch (error) {
+    console.error('Error mapping tour:', error, 'Tour ID:', tour.id);
+    // Fallback with safe defaults
+    return {
+      ...tour,
+      title: tour.title || '',
+      description: tour.description || '',
+      shortDesc: tour.shortDesc || null,
+      hasImages: !!(tour.mainImage || tour.images),
+      category: tour.category ? {
+        id: tour.category.id,
+        name: tour.category.name
+      } : null
+    };
+  }
+}

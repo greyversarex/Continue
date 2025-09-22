@@ -15,7 +15,8 @@ import {
   getLanguageFromRequest, 
   createLocalizedResponse, 
   parseMultilingualField,
-  safeJsonParse 
+  safeJsonParse,
+  mapTour
 } from '../utils/multilingual';
 
 export class TourController {
@@ -37,49 +38,13 @@ export class TourController {
       // Apply limit if specified
       const limitedTours = limit ? tours.slice(0, parseInt(limit as string)) : tours;
       
-      // Parse JSON fields and localize content
-      const localizedTours = limitedTours.map((tour: any) => {
-        try {
-          // ОПТИМИЗАЦИЯ: Удаляем большие изображения из списка туров для производительности
-          const tourWithoutImages = { ...tour };
-          delete tourWithoutImages.mainImage;
-          delete tourWithoutImages.images;
-          
-          return {
-            ...tourWithoutImages,
-            title: parseMultilingualField(tour.title, language),
-            description: parseMultilingualField(tour.description, language),
-            category: tour.category ? {
-              ...tour.category,
-              name: parseMultilingualField(tour.category.name, language)
-            } : null,
-            // Добавляем флаг что изображения есть, но не передаем сами изображения
-            hasImages: !!(tour.mainImage || tour.images),
-            // НОВОЕ: добавляем raw JSON для админки (если нужно)
-            _raw: req.query.includeRaw === 'true' ? {
-              title: safeJsonParse(tour.title),
-              description: safeJsonParse(tour.description),
-              categoryName: tour.category ? safeJsonParse(tour.category.name) : null
-            } : undefined
-          };
-        } catch (jsonError) {
-          console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
-          const tourWithoutImages = { ...tour };
-          delete tourWithoutImages.mainImage;
-          delete tourWithoutImages.images;
-          
-          return {
-            ...tourWithoutImages,
-            title: tour.title || '',
-            description: tour.description || '',
-            category: tour.category ? {
-              ...tour.category,
-              name: tour.category.name || ''
-            } : null,
-            hasImages: !!(tour.mainImage || tour.images)
-          };
-        }
-      });
+      // Use centralized mapTour utility for consistent localization
+      const localizedTours = limitedTours.map((tour: any) => 
+        mapTour(tour, language, {
+          includeRaw: req.query.includeRaw === 'true',
+          removeImages: true // Performance optimization for list view
+        })
+      );
 
       const response = createLocalizedResponse(
         localizedTours,
@@ -224,10 +189,7 @@ export class TourController {
           ...tour,
           title: tour.title || '',
           description: tour.description || '',
-          category: tour.category ? {
-            ...tour.category,
-            name: tour.category.name || ''
-          } : null
+          // category: ВРЕМЕННО ОТКЛЮЧЕНО
         };
       }
 
@@ -510,22 +472,12 @@ export class TourController {
           ...tour,
           title: safeJsonParse(tour.title),
           description: safeJsonParse(tour.description),
-          category: tour.category ? {
-            ...tour.category,
-            name: safeJsonParse(tour.category.name)
-          } : null
+          // category будет загружена отдельно если нужно
         };
       } catch (jsonError) {
         console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
-        parsedTour = {
-          ...tour,
-          title: { ru: tour.title || '', en: tour.title || '' },
-          description: { ru: tour.description || '', en: tour.description || '' },
-          category: tour.category ? {
-            ...tour.category,
-            name: { ru: tour.category.name || '', en: tour.category.name || '' }
-          } : null
-        };
+        // Use mapTour utility for consistent fallback handling
+        parsedTour = mapTour(tour, 'ru', { includeRaw: true });
       }
 
       const response: ApiResponse = {
@@ -779,22 +731,12 @@ export class TourController {
           ...tour,
           title: safeJsonParse(tour.title),
           description: safeJsonParse(tour.description),
-          category: tour.category ? {
-            ...tour.category,
-            name: safeJsonParse(tour.category.name)
-          } : null
+          // category будет загружена отдельно если нужно
         };
       } catch (jsonError) {
         console.error('Error parsing tour JSON fields:', jsonError, 'Tour ID:', tour.id);
-        parsedTour = {
-          ...tour,
-          title: { ru: tour.title || '', en: tour.title || '' },
-          description: { ru: tour.description || '', en: tour.description || '' },
-          category: tour.category ? {
-            ...tour.category,
-            name: { ru: tour.category.name || '', en: tour.category.name || '' }
-          } : null
-        };
+        // Use mapTour utility for consistent fallback handling
+        parsedTour = mapTour(tour, 'ru', { includeRaw: true });
       }
 
       const response: ApiResponse = {
