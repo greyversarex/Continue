@@ -430,6 +430,10 @@
                     <i class="fas fa-map-marked-alt"></i>
                     <span data-translate="admin.tours">Туры</span>
                 </a>
+                <a href="#" class="nav-item" data-section="categories">
+                    <i class="fas fa-tags"></i>
+                    <span data-translate="admin.categories">Категории</span>
+                </a>
                 <a href="#" class="nav-item" data-section="price-calculator">
                     <i class="fas fa-calculator"></i>
                     <span data-translate="admin.price_calculator">Калькулятор цен</span>
@@ -657,6 +661,38 @@
                                 </thead>
                                 <tbody id="toursTable">
                                     <!-- Tours will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Categories Section -->
+                <section id="categoriesSection" style="display: none;">
+                    <div class="mb-6 flex justify-between items-center">
+                        <div class="search-bar">
+                            <input type="text" data-translate-placeholder="placeholder.search_categories" placeholder="Поиск категорий..." id="categorySearch">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <button class="btn btn-primary" onclick="openCategoryModal()">
+                            <i class="fas fa-plus"></i>
+                            <span data-translate="btn.add_category">Добавить категорию</span>
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="data-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th data-translate="table.name_ru">Название (RU)</th>
+                                        <th data-translate="table.name_en">Название (EN)</th>
+                                        <th data-translate="table.actions">Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoriesTable">
+                                    <!-- Categories will be loaded here -->
                                 </tbody>
                             </table>
                         </div>
@@ -1629,6 +1665,42 @@
                 
                 <div class="flex justify-end gap-3 mt-6">
                     <button type="button" onclick="closeExchangeRateModal()" class="btn btn-secondary">
+                        Отмена
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Сохранить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content" style="width: 500px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold" id="categoryModalTitle">Добавить категорию</h2>
+                <button onclick="closeCategoryModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="categoryForm">
+                <input type="hidden" id="editCategoryId">
+                
+                <div class="form-group">
+                    <label class="form-label">Название категории (Русский) *</label>
+                    <input type="text" class="form-input" id="categoryNameRu" placeholder="Например: Однодневные туры" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Название категории (English) *</label>
+                    <input type="text" class="form-input" id="categoryNameEn" placeholder="Example: Day Tours" required>
+                </div>
+                
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" onclick="closeCategoryModal()" class="btn btn-secondary">
                         Отмена
                     </button>
                     <button type="submit" class="btn btn-primary">
@@ -5573,6 +5645,203 @@
                     }
                 });
         }
+        
+        
+        // Categories functions
+        function loadCategories() {
+            fetch(`${getApiUrl()}/categories?includeRaw=true`, {
+                headers: getAuthHeaders()
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.getElementById('categoriesTable');
+                    const categories = data.data || data.categories || [];
+                    if (categories.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500">Нет категорий</td></tr>';
+                        return;
+                    }
+                    
+                    tbody.innerHTML = categories.map(category => {
+                        // Extract Russian and English names
+                        let nameRu = 'Без названия';
+                        let nameEn = 'Untitled';
+                        
+                        if (category.name) {
+                            if (typeof category.name === 'object' && category.name !== null) {
+                                nameRu = category.name.ru || 'Без названия';
+                                nameEn = category.name.en || 'Untitled';
+                            } else if (typeof category.name === 'string') {
+                                try {
+                                    const parsed = JSON.parse(category.name);
+                                    nameRu = parsed.ru || 'Без названия';
+                                    nameEn = parsed.en || 'Untitled';
+                                } catch (e) {
+                                    nameRu = category.name;
+                                    nameEn = category.name;
+                                }
+                            }
+                        }
+                        
+                        // Remove tours count column for now (backend might not support it)
+                        
+                        return `
+                            <tr>
+                                <td>${category.id}</td>
+                                <td class="font-medium">${nameRu}</td>
+                                <td class="font-medium">${nameEn}</td>
+                                <td>
+                                    <button onclick="editCategory(${category.id})" class="text-blue-600 hover:text-blue-800 mr-2" title="Редактировать категорию">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteCategory(${category.id})" class="text-red-600 hover:text-red-800" title="Удалить категорию">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                })
+                .catch(err => {
+                    console.error('Error loading categories:', err);
+                    document.getElementById('categoriesTable').innerHTML = 
+                        '<tr><td colspan="4" class="text-center text-red-500">Ошибка загрузки данных</td></tr>';
+                });
+        }
+        
+        function openCategoryModal(categoryId = null) {
+            const modal = document.getElementById('categoryModal');
+            const modalTitle = document.getElementById('categoryModalTitle');
+            const form = document.getElementById('categoryForm');
+            
+            if (categoryId) {
+                modalTitle.textContent = 'Редактировать категорию';
+                
+                // Load category data for editing
+                fetch(`${getApiUrl()}/categories/${categoryId}?includeRaw=true`, {
+                    headers: getAuthHeaders()
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        const category = data.data || data.category;
+                        if (category && category.name) {
+                            document.getElementById('editCategoryId').value = categoryId;
+                            
+                            if (typeof category.name === 'object' && category.name !== null) {
+                                document.getElementById('categoryNameRu').value = category.name.ru || '';
+                                document.getElementById('categoryNameEn').value = category.name.en || '';
+                            } else if (typeof category.name === 'string') {
+                                try {
+                                    const parsed = JSON.parse(category.name);
+                                    document.getElementById('categoryNameRu').value = parsed.ru || '';
+                                    document.getElementById('categoryNameEn').value = parsed.en || '';
+                                } catch (e) {
+                                    document.getElementById('categoryNameRu').value = category.name;
+                                    document.getElementById('categoryNameEn').value = category.name;
+                                }
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error loading category:', err);
+                        alert('Ошибка загрузки данных категории');
+                    });
+            } else {
+                modalTitle.textContent = 'Добавить категорию';
+                document.getElementById('editCategoryId').value = '';
+                form.reset();
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').style.display = 'none';
+            document.getElementById('categoryForm').reset();
+            document.getElementById('editCategoryId').value = '';
+        }
+        
+        function editCategory(id) {
+            openCategoryModal(id);
+        }
+        
+        function deleteCategory(id) {
+            if (!confirm('Вы уверены, что хотите удалить эту категорию?')) {
+                return;
+            }
+            
+            fetch(`${getApiUrl()}/categories/${id}`, {
+                method: 'DELETE',
+                headers: getAuthHeaders()
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        loadCategories(); // Refresh the list
+                        alert('Категория успешно удалена');
+                    } else {
+                        alert('Ошибка: ' + (data.error || 'Не удалось удалить категорию'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error deleting category:', err);
+                    alert('Ошибка удаления категории');
+                });
+        }
+        
+        // Handle category form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryForm = document.getElementById('categoryForm');
+            if (categoryForm) {
+                categoryForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const categoryId = document.getElementById('editCategoryId').value;
+                    const nameRu = document.getElementById('categoryNameRu').value.trim();
+                    const nameEn = document.getElementById('categoryNameEn').value.trim();
+                    
+                    if (!nameRu || !nameEn) {
+                        alert('Пожалуйста, заполните название категории на обоих языках');
+                        return;
+                    }
+                    
+                    const categoryData = {
+                        name: {
+                            ru: nameRu,
+                            en: nameEn
+                        }
+                    };
+                    
+                    const url = categoryId ? 
+                        `${getApiUrl()}/categories/${categoryId}` : 
+                        `${getApiUrl()}/categories`;
+                    
+                    const method = categoryId ? 'PUT' : 'POST';
+                    
+                    fetch(url, {
+                        method: method,
+                        headers: {
+                            ...getAuthHeaders(),
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(categoryData)
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                closeCategoryModal();
+                                loadCategories(); // Refresh the list
+                                alert(categoryId ? 'Категория успешно обновлена' : 'Категория успешно создана');
+                            } else {
+                                alert('Ошибка: ' + (data.error || 'Не удалось сохранить категорию'));
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error saving category:', err);
+                            alert('Ошибка сохранения категории');
+                        });
+                });
+            }
+        });
         
         
         // Hotels functions
@@ -11574,7 +11843,7 @@
         // Show section function
         function showSection(sectionName) {
             // Hide all sections
-            const sections = ['dashboardSection', 'toursSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'tourAgentsSection', 'driversSection', 'tripsSection', 'transfersSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'newsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
+            const sections = ['dashboardSection', 'toursSection', 'categoriesSection', 'priceCalculatorSection', 'bannerManagementSection', 'bookingsSection', 'hotelsSection', 'guidesSection', 'tourAgentsSection', 'driversSection', 'tripsSection', 'transfersSection', 'countriesSection', 'citiesSection', 'customersSection', 'reviewsSection', 'newsSection', 'paymentsSection', 'exchangeRatesSection', 'cmsSection', 'translationSection', 'settingsSection'];
             sections.forEach(sectionId => {
                 const element = document.getElementById(sectionId);
                 if (element) element.style.display = 'none';
@@ -11610,6 +11879,9 @@
                     break;
                 case 'tours':
                     loadTours();
+                    break;
+                case 'categories':
+                    loadCategories();
                     break;
                 case 'price-calculator':
                     loadPriceCalculator();
