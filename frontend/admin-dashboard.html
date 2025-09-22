@@ -13499,11 +13499,15 @@
                 title: JSON.stringify(titleData),
                 excerpt: JSON.stringify(excerptData),
                 content: JSON.stringify(contentData),
-                image: imageUrl,
                 isPublished: document.getElementById('newsPublished').checked,
                 isFeatured: document.getElementById('newsFeatured').checked,
                 readTime: parseInt(document.getElementById('newsReadTime').value) || null
             };
+            
+            // 🔧 ИСПРАВЛЕНИЕ: Добавляем image только если есть новое изображение
+            if (imageUrl) {
+                newsData.image = imageUrl;
+            }
             
             try {
                 const url = newsId ? `${getApiUrl()}/news/admin/${newsId}` : `${getApiUrl()}/news/admin/create`;

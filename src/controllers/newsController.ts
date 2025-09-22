@@ -351,9 +351,18 @@ export const updateNews = async (req: Request, res: Response) => {
             updateData.tags = JSON.stringify(updateData.tags);
         }
 
+        // 🔧 ИСПРАВЛЕНИЕ: Защищаем существующее изображение от стирания
+        const finalUpdateData: any = { ...updateData };
+        if (updateData.image !== undefined) {
+            finalUpdateData.image = updateData.image;
+        } else {
+            // Удаляем поле image чтобы не затереть существующее
+            delete finalUpdateData.image;
+        }
+
         const news = await prisma.news.update({
             where: { id: parseInt(id) },
-            data: updateData
+            data: finalUpdateData
         });
 
         res.json({
