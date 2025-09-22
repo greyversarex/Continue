@@ -5138,6 +5138,12 @@
                 excludedServices.push(checkbox.value);
             });
             
+            // 🎯 ДОБАВЛЕНО: Собираем включенные услуги
+            const includedServices = [];
+            document.querySelectorAll('#includesOptions input[type="checkbox"]:checked').forEach(checkbox => {
+                includedServices.push(checkbox.value);
+            });
+            
             console.log('🏨 Selected hotels:', selectedHotels);
             console.log('👨‍🏫 Selected guides:', selectedGuides);
             console.log('📦 Selected tour blocks:', selectedTourBlocks);
@@ -5169,8 +5175,10 @@
                 priceType: tourPriceTypeEl ? tourPriceTypeEl.value || 'за человека' : 'за человека',
                 categoryId: categoryValue ? parseInt(categoryValue) : null,
                 tourBlockId: tourBlockIdEl && tourBlockIdEl.value ? parseInt(tourBlockIdEl.value) : null,
-                country: tourCountryEl ? tourCountryEl.value || '' : '',
-                city: tourCityEl ? tourCityEl.value || '' : '',
+                country: tourCountryEl ? tourCountryEl.options[tourCountryEl.selectedIndex]?.text || '' : '',
+                city: tourCityEl ? tourCityEl.options[tourCityEl.selectedIndex]?.text || '' : '',
+                countryId: tourCountryEl && tourCountryEl.value ? parseInt(tourCountryEl.value) : null,
+                cityId: tourCityEl && tourCityEl.value ? parseInt(tourCityEl.value) : null,
                 durationDays: parseInt(durationDaysValue),
                 duration: durationDaysValue.toString(),
                 format: tourTypeEl ? tourTypeEl.value || '' : '',
@@ -5191,6 +5199,7 @@
                 guideIds: selectedGuides,
                 tourBlockIds: selectedTourBlocks, // 🎯 ДОБАВЛЕНО: Отправляем выбранные блоки туров
                 excluded: JSON.stringify(excludedServices),
+                includes: JSON.stringify(includedServices), // 🎯 ДОБАВЛЕНО: Отправляем включенные услуги
                 isActive: true,
                 isFeatured: false
             };
