@@ -167,8 +167,11 @@ export const updateSlide = async (req: any, res: Response): Promise<void> => {
       
       // 🔧 CRITICAL FIX: Only set fields that are explicitly provided with proper validation
       if (Object.prototype.hasOwnProperty.call(req.body, 'order')) {
-        const orderNum = Number(req.body.order);
-        if (Number.isFinite(orderNum)) parsedData.order = orderNum;
+        const raw = req.body.order;
+        if (raw !== '' && raw != null && `${raw}`.trim() !== '') {
+          const orderNum = Number(raw);
+          if (Number.isFinite(orderNum)) parsedData.order = orderNum;
+        }
       }
       if (Object.prototype.hasOwnProperty.call(req.body, 'isActive')) {
         parsedData.isActive = req.body.isActive === 'true';
@@ -188,8 +191,11 @@ export const updateSlide = async (req: any, res: Response): Promise<void> => {
       
       // 🔒 CRITICAL FIX: Robust type normalization with presence checks
       if (Object.prototype.hasOwnProperty.call(req.body, 'order')) {
-        const orderNum = Number(order);
-        if (Number.isFinite(orderNum)) parsedData.order = orderNum;
+        const raw = req.body.order;
+        if (raw !== '' && raw != null && `${raw}`.trim() !== '') {
+          const orderNum = Number(raw);
+          if (Number.isFinite(orderNum)) parsedData.order = orderNum;
+        }
       }
       
       if (Object.prototype.hasOwnProperty.call(req.body, 'isActive')) {
