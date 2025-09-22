@@ -1369,6 +1369,9 @@ window.initializeLanguage = initializeLanguage;
 // Функция обновления селектора языка
 window.updateLanguageSelector = updateLanguageSelector;
 
+// Функция получения переводов (ИСПРАВЛЕНИЕ: экспорт getTranslation)
+window.getTranslation = getTranslation;
+
 console.log('🌍 i18n система инициализирована с экспортированными функциями');
 
 })(); // Закрываем IIFE

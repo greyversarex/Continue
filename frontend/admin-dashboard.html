@@ -5703,7 +5703,7 @@
         
         function loadHotelData(hotelId) {
             const apiUrl = getApiUrl();
-            fetch(`${apiUrl}/hotels/${hotelId}`, {
+            fetch(`${apiUrl}/hotels/${hotelId}?includeRaw=true`, {
                 headers: getAuthHeaders()  // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Добавлена авторизация!
             })
                 .then(res => {
@@ -5738,16 +5738,28 @@
                         amenities = Array.isArray(hotel.amenities) ? hotel.amenities : [];
                     }
                     
-                    // УЛУЧШЕНИЕ: Лучшая обработка многоязычных полей
-                    const hotelNameField = document.getElementById('hotelName');
-                    const hotelDescField = document.getElementById('hotelDescription');
+                    // ИСПРАВЛЕНИЕ: Правильное заполнение многоязычных полей для редактирования
                     
-                    if (hotelNameField) {
-                        hotelNameField.value = name.ru || name.en || hotel.name || '';
+                    // Название отеля (русский и английский)
+                    const hotelNameRu = document.getElementById('hotelNameRu');
+                    const hotelNameEn = document.getElementById('hotelNameEn');
+                    
+                    if (hotelNameRu) {
+                        hotelNameRu.value = name.ru || '';
+                    }
+                    if (hotelNameEn) {
+                        hotelNameEn.value = name.en || '';
                     }
                     
-                    if (hotelDescField) {
-                        hotelDescField.value = description.ru || description.en || hotel.description || '';
+                    // Описание отеля (русский и английский)
+                    const hotelDescRu = document.getElementById('hotelDescRu');
+                    const hotelDescEn = document.getElementById('hotelDescEn');
+                    
+                    if (hotelDescRu) {
+                        hotelDescRu.value = description.ru || '';
+                    }
+                    if (hotelDescEn) {
+                        hotelDescEn.value = description.en || '';
                     }
                     
                     // НОВОЕ: Загрузка категорий номеров при редактировании
