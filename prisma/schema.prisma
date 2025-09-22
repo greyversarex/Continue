@@ -32,9 +32,9 @@ model TourBlock {
 
 model Tour {
   id                 Int                    @id @default(autoincrement())
-  title              String
-  description        String
-  shortDesc          String?
+  title              Json
+  description        Json
+  shortDesc          Json?
   duration           String
   price              String
   currency           String                 @default("TJS")
@@ -105,10 +105,10 @@ model Tour {
 
 model Hotel {
   id          Int         @id @default(autoincrement())
-  name        String
-  description String?
+  name        Json
+  description Json?
   images      String?
-  address     String?
+  address     Json?
   rating      Float?
   stars       Int?
   amenities   String?
@@ -163,8 +163,8 @@ model TourBlockAssignment {
 
 model Guide {
   id               Int         @id @default(autoincrement())
-  name             String
-  description      String?
+  name             Json
+  description      Json?
   photo            String?
   avatar           String?     // Новое поле для аватара
   documents        String?     // JSON массив документов [{name: "", path: "", type: ""}]
