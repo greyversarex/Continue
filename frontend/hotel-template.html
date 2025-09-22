@@ -469,11 +469,13 @@
                 console.log('Starting displayHotelData with:', hotelData);
                 
                 // Parse multilingual content
-                const name = typeof hotelData.name === 'string' ? JSON.parse(hotelData.name || '{}') : hotelData.name || {};
-                const description = typeof hotelData.description === 'string' ? JSON.parse(hotelData.description || '{}') : hotelData.description || {};
+                // 🌐 МНОГОЯЗЫЧНАЯ ОБРАБОТКА ДАННЫХ ОТЕЛЯ
+                const currentLang = getCurrentLanguage();
+                const nameData = safeJsonParse(hotelData.name, { ru: 'Отель', en: 'Hotel' });
+                const descData = safeJsonParse(hotelData.description, { ru: 'Описание отеля не указано', en: 'Hotel description not provided' });
                 
                 // Set page title and hotel name
-                const hotelName = name.ru || name.en || 'Отель';
+                const hotelName = getLocalizedText(nameData, currentLang) || (currentLang === 'en' ? 'Hotel' : 'Отель');
                 const pageTitleEl = document.getElementById('page-title');
                 const hotelNameEl = document.getElementById('hotel-name');
                 
@@ -481,7 +483,7 @@
                 if (hotelNameEl) hotelNameEl.textContent = hotelName;
                 
                 // Hotel description
-                const hotelDesc = description.ru || description.en || 'Описание отеля не указано';
+                const hotelDesc = getLocalizedText(descData, currentLang) || (currentLang === 'en' ? 'Hotel description not provided' : 'Описание отеля не указано');
                 const descEl = document.getElementById('hotel-description');
                 if (descEl) descEl.innerHTML = `<p>${hotelDesc}</p>`;
                 
@@ -657,7 +659,7 @@
             
             if (hotelData.amenities && hotelData.amenities.length > 0) {
                 try {
-                    const amenities = Array.isArray(hotelData.amenities) ? hotelData.amenities : JSON.parse(hotelData.amenities);
+                    const amenities = safeJsonParse(hotelData.amenities, []);
                     const amenityIcons = {
                         'WiFi': 'fas fa-wifi',
                         'Завтрак': 'fas fa-coffee',
@@ -698,7 +700,7 @@
             
             if (hotelData.images) {
                 try {
-                    hotelImages = Array.isArray(hotelData.images) ? hotelData.images : JSON.parse(hotelData.images);
+                    hotelImages = safeJsonParse(hotelData.images, []);
                     
                     if (hotelImages.length > 0) {
                         let galleryHTML = '';
@@ -763,8 +765,23 @@
         });
 
         // Initialize page
+        // 🌐 ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКОВ ДЛЯ СТРАНИЦЫ ОТЕЛЯ
+        function updateHotelPageLanguage(language) {
+            console.log(`🏨 Переключение языка страницы отеля на: ${language}`);
+            
+            // Перезагружаем данные отеля с новым языком
+            loadHotelData();
+            
+            console.log(`✅ Язык страницы отеля обновлен на: ${language}`);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             loadHotelData();
+            
+            // 🌐 СЛУШАЕМ СОБЫТИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА
+            document.addEventListener('languageChanged', function(event) {
+                updateHotelPageLanguage(event.detail.language);
+            });
         });
 
         // Language and currency selector functions

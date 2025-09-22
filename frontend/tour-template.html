@@ -868,16 +868,21 @@
                 if (result.success && result.data) {
                     const apiTour = result.data;
                     
+                    // 🌐 МНОГОЯЗЫЧНАЯ ОБРАБОТКА ДАННЫХ ТУРА
+                    const currentLang = getCurrentLanguage();
+                    const titleData = safeJsonParse(apiTour.title, { ru: '', en: '' });
+                    const descData = safeJsonParse(apiTour.description, { ru: '', en: '' });
+                    
                     // Convert API data to our format
                     tourData = {
                         id: apiTour.id,
-                        title: apiTour.title?.ru || apiTour.title || '',
+                        title: getLocalizedText(titleData, currentLang) || apiTour.title || '',
                         location: `${apiTour.city || ''}, ${apiTour.country || ''}`.replace(/^, |, $/, '') || '',
                         price: apiTour.price || '0',
                         priceType: apiTour.priceType || 'за человека',
                         duration: apiTour.duration || '',
                         durationDays: apiTour.durationDays || null,
-                        description: apiTour.description?.ru || apiTour.description || '',
+                        description: getLocalizedText(descData, currentLang) || apiTour.description || '',
                         rating: apiTour.rating || 0,
                         reviews_count: apiTour.reviewsCount || 0,
                         services: apiTour.services || null, // Добавляем поле services!
@@ -1905,16 +1910,18 @@
                 
                 if (result.success && result.data && result.data.length > 0) {
                     hotelData = result.data.map(hotel => {
-                        const name = JSON.parse(hotel.name || '{}');
-                        const description = JSON.parse(hotel.description || '{}');
-                        const images = JSON.parse(hotel.images || '[]');
+                        // 🌐 МНОГОЯЗЫЧНАЯ ОБРАБОТКА ДАННЫХ ОТЕЛЯ
+                        const currentLang = getCurrentLanguage();
+                        const nameData = safeJsonParse(hotel.name, { ru: 'Отель', en: 'Hotel' });
+                        const descData = safeJsonParse(hotel.description, { ru: 'Описание недоступно', en: 'Description unavailable' });
+                        const images = safeJsonParse(hotel.images, []);
                         
                         return {
                             id: hotel.id,
-                            name: name.ru || name.en || 'Отель',
+                            name: getLocalizedText(nameData, currentLang) || (currentLang === 'en' ? 'Hotel' : 'Отель'),
                             stars: Math.round(hotel.rating || 4),
                             price: Math.round(Math.random() * 100 + 50), // Temporary random pricing
-                            description: description.ru || description.en || 'Описание недоступно',
+                            description: getLocalizedText(descData, currentLang) || (currentLang === 'en' ? 'Description unavailable' : 'Описание недоступно'),
                             image: images[0] || "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&h=200&fit=crop"
                         };
                     });
@@ -2018,10 +2025,25 @@
     
     <script>
         // Initialize page
+        // 🌐 ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКОВ ДЛЯ СТРАНИЦЫ ТУРА
+        function updateTourPageLanguage(language) {
+            console.log(`🎯 Переключение языка страницы тура на: ${language}`);
+            
+            // Перезагружаем данные тура с новым языком
+            loadTourData();
+            
+            console.log(`✅ Язык страницы тура обновлен на: ${language}`);
+        }
+
         document.addEventListener('DOMContentLoaded', async function() {
             console.log("DOM loaded, initializing page...");
             await loadTourData();
             setupEventListeners();
+            
+            // 🌐 СЛУШАЕМ СОБЫТИЯ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА
+            document.addEventListener('languageChanged', function(event) {
+                updateTourPageLanguage(event.detail.language);
+            });
         });
         // Share functionality
         function toggleShareMenu() {
