@@ -53,7 +53,7 @@ router.get('/', getSlides); // Get active slides for frontend
 router.get('/admin', getAllSlides); // Get all slides for admin
 router.get('/:id', getSlideById);
 router.post('/', upload.single('image'), createSlide); // With file upload
-router.put('/:id', updateSlide);
+router.put('/:id', upload.single('image'), updateSlide);
 router.delete('/:id', deleteSlide);
 router.put('/reorder', updateSlideOrder);
 

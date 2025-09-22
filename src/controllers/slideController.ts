@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { safeJsonParse } from '../utils/multilingual';
 
 const prisma = new PrismaClient();
 
@@ -48,6 +49,8 @@ export const getAllSlides = async (req: Request, res: Response) => {
 export const getSlideById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    const { includeRaw } = req.query;
+    
     const slide = await prisma.slide.findUnique({
       where: { id: parseInt(id) }
     });
@@ -60,9 +63,19 @@ export const getSlideById = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
+    // Если запрошены raw данные (для админки), добавляем распарсенные JSON объекты
+    const responseData = includeRaw === 'true' ? {
+      ...slide,
+      _raw: {
+        title: safeJsonParse(slide.title),
+        description: safeJsonParse(slide.description),
+        buttonText: safeJsonParse(slide.buttonText)
+      }
+    } : slide;
+
     res.json({
       success: true,
-      data: slide
+      data: responseData
     });
   } catch (error) {
     console.error('Error fetching slide:', error);
@@ -73,7 +86,7 @@ export const getSlideById = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-// Create new slide
+// Create new slide - ALIGNED with updateSlide parsing
 export const createSlide = async (req: any, res: Response): Promise<void> => {
   try {
     // Handle file upload
@@ -87,10 +100,10 @@ export const createSlide = async (req: any, res: Response): Promise<void> => {
 
     const imagePath = `/uploads/slides/${req.file.filename}`;
     
-    // Parse form data
-    const title = req.body.title ? JSON.parse(req.body.title) : {};
-    const description = req.body.description ? JSON.parse(req.body.description) : {};
-    const buttonText = req.body.buttonText ? JSON.parse(req.body.buttonText) : null;
+    // 🔧 ROBUST PARSING: Use safeJsonParse like updateSlide
+    const title = req.body.title ? safeJsonParse(req.body.title) : {};
+    const description = req.body.description ? safeJsonParse(req.body.description) : {};
+    const buttonText = req.body.buttonText ? safeJsonParse(req.body.buttonText) : null;
     const link = req.body.link || '';
     const order = parseInt(req.body.order) || 0;
     const isActive = req.body.isActive === 'true';
@@ -121,11 +134,10 @@ export const createSlide = async (req: any, res: Response): Promise<void> => {
   }
 };
 
-// Update slide
-export const updateSlide = async (req: Request, res: Response): Promise<void> => {
+// Update slide - FIXED to handle both multipart (with file) and JSON (without file) correctly
+export const updateSlide = async (req: any, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const { title, description, image, link, buttonText, order, isActive } = req.body;
 
     const existingSlide = await prisma.slide.findUnique({
       where: { id: parseInt(id) }
@@ -139,19 +151,80 @@ export const updateSlide = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
+    // 🔧 MULTIPART vs JSON HANDLING: determine if this is multipart (FormData) or JSON
+    const isMultipart = req.file || req.headers['content-type']?.includes('multipart/form-data');
+    
+    let parsedData: any = {};
+    
+    if (isMultipart) {
+      // 📁 MULTIPART: Parse JSON strings from FormData fields
+      parsedData.title = req.body.title ? safeJsonParse(req.body.title) : undefined;
+      parsedData.description = req.body.description ? safeJsonParse(req.body.description) : undefined;
+      parsedData.buttonText = req.body.buttonText ? safeJsonParse(req.body.buttonText) : undefined;
+      if (Object.prototype.hasOwnProperty.call(req.body, 'link')) {
+        parsedData.link = req.body.link;
+      }
+      
+      // 🔧 CRITICAL FIX: Only set fields that are explicitly provided with proper validation
+      if (Object.prototype.hasOwnProperty.call(req.body, 'order')) {
+        const orderNum = Number(req.body.order);
+        if (Number.isFinite(orderNum)) parsedData.order = orderNum;
+      }
+      if (Object.prototype.hasOwnProperty.call(req.body, 'isActive')) {
+        parsedData.isActive = req.body.isActive === 'true';
+      }
+      
+      // Handle uploaded image
+      if (req.file) {
+        parsedData.image = `/uploads/slides/${req.file.filename}`;
+      }
+    } else {
+      // 📊 JSON: Direct object assignment with robust type normalization
+      const { title, description, image, link, buttonText, order, isActive } = req.body;
+      parsedData.title = title;
+      parsedData.description = description;
+      parsedData.link = link;
+      parsedData.buttonText = buttonText;
+      
+      // 🔒 CRITICAL FIX: Robust type normalization with presence checks
+      if (Object.prototype.hasOwnProperty.call(req.body, 'order')) {
+        const orderNum = Number(order);
+        if (Number.isFinite(orderNum)) parsedData.order = orderNum;
+      }
+      
+      if (Object.prototype.hasOwnProperty.call(req.body, 'isActive')) {
+        const v = req.body.isActive;
+        parsedData.isActive = typeof v === 'string' ? v === 'true' : Boolean(v);
+      }
+      
+      // 🖼️ IMAGE SAFETY: Only set image if non-empty valid path provided
+      if (image && image !== '' && image != null) {
+        parsedData.image = image;
+      }
+    }
+
+    // 📝 BUILD UPDATE DATA: Only include defined fields
     const updateData: any = {};
-    if (title !== undefined) updateData.title = JSON.stringify(title);
-    if (description !== undefined) updateData.description = JSON.stringify(description);
-    if (image !== undefined) updateData.image = image;
-    if (link !== undefined) updateData.link = link;
-    if (buttonText !== undefined) updateData.buttonText = buttonText ? JSON.stringify(buttonText) : null;
-    if (order !== undefined) updateData.order = order;
-    if (isActive !== undefined) updateData.isActive = isActive;
+    if (parsedData.title !== undefined) updateData.title = JSON.stringify(parsedData.title);
+    if (parsedData.description !== undefined) updateData.description = JSON.stringify(parsedData.description);
+    if (parsedData.link !== undefined) updateData.link = parsedData.link;
+    if (parsedData.buttonText !== undefined) updateData.buttonText = parsedData.buttonText ? JSON.stringify(parsedData.buttonText) : null;
+    if (parsedData.order !== undefined) updateData.order = parsedData.order;
+    if (parsedData.isActive !== undefined) updateData.isActive = parsedData.isActive;
     updateData.updatedAt = new Date();
+
+    // 🔒 SECURITY: Protect existing image from being overwritten (like newsController)
+    const finalUpdateData: any = { ...updateData };
+    if (parsedData.image !== undefined) {
+      finalUpdateData.image = parsedData.image;
+    } else {
+      // Remove image field to avoid overwriting existing image
+      delete finalUpdateData.image;
+    }
 
     const slide = await prisma.slide.update({
       where: { id: parseInt(id) },
-      data: updateData
+      data: finalUpdateData
     });
 
     res.json({

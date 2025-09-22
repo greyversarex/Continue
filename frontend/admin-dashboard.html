@@ -1711,6 +1711,72 @@
             </form>
         </div>
     </div>
+    
+    <!-- Slide Edit Modal -->
+    <div id="slideEditModal" class="modal">
+        <div class="modal-content" style="width: 600px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold" id="slideEditModalTitle">Редактировать слайд</h2>
+                <button onclick="closeSlideEditModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="slideEditForm" onsubmit="event.preventDefault(); saveSlideEdit();">
+                <input type="hidden" id="editSlideId">
+                
+                <div class="form-group">
+                    <label class="form-label">Заголовок (Русский) *</label>
+                    <input type="text" class="form-input" id="editSlideTitleRu" required placeholder="Заголовок слайда">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Описание (Русский)</label>
+                    <textarea class="form-input" rows="3" id="editSlideDescRu" placeholder="Описание слайда"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Фоновое изображение</label>
+                    <input type="file" class="form-input" id="editSlideImageFile" accept="image/*">
+                    <small class="text-gray-500 mt-1 block">Оставьте пустым, чтобы сохранить текущее изображение. Поддерживаемые форматы: JPG, PNG, GIF. Максимальный размер: 5 МБ</small>
+                    <div class="mt-2">
+                        <img id="editSlideImagePreview" class="w-24 h-16 object-cover rounded border" style="display: none;" alt="Текущее изображение">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Текст кнопки (Русский)</label>
+                    <input type="text" class="form-input" id="editSlideButtonTextRu" placeholder="Узнать больше">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Ссылка (необязательно)</label>
+                    <input type="url" class="form-input" id="editSlideLink" placeholder="https://example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Порядок отображения</label>
+                    <input type="number" class="form-input" id="editSlideOrder" value="1" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="editSlideActive"> Активный
+                    </label>
+                </div>
+                
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="closeSlideEditModal()" class="btn btn-secondary">
+                        Отмена
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save mr-2"></i>
+                        Сохранить изменения
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Hotel Modal -->
     <div id="hotelModal" class="modal">
@@ -11267,6 +11333,9 @@
                         <div class="flex justify-between items-center">
                             <span class="text-xs text-gray-500">Порядок: ${slide.order}</span>
                             <div class="flex gap-2">
+                                <button class="text-blue-600 hover:text-blue-800 mr-2" onclick="editSlide(${slide.id})" title="Редактировать слайд">
+                                    <i class="fas fa-edit"></i>
+                                </button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteSlide(${slide.id})">Удалить</button>
                             </div>
                         </div>
@@ -11276,7 +11345,7 @@
         }
 
         function editSlide(id) {
-            alert('Функция редактирования слайда будет реализована');
+            openSlideEditModal(id);
         }
 
         async function deleteSlide(id) {
@@ -11380,6 +11449,177 @@
             }
         }
 
+        // 📝 SLIDE EDITING FUNCTIONS (by pattern of categoryController)
+        function openSlideEditModal(slideId = null) {
+            const modal = document.getElementById('slideEditModal');
+            const modalTitle = document.getElementById('slideEditModalTitle');
+            const form = document.getElementById('slideEditForm');
+            
+            if (slideId) {
+                modalTitle.textContent = 'Редактировать слайд';
+                
+                // Load slide data for editing with includeRaw=true (like categories)
+                fetch(`${getApiUrl()}/slides/${slideId}?includeRaw=true`, {
+                    headers: getAuthHeaders()
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        const slide = data.data || data.slide;
+                        if (slide) {
+                            document.getElementById('editSlideId').value = slideId;
+                            
+                            // 🔧 MULTILINGUAL PARSING (robust like categories)
+                            // Parse title
+                            if (slide._raw && slide._raw.title) {
+                                document.getElementById('editSlideTitleRu').value = slide._raw.title.ru || '';
+                            } else if (slide.title) {
+                                try {
+                                    const titleParsed = JSON.parse(slide.title);
+                                    document.getElementById('editSlideTitleRu').value = titleParsed.ru || '';
+                                } catch (e) {
+                                    document.getElementById('editSlideTitleRu').value = slide.title || '';
+                                }
+                            }
+                            
+                            // Parse description
+                            if (slide._raw && slide._raw.description) {
+                                document.getElementById('editSlideDescRu').value = slide._raw.description.ru || '';
+                            } else if (slide.description) {
+                                try {
+                                    const descParsed = JSON.parse(slide.description);
+                                    document.getElementById('editSlideDescRu').value = descParsed.ru || '';
+                                } catch (e) {
+                                    document.getElementById('editSlideDescRu').value = slide.description || '';
+                                }
+                            }
+                            
+                            // Parse button text
+                            if (slide._raw && slide._raw.buttonText) {
+                                document.getElementById('editSlideButtonTextRu').value = slide._raw.buttonText.ru || '';
+                            } else if (slide.buttonText) {
+                                try {
+                                    const btnParsed = JSON.parse(slide.buttonText);
+                                    document.getElementById('editSlideButtonTextRu').value = btnParsed.ru || '';
+                                } catch (e) {
+                                    document.getElementById('editSlideButtonTextRu').value = slide.buttonText || '';
+                                }
+                            }
+                            
+                            // Simple fields
+                            document.getElementById('editSlideLink').value = slide.link || '';
+                            document.getElementById('editSlideOrder').value = slide.order || 1;
+                            document.getElementById('editSlideActive').checked = slide.isActive || false;
+                            
+                            // Show current image preview
+                            const imagePreview = document.getElementById('editSlideImagePreview');
+                            if (slide.image && imagePreview) {
+                                imagePreview.src = getSafeImageUrl(slide.image);
+                                imagePreview.style.display = 'block';
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error loading slide:', err);
+                        alert('Ошибка загрузки данных слайда');
+                    });
+            } else {
+                // This shouldn't happen for edit modal, but just in case
+                modalTitle.textContent = 'Новый слайд';
+                document.getElementById('editSlideId').value = '';
+                form.reset();
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeSlideEditModal() {
+            const modal = document.getElementById('slideEditModal');
+            const form = document.getElementById('slideEditForm');
+            const imagePreview = document.getElementById('editSlideImagePreview');
+            
+            modal.style.display = 'none';
+            form.reset();
+            document.getElementById('editSlideId').value = '';
+            if (imagePreview) {
+                imagePreview.style.display = 'none';
+            }
+        }
+        
+        async function saveSlideEdit() {
+            const slideId = document.getElementById('editSlideId').value;
+            if (!slideId) {
+                alert('Ошибка: ID слайда не найден');
+                return;
+            }
+            
+            // Prepare slide data (similar to saveBannerSlide but for editing)
+            const slideData = {
+                title: {
+                    ru: document.getElementById('editSlideTitleRu').value || ''
+                },
+                description: {
+                    ru: document.getElementById('editSlideDescRu').value || ''
+                },
+                buttonText: {
+                    ru: document.getElementById('editSlideButtonTextRu').value || ''
+                },
+                link: document.getElementById('editSlideLink').value || '',
+                order: parseInt(document.getElementById('editSlideOrder').value) || 1,
+                isActive: document.getElementById('editSlideActive').checked
+            };
+            
+            // Check if new image is uploaded
+            const imageFile = document.getElementById('editSlideImageFile').files[0];
+            
+            try {
+                let response;
+                
+                if (imageFile) {
+                    // If new image uploaded, use FormData (multipart)
+                    const formData = new FormData();
+                    formData.append('image', imageFile);
+                    
+                    // Add slide data to FormData
+                    Object.keys(slideData).forEach(key => {
+                        if (typeof slideData[key] === 'object') {
+                            formData.append(key, JSON.stringify(slideData[key]));
+                        } else {
+                            formData.append(key, slideData[key]);
+                        }
+                    });
+                    
+                    const headers = getAuthHeaders();
+                    delete headers['Content-Type']; // Let browser set multipart boundary
+                    
+                    response = await fetch(`${getApiUrl()}/slides/${slideId}`, {
+                        method: 'PUT',
+                        headers: headers,
+                        body: formData
+                    });
+                } else {
+                    // If no new image, send JSON (preserves existing image)
+                    response = await fetch(`${getApiUrl()}/slides/${slideId}`, {
+                        method: 'PUT',
+                        headers: getAuthHeaders(),
+                        body: JSON.stringify(slideData)
+                    });
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Слайд успешно обновлён!');
+                    closeSlideEditModal();
+                    loadCurrentSlides(); // Refresh slides list
+                } else {
+                    alert('Ошибка при обновлении слайда: ' + (result.message || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Error updating slide:', error);
+                alert('Ошибка при обновлении слайда');
+            }
+        }
+        
         // Show batch translation modal (placeholder)
         function showBatchTranslationModal() {
             alert('Функция выборочного перевода туров будет реализована в следующей версии');
