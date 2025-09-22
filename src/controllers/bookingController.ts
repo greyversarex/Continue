@@ -871,6 +871,7 @@ export const bookingController = {
   async getTourHotels(req: Request, res: Response) {
     try {
       const { tourId } = req.params;
+      const language = getLanguageFromRequest(req);
 
       const tourHotels = await prisma.tourHotel.findMany({
         where: { tourId: parseInt(tourId) },
@@ -881,8 +882,8 @@ export const bookingController = {
 
       const hotels = tourHotels.map((th: any) => ({
         ...th.hotel,
-        name: JSON.parse(th.hotel.name),
-        description: th.hotel.description ? JSON.parse(th.hotel.description) : null,
+        name: parseMultilingualField(th.hotel.name, language),
+        description: th.hotel.description ? parseMultilingualField(th.hotel.description, language) : null,
         amenities: th.hotel.amenities ? JSON.parse(th.hotel.amenities) : [],
         images: th.hotel.images ? JSON.parse(th.hotel.images) : []
       }));
