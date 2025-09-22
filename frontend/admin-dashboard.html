@@ -7023,22 +7023,13 @@
         
         // Reviews functions
         function loadReviews(filter = 'all') {
-            fetch(`${getApiUrl()}/reviews`, {
+            fetch(`${getApiUrl()}/reviews?status=${filter}`, {
                 headers: getAuthHeaders()
             })
                 .then(res => res.json())
                 .then(data => {
                     const tbody = document.getElementById('reviewsTable');
                     let reviews = data.data || data.reviews || [];
-                    
-                    // Filter reviews
-                    if (filter === 'pending') {
-                        reviews = reviews.filter(r => !r.isModerated);
-                    } else if (filter === 'approved') {
-                        reviews = reviews.filter(r => r.isApproved);
-                    } else if (filter === 'rejected') {
-                        reviews = reviews.filter(r => r.isModerated && !r.isApproved);
-                    }
                     
                     if (reviews.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="9" class="text-center text-gray-500">Нет отзывов</td></tr>';
@@ -7364,12 +7355,9 @@
         }
         
         function approveReview(id) {
-            fetch(`${getApiUrl()}/reviews/${id}/moderate`, {
+            fetch(`${getApiUrl()}/reviews/${id}/approve`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ isApproved: true })
+                headers: getAuthHeaders()
             })
             .then(res => res.json())
             .then(data => {
@@ -7387,12 +7375,9 @@
         }
         
         function rejectReview(id) {
-            fetch(`${getApiUrl()}/reviews/${id}/moderate`, {
+            fetch(`${getApiUrl()}/reviews/${id}/reject`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ isApproved: false })
+                headers: getAuthHeaders()
             })
             .then(res => res.json())
             .then(data => {
