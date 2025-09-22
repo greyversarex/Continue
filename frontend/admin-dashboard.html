@@ -4448,7 +4448,7 @@
 
         // Tours functions
         function loadTours() {
-            fetch(`${getApiUrl()}/tours`, {
+            fetch(`${getApiUrl()}/tours?includeRaw=true`, {
                 headers: getAuthHeaders()
             })
                 .then(res => res.json())
@@ -5391,7 +5391,7 @@
         }
         
         function loadHotelsForCheckboxes() {
-            fetch(`${getApiUrl()}/hotels`, {
+            fetch(`${getApiUrl()}/hotels?includeRaw=true`, {
                 headers: getAuthHeaders()
             })
                 .then(res => {
@@ -5410,11 +5410,16 @@
                     const hotels = data.data || data.hotels || [];
                     container.innerHTML = hotels.map(hotel => {
                         let name;
-                        try {
-                            name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
-                        } catch (e) {
-                            console.warn('Failed to parse hotel name in checkboxes:', hotel.name);
-                            name = hotel.name || {};
+                        // Используем _localized данные для checkboxes
+                        if (hotel._localized && hotel._localized.name) {
+                            name = { ru: hotel._localized.name, en: hotel._localized.name };
+                        } else {
+                            try {
+                                name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
+                            } catch (e) {
+                                console.warn('Failed to parse hotel name in checkboxes:', hotel.name);
+                                name = hotel.name || {};
+                            }
                         }
                         return `
                             <label class="checkbox-item">
@@ -5499,7 +5504,7 @@
         function loadHotels() {
             console.log('Loading hotels...');
             const apiUrl = getApiUrl();
-            fetch(`${apiUrl}/hotels`)
+            fetch(`${apiUrl}/hotels?includeRaw=true`)
                 .then(res => {
                     console.log('Hotels response:', res.status);
                     return res.json();
@@ -5522,21 +5527,31 @@
         }
         
         function createHotelCard(hotel) {
-            // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Безопасный парсинг JSON
+            // ИСПРАВЛЕНИЕ: Используем _localized данные для отображения
             let name, description, amenities, images;
             
-            try {
-                name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
-            } catch (e) {
-                console.warn('Failed to parse hotel name in card:', hotel.name);
-                name = hotel.name || {};
+            // Проверяем _localized данные сначала, затем fallback к парсингу
+            if (hotel._localized && hotel._localized.name) {
+                name = { ru: hotel._localized.name, en: hotel._localized.name };
+            } else {
+                try {
+                    name = typeof hotel.name === 'string' ? JSON.parse(hotel.name) : (hotel.name || {});
+                } catch (e) {
+                    console.warn('Failed to parse hotel name in card:', hotel.name);
+                    name = hotel.name || {};
+                }
             }
             
-            try {
-                description = typeof hotel.description === 'string' ? JSON.parse(hotel.description) : (hotel.description || {});
-            } catch (e) {
-                console.warn('Failed to parse hotel description in card:', hotel.description);
-                description = hotel.description || {};
+            // Проверяем _localized данные для описания
+            if (hotel._localized && hotel._localized.description) {
+                description = { ru: hotel._localized.description, en: hotel._localized.description };
+            } else {
+                try {
+                    description = typeof hotel.description === 'string' ? JSON.parse(hotel.description) : (hotel.description || {});
+                } catch (e) {
+                    console.warn('Failed to parse hotel description in card:', hotel.description);
+                    description = hotel.description || {};
+                }
             }
             
             try {
