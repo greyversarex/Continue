@@ -24,8 +24,7 @@ model TourBlock {
   sortOrder   Int                     @default(0)
   createdAt   DateTime                @default(now())
   updatedAt   DateTime                @updatedAt
-  tours       Tour[]                  // Старая связь (временно)
-  tourBlocks  TourBlockAssignment[]   // Новая связь many-to-many
+  tourBlocks  TourBlockAssignment[]   // Many-to-many связь с турами
 
   @@map("tour_blocks")
 }
@@ -75,7 +74,6 @@ model Tour {
   isActive           Boolean                @default(true)
   isFeatured         Boolean                @default(false)
   categoryId         Int
-  tourBlockId        Int?                   @map("tour_block_id")
   createdAt          DateTime               @default(now())
   updatedAt          DateTime               @updatedAt
   pricingData        String?
@@ -96,7 +94,6 @@ model Tour {
   tourDrivers        TourDriver[]           // Связь с водителями
   assignedGuide      Guide?                 @relation("AssignedGuide", fields: [assignedGuideId], references: [id])
   category           Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  tourBlock          TourBlock?             @relation(fields: [tourBlockId], references: [id]) // Старая связь (временно)
   tourCountry        Country?               @relation(fields: [countryId], references: [id])
   tourCity           City?                  @relation(fields: [cityId], references: [id])
 

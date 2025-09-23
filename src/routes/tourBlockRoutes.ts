@@ -40,7 +40,11 @@ router.get('/:id/tours', async (req, res) => {
         tour: {
           include: {
             category: true,
-            tourBlock: true // Старое поле для совместимости
+            tourBlockAssignments: {
+              include: {
+                tourBlock: true
+              }
+            }
           }
         }
       },

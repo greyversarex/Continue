@@ -27,7 +27,11 @@ export const getActiveTours = async (req: Request, res: Response): Promise<void>
           }
         },
         category: true,
-        tourBlock: true
+        tourBlockAssignments: {
+          include: {
+            tourBlock: true
+          }
+        }
       },
       orderBy: [
         { status: 'asc' },
@@ -52,7 +56,7 @@ export const getActiveTours = async (req: Request, res: Response): Promise<void>
         totalTourists,
         bookingsCount: tour.bookings.length,
         category: tour.category,
-        tourBlock: tour.tourBlock
+        tourBlock: tour.tourBlockAssignments?.[0]?.tourBlock || null
       };
     });
 
@@ -93,7 +97,11 @@ export const getFinishedTours = async (req: Request, res: Response): Promise<voi
           }
         },
         category: true,
-        tourBlock: true,
+        tourBlockAssignments: {
+          include: {
+            tourBlock: true
+          }
+        },
         reviews: {
           where: { isApproved: true }
         },
@@ -130,7 +138,7 @@ export const getFinishedTours = async (req: Request, res: Response): Promise<voi
         totalTourists,
         bookingsCount: tour.bookings.length,
         category: tour.category,
-        tourBlock: tour.tourBlock,
+        tourBlock: tour.tourBlockAssignments?.[0]?.tourBlock || null,
         customerReviews: tour.reviews,
         guideReviews: tour.guideReviews
       };
@@ -190,7 +198,11 @@ export const getTourDetailsAdmin = async (req: Request, res: Response): Promise<
           }
         },
         category: true,
-        tourBlock: true,
+        tourBlockAssignments: {
+          include: {
+            tourBlock: true
+          }
+        },
         reviews: {
           where: { isApproved: true },
           include: {

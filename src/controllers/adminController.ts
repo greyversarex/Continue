@@ -220,7 +220,11 @@ export class AdminController {
       const tours = await prisma.tour.findMany({
         include: {
           category: true,
-          tourBlock: true,
+          tourBlockAssignments: {
+            include: {
+              tourBlock: true
+            }
+          },
           orders: true,
           reviews: true
         },

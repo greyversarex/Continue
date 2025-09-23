@@ -363,7 +363,15 @@ export class TourBlockModel {
   static async findAll() {
     return await prisma.tourBlock.findMany({
       include: {
-        tours: true
+        tourBlocks: {
+          include: {
+            tour: {
+              include: {
+                category: true
+              }
+            }
+          }
+        }
       },
       orderBy: {
         sortOrder: 'asc'
@@ -378,7 +386,15 @@ export class TourBlockModel {
     return await prisma.tourBlock.findUnique({
       where: { id },
       include: {
-        tours: true
+        tourBlocks: {
+          include: {
+            tour: {
+              include: {
+                category: true
+              }
+            }
+          }
+        }
       }
     });
   }
