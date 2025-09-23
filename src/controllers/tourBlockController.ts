@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { parseMultilingualField, getLanguageFromRequest } from '../utils/multilingual';
-
-const prisma = new PrismaClient();
+import prisma from '../config/database';
 
 // Get all tour blocks
 export const getTourBlocks = async (req: Request, res: Response): Promise<Response> => {

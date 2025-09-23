@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { ApiResponse } from '../types';
 import { parseMultilingualField, getLanguageFromRequest } from '../utils/multilingual';
-
-const prisma = new PrismaClient();
+import prisma from '../config/database';
 
 export class CMSController {
   /**
