@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { translationService } from '../services/translationService';
 import { TourModel } from '../models/index';
+import { safeJsonParse } from '../utils/multilingual';
 
 /**
  * Controller for handling translation requests
@@ -68,9 +69,9 @@ export class TranslationController {
         });
       }
 
-      // Parse existing multilingual content
-      const existingTitle = JSON.parse(tour.title as string);
-      const existingDescription = JSON.parse(tour.description as string);
+      // Parse existing multilingual content safely
+      const existingTitle = safeJsonParse(tour.title, { ru: '', en: '' });
+      const existingDescription = safeJsonParse(tour.description, { ru: '', en: '' });
 
       // Translate missing languages
       const [translatedTitle, translatedDescription] = await Promise.all([
@@ -183,8 +184,8 @@ export class TranslationController {
             continue;
           }
 
-          const existingTitle = JSON.parse(tour.title as string);
-          const existingDescription = JSON.parse(tour.description as string);
+          const existingTitle = safeJsonParse(tour.title, { ru: '', en: '' });
+          const existingDescription = safeJsonParse(tour.description, { ru: '', en: '' });
 
           const [translatedTitle, translatedDescription] = await Promise.all([
             translationService.translateMultilingualContent(existingTitle, 'tour_description'),

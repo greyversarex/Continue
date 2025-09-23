@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiResponse } from '../types';
-import { parseMultilingualField, getLanguageFromRequest } from '../utils/multilingual';
+import { parseMultilingualField, getLanguageFromRequest, safeJsonParse } from '../utils/multilingual';
 import prisma from '../config/database';
 
 export class CMSController {
@@ -25,7 +25,7 @@ export class CMSController {
         ...block,
         title: parseMultilingualField(block.title, language),
         content: parseMultilingualField(block.content, language),
-        metadata: block.metadata ? JSON.parse(block.metadata) : null
+        metadata: block.metadata ? safeJsonParse(block.metadata) : null
       }));
 
       const response: ApiResponse = {
@@ -68,9 +68,9 @@ export class CMSController {
 
       const parsedBlock = {
         ...block,
-        title: JSON.parse(block.title),
-        content: JSON.parse(block.content),
-        metadata: block.metadata ? JSON.parse(block.metadata) : null
+        title: safeJsonParse(block.title),
+        content: safeJsonParse(block.content),
+        metadata: block.metadata ? safeJsonParse(block.metadata) : null
       };
 
       const response: ApiResponse = {
@@ -116,9 +116,9 @@ export class CMSController {
 
       const parsedBlock = {
         ...block,
-        title: JSON.parse(block.title),
-        content: JSON.parse(block.content),
-        metadata: block.metadata ? JSON.parse(block.metadata) : null
+        title: safeJsonParse(block.title),
+        content: safeJsonParse(block.content),
+        metadata: block.metadata ? safeJsonParse(block.metadata) : null
       };
 
       const response: ApiResponse = {
@@ -181,8 +181,8 @@ export class CMSController {
 
       const parsedSettings = settings.map((setting: any) => ({
         ...setting,
-        value: setting.type === 'json' ? JSON.parse(setting.value) : setting.value,
-        label: JSON.parse(setting.label)
+        value: setting.type === 'json' ? safeJsonParse(setting.value) : setting.value,
+        label: safeJsonParse(setting.label)
       }));
 
       const response: ApiResponse = {
@@ -232,8 +232,8 @@ export class CMSController {
 
       const parsedSetting = {
         ...setting,
-        value: setting.type === 'json' ? JSON.parse(setting.value) : setting.value,
-        label: JSON.parse(setting.label)
+        value: setting.type === 'json' ? safeJsonParse(setting.value) : setting.value,
+        label: safeJsonParse(setting.label)
       };
 
       const response: ApiResponse = {
@@ -260,10 +260,10 @@ export class CMSController {
 
       const parsedPages = pages.map((page: any) => ({
         ...page,
-        title: JSON.parse(page.title),
-        content: JSON.parse(page.content),
-        metaTitle: page.metaTitle ? JSON.parse(page.metaTitle) : null,
-        metaDesc: page.metaDesc ? JSON.parse(page.metaDesc) : null
+        title: safeJsonParse(page.title),
+        content: safeJsonParse(page.content),
+        metaTitle: page.metaTitle ? safeJsonParse(page.metaTitle) : null,
+        metaDesc: page.metaDesc ? safeJsonParse(page.metaDesc) : null
       }));
 
       const response: ApiResponse = {
@@ -306,10 +306,10 @@ export class CMSController {
 
       const parsedPage = {
         ...page,
-        title: JSON.parse(page.title),
-        content: JSON.parse(page.content),
-        metaTitle: page.metaTitle ? JSON.parse(page.metaTitle) : null,
-        metaDesc: page.metaDesc ? JSON.parse(page.metaDesc) : null
+        title: safeJsonParse(page.title),
+        content: safeJsonParse(page.content),
+        metaTitle: page.metaTitle ? safeJsonParse(page.metaTitle) : null,
+        metaDesc: page.metaDesc ? safeJsonParse(page.metaDesc) : null
       };
 
       const response: ApiResponse = {
@@ -355,10 +355,10 @@ export class CMSController {
 
       const parsedPage = {
         ...page,
-        title: JSON.parse(page.title),
-        content: JSON.parse(page.content),
-        metaTitle: page.metaTitle ? JSON.parse(page.metaTitle) : null,
-        metaDesc: page.metaDesc ? JSON.parse(page.metaDesc) : null
+        title: safeJsonParse(page.title),
+        content: safeJsonParse(page.content),
+        metaTitle: page.metaTitle ? safeJsonParse(page.metaTitle) : null,
+        metaDesc: page.metaDesc ? safeJsonParse(page.metaDesc) : null
       };
 
       const response: ApiResponse = {
@@ -391,10 +391,10 @@ export class CMSController {
 
       const parsedMenuItems = menuItems.map((item: any) => ({
         ...item,
-        title: JSON.parse(item.title),
+        title: safeJsonParse(item.title),
         children: item.children.map((child: any) => ({
           ...child,
-          title: JSON.parse(child.title)
+          title: safeJsonParse(child.title)
         }))
       }));
 
@@ -436,7 +436,7 @@ export class CMSController {
 
       const parsedMenuItem = {
         ...menuItem,
-        title: JSON.parse(menuItem.title)
+        title: safeJsonParse(menuItem.title)
       };
 
       const response: ApiResponse = {
@@ -473,7 +473,7 @@ export class CMSController {
 
       const parsedMenuItem = {
         ...menuItem,
-        title: JSON.parse(menuItem.title)
+        title: safeJsonParse(menuItem.title)
       };
 
       const response: ApiResponse = {
@@ -540,12 +540,12 @@ export class CMSController {
 
       const parsedNews = news.map((post: any) => ({
         ...post,
-        title: JSON.parse(post.title),
-        excerpt: post.excerpt ? JSON.parse(post.excerpt) : null,
-        content: JSON.parse(post.content),
-        metaTitle: post.metaTitle ? JSON.parse(post.metaTitle) : null,
-        metaDesc: post.metaDesc ? JSON.parse(post.metaDesc) : null,
-        tags: post.tags ? JSON.parse(post.tags) : null
+        title: safeJsonParse(post.title),
+        excerpt: post.excerpt ? safeJsonParse(post.excerpt) : null,
+        content: safeJsonParse(post.content),
+        metaTitle: post.metaTitle ? safeJsonParse(post.metaTitle) : null,
+        metaDesc: post.metaDesc ? safeJsonParse(post.metaDesc) : null,
+        tags: post.tags ? safeJsonParse(post.tags) : null
       }));
 
       const response: ApiResponse = {

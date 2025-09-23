@@ -1,18 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/database';
-
-// Безопасный парсинг JSON 
-function safeJsonParse(jsonString: any, defaultValue: any = null) {
-  if (!jsonString) return defaultValue;
-  if (typeof jsonString === 'object') return jsonString;
-  
-  try {
-    return JSON.parse(jsonString);
-  } catch (error) {
-    console.warn('JSON parsing error:', error);
-    return defaultValue;
-  }
-}
+import { safeJsonParse } from '../utils/multilingual';
 
 // Get all news with pagination and filtering
 export const getAllNews = async (req: Request, res: Response) => {
