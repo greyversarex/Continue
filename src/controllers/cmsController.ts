@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { ApiResponse } from '../types';
+import { parseMultilingualField, getLanguageFromRequest } from '../utils/multilingual';
 
 const prisma = new PrismaClient();
 
@@ -11,6 +12,7 @@ export class CMSController {
   static async getContentBlocks(req: Request, res: Response, next: NextFunction) {
     try {
       const { section } = req.query;
+      const language = getLanguageFromRequest(req);
       const where = section ? { section: section as string } : {};
 
       const blocks = await prisma.contentBlock.findMany({
@@ -23,8 +25,8 @@ export class CMSController {
 
       const parsedBlocks = blocks.map((block: any) => ({
         ...block,
-        title: JSON.parse(block.title),
-        content: JSON.parse(block.content),
+        title: parseMultilingualField(block.title, language),
+        content: parseMultilingualField(block.content, language),
         metadata: block.metadata ? JSON.parse(block.metadata) : null
       }));
 
