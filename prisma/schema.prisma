@@ -740,3 +740,14 @@ model Trip {
 
   @@map("trips")
 }
+
+model Migration {
+  id          Int      @id @default(autoincrement())
+  version     String   @unique
+  name        String
+  description String?
+  appliedAt   DateTime @default(now())
+  isSystem    Boolean  @default(false)  // Системные vs пользовательские миграции
+
+  @@map("migrations")
+}

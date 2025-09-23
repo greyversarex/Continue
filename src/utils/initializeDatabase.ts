@@ -6,6 +6,7 @@
  */
 
 import prisma from '../config/database';
+import { safeInitializeWithVersioning, completeInitialization } from './migrationVersioning';
 
 /**
  * 🏷️ Миграция категорий к правильному набору (15 истинных категорий)
@@ -308,6 +309,14 @@ export async function initializeDatabase() {
     console.log('🚀 Начинаем инициализацию базы данных...');
     
     try {
+        // 🔒 Проверяем версии миграций для защиты от перезаписи  
+        const shouldInitialize = await safeInitializeWithVersioning();
+        
+        if (!shouldInitialize) {
+            console.log('✅ База данных уже инициализирована согласно версии миграций');
+            return true;
+        }
+        
         const stats = await checkDatabaseInitialization();
         
         if (!stats) {
@@ -349,6 +358,9 @@ export async function initializeDatabase() {
         } else {
             console.log('✅ Слайды уже существуют, пропускаем создание');
         }
+        
+        // 🎯 Сохраняем версии миграций после успешной инициализации
+        await completeInitialization();
         
         console.log('🎉 Инициализация базы данных завершена!');
         
