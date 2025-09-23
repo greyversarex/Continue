@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
@@ -7,8 +6,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs/promises';
 import { parseMultilingualField } from '../utils/multilingual';
-
-const prisma = new PrismaClient();
+import prisma from '../config/database';
 const JWT_SECRET = process.env.JWT_SECRET || 'tour-guide-secret-key';
 
 // Конфигурация multer для загрузки файлов

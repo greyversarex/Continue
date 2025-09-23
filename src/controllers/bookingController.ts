@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { emailService } from '../services/emailService';
 import { parseMultilingualField, getLanguageFromRequest } from '../utils/multilingual';
-
-const prisma = new PrismaClient();
+import prisma from '../config/database';
 
 // Вспомогательная функция для получения цены проживания из компонентов тура
 async function getAccommodationPriceFromTour(tourServices: string): Promise<number> {

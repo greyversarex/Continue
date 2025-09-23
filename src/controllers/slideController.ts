@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { safeJsonParse } from '../utils/multilingual';
-
-const prisma = new PrismaClient();
+import prisma from '../config/database';
 
 // Get all slides
 export const getSlides = async (req: Request, res: Response) => {

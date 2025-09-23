@@ -1,11 +1,9 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import path from 'path';
-
-const prisma = new PrismaClient();
+import prisma from '../config/database';
 
 // Конфигурация Multer для загрузки файлов водителей
 const storage = multer.diskStorage({
