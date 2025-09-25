@@ -10457,21 +10457,36 @@
         // 🎯 НОВАЯ ФУНКЦИЯ: Загрузка блоков туров для формы тура
         function loadTourBlocksForForm() {
             console.log('🔄 Загружаем блоки туров для формы...');
+            console.log('🌐 API URL:', `${getApiUrl()}/tour-blocks`);
+            
             fetch(`${getApiUrl()}/tour-blocks`, {
                 headers: getAuthHeaders()
             })
-            .then(res => res.json())
+            .then(res => {
+                console.log('📡 Response status:', res.status);
+                return res.json();
+            })
             .then(data => {
+                console.log('📊 Tour blocks API response:', data);
                 const container = document.getElementById('tourBlocksCheckboxes');
                 
+                if (!container) {
+                    console.error('❌ Element tourBlocksCheckboxes not found!');
+                    return;
+                }
+                
                 if (!data.success || !data.data || data.data.length === 0) {
+                    console.log('⚠️ No tour blocks available');
                     container.innerHTML = '<p class="text-gray-500">Нет доступных блоков туров</p>';
                     return;
                 }
                 
+                console.log('🔄 Processing', data.data.length, 'tour blocks');
+                
                 container.innerHTML = data.data.map(block => {
-                    const title = typeof block.title === 'string' ? JSON.parse(block.title || '{}') : block.title || {};
-                    const blockName = title.ru || title.en || `Блок ${block.id}`;
+                    // block.title is a plain string, not JSON
+                    const blockName = block.title || `Блок ${block.id}`;
+                    console.log('📝 Block:', block.id, '- Name:', blockName);
                     return `
                         <label class="checkbox-item">
                             <input type="checkbox" value="${block.id}" name="tourBlocks"> ${blockName}
@@ -10479,12 +10494,14 @@
                     `;
                 }).join('');
                 
-                console.log('✅ Блоки туров загружены для формы');
+                console.log('✅ Блоки туров загружены для формы:', data.data.length, 'блоков');
             })
             .catch(err => {
                 console.error('❌ Ошибка загрузки блоков туров для формы:', err);
                 const container = document.getElementById('tourBlocksCheckboxes');
-                container.innerHTML = '<p class="text-red-500">Ошибка загрузки блоков</p>';
+                if (container) {
+                    container.innerHTML = '<p class="text-red-500">Ошибка загрузки блоков</p>';
+                }
             });
         }
 
