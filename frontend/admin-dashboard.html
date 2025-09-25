@@ -4171,7 +4171,7 @@
                 includes: JSON.stringify(includedServices),
                 
                 // Программа тура  
-                itinerary: JSON.stringify(window.tourItinerary || []),
+                itinerary: JSON.stringify(convertDaysItineraryToArray()), // Обратная совместимость: сохраняем как массив
                 
                 // Время начала
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
@@ -4257,7 +4257,7 @@
                 mainImage: safeGetValue('tourMainImage', ''),
                 images: JSON.stringify(window.tourGalleryImages || []),
                 // Услуги синхронизируются автоматически
-                itinerary: JSON.stringify(window.tourItinerary || []),
+                itinerary: JSON.stringify(convertDaysItineraryToArray()), // Обратная совместимость: сохраняем как массив
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
                 languages: JSON.stringify(window.tourLanguages || ['Русский']),
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
@@ -4511,6 +4511,28 @@
                 window.tourDaysItinerary = { 1: [...window.tourItinerary] };
                 window.tourItinerary = []; // Очищаем старую программу
             }
+        }
+
+        // КРИТИЧЕСКИ ВАЖНАЯ ФУНКЦИЯ: Конвертируем многодневную программу обратно в массив для API
+        function convertDaysItineraryToArray() {
+            const daysItinerary = window.tourDaysItinerary || {};
+            const allActivities = [];
+            
+            // Объединяем активности всех дней в один массив для обратной совместимости
+            Object.keys(daysItinerary)
+                .sort((a, b) => parseInt(a) - parseInt(b)) // Сортируем дни по порядку
+                .forEach(day => {
+                    const dayActivities = daysItinerary[day] || [];
+                    dayActivities.forEach(activity => {
+                        // Добавляем маркер дня для публичных страниц
+                        allActivities.push({
+                            ...activity,
+                            day: parseInt(day) // Добавляем информацию о дне для будущего использования
+                        });
+                    });
+                });
+                
+            return allActivities;
         }
 
         // Функции управления временем начала тура (быстрое создание)
@@ -5117,8 +5139,11 @@
             }
             
             
-            // Инициализируем многодневную программу тура
-            convertLegacyItinerary(); // Конвертируем старую программу в новый формат
+            // КРИТИЧНО: Инициализируем многодневную программу для всех случаев
+            if (!window.tourDaysItinerary || Object.keys(window.tourDaysItinerary).length === 0) {
+                window.tourDaysItinerary = { 1: [] }; // Инициализируем пустую программу для нового тура
+            }
+            convertLegacyItinerary(); // Конвертируем старую программу в новый формат (если есть)
             initializeDayProgram(); // Инициализируем интерфейс многодневной программы
             
             document.getElementById('tourModal').classList.add('active');
@@ -5354,11 +5379,28 @@
                         if (tour.itinerary) {
                             try {
                                 const itinerary = typeof tour.itinerary === 'string' ? JSON.parse(tour.itinerary) : tour.itinerary;
-                                window.tourItinerary = itinerary || [];
-                                updateItineraryList();
+                                
+                                // Проверяем формат данных: старый (массив) или новый (объект по дням)
+                                if (Array.isArray(itinerary)) {
+                                    // Старый формат: конвертируем массив в День 1
+                                    window.tourDaysItinerary = { 1: itinerary };
+                                } else if (itinerary && typeof itinerary === 'object') {
+                                    // Новый формат: уже объект по дням
+                                    window.tourDaysItinerary = itinerary;
+                                } else {
+                                    window.tourDaysItinerary = { 1: [] };
+                                }
+                                
+                                // Инициализируем интерфейс многодневной программы
+                                initializeDayProgram();
                             } catch (e) {
                                 console.warn('Failed to parse itinerary:', e);
+                                window.tourDaysItinerary = { 1: [] };
+                                initializeDayProgram();
                             }
+                        } else {
+                            window.tourDaysItinerary = { 1: [] };
+                            initializeDayProgram();
                         }
                         
                         if (tour.startTimeOptions) {
@@ -5784,7 +5826,7 @@
                 maxPeople: tourMaxPeopleEl && tourMaxPeopleEl.value ? parseInt(tourMaxPeopleEl.value) : null,
                 // Сохраняем выбранные компоненты тура в поле services
                 services: JSON.stringify(selectedTourComponents || []),
-                itinerary: JSON.stringify(window.tourItinerary || []),
+                itinerary: JSON.stringify(convertDaysItineraryToArray()), // Обратная совместимость: сохраняем как массив
                 startTimeOptions: JSON.stringify(window.tourStartTimes || []),
                 languages: JSON.stringify(window.tourLanguages || ['Русский']),
                 availableMonths: JSON.stringify(getSelectedCheckboxValues('month-')),
