@@ -3826,9 +3826,9 @@
         window.tourGalleryImages = window.tourGalleryImages || [];
         window.uploadedTourImages = window.uploadedTourImages || [];
 
-        // Load categories from API
-        function loadCategories() {
-            console.log('🏷️ Starting loadCategories()...');
+        // Load categories from API for tour form
+        function loadCategoriesForTourForm() {
+            console.log('🏷️ Starting loadCategoriesForTourForm()...');
             console.log('🏷️ API URL:', `${getApiUrl()}/categories`);
             
             return fetch(`${getApiUrl()}/categories`, {
@@ -4796,7 +4796,7 @@
             loadGuidesForCheckboxes();
             
             // Load categories for tour form
-            loadCategories();
+            loadCategoriesForTourForm();
             
             if (tourId) {
                 // Заполняем скрытое поле ID тура
