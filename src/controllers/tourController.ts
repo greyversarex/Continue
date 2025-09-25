@@ -399,6 +399,10 @@ export class TourController {
         throw createError;
       }
       
+      if (!tour) {
+        throw new Error('Failed to create tour');
+      }
+
       console.log('✅ Tour created successfully in database with ID:', tour.id);
 
       // Create hotel associations if provided
@@ -688,6 +692,13 @@ export class TourController {
       }
 
       const tour = await TourModel.update(id, updateData);
+
+      if (!tour) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tour not found or could not be updated'
+        });
+      }
 
       // Update hotel associations if provided
       if (hotelIds && Array.isArray(hotelIds)) {

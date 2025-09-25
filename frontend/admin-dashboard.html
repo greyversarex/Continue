@@ -2269,17 +2269,39 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Страна</label>
-                        <select class="form-input" id="tourCountry" required onchange="loadCitiesForCountry(this.value, 'tourCity')">
-                            <option value="">Выберите страну</option>
-                        </select>
+                        <label class="form-label">Страны (можно выбрать несколько)</label>
+                        <div class="flex gap-2 mb-2">
+                            <select class="form-input flex-1" id="availableCountries">
+                                <option value="">Выберите страну для добавления</option>
+                            </select>
+                            <button type="button" onclick="addCountryToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div id="selectedCountries" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                            <small class="text-gray-500">Выбранные страны появятся здесь</small>
+                        </div>
+                        <input type="hidden" id="tourCountries" required>
+                        <!-- Legacy field for backward compatibility -->
+                        <input type="hidden" id="tourCountry">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Город</label>
-                        <select class="form-input" id="tourCity" required>
-                            <option value="">Сначала выберите страну</option>
-                        </select>
+                        <label class="form-label">Города (можно выбрать несколько)</label>
+                        <div class="flex gap-2 mb-2">
+                            <select class="form-input flex-1" id="availableCities">
+                                <option value="">Выберите город для добавления</option>
+                            </select>
+                            <button type="button" onclick="addCityToTour()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div id="selectedCities" class="space-y-1 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                            <small class="text-gray-500">Выбранные города появятся здесь</small>
+                        </div>
+                        <input type="hidden" id="tourCities" required>
+                        <!-- Legacy field for backward compatibility -->
+                        <input type="hidden" id="tourCity">
                     </div>
                     
                     <div class="form-group">
@@ -3816,6 +3838,8 @@
         let selectedCategories = [];
         let selectedLanguages = [];
         let selectedGuideLanguages = []; // Для гидов
+        let selectedCountries = []; // Для множественного выбора стран
+        let selectedCities = []; // Для множественного выбора городов
         
         // Инициализация всех глобальных переменных
         window.tourLanguages = window.tourLanguages || [];
@@ -4647,6 +4671,177 @@
             }
         }
 
+        // Add country to tour
+        function addCountryToTour() {
+            const select = document.getElementById('availableCountries');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                const countryId = selectedOption.value;
+                const countryName = selectedOption.text;
+                
+                // Check if already added
+                if (selectedCountries.find(country => country.id === countryId)) {
+                    alert('Эта страна уже добавлена');
+                    return;
+                }
+                
+                selectedCountries.push({id: countryId, name: countryName});
+                updateSelectedCountriesDisplay();
+                
+                // Update available cities based on selected countries
+                updateAvailableCitiesForSelectedCountries();
+                
+                // Reset select
+                select.selectedIndex = 0;
+            }
+        }
+
+        // Remove country from tour
+        function removeCountryFromTour(countryId) {
+            selectedCountries = selectedCountries.filter(country => country.id !== countryId);
+            updateSelectedCountriesDisplay();
+            
+            // Update available cities and remove cities from removed countries
+            selectedCities = selectedCities.filter(city => selectedCountries.some(country => city.countryId === country.id));
+            updateSelectedCitiesDisplay();
+            updateAvailableCitiesForSelectedCountries();
+        }
+
+        // Update selected countries display
+        function updateSelectedCountriesDisplay() {
+            const container = document.getElementById('selectedCountries');
+            const countriesHiddenInput = document.getElementById('tourCountries');
+            const legacyCountryInput = document.getElementById('tourCountry');
+            
+            if (selectedCountries.length === 0) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные страны появятся здесь</small>';
+                countriesHiddenInput.value = '';
+                legacyCountryInput.value = '';
+            } else {
+                container.innerHTML = selectedCountries.map(country => 
+                    `<div class="flex justify-between items-center bg-white p-2 rounded border">
+                        <span>${country.name}</span>
+                        <button type="button" onclick="removeCountryFromTour('${country.id}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>`
+                ).join('');
+                
+                // Set data for new system (array of IDs)
+                countriesHiddenInput.value = JSON.stringify(selectedCountries.map(c => c.id));
+                // Set data for legacy system (first country name)
+                legacyCountryInput.value = selectedCountries[0].name;
+            }
+        }
+
+        // Add city to tour
+        function addCityToTour() {
+            const select = document.getElementById('availableCities');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                const cityId = selectedOption.value;
+                const cityName = selectedOption.text;
+                const countryId = selectedOption.getAttribute('data-country-id');
+                
+                // Check if already added
+                if (selectedCities.find(city => city.id === cityId)) {
+                    alert('Этот город уже добавлен');
+                    return;
+                }
+                
+                selectedCities.push({id: cityId, name: cityName, countryId: countryId});
+                updateSelectedCitiesDisplay();
+                
+                // Reset select
+                select.selectedIndex = 0;
+            }
+        }
+
+        // Remove city from tour
+        function removeCityFromTour(cityId) {
+            selectedCities = selectedCities.filter(city => city.id !== cityId);
+            updateSelectedCitiesDisplay();
+        }
+
+        // Update selected cities display
+        function updateSelectedCitiesDisplay() {
+            const container = document.getElementById('selectedCities');
+            const citiesHiddenInput = document.getElementById('tourCities');
+            const legacyCityInput = document.getElementById('tourCity');
+            
+            if (selectedCities.length === 0) {
+                container.innerHTML = '<small class="text-gray-500">Выбранные города появятся здесь</small>';
+                citiesHiddenInput.value = '';
+                legacyCityInput.value = '';
+            } else {
+                container.innerHTML = selectedCities.map(city => 
+                    `<div class="flex justify-between items-center bg-white p-2 rounded border">
+                        <span>${city.name}</span>
+                        <button type="button" onclick="removeCityFromTour('${city.id}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>`
+                ).join('');
+                
+                // Set data for new system (array of IDs)
+                citiesHiddenInput.value = JSON.stringify(selectedCities.map(c => c.id));
+                // Set data for legacy system (first city name)
+                legacyCityInput.value = selectedCities[0].name;
+            }
+        }
+
+        // Update available cities based on selected countries
+        function updateAvailableCitiesForSelectedCountries() {
+            const citiesSelect = document.getElementById('availableCities');
+            if (!citiesSelect || selectedCountries.length === 0) {
+                if (citiesSelect) {
+                    citiesSelect.innerHTML = '<option value="">Сначала выберите страны</option>';
+                }
+                return;
+            }
+            
+            // Load cities for selected countries
+            const countryIds = selectedCountries.map(c => c.id);
+            fetch(`${getApiUrl()}/cities?countryIds=${countryIds.join(',')}`, {
+                headers: getAuthHeaders()
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const cities = data.data || [];
+                    citiesSelect.innerHTML = '<option value="">Выберите город для добавления</option>';
+                    cities.forEach(city => {
+                        citiesSelect.innerHTML += `<option value="${city.id}" data-country-id="${city.countryId}">${city.nameRu}</option>`;
+                    });
+                })
+                .catch(err => {
+                    console.error('Error loading cities:', err);
+                    citiesSelect.innerHTML = '<option value="">Ошибка загрузки городов</option>';
+                });
+        }
+
+        // Load countries for tour form
+        function loadCountriesForTourForm() {
+            fetch(`${getApiUrl()}/countries`, {
+                headers: getAuthHeaders()
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const countries = data.data || [];
+                    const countriesSelect = document.getElementById('availableCountries');
+                    if (countriesSelect) {
+                        countriesSelect.innerHTML = '<option value="">Выберите страну для добавления</option>';
+                        countries.forEach(country => {
+                            countriesSelect.innerHTML += `<option value="${country.id}">${country.nameRu}</option>`;
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading countries:', err);
+                });
+        }
+
         // Add language to tour (main form)
         function addLanguageToTourMain() {
             const select = document.getElementById('availableLanguages');
@@ -4754,8 +4949,8 @@
         }
         
         function openTourModal(tourId = null) {
-            // Загружаем страны при открытии формы
-            loadCountriesForSelect('tourCountry');
+            // Загружаем страны для нового мультиселект интерфейса
+            loadCountriesForTourForm();
             // 🎯 ДОБАВЛЕНО: Загружаем блоки туров для формы
             loadTourBlocksForForm();
             console.log('🔵 Opening tour modal with tourId:', tourId);
@@ -4764,9 +4959,13 @@
             window.currentTourId = tourId; // Также устанавливаем глобально
             window.tourImageURLs = [];
             
-            // ИСПРАВЛЕНО: Очищаем выбранные категории при открытии модального окна
+            // ИСПРАВЛЕНО: Очищаем выбранные элементы при открытии модального окна
             selectedCategories = [];
             updateSelectedCategoriesDisplay();
+            selectedCountries = [];
+            updateSelectedCountriesDisplay();
+            selectedCities = [];
+            updateSelectedCitiesDisplay();
             
             // Очищаем исключенные услуги при открытии модального окна
             const excludedContainer = document.getElementById('excludedOptions');
@@ -5434,6 +5633,9 @@
                 city: tourCityEl ? tourCityEl.options[tourCityEl.selectedIndex]?.text || '' : '',
                 countryId: tourCountryEl && tourCountryEl.value ? parseInt(tourCountryEl.value) : null,
                 cityId: tourCityEl && tourCityEl.value ? parseInt(tourCityEl.value) : null,
+                // Новые поля для множественного выбора стран и городов
+                countriesIds: safeGetValue('tourCountries', '[]') !== '[]' ? JSON.parse(safeGetValue('tourCountries', '[]')) : [],
+                citiesIds: safeGetValue('tourCities', '[]') !== '[]' ? JSON.parse(safeGetValue('tourCities', '[]')) : [],
                 durationDays: parseInt(durationDaysValue),
                 duration: durationDaysValue.toString(),
                 format: tourTypeEl ? tourTypeEl.value || '' : '',
