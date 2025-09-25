@@ -3881,31 +3881,7 @@
                         }
                     }
                     
-                    // Update enhanced tour category select (if exists)
-                    const enhancedSelect = document.getElementById('eTourCategoryId');
-                    if (enhancedSelect) {
-                        enhancedSelect.innerHTML = '<option value="">Выберите категорию</option>' +
-                            categories.map(cat => {
-                                let categoryName;
-                                try {
-                                    if (cat.name && typeof cat.name === 'string') {
-                                        const parsed = JSON.parse(cat.name);
-                                        categoryName = parsed.ru || parsed.en || 'Безымянная категория';
-                                    } else if (cat.name && cat.name.ru) {
-                                        categoryName = cat.name.ru;
-                                    } else if (cat.title) {
-                                        const parsed = typeof cat.title === 'string' ? JSON.parse(cat.title) : cat.title;
-                                        categoryName = parsed.ru || parsed.en || 'Безымянная категория';
-                                    } else {
-                                        categoryName = 'Безымянная категория';
-                                    }
-                                } catch (e) {
-                                    categoryName = cat.name || cat.title || 'Безымянная категория';
-                                }
-                                return `<option value="${cat.id}">${categoryName}</option>`;
-                            }).join('');
-                    }
-                    
+                    console.log('✅ Categories loaded successfully for availableCategories select');
                     return categories;
                 })
                 .catch(err => {
