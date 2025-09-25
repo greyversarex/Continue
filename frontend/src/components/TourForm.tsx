@@ -2,6 +2,82 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Tour, Category, ApiResponse } from '../types';
 
+// Компонент для множественного выбора
+interface MultiSelectProps {
+  options: { id: number; name: any }[];
+  selectedValues: number[];
+  onChange: (selected: number[]) => void;
+  placeholder: string;
+  disabled?: boolean;
+  className?: string;
+}
+
+const MultiSelect: React.FC<MultiSelectProps> = ({ 
+  options, 
+  selectedValues, 
+  onChange, 
+  placeholder, 
+  disabled = false,
+  className = ""
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleOption = (optionId: number) => {
+    if (selectedValues.includes(optionId)) {
+      onChange(selectedValues.filter(id => id !== optionId));
+    } else {
+      onChange([...selectedValues, optionId]);
+    }
+  };
+
+  const getDisplayText = () => {
+    if (selectedValues.length === 0) return placeholder;
+    if (selectedValues.length === 1) {
+      const selected = options.find(opt => opt.id === selectedValues[0]);
+      return selected ? (typeof selected.name === 'object' ? selected.name.ru : selected.name) : placeholder;
+    }
+    return `Выбрано: ${selectedValues.length}`;
+  };
+
+  return (
+    <div className={`relative ${className}`}>
+      <div
+        className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer bg-white ${disabled ? 'bg-gray-100' : ''}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+      >
+        <span className={selectedValues.length === 0 ? 'text-gray-400' : 'text-gray-900'}>
+          {getDisplayText()}
+        </span>
+        <span className="float-right">▼</span>
+      </div>
+      
+      {isOpen && !disabled && (
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          {options.map((option) => (
+            <div
+              key={option.id}
+              className={`px-3 py-2 cursor-pointer hover:bg-blue-50 flex items-center ${
+                selectedValues.includes(option.id) ? 'bg-blue-100' : ''
+              }`}
+              onClick={() => toggleOption(option.id)}
+            >
+              <input
+                type="checkbox"
+                checked={selectedValues.includes(option.id)}
+                onChange={() => {}} // Обрабатывается через onClick
+                className="mr-2"
+              />
+              <span>
+                {typeof option.name === 'object' ? option.name.ru : option.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 interface TourFormProps {
   tour?: Tour | null;
   onSuccess: () => void;
@@ -41,9 +117,13 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
     // Tour type and basic info
     tourType: '', // Персональный/Групповой персональный/Групповой общий
     
-    // Location
+    // Location (старые поля для совместимости)
     countryId: 0,
     cityId: 0,
+    
+    // Новые поля для множественного выбора
+    countriesIds: [] as number[],
+    citiesIds: [] as number[],
     
     // Duration
     durationDays: '',
@@ -98,14 +178,18 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
       setFormData({
         title_en: (typeof tour.title === 'object' ? tour.title.en : tour.title) || '',
         title_ru: (typeof tour.title === 'object' ? tour.title.ru : tour.title) || '',
-        title_tj: (typeof tour.title === 'object' ? tour.title.tj : '') || '',
+        title_tj: (typeof tour.title === 'object' && 'tj' in tour.title ? (tour.title as any).tj : '') || '',
         description_en: (typeof tour.description === 'object' ? tour.description.en : tour.description) || '',
         description_ru: (typeof tour.description === 'object' ? tour.description.ru : tour.description) || '',
-        description_tj: (typeof tour.description === 'object' ? tour.description.tj : '') || '',
+        description_tj: (typeof tour.description === 'object' && 'tj' in tour.description ? (tour.description as any).tj : '') || '',
         
         tourType: tourData.tourType || '',
         countryId: tourData.countryId || 0,
         cityId: tourData.cityId || 0,
+        
+        // Новые множественные поля
+        countriesIds: tourData.countriesIds || [],
+        citiesIds: tourData.citiesIds || [],
         durationDays: tourData.durationDays || tour.duration || '',
         durationHours: tourData.durationHours || '',
         price: tour.price || '',
@@ -128,9 +212,14 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
         associatedGuides: tourData.associatedGuides ? JSON.parse(tourData.associatedGuides) : []
       });
       
-      // Load cities for selected country
+      // Load cities for selected country (старая логика)
       if (tourData.countryId) {
         fetchCitiesForCountry(tourData.countryId);
+      }
+      
+      // Загружаем города для новых множественных стран
+      if (tourData.countriesIds && tourData.countriesIds.length > 0) {
+        fetchCitiesForCountries(tourData.countriesIds);
       }
     }
   }, [tour]);
@@ -165,6 +254,35 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
       }
     } catch (err) {
       console.error('Error fetching cities:', err);
+    }
+  };
+
+  const fetchCitiesForCountries = async (countryIds: number[]) => {
+    if (countryIds.length === 0) {
+      setCities([]);
+      return;
+    }
+    
+    try {
+      // Загружаем города для всех выбранных стран
+      const citiesPromises = countryIds.map(countryId => 
+        axios.get<ApiResponse>(`/api/cities?countryId=${countryId}`)
+      );
+      
+      const responses = await Promise.all(citiesPromises);
+      
+      // Объединяем все города из разных стран
+      const allCities = responses
+        .filter(response => response.data.success)
+        .flatMap(response => response.data.data)
+        .filter((city, index, self) => 
+          // Убираем дубликаты по id
+          index === self.findIndex(c => c.id === city.id)
+        );
+      
+      setCities(allCities);
+    } catch (err) {
+      console.error('Error fetching cities for multiple countries:', err);
     }
   };
 
@@ -208,11 +326,30 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
       }));
     }
   };
+
+  // Обработчики для множественного выбора
+  const handleCountriesChange = (selectedCountries: number[]) => {
+    setFormData(prev => ({ 
+      ...prev, 
+      countriesIds: selectedCountries,
+      citiesIds: [] // Сбрасываем города при изменении стран
+    }));
+    
+    // Загружаем города для выбранных стран
+    fetchCitiesForCountries(selectedCountries);
+  };
+
+  const handleCitiesChange = (selectedCities: number[]) => {
+    setFormData(prev => ({ 
+      ...prev, 
+      citiesIds: selectedCities
+    }));
+  };
   
   // Handle multiple checkbox selections  
   const handleMultipleSelection = (name: 'availableMonths' | 'availableDays' | 'languages' | 'associatedHotels' | 'associatedGuides', value: string | number) => {
     setFormData(prev => {
-      const currentValues = prev[name];
+      const currentValues = prev[name] as any[];
       
       // Ensure type consistency for numeric arrays
       let normalizedValue = value;
@@ -333,8 +470,8 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
   };
 
   // Remove associated hotel
-  const removeAssociatedHotel = (hotel: string) => {
-    const hotelId = parseInt(hotel, 10);
+  const removeAssociatedHotel = (hotel: number | string) => {
+    const hotelId = typeof hotel === 'number' ? hotel : parseInt(hotel, 10);
     setFormData(prev => ({
       ...prev,
       associatedHotels: prev.associatedHotels.filter(h => h !== hotelId)
@@ -353,8 +490,8 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
   };
 
   // Remove associated guide
-  const removeAssociatedGuide = (guide: string) => {
-    const guideId = parseInt(guide, 10);
+  const removeAssociatedGuide = (guide: number | string) => {
+    const guideId = typeof guide === 'number' ? guide : parseInt(guide, 10);
     setFormData(prev => ({
       ...prev,
       associatedGuides: prev.associatedGuides.filter(g => g !== guideId)
@@ -383,6 +520,10 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
       tourType: formData.tourType,
       countryId: formData.countryId,
       cityId: formData.cityId,
+      
+      // Новые множественные поля
+      countriesIds: formData.countriesIds,
+      citiesIds: formData.citiesIds,
       durationDays: formData.durationDays,
       durationHours: formData.durationHours,
       
@@ -442,6 +583,10 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
             tourType: '',
             countryId: 0,
             cityId: 0,
+            
+            // Новые поля множественного выбора
+            countriesIds: [],
+            citiesIds: [],
             durationDays: '',
             durationHours: '',
             price: '',
@@ -640,50 +785,81 @@ const TourForm: React.FC<TourFormProps> = ({ tour, onSuccess, onCancel }) => {
         </div>
 
         {/* Location: Country and City */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="countryId" className="block text-sm font-medium text-gray-700 mb-1">
-              Страна *
-            </label>
-            <select
-              id="countryId"
-              name="countryId"
-              value={formData.countryId}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value={0}>Выберите страну</option>
-              {countries.map((country) => (
-                <option key={country.id} value={country.id}>
-                  {typeof country.name === 'object' ? country.name.ru : country.name}
-                </option>
-              ))}
-            </select>
+        <div className="space-y-4">
+          {/* Новые множественные селекты */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Страны (множественный выбор) *
+              </label>
+              <MultiSelect
+                options={countries}
+                selectedValues={formData.countriesIds}
+                onChange={handleCountriesChange}
+                placeholder="Выберите страны"
+                className=""
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Города (множественный выбор) *
+              </label>
+              <MultiSelect
+                options={cities}
+                selectedValues={formData.citiesIds}
+                onChange={handleCitiesChange}
+                placeholder={formData.countriesIds.length === 0 ? "Сначала выберите страны" : "Выберите города"}
+                disabled={formData.countriesIds.length === 0}
+                className=""
+              />
+            </div>
           </div>
 
-          <div>
-            <label htmlFor="cityId" className="block text-sm font-medium text-gray-700 mb-1">
-              Город *
-            </label>
-            <select
-              id="cityId"
-              name="cityId"
-              value={formData.cityId}
-              onChange={handleChange}
-              required
-              disabled={!formData.countryId}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
-            >
-              <option value={0}>
-                {formData.countryId ? 'Выберите город' : 'Сначала выберите страну'}
-              </option>
-              {cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {typeof city.name === 'object' ? city.name.ru : city.name}
+          {/* Старые одиночные селекты для совместимости (скрыты) */}
+          <div className="hidden grid md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="countryId" className="block text-sm font-medium text-gray-700 mb-1">
+                Страна (одиночный выбор) - для совместимости
+              </label>
+              <select
+                id="countryId"
+                name="countryId"
+                value={formData.countryId}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value={0}>Выберите страну</option>
+                {countries.map((country) => (
+                  <option key={country.id} value={country.id}>
+                    {typeof country.name === 'object' ? country.name.ru : country.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="cityId" className="block text-sm font-medium text-gray-700 mb-1">
+                Город (одиночный выбор) - для совместимости
+              </label>
+              <select
+                id="cityId"
+                name="cityId"
+                value={formData.cityId}
+                onChange={handleChange}
+                disabled={!formData.countryId}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+              >
+                <option value={0}>
+                  {formData.countryId ? 'Выберите город' : 'Сначала выберите страну'}
                 </option>
-              ))}
-            </select>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {typeof city.name === 'object' ? city.name.ru : city.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
