@@ -93,6 +93,8 @@ model Tour {
   pricingComponents  TourPricingComponent[]
   tourBlockAssignments TourBlockAssignment[] // Новая связь many-to-many
   tourDrivers        TourDriver[]           // Связь с водителями
+  tourCountries      TourCountry[]         // Many-to-many связь со странами
+  tourCities         TourCity[]            // Many-to-many связь с городами
   assignedGuide      Guide?                 @relation("AssignedGuide", fields: [assignedGuideId], references: [id])
   category           Category               @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   tourCountry        Country?               @relation(fields: [countryId], references: [id])
@@ -282,6 +284,34 @@ model TourGuide {
   @@map("tour_guides")
 }
 
+// Промежуточная таблица для many-to-many связи туров со странами
+model TourCountry {
+  id        Int     @id @default(autoincrement())
+  tourId    Int     @map("tour_id")
+  countryId Int     @map("country_id")
+  isPrimary Boolean @default(false) @map("is_primary") // Основная страна для обратной совместимости
+  createdAt DateTime @default(now()) @map("created_at")
+  tour      Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  country   Country @relation("TourCountries", fields: [countryId], references: [id], onDelete: Cascade)
+
+  @@unique([tourId, countryId])
+  @@map("tour_countries")
+}
+
+// Промежуточная таблица для many-to-many связи туров с городами
+model TourCity {
+  id        Int     @id @default(autoincrement())
+  tourId    Int     @map("tour_id")
+  cityId    Int     @map("city_id")
+  isPrimary Boolean @default(false) @map("is_primary") // Основной город для обратной совместимости
+  createdAt DateTime @default(now()) @map("created_at")
+  tour      Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  city      City    @relation("TourCities", fields: [cityId], references: [id], onDelete: Cascade)
+
+  @@unique([tourId, cityId])
+  @@map("tour_cities")
+}
+
 model Customer {
   id        Int      @id @default(autoincrement())
   fullName  String   @map("full_name")
@@ -458,12 +488,13 @@ model Country {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  cities      City[]
-  tours       Tour[]   // Связь с турами
-  hotels      Hotel[]    // Связь с отелями
-  drivers     Driver[]   // Связь с водителями
-  guides      Guide[]    // Связь с гидами
-  tourAgents  TourAgent[] // Связь с турагентами
+  cities         City[]
+  tours          Tour[]         // Связь с турами (старая)
+  tourCountries  TourCountry[]  @relation("TourCountries") // Many-to-many связь с турами
+  hotels         Hotel[]        // Связь с отелями
+  drivers        Driver[]       // Связь с водителями
+  guides         Guide[]        // Связь с гидами
+  tourAgents     TourAgent[]    // Связь с турагентами
 
   @@map("countries")
 }
@@ -477,8 +508,9 @@ model City {
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  country    Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
-  tours      Tour[]   // Связь с турами
+  country    Country    @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  tours      Tour[]     // Связь с турами (старая)
+  tourCities TourCity[] @relation("TourCities") // Many-to-many связь с турами
   hotels     Hotel[]    // Связь с отелями
   drivers    Driver[]   // Связь с водителями
   guides     Guide[]    // Связь с гидами

@@ -215,7 +215,7 @@ export class TourController {
   static async createTour(req: Request, res: Response, next: NextFunction) {
     try {
       console.log('Creating tour with data:', req.body);
-      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, countryId, cityId, country, city, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
+      let { title, description, shortDescription, duration, price, priceType, originalPrice, categoryId, countryId, cityId, country, city, countriesIds, citiesIds, durationDays, format, tourType, difficulty, maxPeople, minPeople, mainImage, images, services, highlights, itinerary, included, includes, excluded, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, isFeatured, startDate, endDate, rating, reviewsCount, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed
       if (typeof title === 'string') {
@@ -304,6 +304,30 @@ export class TourController {
       const minPeopleNumber = minPeople ? parseInt(minPeople) : undefined;
       const ratingNumber = rating ? parseFloat(rating) : undefined;
       const reviewsCountNumber = reviewsCount ? parseInt(reviewsCount) : undefined;
+
+      // Parse arrays for multiple countries and cities
+      let countriesIdsNumbers: number[] | undefined;
+      let citiesIdsNumbers: number[] | undefined;
+
+      if (countriesIds && Array.isArray(countriesIds) && countriesIds.length > 0) {
+        countriesIdsNumbers = countriesIds.map(id => parseInt(id)).filter(id => !isNaN(id));
+        if (countriesIdsNumbers.length === 0) {
+          return res.status(400).json({
+            success: false,
+            error: 'Invalid countries IDs format'
+          });
+        }
+      }
+
+      if (citiesIds && Array.isArray(citiesIds) && citiesIds.length > 0) {
+        citiesIdsNumbers = citiesIds.map(id => parseInt(id)).filter(id => !isNaN(id));
+        if (citiesIdsNumbers.length === 0) {
+          return res.status(400).json({
+            success: false,
+            error: 'Invalid cities IDs format'
+          });
+        }
+      }
       
       if (isNaN(categoryIdNumber)) {
         return res.status(400).json({
@@ -336,10 +360,14 @@ export class TourController {
         priceType: priceType || 'за человека',
         originalPrice: originalPrice || null,
         categoryId: categoryIdNumber,
+        // Старые одиночные поля для совместимости
         countryId: countryIdNumber,
         cityId: cityIdNumber,
         country: country || null,
         city: city || null,
+        // Новые массивы для множественного выбора
+        countriesIds: countriesIdsNumbers,
+        citiesIds: citiesIdsNumbers,
         format: format || null,
         tourType: tourType || null,
         durationDays: durationDaysNumber,
@@ -526,7 +554,7 @@ export class TourController {
         });
       }
 
-      let { title, description, duration, price, categoryId, countryId, cityId, country, city, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
+      let { title, description, duration, price, categoryId, countryId, cityId, country, city, countriesIds, citiesIds, durationDays, format, tourType, priceType, pickupInfo, startTimeOptions, languages, availableMonths, availableDays, startDate, endDate, shortDescription, mainImage, images, services, highlights, itinerary, included, includes, excluded, difficulty, maxPeople, minPeople, rating, reviewsCount, isFeatured, hotelIds, guideIds, driverIds, tourBlockIds, pricingComponents } = req.body;
 
       // Parse JSON strings if needed (same as createTour)
       if (typeof title === 'string') {
@@ -580,6 +608,38 @@ export class TourController {
       const ratingNumber = rating ? parseFloat(rating) : undefined;
       const reviewsCountNumber = reviewsCount ? parseInt(reviewsCount) : undefined;
 
+      // Parse arrays for multiple countries and cities
+      let countriesIdsNumbers: number[] | undefined;
+      let citiesIdsNumbers: number[] | undefined;
+
+      if (countriesIds !== undefined) {
+        if (Array.isArray(countriesIds) && countriesIds.length > 0) {
+          countriesIdsNumbers = countriesIds.map(id => parseInt(id)).filter(id => !isNaN(id));
+          if (countriesIdsNumbers.length === 0) {
+            return res.status(400).json({
+              success: false,
+              error: 'Invalid countries IDs format'
+            });
+          }
+        } else {
+          countriesIdsNumbers = []; // Empty array to clear existing relations
+        }
+      }
+
+      if (citiesIds !== undefined) {
+        if (Array.isArray(citiesIds) && citiesIds.length > 0) {
+          citiesIdsNumbers = citiesIds.map(id => parseInt(id)).filter(id => !isNaN(id));
+          if (citiesIdsNumbers.length === 0) {
+            return res.status(400).json({
+              success: false,
+              error: 'Invalid cities IDs format'
+            });
+          }
+        } else {
+          citiesIdsNumbers = []; // Empty array to clear existing relations
+        }
+      }
+
       const updateData: Partial<CreateTourData> = {};
       if (title) updateData.title = title;
       if (description) updateData.description = description;
@@ -591,6 +651,9 @@ export class TourController {
       if (cityIdNumber !== undefined) updateData.cityId = cityIdNumber;
       if (country !== undefined) updateData.country = country;
       if (city !== undefined) updateData.city = city;
+      // Новые поля для множественного выбора
+      if (countriesIdsNumbers !== undefined) updateData.countriesIds = countriesIdsNumbers;
+      if (citiesIdsNumbers !== undefined) updateData.citiesIds = citiesIdsNumbers;
       if (durationDaysNumber !== undefined) updateData.durationDays = durationDaysNumber;
       if (format !== undefined) updateData.format = format;
       if (tourType !== undefined) updateData.tourType = tourType;

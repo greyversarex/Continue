@@ -28,6 +28,14 @@ export interface TourData {
   priceType?: string;
   categoryId: number;
   category?: CategoryData;
+  // Старые поля для обратной совместимости
+  countryId?: number | null;
+  cityId?: number | null;
+  // Новые поля для множественного выбора
+  countriesIds?: number[];
+  citiesIds?: number[];
+  countries?: Array<{id: number; name: string; nameRu: string; nameEn: string}>;
+  cities?: Array<{id: number; name: string; nameRu: string; nameEn: string}>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,10 +50,14 @@ export interface CreateTourData {
   originalPrice?: string;
   categoryId: number;
   tourBlockId?: number;
+  // Старые поля для обратной совместимости
   countryId?: number;
   cityId?: number;
   country?: string;
   city?: string;
+  // Новые поля для множественного выбора
+  countriesIds?: number[];
+  citiesIds?: number[];
   durationDays?: number;
   format?: string;
   tourType?: string;

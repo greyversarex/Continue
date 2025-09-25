@@ -31,6 +31,30 @@ export class TourModel {
       where: { id },
       include: {
         category: true,
+        // Старые одиночные связи для совместимости
+        tourCountry: true,
+        tourCity: true,
+        // Новые множественные связи
+        tourCountries: {
+          include: {
+            country: true
+          },
+          orderBy: {
+            isPrimary: 'desc' // Показываем основную страну первой
+          }
+        },
+        tourCities: {
+          include: {
+            city: {
+              include: {
+                country: true // Включаем информацию о стране для города
+              }
+            }
+          },
+          orderBy: {
+            isPrimary: 'desc' // Показываем основной город первым
+          }
+        },
         tourHotels: {
           include: {
             hotel: true
@@ -72,52 +96,140 @@ export class TourModel {
       throw new Error('Category not found');
     }
 
-    return await prisma.tour.create({
-      data: {
-        title: typeof data.title === 'object' ? data.title : { ru: String(data.title || ''), en: String(data.title || '') },
-        description: typeof data.description === 'object' ? data.description : { ru: String(data.description || ''), en: String(data.description || '') },
-        shortDesc: data.shortDescription ? (typeof data.shortDescription === 'object' ? data.shortDescription : { ru: String(data.shortDescription), en: String(data.shortDescription) }) : undefined,
-        duration: String(data.duration), // Ensure duration is a string
-        price: data.price,
-        priceType: data.priceType || 'за человека',
-        originalPrice: data.originalPrice || null,
-        categoryId: data.categoryId,
-        country: data.country,
-        city: data.city,
-        format: data.format,
-        tourType: data.tourType || null,
-        durationDays: data.durationDays || null,
-        difficulty: data.difficulty || null,
-        maxPeople: data.maxPeople || null,
-        minPeople: data.minPeople || null,
-        mainImage: data.mainImage || null,
-        images: data.images || null,
-        highlights: data.highlights || null,
-        itinerary: data.itinerary || null,
-        included: data.included || null,
-        includes: data.includes || null,
-        excluded: data.excluded || null,
-        pickupInfo: data.pickupInfo || null,
-        startTimeOptions: data.startTimeOptions || null,
-        languages: data.languages || null,
-        availableMonths: data.availableMonths || null,
-        availableDays: data.availableDays || null,
-        rating: data.rating || null,
-        reviewsCount: data.reviewsCount || null,
-        theme: data.theme || null,
-        assignedGuideId: data.assignedGuideId || null,
-        requirements: data.requirements || null,
-        tags: data.tags || null,
-        location: data.location || null,
-        services: data.services || null,
-        isFeatured: data.isFeatured || false,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        pricingData: data.pricingComponents || null
-      },
-      include: {
-        category: true
+    // Валидация городов относительно стран
+    if (data.citiesIds && data.countriesIds && data.citiesIds.length > 0 && data.countriesIds.length > 0) {
+      const cities = await prisma.city.findMany({
+        where: { 
+          id: { in: data.citiesIds },
+          countryId: { in: data.countriesIds }
+        }
+      });
+
+      if (cities.length !== data.citiesIds.length) {
+        throw new Error('Some cities do not belong to the selected countries');
       }
+    }
+
+    // Создаём тур и связи в транзакции
+    return await prisma.$transaction(async (prisma) => {
+      // Создаём основной тур
+      const tour = await prisma.tour.create({
+        data: {
+          title: typeof data.title === 'object' ? data.title : { ru: String(data.title || ''), en: String(data.title || '') },
+          description: typeof data.description === 'object' ? data.description : { ru: String(data.description || ''), en: String(data.description || '') },
+          shortDesc: data.shortDescription ? (typeof data.shortDescription === 'object' ? data.shortDescription : { ru: String(data.shortDescription), en: String(data.shortDescription) }) : undefined,
+          duration: String(data.duration), // Ensure duration is a string
+          price: data.price,
+          priceType: data.priceType || 'за человека',
+          originalPrice: data.originalPrice || null,
+          categoryId: data.categoryId,
+          // Старые поля для совместимости (из новых массивов берём первые элементы)
+          countryId: data.countriesIds && data.countriesIds.length > 0 ? data.countriesIds[0] : data.countryId || null,
+          cityId: data.citiesIds && data.citiesIds.length > 0 ? data.citiesIds[0] : data.cityId || null,
+          country: data.country,
+          city: data.city,
+          format: data.format,
+          tourType: data.tourType || null,
+          durationDays: data.durationDays || null,
+          difficulty: data.difficulty || null,
+          maxPeople: data.maxPeople || null,
+          minPeople: data.minPeople || null,
+          mainImage: data.mainImage || null,
+          images: data.images || null,
+          highlights: data.highlights || null,
+          itinerary: data.itinerary || null,
+          included: data.included || null,
+          includes: data.includes || null,
+          excluded: data.excluded || null,
+          pickupInfo: data.pickupInfo || null,
+          startTimeOptions: data.startTimeOptions || null,
+          languages: data.languages || null,
+          availableMonths: data.availableMonths || null,
+          availableDays: data.availableDays || null,
+          rating: data.rating || null,
+          reviewsCount: data.reviewsCount || null,
+          theme: data.theme || null,
+          assignedGuideId: data.assignedGuideId || null,
+          requirements: data.requirements || null,
+          tags: data.tags || null,
+          location: data.location || null,
+          services: data.services || null,
+          isFeatured: data.isFeatured || false,
+          startDate: data.startDate,
+          endDate: data.endDate,
+          pricingData: data.pricingComponents || null
+        }
+      });
+
+      // Создаём связи со странами
+      if (data.countriesIds && data.countriesIds.length > 0) {
+        await Promise.all(
+          data.countriesIds.map((countryId, index) =>
+            prisma.tourCountry.create({
+              data: {
+                tourId: tour.id,
+                countryId: countryId,
+                isPrimary: index === 0 // Первая страна считается основной
+              }
+            })
+          )
+        );
+      } else if (data.countryId) {
+        // Если передан только старый одиночный countryId, создаём primary связь
+        await prisma.tourCountry.create({
+          data: {
+            tourId: tour.id,
+            countryId: data.countryId,
+            isPrimary: true
+          }
+        });
+      }
+
+      // Создаём связи с городами
+      if (data.citiesIds && data.citiesIds.length > 0) {
+        await Promise.all(
+          data.citiesIds.map((cityId, index) =>
+            prisma.tourCity.create({
+              data: {
+                tourId: tour.id,
+                cityId: cityId,
+                isPrimary: index === 0 // Первый город считается основным
+              }
+            })
+          )
+        );
+      } else if (data.cityId) {
+        // Если передан только старый одиночный cityId, создаём primary связь
+        await prisma.tourCity.create({
+          data: {
+            tourId: tour.id,
+            cityId: data.cityId,
+            isPrimary: true
+          }
+        });
+      }
+
+      // Возвращаем тур с включёнными связями
+      return await prisma.tour.findUnique({
+        where: { id: tour.id },
+        include: {
+          category: true,
+          tourCountries: {
+            include: {
+              country: true
+            }
+          },
+          tourCities: {
+            include: {
+              city: {
+                include: {
+                  country: true
+                }
+              }
+            }
+          }
+        }
+      });
     });
   }
 
@@ -168,7 +280,21 @@ export class TourModel {
     if (data.endDate !== undefined) updateData.endDate = data.endDate;
     if (data.pricingComponents !== undefined) updateData.pricingData = data.pricingComponents;
     if (data.assignedGuideId !== undefined) updateData.assignedGuideId = data.assignedGuideId;
-    
+
+    // Валидация городов относительно стран
+    if (data.citiesIds && data.countriesIds && data.citiesIds.length > 0 && data.countriesIds.length > 0) {
+      const cities = await prisma.city.findMany({
+        where: { 
+          id: { in: data.citiesIds },
+          countryId: { in: data.countriesIds }
+        }
+      });
+
+      if (cities.length !== data.citiesIds.length) {
+        throw new Error('Some cities do not belong to the selected countries');
+      }
+    }
+
     if (data.categoryId) {
       // Validate that the category exists
       const category = await prisma.category.findUnique({
@@ -180,12 +306,143 @@ export class TourModel {
       updateData.categoryId = data.categoryId;
     }
 
-    return await prisma.tour.update({
-      where: { id },
-      data: updateData,
-      include: {
-        category: true
+    // Обновляем старые поля для совместимости
+    if (data.countriesIds && data.countriesIds.length > 0) {
+      updateData.countryId = data.countriesIds[0];
+    } else if (data.countryId !== undefined) {
+      updateData.countryId = data.countryId;
+    }
+
+    if (data.citiesIds && data.citiesIds.length > 0) {
+      updateData.cityId = data.citiesIds[0];
+    } else if (data.cityId !== undefined) {
+      updateData.cityId = data.cityId;
+    }
+
+    return await prisma.$transaction(async (prisma) => {
+      // Обновляем основные поля тура
+      const updatedTour = await prisma.tour.update({
+        where: { id },
+        data: updateData
+      });
+
+      // Обновляем связи со странами, если переданы новые массивы
+      if (data.countriesIds !== undefined) {
+        // Удаляем старые связи
+        await prisma.tourCountry.deleteMany({
+          where: { tourId: id }
+        });
+
+        // Создаём новые связи
+        if (data.countriesIds.length > 0) {
+          await Promise.all(
+            data.countriesIds.map((countryId, index) =>
+              prisma.tourCountry.create({
+                data: {
+                  tourId: id,
+                  countryId: countryId,
+                  isPrimary: index === 0 // Первая страна считается основной
+                }
+              })
+            )
+          );
+        }
+      } else if (data.countryId !== undefined && data.countryId !== null) {
+        // Если передан только старый одиночный countryId, обновляем/создаём primary связь
+        const existingCountryLink = await prisma.tourCountry.findFirst({
+          where: { tourId: id, isPrimary: true }
+        });
+
+        if (existingCountryLink && existingCountryLink.countryId !== data.countryId) {
+          // Обновляем существующую primary связь
+          await prisma.tourCountry.update({
+            where: { id: existingCountryLink.id },
+            data: { countryId: data.countryId }
+          });
+        } else if (!existingCountryLink) {
+          // Создаём новую primary связь
+          await prisma.tourCountry.create({
+            data: {
+              tourId: id,
+              countryId: data.countryId,
+              isPrimary: true
+            }
+          });
+        }
       }
+
+      // Обновляем связи с городами, если переданы новые массивы
+      if (data.citiesIds !== undefined) {
+        // Удаляем старые связи
+        await prisma.tourCity.deleteMany({
+          where: { tourId: id }
+        });
+
+        // Создаём новые связи
+        if (data.citiesIds.length > 0) {
+          await Promise.all(
+            data.citiesIds.map((cityId, index) =>
+              prisma.tourCity.create({
+                data: {
+                  tourId: id,
+                  cityId: cityId,
+                  isPrimary: index === 0 // Первый город считается основным
+                }
+              })
+            )
+          );
+        }
+      } else if (data.cityId !== undefined && data.cityId !== null) {
+        // Если передан только старый одиночный cityId, обновляем/создаём primary связь
+        const existingCityLink = await prisma.tourCity.findFirst({
+          where: { tourId: id, isPrimary: true }
+        });
+
+        if (existingCityLink && existingCityLink.cityId !== data.cityId) {
+          // Обновляем существующую primary связь
+          await prisma.tourCity.update({
+            where: { id: existingCityLink.id },
+            data: { cityId: data.cityId }
+          });
+        } else if (!existingCityLink) {
+          // Создаём новую primary связь
+          await prisma.tourCity.create({
+            data: {
+              tourId: id,
+              cityId: data.cityId,
+              isPrimary: true
+            }
+          });
+        }
+      }
+
+      // Возвращаем обновлённый тур с включёнными связями
+      return await prisma.tour.findUnique({
+        where: { id },
+        include: {
+          category: true,
+          tourCountries: {
+            include: {
+              country: true
+            },
+            orderBy: {
+              isPrimary: 'desc'
+            }
+          },
+          tourCities: {
+            include: {
+              city: {
+                include: {
+                  country: true
+                }
+              }
+            },
+            orderBy: {
+              isPrimary: 'desc'
+            }
+          }
+        }
+      });
     });
   }
 
