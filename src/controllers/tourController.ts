@@ -1188,7 +1188,7 @@ export class CategoryController {
    */
   static async createCategory(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, title }: CreateCategoryData = req.body;
+      const { name, title, type }: CreateCategoryData = req.body;
       
       // Support both 'name' and 'title' fields for flexibility
       const categoryName = name || title;
@@ -1201,13 +1201,25 @@ export class CategoryController {
         });
       }
 
+      // Validate type field (only if provided)
+      const categoryType = type || 'tour'; // Default to 'tour' if not provided
+      if (type && type !== 'tour' && type !== 'hotel') {
+        return res.status(400).json({
+          success: false,
+          error: 'Type must be either "tour" or "hotel"'
+        });
+      }
+
       // Ensure both languages are present
       const finalName = {
         en: categoryName.en || categoryName.ru || '',
         ru: categoryName.ru || categoryName.en || ''
       };
 
-      const category = await CategoryModel.create({ name: finalName });
+      const category = await CategoryModel.create({ 
+        name: finalName, 
+        type: categoryType 
+      });
 
       // Parse JSON fields for response
       const parsedCategory = {
@@ -1242,7 +1254,7 @@ export class CategoryController {
         });
       }
 
-      const { name } = req.body;
+      const { name, type } = req.body;
 
       // Validation for provided fields
       if (name && (!name.en || !name.ru)) {
@@ -1252,8 +1264,17 @@ export class CategoryController {
         });
       }
 
+      // Validate type field (only if provided and not empty)
+      if (type !== undefined && type !== null && type !== '' && type !== 'tour' && type !== 'hotel') {
+        return res.status(400).json({
+          success: false,
+          error: 'Type must be either "tour" or "hotel"'
+        });
+      }
+
       const updateData: Partial<CreateCategoryData> = {};
       if (name) updateData.name = name;
+      if (type) updateData.type = type;
 
       const category = await CategoryModel.update(id, updateData);
 

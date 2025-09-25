@@ -9,11 +9,13 @@ export interface MultilingualContent {
 export interface CategoryData {
   id: number;
   name: MultilingualContent;
+  type?: string; // "tour" or "hotel"
 }
 
 export interface CreateCategoryData {
   name?: MultilingualContent;
   title?: MultilingualContent;
+  type?: string; // "tour" or "hotel"
 }
 
 // Tour types

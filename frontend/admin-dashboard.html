@@ -688,6 +688,7 @@
                                         <th>ID</th>
                                         <th data-translate="table.name_ru">Название (RU)</th>
                                         <th data-translate="table.name_en">Название (EN)</th>
+                                        <th>Тип</th>
                                         <th data-translate="table.actions">Действия</th>
                                     </tr>
                                 </thead>
@@ -1761,6 +1762,14 @@
                 <div class="form-group">
                     <label class="form-label">Название категории (English) *</label>
                     <input type="text" class="form-input" id="categoryNameEn" placeholder="Example: Day Tours" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Тип категории *</label>
+                    <select class="form-input" id="categoryType" required>
+                        <option value="tour">Категория туров</option>
+                        <option value="hotel">Категория отелей</option>
+                    </select>
                 </div>
                 
                 <div class="flex justify-end gap-3 mt-6">
@@ -5763,7 +5772,7 @@
                     const tbody = document.getElementById('categoriesTable');
                     const categories = data.data || data.categories || [];
                     if (categories.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500">Нет категорий</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500">Нет категорий</td></tr>';
                         return;
                     }
                     
@@ -5790,11 +5799,16 @@
                         
                         // Remove tours count column for now (backend might not support it)
                         
+                        // Get category type
+                        const categoryType = category.type || 'tour';
+                        const typeDisplay = categoryType === 'tour' ? '🎯 Туры' : '🏨 Отели';
+                        
                         return `
                             <tr>
                                 <td>${category.id}</td>
                                 <td class="font-medium">${nameRu}</td>
                                 <td class="font-medium">${nameEn}</td>
+                                <td><span class="badge ${categoryType === 'tour' ? 'badge-info' : 'badge-success'}">${typeDisplay}</span></td>
                                 <td>
                                     <button onclick="editCategory(${category.id})" class="text-blue-600 hover:text-blue-800 mr-2" title="Редактировать категорию">
                                         <i class="fas fa-edit"></i>
@@ -5810,7 +5824,7 @@
                 .catch(err => {
                     console.error('Error loading categories:', err);
                     document.getElementById('categoriesTable').innerHTML = 
-                        '<tr><td colspan="4" class="text-center text-red-500">Ошибка загрузки данных</td></tr>';
+                        '<tr><td colspan="5" class="text-center text-red-500">Ошибка загрузки данных</td></tr>';
                 });
         }
         
@@ -5845,6 +5859,12 @@
                                     document.getElementById('categoryNameEn').value = category.name;
                                 }
                             }
+                            
+                            // Load category type
+                            const categoryType = document.getElementById('categoryType');
+                            if (categoryType) {
+                                categoryType.value = category.type || 'tour';
+                            }
                         }
                     })
                     .catch(err => {
@@ -5864,6 +5884,7 @@
             document.getElementById('categoryModal').style.display = 'none';
             document.getElementById('categoryForm').reset();
             document.getElementById('editCategoryId').value = '';
+            document.getElementById('categoryType').value = 'tour'; // Reset to default
         }
         
         function editCategory(id) {
@@ -5904,9 +5925,15 @@
                     const categoryId = document.getElementById('editCategoryId').value;
                     const nameRu = document.getElementById('categoryNameRu').value.trim();
                     const nameEn = document.getElementById('categoryNameEn').value.trim();
+                    const categoryType = document.getElementById('categoryType').value;
                     
                     if (!nameRu || !nameEn) {
                         alert('Пожалуйста, заполните название категории на обоих языках');
+                        return;
+                    }
+                    
+                    if (!categoryType) {
+                        alert('Пожалуйста, выберите тип категории');
                         return;
                     }
                     
@@ -5914,7 +5941,8 @@
                         name: {
                             ru: nameRu,
                             en: nameEn
-                        }
+                        },
+                        type: categoryType
                     };
                     
                     const url = categoryId ? 

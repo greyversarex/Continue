@@ -10,6 +10,7 @@ datasource db {
 model Category {
   id    Int    @id @default(autoincrement())
   name  String
+  type  String @default("tour") // "tour" or "hotel"
   tours Tour[]
 
   @@map("categories")
