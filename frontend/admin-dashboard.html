@@ -2210,23 +2210,45 @@
                     
 
 
-                    <!-- Программа тура -->
+                    <!-- Программа тура по дням -->
                     <div class="form-group col-span-2">
-                        <label class="form-label">Программа тура</label>
-                        <div id="itineraryList" class="space-y-3 mb-3">
-                            <!-- Динамически добавляемые элементы -->
+                        <div class="flex justify-between items-center mb-4">
+                            <label class="form-label">Программа тура по дням</label>
+                            <button type="button" onclick="addNewDay()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                                <i class="fas fa-plus"></i>
+                                Добавить день
+                            </button>
                         </div>
-                        <div class="bg-gray-50 p-4 rounded border">
+
+                        <!-- Табы по дням -->
+                        <div class="bg-white border rounded-lg">
+                            <!-- Навигация по дням -->
+                            <div id="dayTabs" class="flex flex-wrap border-b bg-gray-50 rounded-t-lg">
+                                <!-- Табы дней будут добавляться динамически -->
+                            </div>
+
+                            <!-- Контент дней -->
+                            <div id="dayContents" class="p-4">
+                                <!-- Контент каждого дня будет добавляться динамически -->
+                            </div>
+                        </div>
+
+                        <!-- Форма добавления активностей для текущего дня -->
+                        <div class="bg-gray-50 p-4 rounded border mt-4" id="activityForm">
+                            <div class="mb-3">
+                                <h4 class="font-semibold text-gray-700 mb-2" id="currentDayLabel">Добавить активность в День 1</h4>
+                            </div>
                             <div class="grid grid-cols-4 gap-3 mb-3">
                                 <input type="time" class="form-input" id="newItineraryTime" placeholder="08:00">
                                 <input type="text" class="form-input col-span-2" id="newItineraryTitle" data-translate-placeholder="placeholder.meeting_with_guide" placeholder="Встреча с гидом">
-                                <button type="button" onclick="addItinerary()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                                <button type="button" onclick="addItineraryToCurrentDay()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
                                     Добавить
                                 </button>
                             </div>
                             <textarea class="form-input" rows="2" id="newItineraryDesc" data-translate-placeholder="placeholder.detailed_stage_description" placeholder="Подробное описание этапа программы"></textarea>
                         </div>
-                        <small class="text-gray-500">Создайте расписание тура по времени</small>
+
+                        <small class="text-gray-500">Создайте детальную программу тура по дням. Каждый день может содержать несколько активностей.</small>
                     </div>
 
                     <!-- Доступное время начала тура -->
@@ -4325,8 +4347,76 @@
             updateStartTimesList();
         }
 
-        // Функции управления программой тура
-        function addItinerary() {
+        // Функции управления многодневной программой тура
+        window.tourDaysItinerary = window.tourDaysItinerary || {}; // Объект с программой по дням
+        window.currentActiveDay = 1; // Текущий активный день
+
+        function initializeDayProgram() {
+            if (!window.tourDaysItinerary[1]) {
+                window.tourDaysItinerary[1] = [];
+            }
+            updateDayTabs();
+            updateDayContents();
+            switchToDay(1);
+        }
+
+        function addNewDay() {
+            const maxDay = Math.max(...Object.keys(window.tourDaysItinerary).map(d => parseInt(d)), 0);
+            const newDay = maxDay + 1;
+            window.tourDaysItinerary[newDay] = [];
+            updateDayTabs();
+            updateDayContents();
+            switchToDay(newDay);
+        }
+
+        function removeDay(dayNumber) {
+            if (Object.keys(window.tourDaysItinerary).length <= 1) {
+                alert('Нельзя удалить последний день программы');
+                return;
+            }
+            
+            if (confirm(`Удалить День ${dayNumber} и всю его программу?`)) {
+                delete window.tourDaysItinerary[dayNumber];
+                
+                // Переключаемся на первый доступный день
+                const firstDay = Math.min(...Object.keys(window.tourDaysItinerary).map(d => parseInt(d)));
+                switchToDay(firstDay);
+                
+                updateDayTabs();
+                updateDayContents();
+            }
+        }
+
+        function switchToDay(dayNumber) {
+            window.currentActiveDay = dayNumber;
+            
+            // Обновляем активные табы
+            document.querySelectorAll('.day-tab').forEach(tab => {
+                tab.classList.remove('bg-blue-500', 'text-white');
+                tab.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            const activeTab = document.querySelector(`[data-day="${dayNumber}"]`);
+            if (activeTab) {
+                activeTab.classList.remove('bg-gray-200', 'text-gray-700');
+                activeTab.classList.add('bg-blue-500', 'text-white');
+            }
+
+            // Обновляем контент
+            document.querySelectorAll('.day-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            const activeContent = document.getElementById(`day-content-${dayNumber}`);
+            if (activeContent) {
+                activeContent.classList.remove('hidden');
+            }
+
+            // Обновляем заголовок формы добавления
+            document.getElementById('currentDayLabel').textContent = `Добавить активность в День ${dayNumber}`;
+        }
+
+        function addItineraryToCurrentDay() {
             const time = safeGetValue('newItineraryTime', '');
             const itineraryTitle = safeGetValue('newItineraryTitle', '').trim();
             const desc = safeGetValue('newItineraryDesc', '').trim();
@@ -4335,47 +4425,92 @@
                 const itineraryItem = { 
                     time, 
                     title: itineraryTitle, 
-                    description: desc || '' // Описание необязательное
+                    description: desc || ''
                 };
                 
+                if (!window.tourDaysItinerary[window.currentActiveDay]) {
+                    window.tourDaysItinerary[window.currentActiveDay] = [];
+                }
                 
-                window.tourItinerary = window.tourItinerary || [];
-                window.tourItinerary.push(itineraryItem);
-                updateItineraryList();
+                window.tourDaysItinerary[window.currentActiveDay].push(itineraryItem);
+                updateDayContents();
+                
+                // Очищаем форму
                 document.getElementById('newItineraryTime').value = '';
                 document.getElementById('newItineraryTitle').value = '';
                 document.getElementById('newItineraryDesc').value = '';
             } else {
-                alert('Пожалуйста, заполните время и название этапа тура');
+                alert('Пожалуйста, заполните время и название активности');
             }
         }
 
-        function removeItinerary(index) {
-            window.tourItinerary.splice(index, 1);
-            updateItineraryList();
+        function removeItineraryFromDay(dayNumber, index) {
+            if (window.tourDaysItinerary[dayNumber]) {
+                window.tourDaysItinerary[dayNumber].splice(index, 1);
+                updateDayContents();
+            }
         }
 
-        function updateItineraryList() {
-            const itineraryContainer = document.getElementById('itineraryList');
-            if (!itineraryContainer) {
-                console.warn('itineraryList container not found');
-                return;
-            }
-            itineraryContainer.innerHTML = window.tourItinerary.map((item, index) => {
+        function updateDayTabs() {
+            const tabsContainer = document.getElementById('dayTabs');
+            if (!tabsContainer) return;
+            
+            const days = Object.keys(window.tourDaysItinerary).map(d => parseInt(d)).sort((a, b) => a - b);
+            
+            tabsContainer.innerHTML = days.map(day => `
+                <button type="button" 
+                        class="day-tab px-4 py-2 font-medium rounded-t-lg border-b-2 ${day === window.currentActiveDay ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" 
+                        data-day="${day}" 
+                        onclick="switchToDay(${day})">
+                    День ${day}
+                    ${days.length > 1 ? `<button type="button" onclick="event.stopPropagation(); removeDay(${day})" class="ml-2 text-red-500 hover:text-red-700"><i class="fas fa-times text-xs"></i></button>` : ''}
+                </button>
+            `).join('');
+        }
+
+        function updateDayContents() {
+            const contentsContainer = document.getElementById('dayContents');
+            if (!contentsContainer) return;
+            
+            const days = Object.keys(window.tourDaysItinerary).map(d => parseInt(d)).sort((a, b) => a - b);
+            
+            contentsContainer.innerHTML = days.map(day => {
+                const dayItinerary = window.tourDaysItinerary[day] || [];
+                const isVisible = day === window.currentActiveDay ? '' : 'hidden';
+                
                 return `
-                <div class="bg-gray-50 p-3 rounded border">
-                    <div class="flex justify-between items-start mb-2">
-                        <div class="flex items-center gap-3">
-                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium">${item.time}</span>
-                            <strong>${item.title}</strong>
+                    <div id="day-content-${day}" class="day-content ${isVisible}">
+                        <div class="mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Программа дня ${day}</h3>
+                            ${dayItinerary.length === 0 ? 
+                                '<p class="text-gray-500 text-center py-8 italic">Программа дня пока пуста. Добавьте активности ниже.</p>' :
+                                dayItinerary.map((item, index) => `
+                                    <div class="bg-gray-50 p-3 rounded border mb-3">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div class="flex items-center gap-3">
+                                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium">${item.time}</span>
+                                                <strong class="text-gray-800">${item.title}</strong>
+                                            </div>
+                                            <button type="button" onclick="removeItineraryFromDay(${day}, ${index})" class="text-red-500 hover:text-red-700">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        ${item.description ? `<p class="text-gray-600 text-sm ml-16">${item.description}</p>` : ''}
+                                    </div>
+                                `).join('')
+                            }
                         </div>
-                        <button type="button" onclick="removeItinerary(${index})" class="text-red-500 hover:text-red-700">
-                            <i class="fas fa-times"></i>
-                        </button>
                     </div>
-                    <p class="text-gray-600 text-sm ml-16">${item.description}</p>
-                </div>
-            `}).join('');
+                `;
+            }).join('');
+        }
+
+        // Обратная совместимость: конвертируем старую программу в новый формат
+        function convertLegacyItinerary() {
+            if (window.tourItinerary && window.tourItinerary.length > 0) {
+                window.tourDaysItinerary = { 1: [...window.tourItinerary] };
+                window.tourItinerary = []; // Очищаем старую программу
+            }
         }
 
         // Функции управления временем начала тура (быстрое создание)
@@ -4981,6 +5116,10 @@
                 }
             }
             
+            
+            // Инициализируем многодневную программу тура
+            convertLegacyItinerary(); // Конвертируем старую программу в новый формат
+            initializeDayProgram(); // Инициализируем интерфейс многодневной программы
             
             document.getElementById('tourModal').classList.add('active');
             
@@ -5760,23 +5899,7 @@
         
         // Функция updateHighlightsList удалена - используем чекбоксы услуг
         
-        function updateItineraryList() {
-            const container = document.getElementById('itineraryList');
-            if (!container) return;
-            
-            const itinerary = window.tourItinerary || [];
-            container.innerHTML = itinerary.map((item, index) => `
-                <div class="bg-gray-50 p-3 rounded">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="font-medium">${item.time} - ${item.title}</span>
-                        <button type="button" onclick="removeItinerary(${index})" class="text-red-500 hover:text-red-700">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <p class="text-sm text-gray-600">${item.description}</p>
-                </div>
-            `).join('');
-        }
+        // Дублированная функция удалена - используем новую систему многодневной программы
         
         function updateStartTimesList() {
             const container = document.getElementById('startTimesList');
