@@ -4535,6 +4535,13 @@
             return allActivities;
         }
 
+        // Заглушка для обратной совместимости со старой системой
+        function updateItineraryList() {
+            // Функция больше не нужна в новой многодневной системе
+            // Интерфейс программы обновляется автоматически через initializeDayProgram()
+            console.log('📝 updateItineraryList вызвана (заглушка для совместимости)');
+        }
+
         // Функции управления временем начала тура (быстрое создание)
         function addStartTime() {
             const input = document.getElementById('newStartTime');
@@ -5810,8 +5817,8 @@
                 priceType: tourPriceTypeEl ? tourPriceTypeEl.value || 'за человека' : 'за человека',
                 categoryId: categoryValue ? parseInt(categoryValue) : null,
                 tourBlockId: tourBlockIdEl && tourBlockIdEl.value ? parseInt(tourBlockIdEl.value) : null,
-                country: tourCountryEl ? tourCountryEl.options[tourCountryEl.selectedIndex]?.text || '' : '',
-                city: tourCityEl ? tourCityEl.options[tourCityEl.selectedIndex]?.text || '' : '',
+                country: tourCountryEl && tourCountryEl.selectedIndex >= 0 && tourCountryEl.options[tourCountryEl.selectedIndex] ? tourCountryEl.options[tourCountryEl.selectedIndex].text : '',
+                city: tourCityEl && tourCityEl.selectedIndex >= 0 && tourCityEl.options[tourCityEl.selectedIndex] ? tourCityEl.options[tourCityEl.selectedIndex].text : '',
                 countryId: tourCountryEl && tourCountryEl.value ? parseInt(tourCountryEl.value) : null,
                 cityId: tourCityEl && tourCityEl.value ? parseInt(tourCityEl.value) : null,
                 // Новые поля для множественного выбора стран и городов
