@@ -845,6 +845,33 @@
             }
         }
 
+        // Переключение дней программы тура (для туристов)
+        function switchTourDay(day) {
+            // Скрываем все дни программы
+            document.querySelectorAll('.day-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Убираем активные стили со всех табов дней
+            document.querySelectorAll('.day-tab').forEach(tab => {
+                tab.classList.remove('border-blue-500', 'text-blue-600');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            // Показываем выбранный день
+            const dayContent = document.getElementById(`day-content-${day}`);
+            if (dayContent) {
+                dayContent.classList.remove('hidden');
+            }
+            
+            // Добавляем активные стили к выбранному табу
+            const dayTab = document.querySelector(`[data-day="${day}"]`);
+            if (dayTab) {
+                dayTab.classList.remove('border-transparent', 'text-gray-500');
+                dayTab.classList.add('border-blue-500', 'text-blue-600');
+            }
+        }
+
         // Load tour data from API
         async function loadTourData() {
             console.log("Loading tour data from API...");
@@ -1079,23 +1106,76 @@
                 }
             }
             
-            // Обновляем программу тура
+            // Обновляем программу тура (многодневная система)
             if (tourData.itinerary && tourData.itinerary.length > 0) {
                 const programElement = document.getElementById('content-program');
                 if (programElement) {
-                    programElement.innerHTML = `
-                        <div class="space-y-6">
-                            ${tourData.itinerary.map(item => `
-                                <div class="flex items-start space-x-4">
-                                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">${item.time || 'Время'}</div>
-                                    <div>
-                                        <h4 class="font-semibold text-gray-900">${item.title || 'Название'}</h4>
-                                        <p class="text-gray-600 mt-1">${item.description || 'Описание'}</p>
+                    // Группируем активности по дням
+                    const daysByProgram = {};
+                    let maxDay = 1;
+                    
+                    tourData.itinerary.forEach(item => {
+                        const day = item.day || 1; // Если нет дня, то считаем это день 1
+                        if (!daysByProgram[day]) daysByProgram[day] = [];
+                        daysByProgram[day].push(item);
+                        maxDay = Math.max(maxDay, day);
+                    });
+                    
+                    // Если только один день, показываем как раньше
+                    if (maxDay === 1 && Object.keys(daysByProgram).length === 1) {
+                        programElement.innerHTML = `
+                            <div class="space-y-6">
+                                ${tourData.itinerary.map(item => `
+                                    <div class="flex items-start space-x-4">
+                                        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">${item.time || 'Время'}</div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">${item.title || 'Название'}</h4>
+                                            <p class="text-gray-600 mt-1">${item.description || 'Описание'}</p>
+                                        </div>
                                     </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    } else {
+                        // Многодневная программа - показываем с табами по дням
+                        const sortedDays = Object.keys(daysByProgram).sort((a, b) => parseInt(a) - parseInt(b));
+                        
+                        programElement.innerHTML = `
+                            <!-- Многодневная программа тура -->
+                            <div class="multi-day-program">
+                                <!-- Навигация по дням -->
+                                <div class="border-b border-gray-200 mb-6">
+                                    <nav class="flex space-x-8" id="day-navigation">
+                                        ${sortedDays.map((day, index) => `
+                                            <button 
+                                                class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors day-tab ${index === 0 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}" 
+                                                onclick="switchTourDay(${day})"
+                                                data-day="${day}">
+                                                День ${day}
+                                            </button>
+                                        `).join('')}
+                                    </nav>
                                 </div>
-                            `).join('')}
-                        </div>
-                    `;
+                                
+                                <!-- Контент дней -->
+                                <div id="day-contents">
+                                    ${sortedDays.map((day, index) => `
+                                        <div id="day-content-${day}" class="day-content ${index === 0 ? '' : 'hidden'} space-y-6">
+                                            ${daysByProgram[day].map(item => `
+                                                <div class="flex items-start space-x-4">
+                                                    <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">${item.time || 'Время'}</div>
+                                                    <div>
+                                                        <h4 class="font-semibold text-gray-900">${item.title || 'Название'}</h4>
+                                                        <p class="text-gray-600 mt-1">${item.description || 'Описание'}</p>
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
                 }
             }
             
