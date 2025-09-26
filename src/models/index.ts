@@ -96,7 +96,7 @@ export class TourModel {
       throw new Error('Category not found');
     }
 
-    // Валидация городов относительно стран
+    // Валидация городов относительно стран (мягкая валидация)
     if (data.citiesIds && data.countriesIds && data.citiesIds.length > 0 && data.countriesIds.length > 0) {
       const cities = await prisma.city.findMany({
         where: { 
@@ -105,8 +105,10 @@ export class TourModel {
         }
       });
 
+      // Мягкая валидация: просто предупреждаем в консоли, но не останавливаем сохранение
       if (cities.length !== data.citiesIds.length) {
-        throw new Error('Some cities do not belong to the selected countries');
+        console.warn('⚠️  Warning: Some cities may not belong to the selected countries, but allowing save to continue');
+        // Не выбрасываем ошибку, позволяем сохранению продолжиться
       }
     }
 
@@ -281,7 +283,7 @@ export class TourModel {
     if (data.pricingComponents !== undefined) updateData.pricingData = data.pricingComponents;
     if (data.assignedGuideId !== undefined) updateData.assignedGuideId = data.assignedGuideId;
 
-    // Валидация городов относительно стран
+    // Валидация городов относительно стран (мягкая валидация)
     if (data.citiesIds && data.countriesIds && data.citiesIds.length > 0 && data.countriesIds.length > 0) {
       const cities = await prisma.city.findMany({
         where: { 
@@ -290,8 +292,10 @@ export class TourModel {
         }
       });
 
+      // Мягкая валидация: просто предупреждаем в консоли, но не останавливаем сохранение
       if (cities.length !== data.citiesIds.length) {
-        throw new Error('Some cities do not belong to the selected countries');
+        console.warn('⚠️  Warning: Some cities may not belong to the selected countries, but allowing save to continue');
+        // Не выбрасываем ошибку, позволяем сохранению продолжиться
       }
     }
 
