@@ -51,6 +51,27 @@ export const getTourBlock = async (req: Request, res: Response): Promise<Respons
               include: {
                 category: true,
                 reviews: true,
+                // Новые множественные связи
+                tourCountries: {
+                  include: {
+                    country: true
+                  },
+                  orderBy: {
+                    isPrimary: 'desc' // Показываем основную страну первой
+                  }
+                },
+                tourCities: {
+                  include: {
+                    city: {
+                      include: {
+                        country: true // Включаем информацию о стране для города
+                      }
+                    }
+                  },
+                  orderBy: {
+                    isPrimary: 'desc' // Показываем основной город первым
+                  }
+                },
                 _count: {
                   select: { reviews: true }
                 }

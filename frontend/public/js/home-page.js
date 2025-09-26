@@ -1393,6 +1393,34 @@ function renderTourBlock(block, tours) {
     }
 }
 
+// Функция для получения отображаемого местоположения (поддерживает множественные страны и города)
+function getDisplayLocation(tour) {
+    let locationParts = [];
+    
+    // Проверяем наличие новых множественных связей
+    if (tour.tourCountries && tour.tourCountries.length > 0) {
+        const countries = tour.tourCountries.map(tc => tc.country?.nameRu || tc.country?.name || '').filter(Boolean);
+        if (countries.length > 0) {
+            locationParts.push(countries.join(', '));
+        }
+    } else if (tour.country) {
+        // Fallback на старое поле country
+        locationParts.push(tour.country);
+    }
+    
+    if (tour.tourCities && tour.tourCities.length > 0) {
+        const cities = tour.tourCities.map(tc => tc.city?.nameRu || tc.city?.name || '').filter(Boolean);
+        if (cities.length > 0) {
+            locationParts.push(cities.join(', '));
+        }
+    } else if (tour.city) {
+        // Fallback на старое поле city
+        locationParts.push(tour.city);
+    }
+    
+    return locationParts.length > 0 ? locationParts.join(' • ') : 'Местоположение не указано';
+}
+
 function renderTourCard(tour, blockId = null) {
     // Получаем текущий язык
     const currentLang = getCurrentLanguage();
@@ -1503,7 +1531,7 @@ function renderTourCard(tour, blockId = null) {
                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
                     </svg>
-                    ${tour.city}, ${tour.country}
+                    ${getDisplayLocation(tour)}
                 </div>
                 <!-- Тип тура (обязательно показываем) -->
                 <div class="flex items-center text-blue-600 text-xs mb-2">

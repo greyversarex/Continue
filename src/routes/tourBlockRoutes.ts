@@ -40,6 +40,27 @@ router.get('/:id/tours', async (req, res) => {
         tour: {
           include: {
             category: true,
+            // Новые множественные связи
+            tourCountries: {
+              include: {
+                country: true
+              },
+              orderBy: {
+                isPrimary: 'desc' // Показываем основную страну первой
+              }
+            },
+            tourCities: {
+              include: {
+                city: {
+                  include: {
+                    country: true // Включаем информацию о стране для города
+                  }
+                }
+              },
+              orderBy: {
+                isPrimary: 'desc' // Показываем основной город первым
+              }
+            },
             tourBlockAssignments: {
               include: {
                 tourBlock: true

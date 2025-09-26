@@ -872,6 +872,34 @@
             }
         }
 
+        // Функция для получения отображаемого местоположения (поддерживает множественные страны и города)
+        function getDisplayLocation(tour) {
+            let locationParts = [];
+            
+            // Проверяем наличие новых множественных связей
+            if (tour.tourCountries && tour.tourCountries.length > 0) {
+                const countries = tour.tourCountries.map(tc => tc.country?.nameRu || tc.country?.name || '').filter(Boolean);
+                if (countries.length > 0) {
+                    locationParts.push(countries.join(', '));
+                }
+            } else if (tour.country) {
+                // Fallback на старое поле country
+                locationParts.push(tour.country);
+            }
+            
+            if (tour.tourCities && tour.tourCities.length > 0) {
+                const cities = tour.tourCities.map(tc => tc.city?.nameRu || tc.city?.name || '').filter(Boolean);
+                if (cities.length > 0) {
+                    locationParts.push(cities.join(', '));
+                }
+            } else if (tour.city) {
+                // Fallback на старое поле city
+                locationParts.push(tour.city);
+            }
+            
+            return locationParts.length > 0 ? locationParts.join(' • ') : 'Местоположение не указано';
+        }
+
         // Load tour data from API
         async function loadTourData() {
             console.log("Loading tour data from API...");
@@ -904,7 +932,7 @@
                     tourData = {
                         id: apiTour.id,
                         title: getLocalizedText(titleData, currentLang) || apiTour.title || '',
-                        location: `${apiTour.city || ''}, ${apiTour.country || ''}`.replace(/^, |, $/, '') || '',
+                        location: getDisplayLocation(apiTour),
                         price: apiTour.price || '0',
                         priceType: apiTour.priceType || 'за человека',
                         duration: apiTour.duration || '',
